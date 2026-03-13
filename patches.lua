@@ -55,7 +55,10 @@ function M.patchFileManagerClass(plugin)
             plugin._orig_fc_init = orig_fc_init
             FileChooser._navbar_patched = true
             FileChooser.init = function(fc_self)
-                if fc_self.height == nil and fc_self.width == nil then
+                -- Correct the height when it is either unset (stock KOReader) or
+                -- explicitly set to the full screen height (Project: Title passes
+                -- height = Screen:getHeight() in covermenu.lua, bypassing the nil check).
+                if fc_self.height == nil or fc_self.height >= Screen:getHeight() then
                     fc_self.height = UI.getContentHeight()
                     fc_self.y      = UI.getContentTop()
                 end
