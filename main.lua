@@ -25,6 +25,8 @@ local SimpleUIPlugin = WidgetContainer:new{
     _orig_menu_new            = nil,
     _orig_menu_init           = nil,
     _orig_fmcoll_show         = nil,
+    _orig_rc_remove           = nil,
+    _orig_rc_rename           = nil,
     _orig_fc_init             = nil,
     _orig_fm_setup            = nil,
 
