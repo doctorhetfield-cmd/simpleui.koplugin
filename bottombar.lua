@@ -21,9 +21,34 @@ local ReaderUI        = require("apps/reader/readerui")
 local logger          = require("logger")
 local _               = require("gettext")
 
-local Config = require("config")
+local Config      = require("config")
+local DataStorage = require("datastorage")
 
 local M = {}
+
+-- Resolves a relative icon path to the correct absolute or relative path.
+--
+-- On Boox/Android two distinct roots exist:
+--   - "resources/" paths  → KOReader install dir, already on the working-directory
+--                           search path, so they work as plain relative paths.
+--   - "plugins/"  paths   → external/user storage (/storage/emulated/0/koreader/),
+--                           NOT on the working-directory path, so they need an
+--                           absolute prefix from DataStorage:getDataDir().
+--
+-- Using lfs or package.searchpath to discover the install dir is fragile on
+-- Android; the log shows both approaches fail.  The path-prefix split is the
+-- reliable solution: leave "resources/" alone, absolutise "plugins/".
+local _data_dir = nil
+local function resolveIconPath(path)
+    if not path then return path end
+    if path:sub(1, 1) == "/" then return path end  -- already absolute
+    if path:find("^plugins/") then
+        if not _data_dir then _data_dir = DataStorage:getDataDir() end
+        return _data_dir .. "/" .. path
+    end
+    -- "resources/" and anything else: relative path works as-is on all platforms.
+    return path
+end
 
 -- ---------------------------------------------------------------------------
 -- Bar colors
@@ -135,11 +160,10 @@ function M.buildTabCell(action_id, active, tab_w, mode)
 
     if mode == "icons" or mode == "both" then
         vg[#vg + 1] = ImageWidget:new{
-            file    = action.icon,
-            width   = M.ICON_SZ(),
-            height  = M.ICON_SZ(),
-            is_icon = true,
-            alpha   = true,
+            file   = resolveIconPath(action.icon),
+            width  = M.ICON_SZ(),
+            height = M.ICON_SZ(),
+            alpha  = true,
         }
     end
 
@@ -214,23 +238,131 @@ function M.replaceBar(widget, new_bar, tabs)
 end
 
 -- ---------------------------------------------------------------------------
+-- TapSelect class patch  (fix for issue #4 / Project: Title interaction)
+--
+-- Root cause
+-- ----------
+-- KOReader dispatches widget-level ges_events (such as MosaicMenuItem's
+-- TapSelect from Project: Title) BEFORE checking touch zones registered on
+-- the parent FileManager via registerTouchZones.  When a mosaic/list item
+-- occupies the same screen area as the bar, its onTapSelect fires first,
+-- returns true, and the event is consumed — so the bar's registered zone
+-- handler never runs.  This is why every zone-based fix fails here.
+--
+-- Fix
+-- ---
+-- Patch the onTapSelect METHOD on the class itself (via the Lua metatable)
+-- so that any tap whose y coordinate falls inside the bar region is
+-- intercepted and dispatched to the correct tab instead.  Patching the
+-- class (not individual instances) means the fix applies to all current and
+-- future instances without re-walking the tree on every redraw.
+--
+-- The patch is idempotent: cls._simpleui_tap_patched guards against double
+-- wrapping if registerTouchZones is called multiple times.
+--
+-- Module-level state written by registerTouchZones, read by the patch:
+-- ---------------------------------------------------------------------------
+M._tap_bar_region_y = nil   -- absolute y of bar top edge (pixels)
+M._tap_bar_side_m   = nil   -- left side margin (pixels)
+M._tap_bar_widths   = nil   -- {w1, w2, ...} tab widths in display order
+M._tap_bar_plugin   = nil   -- plugin instance for _onTabTap dispatch
+
+-- Resolves which tab index a tap_x falls in and fires _onTabTap.
+local function _dispatchBarTap(ges)
+    local plugin = M._tap_bar_plugin
+    local widths = M._tap_bar_widths
+    local side_m = M._tap_bar_side_m
+    if not (plugin and widths and side_m) then return end
+
+    local tap_x    = ges.pos.x
+    local cum      = side_m
+    local num_tabs = Config.getNumTabs()
+    for i = 1, num_tabs do
+        local w = widths[i]
+        if not w then break end
+        if tap_x >= cum and tap_x < cum + w then
+            local t         = Config.loadTabConfig()
+            local action_id = t[i]
+            if action_id then
+                -- The patch fires from the library view; plugin.ui is the
+                -- correct fm_self dispatch target in that context.
+                plugin:_onTabTap(action_id, plugin.ui)
+            end
+            return
+        end
+        cum = cum + w
+    end
+    -- Tap in a margin gap — consumed silently, nothing to dispatch.
+end
+
+-- Walks the widget tree rooted at `widget` and patches the onTapSelect
+-- method on every distinct class that exposes a TapSelect ges_event.
+-- Recursion stops at any such widget (its children are cosmetic only).
+local function _patchTapSelectClasses(widget, depth)
+    if depth > 12 or type(widget) ~= "table" then return end
+
+    if widget.ges_events
+       and widget.ges_events.TapSelect
+       and widget.onTapSelect
+    then
+        -- getmetatable(instance) returns the class table in KOReader's OOP.
+        local cls = getmetatable(widget)
+        if cls and cls.onTapSelect and not cls._simpleui_tap_patched then
+            local orig = cls.onTapSelect
+            cls.onTapSelect = function(self_w, arg, ges)
+                local bar_y   = M._tap_bar_region_y
+                -- In some KOReader versions the gesture arrives as `arg`
+                -- rather than `ges`; handle both.
+                local gesture = (ges and ges.pos and ges) or (arg and arg.pos and arg)
+                if bar_y and gesture and gesture.pos.y >= bar_y then
+                    _dispatchBarTap(gesture)
+                    return true
+                end
+                return orig(self_w, arg, ges)
+            end
+            cls._simpleui_tap_patched = true
+            logger.dbg("simpleui: patched TapSelect on class", tostring(cls))
+        end
+        return  -- no need to recurse into cosmetic children
+    end
+
+    for _, child in ipairs(widget) do
+        _patchTapSelectClasses(child, depth + 1)
+    end
+end
+
+-- ---------------------------------------------------------------------------
 -- Touch zones
 -- ---------------------------------------------------------------------------
 
 function M.registerTouchZones(plugin, fm_self)
-    local num_tabs = Config.getNumTabs()
-    local screen_w = Screen:getWidth()
-    local screen_h = Screen:getHeight()
+    local num_tabs  = Config.getNumTabs()
+    local screen_w  = Screen:getWidth()
+    local screen_h  = Screen:getHeight()
     local navbar_on = G_reader_settings:nilOrTrue("navbar_enabled")
-    local bar_h    = navbar_on and M.BAR_H() or 0
-    local side_m   = M.SIDE_M()
-    local usable_w = screen_w - side_m * 2
-    local bar_y    = navbar_on and (screen_h - bar_h - M.BOT_SP()) or screen_h
-    local widths   = M.getTabWidths(num_tabs, usable_w)
+    local bar_h     = navbar_on and M.BAR_H() or 0
+    local side_m    = M.SIDE_M()
+    local usable_w  = screen_w - side_m * 2
+    local bar_y     = navbar_on and (screen_h - bar_h - M.BOT_SP()) or screen_h
+    local widths    = M.getTabWidths(num_tabs, usable_w)
+
+    -- Store dispatch state used by the TapSelect class patch below.
+    M._tap_bar_region_y = bar_y
+    M._tap_bar_side_m   = side_m
+    M._tap_bar_widths   = widths
+    M._tap_bar_plugin   = plugin
+
+    -- Walk fm_self's widget tree and patch any TapSelect-bearing class
+    -- (e.g. MosaicMenuItem, ListMenuItem from Project: Title).
+    -- Safe no-op when Project: Title is not installed.
+    _patchTapSelectClasses(fm_self, 0)
 
     -- Unregister stale zones from any previous registration.
     if fm_self.unregisterTouchZones then
-        local old_zones = {}
+        local old_zones = {
+            { id = "navbar_bar_tap" },
+        }
+        -- Clean up legacy per-tab zone IDs from older installs.
         for i = 1, Config.MAX_TABS do
             old_zones[#old_zones + 1] = { id = "navbar_pos_" .. i }
         end
@@ -246,8 +378,7 @@ function M.registerTouchZones(plugin, fm_self)
     local function showSettingsMenu(title, item_table_fn, top_offset)
         if not item_table_fn then return end
         top_offset = top_offset or 0
-        local Menu   = require("ui/widget/menu")
-        local UI = require("ui")
+        local Menu = require("ui/widget/menu")
         local menu_h = Screen:getHeight() - M.TOTAL_H() - top_offset
 
         local function resolveItems(items)
@@ -266,7 +397,7 @@ function M.registerTouchZones(plugin, fm_self)
                 end
                 if type(item.enabled_func) == "function" then
                     local ef = item.enabled_func
-                    r.dim        = not ef()
+                    r.dim          = not ef()
                     r.enabled_func = nil
                 end
                 out[#out + 1] = r
@@ -302,44 +433,29 @@ function M.registerTouchZones(plugin, fm_self)
         UIManager:show(menu)
     end
 
-    local zones             = {}
-    local cumulative_offset = 0
+    local zones = {}
 
-    -- One tap zone per tab; inactive slots are moved off-screen.
-    for i = 1, Config.MAX_TABS do
-        local pos    = i
-        local active = (i <= num_tabs)
-        local x_start, this_tab_w
-        if active then
-            x_start           = side_m + cumulative_offset
-            this_tab_w        = widths[i]
-            cumulative_offset = cumulative_offset + widths[i]
-        else
-            x_start    = screen_w + 1
-            this_tab_w = 1
-        end
-        zones[#zones + 1] = {
-            id          = "navbar_pos_" .. i,
-            ges         = "tap",
-            screen_zone = {
-                ratio_x = x_start    / screen_w,
-                ratio_y = bar_y      / screen_h,
-                ratio_w = this_tab_w / screen_w,
-                ratio_h = bar_h      / screen_h,
-            },
-            handler = function(_ges)
-                if not active then return false end
-                if pos > Config.getNumTabs() then return false end
-                local t         = Config.loadTabConfig()
-                local action_id = t[pos]
-                if not action_id then return true end
-                plugin:_onTabTap(action_id, fm_self)
-                return true
-            end,
-        }
-    end
+    -- Single full-width tap zone.  Handles the stock KOReader file list and
+    -- any other view that does not use ges_events-based item widgets.
+    -- For Project: Title mosaic/list views the TapSelect class patch above
+    -- is the active mechanism (zone-level dispatch is bypassed there).
+    zones[#zones + 1] = {
+        id          = "navbar_bar_tap",
+        ges         = "tap",
+        screen_zone = {
+            ratio_x = 0,
+            ratio_y = bar_y / screen_h,
+            ratio_w = 1,
+            ratio_h = bar_h / screen_h,
+        },
+        handler = function(ges)
+            if not G_reader_settings:nilOrTrue("navbar_enabled") then return false end
+            _dispatchBarTap(ges)
+            return true
+        end,
+    }
 
-    -- Hold anywhere on the bar to open the settings menu.
+    -- Hold anywhere on the bar → open settings menu.
     local bar_screen_zone = {
         ratio_x = 0,
         ratio_y = bar_y / screen_h,
@@ -358,8 +474,7 @@ function M.registerTouchZones(plugin, fm_self)
         screen_zone = bar_screen_zone,
         handler = function(_ges)
             if not plugin._makeNavbarMenu then plugin:addToMainMenu({}) end
-            local Layout    = require("ui")
-            local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
+            local topbar_on  = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
             local top_offset = topbar_on and require("topbar").TOTAL_TOP_H() or 0
             showSettingsMenu(_("Bottom Bar"), plugin._makeNavbarMenu, top_offset)
             return true
@@ -379,26 +494,22 @@ function M.onTabTap(plugin, action_id, fm_self)
         plugin:_showPowerDialog(fm_self)
         return
     end
-    if action_id == "wifi_toggle"   then M.doWifiToggle(plugin);        return end
-    if action_id == "frontlight"    then M.showFrontlightDialog();       return end
+    if action_id == "wifi_toggle"    then M.doWifiToggle(plugin);        return end
+    if action_id == "frontlight"     then M.showFrontlightDialog();      return end
     if action_id == "stats_calendar" then
         plugin:_navigate(action_id, fm_self, Config.loadTabConfig()); return
     end
 
-    -- Track whether this tab was already active before the tap.
     local already_active = (plugin.active_action == action_id)
 
     plugin.active_action = action_id
     local tabs = Config.loadTabConfig()
     if fm_self._navbar_container then
-        local UI = require("ui")
         M.replaceBar(fm_self, M.buildBarWidget(action_id, tabs), tabs)
         UIManager:setDirty(fm_self._navbar_container, "ui")
         UIManager:setDirty(fm_self, "ui")
     end
     pcall(function() plugin:_updateFMHomeIcon() end)
-    -- Pass already_active so navigate can force a refresh even when the view
-    -- hasn't changed (e.g. tapping Library while Library is already shown).
     plugin:_navigate(action_id, fm_self, tabs, already_active)
 end
 
@@ -423,7 +534,6 @@ end
 function M.navigate(plugin, action_id, fm_self, tabs, force)
     local fm = plugin.ui
 
-    -- Close any open sub-window before navigating.
     if fm_self ~= fm then
         fm_self._navbar_closing_intentionally = true
         pcall(function()
@@ -433,12 +543,10 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
         fm_self._navbar_closing_intentionally = nil
     end
 
-    -- Hide the Desktop; it will be re-opened if action_id is "desktop".
     local ok_d, Desktop = pcall(require, "desktop")
-    local _desktop_was_visible = ok_d and Desktop and Desktop._desktop_widget ~= nil
-    -- Capture restore state BEFORE hide() clears it.
-    local _desktop_orig_inner = ok_d and Desktop and Desktop._orig_inner
-    local _desktop_inner_idx  = ok_d and Desktop and Desktop._inner_idx or 1
+    local _desktop_was_visible  = ok_d and Desktop and Desktop._desktop_widget ~= nil
+    local _desktop_orig_inner   = ok_d and Desktop and Desktop._orig_inner
+    local _desktop_inner_idx    = ok_d and Desktop and Desktop._inner_idx or 1
     if ok_d and Desktop and Desktop._desktop_widget then
         pcall(function() Desktop:hide() end)
     end
@@ -451,10 +559,6 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
 
     if action_id == "home" then
         if _desktop_was_visible and fm then
-            -- Nuclear approach: if the desktop was visible, rewrap the FM
-            -- container entirely from _navbar_inner, bypassing all desktop
-            -- state. This is the same path used after a screen resize and
-            -- is guaranteed to produce a clean, desktop-free container.
             local did_rewrap = false
             pcall(function()
                 local UI2 = require("ui")
@@ -480,7 +584,6 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
                     did_rewrap = true
                 end
             end)
-            -- Fallback: if rewrap failed, try a direct slot restore + dirty.
             if not did_rewrap and fm._navbar_container then
                 local restore = _desktop_orig_inner or fm._navbar_inner
                 if restore then
@@ -496,8 +599,6 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
         elseif fm.onHome then
             fm:onHome()
         end
-        -- Always force a full refresh when coming from the Desktop or when
-        -- the library tab was already showing (force=true).
         if (_desktop_was_visible or force) and fm.file_chooser then
             pcall(function() fm.file_chooser:refreshPath() end)
             UIManager:setDirty(fm._navbar_container, "partial")
@@ -576,15 +677,21 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
                     local ok, err = pcall(function()
                         Dispatcher:execute({ [cfg.dispatcher_action] = true })
                     end)
-                    if not ok then showUnavailable(string.format(_("System action error: %s"), tostring(err))) end
+                    if not ok then
+                        showUnavailable(string.format(_("System action error: %s"), tostring(err)))
+                    end
                 else
                     showUnavailable(_("Dispatcher not available."))
                 end
             elseif cfg.plugin_key and cfg.plugin_method and cfg.plugin_key ~= "" then
                 local plugin_inst = fm and fm[cfg.plugin_key]
                 if plugin_inst and type(plugin_inst[cfg.plugin_method]) == "function" then
-                    local ok, err = pcall(function() plugin_inst[cfg.plugin_method](plugin_inst) end)
-                    if not ok then showUnavailable(string.format(_("Plugin error: %s"), tostring(err))) end
+                    local ok, err = pcall(function()
+                        plugin_inst[cfg.plugin_method](plugin_inst)
+                    end)
+                    if not ok then
+                        showUnavailable(string.format(_("Plugin error: %s"), tostring(err)))
+                    end
                 else
                     showUnavailable(string.format(_("Plugin not available: %s"), cfg.plugin_key))
                 end
@@ -593,7 +700,10 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
             elseif cfg.path and cfg.path ~= "" then
                 if fm.file_chooser then fm.file_chooser:changeToPath(cfg.path) end
             else
-                showUnavailable(_("No folder, collection or plugin configured.\nGo to Simple UI → Settings → Quick Actions to set one."))
+                showUnavailable(_(
+                    "No folder, collection or plugin configured.\n"
+                 .. "Go to Simple UI → Settings → Quick Actions to set one."
+                ))
             end
         end
     end
@@ -606,12 +716,16 @@ end
 function M.doWifiToggle(plugin)
     local ok_hw, has_wifi = pcall(function() return Device:hasWifiToggle() end)
     if not (ok_hw and has_wifi) then
-        UIManager:show(InfoMessage:new{ text = _("WiFi not available on this device."), timeout = 2 })
+        UIManager:show(InfoMessage:new{
+            text = _("WiFi not available on this device."), timeout = 2,
+        })
         return
     end
     local ok_nm, NetworkMgr = pcall(require, "ui/network/manager")
     if not ok_nm or not NetworkMgr then
-        UIManager:show(InfoMessage:new{ text = _("Network manager unavailable."), timeout = 2 })
+        UIManager:show(InfoMessage:new{
+            text = _("Network manager unavailable."), timeout = 2,
+        })
         return
     end
     local ok_state, wifi_on = pcall(function() return NetworkMgr:isWifiOn() end)
@@ -629,7 +743,6 @@ function M.doWifiToggle(plugin)
         end
     end
 
-    -- Immediately refresh the bar and topbar with the optimistic Wi-Fi state.
     if plugin then
         plugin:_rebuildAllNavbars()
         local Topbar = require("topbar")
@@ -729,7 +842,7 @@ function M.setPowerTabActive(plugin, active, prev_action)
 end
 
 function M.rewrapAllWidgets(plugin)
-    local UI = require("ui")
+    local UI   = require("ui")
     local tabs = Config.loadTabConfig()
     local seen = {}
 
