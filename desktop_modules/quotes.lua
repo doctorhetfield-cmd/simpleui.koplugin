@@ -36,6 +36,7 @@ return {
     { q = "I took a deep breath and listened to the old brag of my heart: I am, I am, I am.", a = "Sylvia Plath", b = "The Bell Jar" },
     { q = "We are all just walking each other home.", a = "Ram Dass" },
     { q = "It is our choices that show what we truly are, far more than our abilities.", a = "J.K. Rowling", b = "Harry Potter and the Chamber of Secrets" },
+    { q = "There's always another secret.", a = "Brandon Sanderson", b  = "Mistborn: The Final Empire" }
 
     -- Philosophy and wisdom
     { q = "Be yourself; everyone else is already taken.", a = "Oscar Wilde" },
