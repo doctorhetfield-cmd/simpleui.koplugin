@@ -260,6 +260,54 @@ function M.applyNavbarState(widget, container, bar, topbar, bar_idx, topbar_on, 
 end
 
 -- ---------------------------------------------------------------------------
+-- Gesture priority for navbar touch zones (InputContainer)
+--
+-- KOReader dispatches Gesture such that WidgetContainer:handleEvent runs
+-- children first; only then does the parent's onGesture run (where
+-- registerTouchZones handlers live). Content below the bottom bar can therefore
+-- steal taps. Run InputContainer.onGesture (zones + ges_events) before
+-- propagating to children. See doc: WidgetContainer:handleEvent / Events.md.
+-- ---------------------------------------------------------------------------
+
+local function _resolveInheritedHandleEvent(target)
+    local own = rawget(target, "handleEvent")
+    if type(own) == "function" then return own end
+    local idx = getmetatable(target) and getmetatable(target).__index
+    while type(idx) == "table" do
+        local fn = rawget(idx, "handleEvent")
+        if type(fn) == "function" then return fn end
+        idx = getmetatable(idx) and getmetatable(idx).__index
+    end
+    return require("ui/widget/container/widgetcontainer").handleEvent
+end
+
+--- Call on any InputContainer that uses registerTouchZones for the navbar (FM
+--- class, Homescreen instance, or UIManager-injected fullscreen widgets).
+function M.applyGesturePriorityHandleEvent(target)
+    if not target or target._simpleui_gesture_priority_applied then return end
+    local InputContainer  = require("ui/widget/container/inputcontainer")
+    local WidgetContainer = require("ui/widget/container/widgetcontainer")
+    local inherit         = _resolveInheritedHandleEvent(target)
+    target._simpleui_gesture_priority_applied = true
+    target.handleEvent = function(self, event)
+        if event.handler == "onGesture" then
+            local ges = event.args and event.args[1]
+            if ges and InputContainer.onGesture(self, ges) then
+                return true
+            end
+            return WidgetContainer.propagateEvent(self, event)
+        end
+        return inherit(self, event)
+    end
+end
+
+function M.unapplyGesturePriorityHandleEvent(target)
+    if not target or not target._simpleui_gesture_priority_applied then return end
+    target.handleEvent = nil
+    target._simpleui_gesture_priority_applied = nil
+end
+
+-- ---------------------------------------------------------------------------
 -- Safe access to the UIManager window stack
 -- ---------------------------------------------------------------------------
 

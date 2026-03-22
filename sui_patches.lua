@@ -72,6 +72,9 @@ function M.patchFileManagerClass(plugin)
     local orig_setupLayout = FileManager.setupLayout
     plugin._orig_fm_setup  = orig_setupLayout
 
+    -- Navbar touch zones must run before FileChooser/scroll children (sui_core).
+    UI.applyGesturePriorityHandleEvent(FileManager)
+
     FileManager.setupLayout = function(fm_self)
         local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
         fm_self._navbar_height = Bottombar.TOTAL_H() + (topbar_on and require("sui_topbar").TOTAL_TOP_H() or 0)
@@ -682,6 +685,7 @@ function M.patchUIManagerShow(plugin)
         widget._navbar_prev_action = action_before
         widget[1]                  = wrapped
         plugin:_registerTouchZones(widget)
+        UI.applyGesturePriorityHandleEvent(widget)
 
         -- Register top-of-screen tap/swipe zones to open the KOReader main menu,
         -- mirroring FileManagerMenu:initGesListener for all injected pages.
@@ -1326,6 +1330,9 @@ function M.teardownAll(plugin)
         plugin._orig_fc_init        = nil
     end
     local FileManager = package.loaded["apps/filemanager/filemanager"]
+    if FileManager and FileManager._simpleui_gesture_priority_applied then
+        UI.unapplyGesturePriorityHandleEvent(FileManager)
+    end
     if FileManager and plugin._orig_fm_setup then
         FileManager.setupLayout = plugin._orig_fm_setup; plugin._orig_fm_setup = nil
     end

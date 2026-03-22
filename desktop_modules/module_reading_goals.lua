@@ -89,9 +89,9 @@ local function invalidateStatsCache()
     _stats_cache_day = nil
 end
 
--- Counts books marked as read (summary.status = "complete") in the sidecar files.
--- Scans only the summary block of each sidecar to avoid loading large annotation data.
--- Optionally filters to a specific year. Result is cached per calendar day.
+-- Counts books marked as read (summary.status = "complete") using DocSettings,
+-- matching KOReader's own metadata format. Optional year_str filters by
+-- summary.modified (string, unix time, or *t table). Result is cached per day.
 local function _countMarkedRead(year_str)
     local ok_lfs, lfs = pcall(require, "libs/libkoreader-lfs")
     if not ok_lfs then return 0 end
@@ -101,37 +101,44 @@ local function _countMarkedRead(year_str)
     local ReadHistory = package.loaded["readhistory"]
     if not ReadHistory or not ReadHistory.hist then return 0 end
 
-    local year_pfx = year_str and ('["modified"] = "' .. year_str) or nil
-    local count = 0
+    local function modifiedInYear(summary)
+        if not year_str then return true end
+        local mod = summary and summary.modified
+        if mod == nil then return false end
+        if type(mod) == "number" then
+            return os.date("%Y", mod) == year_str
+        end
+        if type(mod) == "string" then
+            if #mod >= 4 and mod:sub(1, 4) == year_str then return true end
+            local ok_t, t = pcall(function()
+                return os.time({
+                    year  = tonumber(mod:sub(1, 4)),
+                    month = tonumber(mod:sub(6, 7)) or 1,
+                    day   = tonumber(mod:sub(9, 10)) or 1,
+                    hour  = 12,
+                })
+            end)
+            if ok_t and t and os.date("%Y", t) == year_str then return true end
+            return false
+        end
+        if type(mod) == "table" and mod.year then
+            return tostring(mod.year) == year_str
+        end
+        return false
+    end
 
+    local count = 0
     for _, entry in ipairs(ReadHistory.hist) do
         local fp = entry.file
         if fp and lfs.attributes(fp, "mode") == "file" then
-            local sidecar = DocSettings:findSidecarFile(fp)
-            if sidecar then
-                local f = io.open(sidecar, "r")
-                if f then
-                    local in_summary = false
-                    local found_status, found_year = false, not year_pfx
-                    for line in f:lines() do
-                        if not in_summary then
-                            if line:find('["summary"]', 1, true) then
-                                in_summary = true
-                            end
-                        else
-                            if line:find('"complete"', 1, true)
-                               and line:find('"status"', 1, true) then
-                                found_status = true
-                            end
-                            if year_pfx and line:find(year_pfx, 1, true) then
-                                found_year = true
-                            end
-                            if line:find("^%s*},?%s*$") then break end
-                        end
-                    end
-                    f:close()
-                    if found_status and found_year then count = count + 1 end
+            local ok_open, doc_settings = pcall(function() return DocSettings:open(fp) end)
+            if ok_open and doc_settings then
+                local ok_sum, summary = pcall(function() return doc_settings:readSetting("summary") end)
+                if ok_sum and type(summary) == "table" and summary.status == "complete"
+                    and modifiedInYear(summary) then
+                    count = count + 1
                 end
+                pcall(function() doc_settings:close() end)
             end
         end
     end

@@ -164,15 +164,14 @@ function HomescreenWidget:init()
 
     -- Block taps/holds that land on the bottom bar area so they are never
     -- consumed by module InputContainers whose dimen extends into that area.
-    -- This ges_event is evaluated first (InputContainer processes own events
-    -- before propagating to children) and returns true to consume the event.
-    -- _navbar_content_h is set by patches.lua after init(); we use a lazy
-    -- function so it is read at gesture time, not at init time.
+    -- Y threshold must match Bottombar.TOTAL_H() (full reserved strip: separator
+    -- + bar + bottom padding), not raw content height — the latter breaks when
+    -- the top bar is enabled (wrong band vs. actual navbar row).
     local function _in_bar(ges)
-        if not ges then return false end
-        local ch = self._navbar_content_h
-        if not ch then return false end
-        return ges.pos and ges.pos.y and ges.pos.y >= ch
+        if not ges or not ges.pos then return false end
+        local Bottombar = require("sui_bottombar")
+        local bar_y = Screen:getHeight() - Bottombar.TOTAL_H()
+        return ges.pos.y >= bar_y
     end
     self.ges_events = {
         BlockNavbarTap = {

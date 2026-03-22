@@ -425,10 +425,14 @@ function M.registerTouchZones(plugin, fm_self)
     local screen_w  = Screen:getWidth()
     local screen_h  = Screen:getHeight()
     local navbar_on = G_reader_settings:nilOrTrue("navbar_enabled")
-    local bar_h     = navbar_on and M.BAR_H() or 0
+    -- Full navbar strip height (separator + bar + bottom padding) — must match
+    -- wrapWithNavbar / TOTAL_H so touch targets cover the entire bottom region.
+    -- Using BAR_H() alone leaves the top separator and bottom safe-area bands
+    -- where underlying scroll/content can still win hit-testing.
+    local nav_h     = navbar_on and M.TOTAL_H() or 0
     local side_m    = M.SIDE_M()
     local usable_w  = screen_w - side_m * 2
-    local bar_y     = navbar_on and (screen_h - bar_h - M.BOT_SP()) or screen_h
+    local bar_y     = navbar_on and (screen_h - nav_h) or screen_h
     local navpager  = Config.isNavpagerEnabled()
 
     local center_n    = num_tabs
@@ -493,7 +497,7 @@ function M.registerTouchZones(plugin, fm_self)
                 ratio_x = side_m    / screen_w,
                 ratio_y = bar_y     / screen_h,
                 ratio_w = widths[1] / screen_w,
-                ratio_h = bar_h     / screen_h,
+                ratio_h = nav_h     / screen_h,
             },
             handler = function(_ges)
                 local has_prev, _ = Config.getNavpagerState()
@@ -518,7 +522,7 @@ function M.registerTouchZones(plugin, fm_self)
                     ratio_x = x_start    / screen_w,
                     ratio_y = bar_y      / screen_h,
                     ratio_w = this_tab_w / screen_w,
-                    ratio_h = bar_h      / screen_h,
+                    ratio_h = nav_h      / screen_h,
                 },
                 handler = function(_ges)
                     local t         = Config.loadTabConfig()
@@ -551,7 +555,7 @@ function M.registerTouchZones(plugin, fm_self)
                 ratio_x = next_x              / screen_w,
                 ratio_y = bar_y               / screen_h,
                 ratio_w = widths[total_slots] / screen_w,
-                ratio_h = bar_h               / screen_h,
+                ratio_h = nav_h               / screen_h,
             },
             handler = function(_ges)
                 local _, has_next = Config.getNavpagerState()
@@ -583,7 +587,7 @@ function M.registerTouchZones(plugin, fm_self)
                     ratio_x = x_start    / screen_w,
                     ratio_y = bar_y      / screen_h,
                     ratio_w = this_tab_w / screen_w,
-                    ratio_h = bar_h      / screen_h,
+                    ratio_h = nav_h      / screen_h,
                 },
                 handler = function(_ges)
                     if not active then return false end
@@ -613,7 +617,7 @@ function M.registerTouchZones(plugin, fm_self)
         ratio_x = 0,
         ratio_y = bar_y / screen_h,
         ratio_w = 1,
-        ratio_h = bar_h / screen_h,
+        ratio_h = nav_h / screen_h,
     }
     zones[#zones + 1] = {
         id          = "navbar_hold_start",
