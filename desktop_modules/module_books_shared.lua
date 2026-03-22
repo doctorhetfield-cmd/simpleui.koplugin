@@ -1,17 +1,18 @@
--- module_books_shared.lua — Simple UI
+-- module_books_shared.lua — Folio
 -- Helpers partilhados pelos módulos Currently Reading e Recent Books:
 -- cover loading, book data, progress bar, prefetch, formatTimeLeft.
 -- Não é um módulo — não tem id nem build(). Apenas utilitários partilhados.
 
 local Blitbuffer  = require("ffi/blitbuffer")
 local Device      = require("device")
-local Font        = require("ui/font")
 local FrameContainer = require("ui/widget/container/framecontainer")
 local Geom        = require("ui/geometry")
 local VerticalSpan = require("ui/widget/verticalspan")
 local Screen      = Device.screen
 local lfs         = require("libs/libkoreader-lfs")
-local Config      = require("sui_config")
+local Config      = require("folio_config")
+local FolioTheme    = require("folio_theme")
+local ThemeTokens = FolioTheme.Theme
 
 local SH = {}
 
@@ -113,18 +114,20 @@ end
 -- ---------------------------------------------------------------------------
 -- progressBar
 -- ---------------------------------------------------------------------------
-function SH.progressBar(w, pct, bh)
+function SH.progressBar(w, pct, bh, bg_clr, fg_clr)
     bh = bh or Screen:scaleBySize(4)
+    bg_clr = bg_clr or _CLR_BAR_BG
+    fg_clr = fg_clr or _CLR_BAR_FG
     local fw = math.max(0, math.floor(w * math.min(pct or 0, 1.0)))
     local LineWidget = require("ui/widget/linewidget")
     if fw <= 0 then
-        return LineWidget:new{ dimen = Geom:new{ w = w, h = bh }, background = _CLR_BAR_BG }
+        return LineWidget:new{ dimen = Geom:new{ w = w, h = bh }, background = bg_clr }
     end
     local OverlapGroup = require("ui/widget/overlapgroup")
     return OverlapGroup:new{
         dimen = Geom:new{ w = w, h = bh },
-        LineWidget:new{ dimen = Geom:new{ w = w,  h = bh }, background = _CLR_BAR_BG },
-        LineWidget:new{ dimen = Geom:new{ w = fw, h = bh }, background = _CLR_BAR_FG },
+        LineWidget:new{ dimen = Geom:new{ w = w,  h = bh }, background = bg_clr },
+        LineWidget:new{ dimen = Geom:new{ w = fw, h = bh }, background = fg_clr },
     }
 end
 
@@ -140,7 +143,7 @@ function SH.coverPlaceholder(title, w, h)
             dimen = Geom:new{ w = w, h = h },
             require("ui/widget/textwidget"):new{
                 text = (title or "?"):sub(1, 2):upper(),
-                face = Font:getFace("smallinfofont", Screen:scaleBySize(18)),
+                face = FolioTheme.faceUI(Screen:scaleBySize(18)),
                 bold = true,
             },
         },

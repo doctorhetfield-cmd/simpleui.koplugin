@@ -1,17 +1,13 @@
 -- Reading Goals module: annual and daily progress bars with tap-to-set dialogs.
 -- Supports two layouts: Default (bar + detail on separate lines) and Compact (single inline row).
 
-local Blitbuffer      = require("ffi/blitbuffer")
 local Device          = require("device")
-local Font            = require("ui/font")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
 local GestureRange    = require("ui/gesturerange")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local InputContainer  = require("ui/widget/container/inputcontainer")
-local LineWidget      = require("ui/widget/linewidget")
-local OverlapGroup    = require("ui/widget/overlapgroup")
 local TextWidget      = require("ui/widget/textwidget")
 local UIManager       = require("ui/uimanager")
 local VerticalGroup   = require("ui/widget/verticalgroup")
@@ -19,19 +15,13 @@ local VerticalSpan    = require("ui/widget/verticalspan")
 local Screen          = Device.screen
 local _               = require("gettext")
 local logger          = require("logger")
-local Config          = require("sui_config")
+local Config          = require("folio_config")
+local SH              = require("desktop_modules/module_books_shared")
+local FolioTheme        = require("folio_theme")
+local Theme           = FolioTheme.Theme
 
-local UI           = require("sui_core")
+local UI           = require("folio_core")
 local PAD          = UI.PAD
-local PAD2         = UI.PAD2
-local LABEL_H      = UI.LABEL_H
-local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
-
--- Colours
-local _CLR_BAR_BG   = Blitbuffer.gray(0.15)
-local _CLR_BAR_FG   = Blitbuffer.gray(0.75)
-local _CLR_TEXT_LBL = Blitbuffer.COLOR_BLACK
-local _CLR_TEXT_PCT = Blitbuffer.COLOR_BLACK
 
 -- Default layout base dimensions (scaled at render time via _scaledDims)
 local _BASE_ROW_FS  = Screen:scaleBySize(11)
@@ -40,7 +30,7 @@ local _BASE_ROW_H   = Screen:scaleBySize(16)
 local _BASE_SUB_H   = Screen:scaleBySize(16)
 local _BASE_SUB_GAP = Screen:scaleBySize(2)
 local _BASE_ROW_GAP = Screen:scaleBySize(18)
-local _BASE_BAR_H   = Screen:scaleBySize(7)
+local _BASE_BAR_H   = Screen:scaleBySize(12)
 local _BASE_LBL_W   = Screen:scaleBySize(44)
 local _BASE_COL_GAP = Screen:scaleBySize(8)
 local _BASE_BOT_PAD = Screen:scaleBySize(18)
@@ -50,24 +40,24 @@ local _COMPACT_ROW_FS  = Screen:scaleBySize(11)
 local _COMPACT_SUB_FS  = Screen:scaleBySize(10)
 local _COMPACT_ROW_H   = Screen:scaleBySize(20)
 local _COMPACT_ROW_GAP = Screen:scaleBySize(8)
-local _COMPACT_BAR_H   = Screen:scaleBySize(7)
+local _COMPACT_BAR_H   = Screen:scaleBySize(12)
 local _COMPACT_LBL_W   = Screen:scaleBySize(44)
 local _COMPACT_COL_GAP = Screen:scaleBySize(8)
 
 local function _getYearStr() return os.date("%Y") end
 
 -- Settings keys
-local SHOW_ANNUAL = "navbar_reading_goals_show_annual"
-local SHOW_DAILY  = "navbar_reading_goals_show_daily"
-local LAYOUT_KEY  = "navbar_reading_goals_layout"  -- "default" | "compact"
+local SHOW_ANNUAL = "folio_navbar_reading_goals_show_annual"
+local SHOW_DAILY  = "folio_navbar_reading_goals_show_daily"
+local LAYOUT_KEY  = "folio_navbar_reading_goals_layout"  -- "default" | "compact"
 
 local function isCompact()    return G_reader_settings:readSetting(LAYOUT_KEY) == "compact" end
 local function showAnnual()   return G_reader_settings:readSetting(SHOW_ANNUAL) ~= false end
 local function showDaily()    return G_reader_settings:readSetting(SHOW_DAILY)  ~= false end
 
-local function getAnnualGoal()     return G_reader_settings:readSetting("navbar_reading_goal") or 0 end
-local function getAnnualPhysical() return G_reader_settings:readSetting("navbar_reading_goal_physical") or 0 end
-local function getDailyGoalSecs()  return G_reader_settings:readSetting("navbar_daily_reading_goal_secs") or 0 end
+local function getAnnualGoal()     return G_reader_settings:readSetting("folio_navbar_reading_goal") or 0 end
+local function getAnnualPhysical() return G_reader_settings:readSetting("folio_navbar_reading_goal_physical") or 0 end
+local function getDailyGoalSecs()  return G_reader_settings:readSetting("folio_navbar_daily_reading_goal_secs") or 0 end
 
 -- Formats seconds as "Xh Ym" / "Xh" / "Ym"
 local function formatDuration(secs)
@@ -89,9 +79,9 @@ local function invalidateStatsCache()
     _stats_cache_day = nil
 end
 
--- Counts books marked as read (summary.status = "complete") in the sidecar files.
--- Scans only the summary block of each sidecar to avoid loading large annotation data.
--- Optionally filters to a specific year. Result is cached per calendar day.
+-- Counts books marked as read (summary.status = "complete") using DocSettings,
+-- matching KOReader's own metadata format. Optional year_str filters by
+-- summary.modified (string, unix time, or *t table). Result is cached per day.
 local function _countMarkedRead(year_str)
     local ok_lfs, lfs = pcall(require, "libs/libkoreader-lfs")
     if not ok_lfs then return 0 end
@@ -101,37 +91,44 @@ local function _countMarkedRead(year_str)
     local ReadHistory = package.loaded["readhistory"]
     if not ReadHistory or not ReadHistory.hist then return 0 end
 
-    local year_pfx = year_str and ('["modified"] = "' .. year_str) or nil
-    local count = 0
+    local function modifiedInYear(summary)
+        if not year_str then return true end
+        local mod = summary and summary.modified
+        if mod == nil then return false end
+        if type(mod) == "number" then
+            return os.date("%Y", mod) == year_str
+        end
+        if type(mod) == "string" then
+            if #mod >= 4 and mod:sub(1, 4) == year_str then return true end
+            local ok_t, t = pcall(function()
+                return os.time({
+                    year  = tonumber(mod:sub(1, 4)),
+                    month = tonumber(mod:sub(6, 7)) or 1,
+                    day   = tonumber(mod:sub(9, 10)) or 1,
+                    hour  = 12,
+                })
+            end)
+            if ok_t and t and os.date("%Y", t) == year_str then return true end
+            return false
+        end
+        if type(mod) == "table" and mod.year then
+            return tostring(mod.year) == year_str
+        end
+        return false
+    end
 
+    local count = 0
     for _, entry in ipairs(ReadHistory.hist) do
         local fp = entry.file
         if fp and lfs.attributes(fp, "mode") == "file" then
-            local sidecar = DocSettings:findSidecarFile(fp)
-            if sidecar then
-                local f = io.open(sidecar, "r")
-                if f then
-                    local in_summary = false
-                    local found_status, found_year = false, not year_pfx
-                    for line in f:lines() do
-                        if not in_summary then
-                            if line:find('["summary"]', 1, true) then
-                                in_summary = true
-                            end
-                        else
-                            if line:find('"complete"', 1, true)
-                               and line:find('"status"', 1, true) then
-                                found_status = true
-                            end
-                            if year_pfx and line:find(year_pfx, 1, true) then
-                                found_year = true
-                            end
-                            if line:find("^%s*},?%s*$") then break end
-                        end
-                    end
-                    f:close()
-                    if found_status and found_year then count = count + 1 end
+            local ok_open, doc_settings = pcall(function() return DocSettings:open(fp) end)
+            if ok_open and doc_settings then
+                local ok_sum, summary = pcall(function() return doc_settings:readSetting("summary") end)
+                if ok_sum and type(summary) == "table" and summary.status == "complete"
+                    and modifiedInYear(summary) then
+                    count = count + 1
                 end
+                pcall(function() doc_settings:close() end)
             end
         end
     end
@@ -169,7 +166,7 @@ local function getGoalStats(shared_conn)
                 stmt:reset()
             end
         end)
-        if not ok then logger.warn("simpleui: reading_goals: getGoalStats failed: " .. tostring(err)) end
+        if not ok then logger.warn("folio: reading_goals: getGoalStats failed: " .. tostring(err)) end
         if own_conn then pcall(function() conn:close() end) end
     end
 
@@ -180,7 +177,7 @@ local function getGoalStats(shared_conn)
 end
 
 -- Computes all layout metrics for the default layout at the given scale factor.
--- Pre-resolves font faces so buildGoalRow doesn't call Font:getFace on every render.
+-- Pre-resolves font faces (folio_theme) so buildGoalRow does not resolve fonts per render.
 local function _scaledDims(scale)
     scale = scale or 1.0
     local row_h   = math.max(8,  math.floor(_BASE_ROW_H   * scale))
@@ -189,16 +186,18 @@ local function _scaledDims(scale)
     local bot_pad = math.max(4,  math.floor(_BASE_BOT_PAD * scale))
     local row_fs  = math.max(7,  math.floor(_BASE_ROW_FS  * scale))
     local sub_fs  = math.max(6,  math.floor(_BASE_SUB_FS  * scale))
+    local bar_h   = math.max(8,  math.floor(_BASE_BAR_H   * scale))
     return {
         row_fs     = row_fs,
         sub_fs     = sub_fs,
-        face_row   = Font:getFace("smallinfofont", row_fs),
-        face_sub   = Font:getFace("cfont",         sub_fs),
+        face_label = FolioTheme.faceUI(row_fs),
+        face_pct   = FolioTheme.faceUI(row_fs),
+        face_sub   = FolioTheme.faceUI(sub_fs),
         row_h      = row_h,
         sub_h      = sub_h,
         sub_gap    = sub_gap,
         row_gap    = math.max(4,  math.floor(_BASE_ROW_GAP * scale)),
-        bar_h      = math.max(1,  math.floor(_BASE_BAR_H   * scale)),
+        bar_h      = bar_h,
         lbl_w      = math.max(20, math.floor(_BASE_LBL_W   * scale)),
         col_gap    = math.max(2,  math.floor(_BASE_COL_GAP * scale)),
         bot_pad    = bot_pad,
@@ -208,27 +207,31 @@ local function _scaledDims(scale)
     }
 end
 
+-- Compact layout faces + bar height (fixed pixel sizes, same as legacy compact mode).
+local function _compactFaces()
+    local row_fs = math.max(10, math.floor(_COMPACT_ROW_FS))
+    local sub_fs = math.max(9, math.floor(_COMPACT_SUB_FS))
+    local bar_h  = math.max(8, math.floor(_COMPACT_BAR_H))
+    return {
+        face_label = FolioTheme.faceUI(row_fs),
+        face_pct   = FolioTheme.faceUI(row_fs),
+        face_sub   = FolioTheme.faceUI(sub_fs),
+        bar_h      = bar_h,
+    }
+end
+
+local function buildThemedProgressBar(w, pct, bar_h)
+    return SH.progressBar(w, pct, bar_h, Theme.SURFACE_HIGH, Theme.PRIMARY)
+end
+
 -- Returns total pixel height for n compact rows including inter-row gap
 local function _compactRowsHeight(n)
     return n * _COMPACT_ROW_H + (n == 2 and _COMPACT_ROW_GAP or 0)
 end
 
--- Renders a filled/empty progress bar of the given width and percentage
-local function buildProgressBar(w, pct, bar_h)
-    local fw = math.max(0, math.floor(w * math.min(pct, 1.0)))
-    if fw <= 0 then
-        return LineWidget:new{ dimen = Geom:new{ w = w, h = bar_h }, background = _CLR_BAR_BG }
-    end
-    return OverlapGroup:new{
-        dimen = Geom:new{ w = w, h = bar_h },
-        LineWidget:new{ dimen = Geom:new{ w = w,  h = bar_h }, background = _CLR_BAR_BG },
-        LineWidget:new{ dimen = Geom:new{ w = fw, h = bar_h }, background = _CLR_BAR_FG },
-    }
-end
-
 -- Builds a single inline row: Label [bar] XX%  detail
 -- Used by the Compact layout. All elements are horizontally laid out and vertically centred.
-local function buildCompactGoalRow(inner_w, label_str, pct, pct_str, detail_str, on_tap)
+local function buildCompactGoalRow(inner_w, label_str, pct, pct_str, detail_str, on_tap, fc)
     local LeftContainer  = require("ui/widget/container/leftcontainer")
     local RightContainer = require("ui/widget/container/rightcontainer")
 
@@ -253,26 +256,26 @@ local function buildCompactGoalRow(inner_w, label_str, pct, pct_str, detail_str,
         align = "center",
         vcenter_left(TextWidget:new{
             text    = label_str,
-            face    = Font:getFace("smallinfofont", _COMPACT_ROW_FS),
-            bold    = true,
-            fgcolor = _CLR_TEXT_LBL,
+            face    = fc.face_label,
+            bold    = false,
+            fgcolor = Theme.TEXT,
             width   = _COMPACT_LBL_W,
         }, _COMPACT_LBL_W),
         HorizontalSpan:new{ width = LBL_BAR_GAP },
-        vcenter_left(buildProgressBar(bar_w, pct, _COMPACT_BAR_H), bar_w),
+        vcenter_left(buildThemedProgressBar(bar_w, pct, fc.bar_h), bar_w),
         HorizontalSpan:new{ width = BAR_PCT_GAP },
         vcenter_left(TextWidget:new{
             text    = pct_str,
-            face    = Font:getFace("smallinfofont", _COMPACT_ROW_FS),
+            face    = fc.face_pct,
             bold    = true,
-            fgcolor = _CLR_TEXT_PCT,
+            fgcolor = Theme.TEXT,
             width   = PCT_W,
         }, PCT_W),
         HorizontalSpan:new{ width = PCT_DETAIL_GAP },
         vcenter_right(TextWidget:new{
             text      = detail_str,
-            face      = Font:getFace("cfont", _COMPACT_SUB_FS),
-            fgcolor   = CLR_TEXT_SUB,
+            face      = fc.face_sub,
+            fgcolor   = Theme.TEXT_MUTED,
             width     = DETAIL_W,
             alignment = "right",
         }, DETAIL_W),
@@ -317,19 +320,19 @@ local function buildGoalRow(inner_w, label_str, pct, pct_str, detail_str, on_tap
             align = "center",
             TextWidget:new{
                 text    = label_str,
-                face    = d.face_row,
-                bold    = true,
-                fgcolor = _CLR_TEXT_LBL,
+                face    = d.face_label,
+                bold    = false,
+                fgcolor = Theme.TEXT,
                 width   = d.lbl_w,
             },
             HorizontalSpan:new{ width = d.col_gap },
-            buildProgressBar(bar_w, pct, d.bar_h),
+            buildThemedProgressBar(bar_w, pct, d.bar_h),
             HorizontalSpan:new{ width = BAR_PCT_GAP },
             TextWidget:new{
                 text      = pct_str,
-                face      = d.face_row,
-                bold      = false,
-                fgcolor   = _CLR_TEXT_PCT,
+                face      = d.face_pct,
+                bold      = true,
+                fgcolor   = Theme.TEXT,
                 width     = PCT_W,
                 alignment = "right",
             },
@@ -338,7 +341,7 @@ local function buildGoalRow(inner_w, label_str, pct, pct_str, detail_str, on_tap
         TextWidget:new{
             text    = detail_str,
             face    = d.face_sub,
-            fgcolor = CLR_TEXT_SUB,
+            fgcolor = Theme.TEXT_MUTED,
             width   = inner_w,
         },
     }
@@ -371,7 +374,7 @@ end
 
 -- Triggers a homescreen refresh
 local function _refreshHS()
-    local HS = package.loaded["sui_homescreen"]
+    local HS = package.loaded["folio_homescreen"]
     if HS then HS.refresh(false) end
 end
 
@@ -385,7 +388,7 @@ local function showAnnualGoalDialog(on_confirm)
         value_min   = 0, value_max = 365, value_step = 1,
         ok_text     = _("Save"), cancel_text = _("Cancel"),
         callback    = function(spin)
-            G_reader_settings:saveSetting("navbar_reading_goal", math.floor(spin.value))
+            G_reader_settings:saveSetting("folio_navbar_reading_goal", math.floor(spin.value))
             invalidateStatsCache()
             _refreshHS()
             if on_confirm then on_confirm() end
@@ -402,7 +405,7 @@ local function showAnnualPhysicalDialog(on_confirm)
         value       = getAnnualPhysical(), value_min = 0, value_max = 365, value_step = 1,
         ok_text     = _("Save"), cancel_text = _("Cancel"),
         callback    = function(spin)
-            G_reader_settings:saveSetting("navbar_reading_goal_physical", math.floor(spin.value))
+            G_reader_settings:saveSetting("folio_navbar_reading_goal_physical", math.floor(spin.value))
             invalidateStatsCache()
             _refreshHS()
             if on_confirm then on_confirm() end
@@ -420,7 +423,7 @@ local function showDailySettingsDialog(on_confirm)
         value       = cur_minutes, value_min = 0, value_max = 720, value_step = 5,
         ok_text     = _("Save"), cancel_text = _("Cancel"),
         callback    = function(spin)
-            G_reader_settings:saveSetting("navbar_daily_reading_goal_secs",
+            G_reader_settings:saveSetting("folio_navbar_daily_reading_goal_secs",
                 math.floor(spin.value) * 60)
             invalidateStatsCache()
             _refreshHS()
@@ -441,7 +444,7 @@ local function _annualData(books_read)
         pct     = 1.0
         pct_str = ""
     end
-    logger.dbg("simpleui reading_goals: annual bar — goal=", goal,
+    logger.dbg("folio reading_goals: annual bar — goal=", goal,
         "books_read=", books_read, "physical=", getAnnualPhysical(),
         "read=", read, "pct=", pct, "pct_str=", pct_str)
     local detail = (goal > 0)
@@ -495,11 +498,12 @@ function M.build(w, ctx)
     local rows = VerticalGroup:new{ align = "left" }
 
     if isCompact() then
+        local fc = _compactFaces()
         if show_ann then
             local pct, pct_str, detail = _annualData(books_read)
             rows[#rows+1] = buildCompactGoalRow(
                 inner_w, _getYearStr(), pct, pct_str, detail,
-                function() showAnnualGoalDialog() end)
+                function() showAnnualGoalDialog() end, fc)
         end
         if show_ann and show_day then
             rows[#rows+1] = VerticalSpan:new{ width = _COMPACT_ROW_GAP }
@@ -508,7 +512,7 @@ function M.build(w, ctx)
             local pct, pct_str, detail = _dailyData(today_secs)
             rows[#rows+1] = buildCompactGoalRow(
                 inner_w, _("Today"), pct, pct_str, detail,
-                function() showDailySettingsDialog() end)
+                function() showDailySettingsDialog() end, fc)
         end
     else
         local scale = Config.getModuleScale("reading_goals", ctx.pfx)
@@ -530,9 +534,13 @@ function M.build(w, ctx)
         end
     end
 
+    local band_pad = FolioTheme.scaled(FolioTheme.Spacing.SM)
     return FrameContainer:new{
-        bordersize    = 0, padding = 0,
-        padding_left  = PAD, padding_right = PAD,
+        bordersize     = 0,
+        background     = Theme.SURFACE_LOW,
+        padding_left   = PAD,
+        padding_right  = PAD,
+        padding_bottom = band_pad,
         rows,
     }
 end
@@ -541,12 +549,14 @@ end
 function M.getHeight(_ctx)
     local n = (showAnnual() and 1 or 0) + (showDaily() and 1 or 0)
     if n == 0 then return 0 end
-    local label_h = require("sui_config").getScaledLabelH()
+    local label_h = require("folio_config").getScaledLabelH()
     if isCompact() then
-        return label_h + _compactRowsHeight(n)
+        local band_pad = FolioTheme.scaled(FolioTheme.Spacing.SM)
+        return label_h + _compactRowsHeight(n) + band_pad
     end
     local d = _scaledDims(Config.getModuleScale("reading_goals", _ctx and _ctx.pfx))
-    return label_h + n * d.goal_row_h + (n == 2 and d.row_gap or 0)
+    local band_pad = FolioTheme.scaled(FolioTheme.Spacing.SM)
+    return label_h + n * d.goal_row_h + (n == 2 and d.row_gap or 0) + band_pad
 end
 
 -- Builds the scale menu item for the settings menu

@@ -1,6 +1,10 @@
--- config.lua — Simple UI
+-- config.lua — Folio
 -- Plugin-wide constants, action catalogue, tab/topbar configuration,
 -- custom Quick Actions and settings migration.
+--
+-- Settings keys use the `folio_` prefix (e.g. `folio_navbar_topbar_config`,
+-- `folio_navbar_homescreen_*`, `folio_enabled`). Legacy keys are migrated via
+-- `migrateLegacySettingsKeysToFolioPrefix()`; QoL `simpleui_*` / `sui_*` keys are migrated inline in main.lua.
 
 local G_reader_settings = G_reader_settings
 local logger            = require("logger")
@@ -16,7 +20,7 @@ local M = {}
 -- Icon path registry — single source of truth for every SVG used by the plugin.
 --
 -- Two prefixes exist:
---   _P  = "plugins/simpleui.koplugin/icons/"   (own assets)
+--   _P  = "plugins/folio.koplugin/icons/"   (own assets)
 --   _KO = "resources/icons/mdlight/"            (KOReader built-in assets)
 --
 -- All modules must reference M.ICON.<key> instead of bare string literals.
@@ -25,7 +29,7 @@ local M = {}
 
 -- Resolve the plugin's own directory at load time so icon paths are absolute.
 -- On Android/Nook the working directory is not the KOReader root, so relative
--- paths like "plugins/simpleui.koplugin/icons/..." silently fail to resolve
+-- paths like "plugins/folio.koplugin/icons/..." silently fail to resolve
 -- while KOReader's own assets (resources/icons/mdlight/...) work because the
 -- engine has hardcoded fallbacks for its own resource tree.
 -- Using an absolute path derived from this file's location is portable across
@@ -48,7 +52,7 @@ if _ok_ds and _ds and type(_ds.getDataDir) == "function" then
 end
 if _ko_root == "" then
     -- Fallback: derive from plugin file location (works on Kobo/Kindle/desktop).
-    -- Plugin lives at <root>/plugins/simpleui.koplugin/sui_config.lua
+    -- Plugin lives at <root>/plugins/folio.koplugin/folio_config.lua
     -- so root is two directories up.
     _ko_root = _plugin_dir:match("^(.*/)plugins/[^/]+/$") or ""
 end
@@ -150,7 +154,7 @@ end
 
 -- Returns the normalised topbar config, migrating legacy formats when needed.
 function M.getTopbarConfig()
-    local raw = G_reader_settings:readSetting("navbar_topbar_config")
+    local raw = G_reader_settings:readSetting("folio_navbar_topbar_config")
     local cfg = { side = {}, order_left = {}, order_right = {}, show = {}, order = {} }
     if type(raw) == "table" then
         if type(raw.side) == "table" then
@@ -197,11 +201,11 @@ function M.getTopbarConfig()
 end
 
 function M.saveTopbarConfig(cfg)
-    G_reader_settings:saveSetting("navbar_topbar_config", cfg)
+    G_reader_settings:saveSetting("folio_navbar_topbar_config", cfg)
     M.invalidateTopbarConfigCache()
     -- Also invalidate topbar.lua's own local config cache so that
     -- buildTopbarWidget() uses the new config immediately on the next rebuild.
-    local tb = package.loaded["sui_topbar"]
+    local tb = package.loaded["folio_topbar"]
     if tb and tb.invalidateConfigCache then tb.invalidateConfigCache() end
 end
 
@@ -209,24 +213,24 @@ end
 -- Custom Quick Actions
 -- ---------------------------------------------------------------------------
 
--- Key cache: avoids rebuilding "navbar_cqa_<id>" strings on every call.
+-- Key cache: avoids rebuilding "folio_navbar_cqa_<id>" strings on every call.
 -- These keys are stable within a session (IDs never change after creation).
 local _qa_key_cache = {}
 local function getQASettingsKey(qa_id)
     local k = _qa_key_cache[qa_id]
     if not k then
-        k = "navbar_cqa_" .. qa_id
+        k = "folio_navbar_cqa_" .. qa_id
         _qa_key_cache[qa_id] = k
     end
     return k
 end
 
 function M.getCustomQAList()
-    return G_reader_settings:readSetting("navbar_custom_qa_list") or {}
+    return G_reader_settings:readSetting("folio_navbar_custom_qa_list") or {}
 end
 
 function M.saveCustomQAList(list)
-    G_reader_settings:saveSetting("navbar_custom_qa_list", list)
+    G_reader_settings:saveSetting("folio_navbar_custom_qa_list", list)
 end
 
 function M.getCustomQAConfig(qa_id)
@@ -267,16 +271,16 @@ function M.deleteCustomQA(qa_id)
     -- not show a deleted action.
     local mqa = package.loaded["desktop_modules/module_quick_actions"]
     if mqa and mqa.invalidateCustomQACache then mqa.invalidateCustomQACache() end
-    local tabs = G_reader_settings:readSetting("navbar_tabs")
+    local tabs = G_reader_settings:readSetting("folio_navbar_tabs")
     if type(tabs) == "table" then
         local new_tabs = {}
         for _i, id in ipairs(tabs) do
             if id ~= qa_id then new_tabs[#new_tabs + 1] = id end
         end
-        G_reader_settings:saveSetting("navbar_tabs", new_tabs)
+        G_reader_settings:saveSetting("folio_navbar_tabs", new_tabs)
     end
     -- Remove from all page QA slots
-    for _i, pfx in ipairs({ "navbar_homescreen_quick_actions_" }) do
+    for _i, pfx in ipairs({ "folio_navbar_homescreen_quick_actions_" }) do
         for slot = 1, 3 do
             local key = pfx .. slot .. "_items"
             local dqa = G_reader_settings:readSetting(key)
@@ -332,7 +336,7 @@ function M.sanitizeQASlots()
     local valid = {}
     for _i, id in ipairs(list) do valid[id] = true end
     local changed = false
-    for _, pfx in ipairs({ "navbar_homescreen_quick_actions_" }) do
+    for _, pfx in ipairs({ "folio_navbar_homescreen_quick_actions_" }) do
         for slot = 1, 3 do
             local key  = pfx .. slot .. "_items"
             local items = G_reader_settings:readSetting(key)
@@ -365,7 +369,7 @@ function M.nextCustomQAId()
         if n and n > max_n then max_n = n end
     end
     local n = max_n + 1
-    while G_reader_settings:readSetting("navbar_cqa_custom_qa_" .. n) do n = n + 1 end
+    while G_reader_settings:readSetting("folio_navbar_cqa_custom_qa_" .. n) do n = n + 1 end
     return "custom_qa_" .. n
 end
 
@@ -382,7 +386,7 @@ end
 
 function M.loadTabConfig()
     if _tabs_cache then return _tabs_cache end
-    local cfg = G_reader_settings:readSetting("navbar_tabs")
+    local cfg = G_reader_settings:readSetting("folio_navbar_tabs")
     local result = {}
     local min_tabs = M.isNavpagerEnabled() and 1 or 2
     if type(cfg) == "table" and #cfg >= min_tabs and #cfg <= M.effectiveMaxTabs() then
@@ -391,7 +395,7 @@ function M.loadTabConfig()
             if M.ACTION_BY_ID[id] or id:match("^custom_qa_%d+$") then
                 result[#result + 1] = id
             else
-                logger.warn("simpleui: loadTabConfig: ignoring unknown tab id: " .. tostring(id))
+                logger.warn("folio: loadTabConfig: ignoring unknown tab id: " .. tostring(id))
             end
         end
     else
@@ -406,7 +410,7 @@ end
 
 function M.saveTabConfig(tabs)
     _tabs_cache = nil
-    G_reader_settings:saveSetting("navbar_tabs", tabs)
+    G_reader_settings:saveSetting("folio_navbar_tabs", tabs)
 end
 
 function M.getNumTabs()
@@ -417,18 +421,18 @@ end
 
 -- Cached navbar mode — "both", "icons", or "text".
 -- Invalidated by saveNavbarMode() whenever the user changes the setting.
-local _navbar_mode_cache = nil
+local _folio_navbar_mode_cache = nil
 
 function M.getNavbarMode()
-    if not _navbar_mode_cache then
-        _navbar_mode_cache = G_reader_settings:readSetting("navbar_mode") or "both"
+    if not _folio_navbar_mode_cache then
+        _folio_navbar_mode_cache = G_reader_settings:readSetting("folio_navbar_mode") or "both"
     end
-    return _navbar_mode_cache
+    return _folio_navbar_mode_cache
 end
 
 function M.saveNavbarMode(mode)
-    _navbar_mode_cache = nil
-    G_reader_settings:saveSetting("navbar_mode", mode)
+    _folio_navbar_mode_cache = nil
+    G_reader_settings:saveSetting("folio_navbar_mode", mode)
 end
 
 function M._ensureHomePresent(tabs)
@@ -524,11 +528,11 @@ end
 local _wifi_action_live = { id = "wifi_toggle", label = "", icon = "" }
 
 function M.getActionById(id)
-    -- Delegate to sui_quickactions — single source of truth for label/icon
+    -- Delegate to folio_quickactions — single source of truth for label/icon
     -- resolution (applies overrides, custom QA configs, wifi state, etc.).
     -- Lazy-loaded to avoid a circular require at module load time.
-    local QA = package.loaded["sui_quickactions"]
-        or require("sui_quickactions")
+    local QA = package.loaded["folio_quickactions"]
+        or require("folio_quickactions")
     local entry = QA.getEntry(id)
     -- getActionById must return a table with id field for callers that read .id
     if entry and not entry.id then
@@ -542,22 +546,22 @@ end
 -- ---------------------------------------------------------------------------
 
 -- Convenience delegates — the authoritative implementations live in
--- sui_quickactions to avoid circular requires. These thin wrappers keep
+-- folio_quickactions to avoid circular requires. These thin wrappers keep
 -- backwards compatibility for any caller that uses Config.* directly.
 function M.getDefaultActionLabel(id)
-    local QA = package.loaded["sui_quickactions"] or require("sui_quickactions")
+    local QA = package.loaded["folio_quickactions"] or require("folio_quickactions")
     return QA.getDefaultActionLabel(id)
 end
 function M.getDefaultActionIcon(id)
-    local QA = package.loaded["sui_quickactions"] or require("sui_quickactions")
+    local QA = package.loaded["folio_quickactions"] or require("folio_quickactions")
     return QA.getDefaultActionIcon(id)
 end
 function M.setDefaultActionLabel(id, label)
-    local QA = package.loaded["sui_quickactions"] or require("sui_quickactions")
+    local QA = package.loaded["folio_quickactions"] or require("folio_quickactions")
     QA.setDefaultActionLabel(id, label)
 end
 function M.setDefaultActionIcon(id, icon)
-    local QA = package.loaded["sui_quickactions"] or require("sui_quickactions")
+    local QA = package.loaded["folio_quickactions"] or require("folio_quickactions")
     QA.setDefaultActionIcon(id, icon)
 end
 
@@ -570,7 +574,7 @@ function M.sanitizeLabel(s)
 end
 
 function M.migrateOldCustomSlots()
-    if G_reader_settings:readSetting("navbar_custom_qa_migrated_v1") then return end
+    if G_reader_settings:readSetting("folio_navbar_custom_qa_migrated_v1") then return end
     local id_map  = {}
     local qa_list = M.getCustomQAList()
     local qa_set  = {}
@@ -587,13 +591,13 @@ function M.migrateOldCustomSlots()
                 qa_set[new_id]        = true
             end
             id_map[old_id] = new_id
-            logger.info("simpleui: migrated " .. old_id .. " -> " .. new_id)
+            logger.info("folio: migrated " .. old_id .. " -> " .. new_id)
         end
     end
 
     M.saveCustomQAList(qa_list)
 
-    local tabs = G_reader_settings:readSetting("navbar_tabs")
+    local tabs = G_reader_settings:readSetting("folio_navbar_tabs")
     if type(tabs) == "table" then
         -- Build a new table instead of mutating while iterating (B6).
         local new_tabs, changed = {}, false
@@ -606,11 +610,11 @@ function M.migrateOldCustomSlots()
                 new_tabs[#new_tabs + 1] = id
             end
         end
-        if changed then G_reader_settings:saveSetting("navbar_tabs", new_tabs) end
+        if changed then G_reader_settings:saveSetting("folio_navbar_tabs", new_tabs) end
     end
 
     for slot = 1, 3 do
-        local key = "navbar_homescreen_quick_actions_" .. slot .. "_items"
+        local key = "folio_navbar_homescreen_quick_actions_" .. slot .. "_items"
         local dqa = G_reader_settings:readSetting(key)
         if type(dqa) == "table" then
             local changed = false
@@ -628,27 +632,27 @@ function M.migrateOldCustomSlots()
         end
     end
 
-    G_reader_settings:saveSetting("navbar_custom_qa_migrated_v1", true)
+    G_reader_settings:saveSetting("folio_navbar_custom_qa_migrated_v1", true)
 
     local legacy_enabled = G_reader_settings:readSetting("navbar_enabled")
-    if legacy_enabled ~= nil and G_reader_settings:readSetting("simpleui_enabled") == nil then
-        G_reader_settings:saveSetting("simpleui_enabled", legacy_enabled)
+    if legacy_enabled ~= nil and G_reader_settings:readSetting("folio_enabled") == nil then
+        G_reader_settings:saveSetting("folio_enabled", legacy_enabled)
     end
 end
 
 -- ---------------------------------------------------------------------------
 -- First-run defaults — written once on fresh install, never overwritten.
--- Guard key: "simpleui_defaults_v1". Idempotent: safe to call on every init.
+-- Guard key: "folio_defaults_v1". Idempotent: safe to call on every init.
 -- ---------------------------------------------------------------------------
 
 function M.applyFirstRunDefaults()
-    if not G_reader_settings:readSetting("simpleui_defaults_v1") then
+    if not G_reader_settings:readSetting("folio_defaults_v1") then
         -- Bottom bar
-        G_reader_settings:saveSetting("navbar_enabled",        true)
-        G_reader_settings:saveSetting("navbar_topbar_enabled", true)
-        G_reader_settings:saveSetting("navbar_mode",           "both")
-        G_reader_settings:saveSetting("navbar_bar_size",       "default")
-        G_reader_settings:saveSetting("navbar_tabs",
+        G_reader_settings:saveSetting("folio_navbar_enabled",        true)
+        G_reader_settings:saveSetting("folio_navbar_topbar_enabled", true)
+        G_reader_settings:saveSetting("folio_navbar_mode",           "both")
+        G_reader_settings:saveSetting("folio_navbar_bar_size",       "default")
+        G_reader_settings:saveSetting("folio_navbar_tabs",
             { "home", "homescreen", "history", "continue", "power" })
 
         -- Top bar: clock left, battery + wifi right; rest hidden
@@ -659,7 +663,7 @@ function M.applyFirstRunDefaults()
         })
 
         -- Homescreen modules: header + currently + recent on; everything else off
-        local PFX = "navbar_homescreen_"
+        local PFX = "folio_navbar_homescreen_"
         G_reader_settings:saveSetting(PFX .. "header_enabled",  true)
         G_reader_settings:saveSetting(PFX .. "header",          "clock_date")
         G_reader_settings:saveSetting(PFX .. "currently",       true)
@@ -675,30 +679,30 @@ function M.applyFirstRunDefaults()
         -- General
         G_reader_settings:saveSetting("start_with", "filemanager")
 
-        G_reader_settings:saveSetting("simpleui_defaults_v1", true)
+        G_reader_settings:saveSetting("folio_defaults_v1", true)
     end
 
     -- ---------------------------------------------------------------------------
     -- v2 migration: apply titlebar layout with search button visible on the left.
-    -- Runs once on existing installs that already have simpleui_defaults_v1 set.
-    -- Guard key: "simpleui_defaults_v2". Safe to call on every init.
+    -- Runs once on existing installs that already have folio_defaults_v1 set.
+    -- Guard key: "folio_defaults_v2". Safe to call on every init.
     -- ---------------------------------------------------------------------------
-    if not G_reader_settings:readSetting("simpleui_defaults_v2") then
+    if not G_reader_settings:readSetting("folio_defaults_v2") then
         -- Visibility: search button on
-        G_reader_settings:saveSetting("simpleui_tb_item_search_button", true)
+        G_reader_settings:saveSetting("folio_tb_item_search_button", true)
         -- FM layout: up_button left slot-0, search_button left slot-1, menu_button right
-        G_reader_settings:saveSetting("simpleui_tb_fm_cfg", {
+        G_reader_settings:saveSetting("folio_tb_fm_cfg", {
             side        = { menu_button = "right", up_button = "left", search_button = "left" },
             order_left  = { "up_button", "search_button" },
             order_right = { "menu_button" },
         })
-        G_reader_settings:saveSetting("simpleui_defaults_v2", true)
+        G_reader_settings:saveSetting("folio_defaults_v2", true)
     end
 end
 
 function M.reset()
     _tabs_cache                  = nil
-    _navbar_mode_cache           = nil
+    _folio_navbar_mode_cache           = nil
     M.wifi_optimistic            = nil
     M.cover_extraction_pending   = false
     _Device                      = nil
@@ -962,7 +966,7 @@ end
 -- Returns true when the navpager mode is active.
 -- Reads settings directly (no cache) — called rarely (build time, menu toggle).
 function M.isNavpagerEnabled()
-    return G_reader_settings:isTrue("navbar_navpager_enabled")
+    return G_reader_settings:isTrue("folio_navbar_navpager_enabled")
 end
 
 
@@ -994,7 +998,7 @@ local function _stateFromMenu(menu)
 end
 
 function M.getNavpagerState()
-    local UI = package.loaded["sui_core"]
+    local UI = package.loaded["folio_core"]
     if not UI then return false, false end
     local stack = UI.getWindowStack()
     local logger = require("logger")
@@ -1007,14 +1011,14 @@ function M.getNavpagerState()
         local w = stack[i] and stack[i].widget
         if w and w.covers_fullscreen then
             -- Found the topmost fullscreen widget.
-            logger.dbg("simpleui navpager: top fullscreen widget name=",
+            logger.dbg("folio navpager: top fullscreen widget name=",
                 tostring(w.name), "has_file_chooser=", tostring(w.file_chooser ~= nil),
                 "has_page=", tostring(w.page ~= nil))
 
             -- Case 1: widget is itself a pageable menu (BookList, History, Collections).
             local prev, nxt = _stateFromMenu(w)
             if prev ~= nil then
-                logger.dbg("simpleui navpager: direct menu =>", tostring(prev), tostring(nxt))
+                logger.dbg("folio navpager: direct menu =>", tostring(prev), tostring(nxt))
                 return prev, nxt
             end
 
@@ -1022,18 +1026,18 @@ function M.getNavpagerState()
             if w.file_chooser then
                 local prev2, nxt2 = _stateFromMenu(w.file_chooser)
                 if prev2 ~= nil then
-                    logger.dbg("simpleui navpager: file_chooser =>", tostring(prev2), tostring(nxt2))
+                    logger.dbg("folio navpager: file_chooser =>", tostring(prev2), tostring(nxt2))
                     return prev2, nxt2
                 end
             end
 
             -- Case 3: fullscreen but not pageable (homescreen, ReaderUI, etc.).
-            logger.dbg("simpleui navpager: not pageable -> false,false")
+            logger.dbg("folio navpager: not pageable -> false,false")
             return false, false
         end
         -- w is nil or not covers_fullscreen: overlay/dialog, keep looking down.
     end
-    logger.dbg("simpleui navpager: stack exhausted -> false,false")
+    logger.dbg("folio navpager: stack exhausted -> false,false")
     return false, false
 end
 
@@ -1042,10 +1046,10 @@ end
 -- Scale system — module-level and label scale with optional linking.
 --
 -- Settings layout:
---   navbar_homescreen_module_scale          global module scale (integer %)
---   navbar_homescreen_label_scale           label scale (integer %)
---   navbar_homescreen_<pfx><id>_scale       per-module scale override (integer %)
---   navbar_homescreen_scale_linked          bool; true = all scales move together
+--   folio_navbar_homescreen_module_scale          global module scale (integer %)
+--   folio_navbar_homescreen_label_scale           label scale (integer %)
+--   folio_navbar_homescreen_<pfx><id>_scale       per-module scale override (integer %)
+--   folio_navbar_homescreen_scale_linked          bool; true = all scales move together
 --
 -- API for modules:
 --   Config.getModuleScale(mod_id, pfx)      → float multiplier for build()/getHeight()
@@ -1064,9 +1068,9 @@ local SCALE_MAX  = 200
 local SCALE_STEP = 10
 local SCALE_DEF  = 100
 
-local MODULE_SCALE_KEY      = "navbar_homescreen_module_scale"
-local LABEL_SCALE_KEY       = "navbar_homescreen_label_scale"
-local SCALE_LINKED_KEY      = "navbar_homescreen_scale_linked"
+local MODULE_SCALE_KEY      = "folio_navbar_homescreen_module_scale"
+local LABEL_SCALE_KEY       = "folio_navbar_homescreen_label_scale"
+local SCALE_LINKED_KEY      = "folio_navbar_homescreen_scale_linked"
 local ITEM_LABEL_SCALE_SUFFIX = "_item_label_scale"
 
 -- Clamp an integer percentage to valid range.
@@ -1076,19 +1080,19 @@ end
 
 -- Returns the per-module setting key for a given module id and pfx.
 local function _modKey(mod_id, pfx)
-    return (pfx or "navbar_homescreen_") .. (mod_id or "") .. "_scale"
+    return (pfx or "folio_navbar_homescreen_") .. (mod_id or "") .. "_scale"
 end
 
 local function _itemLabelKey(mod_id, pfx)
-    return (pfx or "navbar_homescreen_") .. (mod_id or "") .. ITEM_LABEL_SCALE_SUFFIX
+    return (pfx or "folio_navbar_homescreen_") .. (mod_id or "") .. ITEM_LABEL_SCALE_SUFFIX
 end
 
 -- ---------------------------------------------------------------------------
--- Bar size (bottom bar) — numeric % stored as "navbar_bar_size_pct"
--- Legacy string key ("navbar_bar_size") is ignored; we read/write the pct key.
+-- Bar size (bottom bar) — numeric % stored as "folio_navbar_bar_size_pct"
+-- Legacy string key ("folio_navbar_bar_size") is ignored; we read/write the pct key.
 -- ---------------------------------------------------------------------------
 
-local BAR_SIZE_KEY     = "navbar_bar_size_pct"
+local BAR_SIZE_KEY     = "folio_navbar_bar_size_pct"
 local BAR_SIZE_DEF     = 100
 local BAR_SIZE_MIN     = 50
 local BAR_SIZE_MAX     = 150
@@ -1111,10 +1115,10 @@ M.BAR_SIZE_MAX  = BAR_SIZE_MAX
 M.BAR_SIZE_STEP = SCALE_STEP
 
 -- ---------------------------------------------------------------------------
--- Topbar size — numeric % stored as "navbar_topbar_size_pct"
+-- Topbar size — numeric % stored as "folio_navbar_topbar_size_pct"
 -- ---------------------------------------------------------------------------
 
-local TOPBAR_SIZE_KEY = "navbar_topbar_size_pct"
+local TOPBAR_SIZE_KEY = "folio_navbar_topbar_size_pct"
 local TOPBAR_SIZE_DEF = 100
 local TOPBAR_SIZE_MIN = 50
 local TOPBAR_SIZE_MAX = 150
@@ -1138,10 +1142,10 @@ M.TOPBAR_SIZE_STEP = SCALE_STEP
 
 -- ---------------------------------------------------------------------------
 -- Reading Stats text scale — multiplicative on top of module scale.
--- Stored as "navbar_rs_text_scale_pct" (integer %).
+-- Stored as "folio_navbar_rs_text_scale_pct" (integer %).
 -- ---------------------------------------------------------------------------
 
-local RS_TEXT_SCALE_KEY  = "navbar_rs_text_scale_pct"
+local RS_TEXT_SCALE_KEY  = "folio_navbar_rs_text_scale_pct"
 local RS_TEXT_SCALE_DEF  = 100
 local RS_TEXT_SCALE_MIN  = 50
 local RS_TEXT_SCALE_MAX  = 200
@@ -1165,10 +1169,10 @@ M.RS_TEXT_SCALE_STEP = SCALE_STEP
 
 -- ---------------------------------------------------------------------------
 -- Navbar icon scale — multiplicative on top of bar scale.
--- Stored as \"navbar_icon_scale_pct\" (integer %).
+-- Stored as \"folio_navbar_icon_scale_pct\" (integer %).
 -- ---------------------------------------------------------------------------
 
-local ICON_SCALE_KEY  = "navbar_icon_scale_pct"
+local ICON_SCALE_KEY  = "folio_navbar_icon_scale_pct"
 local ICON_SCALE_DEF  = 100
 local ICON_SCALE_MIN  = 50
 local ICON_SCALE_MAX  = 200
@@ -1192,10 +1196,10 @@ M.ICON_SCALE_STEP = SCALE_STEP
 
 -- ---------------------------------------------------------------------------
 -- Navbar label scale — multiplicative on top of bar scale.
--- Stored as \"navbar_label_scale_pct\" (integer %).
+-- Stored as \"folio_navbar_label_scale_pct\" (integer %).
 -- ---------------------------------------------------------------------------
 
-local LABEL_SCALE_KEY  = "navbar_label_scale_pct"
+local LABEL_SCALE_KEY  = "folio_navbar_label_scale_pct"
 local LABEL_SCALE_DEF  = 100
 local LABEL_SCALE_MIN  = 50
 local LABEL_SCALE_MAX  = 200
@@ -1285,7 +1289,7 @@ end
 local THUMB_SCALE_KEY_SUFFIX = "_thumb_scale"
 
 local function _thumbKey(mod_id, pfx)
-    return (pfx or "navbar_homescreen_") .. (mod_id or "") .. THUMB_SCALE_KEY_SUFFIX
+    return (pfx or "folio_navbar_homescreen_") .. (mod_id or "") .. THUMB_SCALE_KEY_SUFFIX
 end
 
 function M.getThumbScale(mod_id, pfx)
@@ -1334,7 +1338,7 @@ function M.getScaledLabelH()
     if not _BASE_LABEL_TEXT_H then
         _BASE_LABEL_TEXT_H = require("device").screen:scaleBySize(16)
     end
-    local PAD2  = require("sui_core").PAD2
+    local PAD2  = require("folio_core").PAD2
     local scale = M.getLabelScale()
     return PAD2 + math.max(8, math.floor(_BASE_LABEL_TEXT_H * scale))
 end
@@ -1379,8 +1383,8 @@ function M.resetAllScales(pfx, pfx_qa)
     local Registry = require("desktop_modules/moduleregistry")
     for _, mod in ipairs(Registry.list()) do
         if mod.id then
-            G_reader_settings:delSetting((pfx or "navbar_homescreen_") .. mod.id .. "_scale")
-            G_reader_settings:delSetting((pfx or "navbar_homescreen_") .. mod.id .. THUMB_SCALE_KEY_SUFFIX)
+            G_reader_settings:delSetting((pfx or "folio_navbar_homescreen_") .. mod.id .. "_scale")
+            G_reader_settings:delSetting((pfx or "folio_navbar_homescreen_") .. mod.id .. THUMB_SCALE_KEY_SUFFIX)
             G_reader_settings:delSetting(_itemLabelKey(mod.id, pfx))
         end
     end
@@ -1495,7 +1499,7 @@ M.GAP_STEP = GAP_STEP
 M.GAP_DEF  = GAP_DEF
 
 local function _gapKey(mod_id, pfx)
-    return (pfx or "navbar_homescreen_") .. (mod_id or "") .. "_gap_pct"
+    return (pfx or "folio_navbar_homescreen_") .. (mod_id or "") .. "_gap_pct"
 end
 
 local function _clampGap(n)
@@ -1556,6 +1560,140 @@ function M.makeGapItem(opts)
             })
         end,
     }
+end
+
+-- ---------------------------------------------------------------------------
+-- One-time migration: legacy `navbar_*` → `folio_navbar_*`, and `sui_navbar_*` → `folio_navbar_*`.
+-- Safe to run every boot: only copies when the new key is unset.
+-- ---------------------------------------------------------------------------
+
+function M.migrateLegacySettingsKeysToFolioPrefix()
+    if G_reader_settings:isTrue("folio_plugin_settings_migrated_v1") then return end
+    local map = {
+        { "navbar_topbar_config",                "folio_navbar_topbar_config" },
+        { "navbar_custom_qa_list",               "folio_navbar_custom_qa_list" },
+        { "navbar_tabs",                         "folio_navbar_tabs" },
+        { "navbar_mode",                         "folio_navbar_mode" },
+        { "navbar_enabled",                      "folio_navbar_enabled" },
+        { "navbar_topbar_enabled",               "folio_navbar_topbar_enabled" },
+        { "navbar_bar_size",                     "folio_navbar_bar_size" },
+        { "navbar_bar_size_pct",                 "folio_navbar_bar_size_pct" },
+        { "navbar_topbar_size_pct",              "folio_navbar_topbar_size_pct" },
+        { "navbar_pagination_visible",           "folio_navbar_pagination_visible" },
+        { "navbar_navpager_enabled",             "folio_navbar_navpager_enabled" },
+        { "navbar_pagination_size",              "folio_navbar_pagination_size" },
+        { "navbar_pagination_show_subtitle",     "folio_navbar_pagination_show_subtitle" },
+        { "navbar_topbar_swipe_indicator",       "folio_navbar_topbar_swipe_indicator" },
+        { "navbar_hide_separator",               "folio_navbar_hide_separator" },
+        { "navbar_homescreen_enabled",           "folio_navbar_homescreen_enabled" },
+        { "navbar_reading_goal",                 "folio_navbar_reading_goal" },
+        { "navbar_reading_goal_physical",         "folio_navbar_reading_goal_physical" },
+        { "navbar_daily_reading_goal_secs",      "folio_navbar_daily_reading_goal_secs" },
+        { "navbar_custom_qa_migrated_v1",        "folio_navbar_custom_qa_migrated_v1" },
+        { "navbar_reading_goals_show_annual",    "folio_navbar_reading_goals_show_annual" },
+        { "navbar_reading_goals_show_daily",     "folio_navbar_reading_goals_show_daily" },
+        { "navbar_reading_goals_layout",         "folio_navbar_reading_goals_layout" },
+        { "navbar_rs_text_scale_pct",            "folio_navbar_rs_text_scale_pct" },
+        { "navbar_icon_scale_pct",               "folio_navbar_icon_scale_pct" },
+        { "navbar_label_scale_pct",              "folio_navbar_label_scale_pct" },
+        { "navbar_collections_list",             "folio_navbar_collections_list" },
+        { "navbar_collections_covers",           "folio_navbar_collections_covers" },
+        { "navbar_collections_badge_position",   "folio_navbar_collections_badge_position" },
+        { "navbar_homescreen_no_module_limit",    "folio_navbar_homescreen_no_module_limit" },
+        { "simpleui_enabled",                     "folio_enabled" },
+        { "simpleui_defaults_v1",                 "folio_defaults_v1" },
+        { "simpleui_defaults_v2",                 "folio_defaults_v2" },
+        { "simpleui_tb_item_search_button",       "folio_tb_item_search_button" },
+        { "simpleui_tb_fm_cfg",                   "folio_tb_fm_cfg" },
+        { "simpleui_loaded_version",              "folio_loaded_version" },
+        { "simpleui_fc_enabled",                  "folio_fc_enabled" },
+        { "simpleui_fc_show_name",                "folio_fc_show_name" },
+        { "simpleui_fc_hide_underline",           "folio_fc_hide_underline" },
+        { "simpleui_fc_label_style",              "folio_fc_label_style" },
+        { "simpleui_fc_label_position",           "folio_fc_label_position" },
+        { "simpleui_fc_badge_position",           "folio_fc_badge_position" },
+        { "simpleui_fc_covers",                   "folio_fc_covers" },
+        { "simpleui_titlebar_custom",             "folio_titlebar_custom" },
+        { "simpleui_tb_inj_cfg",                  "folio_tb_inj_cfg" },
+        { "simpleui_tb_size",                     "folio_tb_size" },
+    }
+    for _, e in ipairs(map) do
+        local old_k, new_k = e[1], e[2]
+        local v = G_reader_settings:readSetting(old_k)
+        if v ~= nil and G_reader_settings:readSetting(new_k) == nil then
+            G_reader_settings:saveSetting(new_k, v)
+            G_reader_settings:delSetting(old_k)
+        end
+    end
+    -- Phase 10 installs used `sui_navbar_*` before the Folio rename; copy into `folio_navbar_*`.
+    for _, e in ipairs(map) do
+        local old_k, new_k = e[1], e[2]
+        local rest = old_k:match("^navbar_(.*)$")
+        if rest then
+            local sui_old = "sui_navbar_" .. rest
+            local v = G_reader_settings:readSetting(sui_old)
+            if v ~= nil and G_reader_settings:readSetting(new_k) == nil then
+                G_reader_settings:saveSetting(new_k, v)
+                G_reader_settings:delSetting(sui_old)
+            end
+        end
+    end
+    -- Top-level `sui_*` keys (not navbar-prefixed in map)
+    local sui_top = {
+        { "sui_enabled", "folio_enabled" },
+        { "sui_loaded_version", "folio_loaded_version" },
+        { "sui_plugin_settings_migrated_v1", "folio_plugin_settings_migrated_v1" },
+        { "sui_defaults_v1", "folio_defaults_v1" },
+        { "sui_defaults_v2", "folio_defaults_v2" },
+        { "sui_tb_item_search_button", "folio_tb_item_search_button" },
+        { "sui_tb_fm_cfg", "folio_tb_fm_cfg" },
+        { "sui_fc_enabled", "folio_fc_enabled" },
+        { "sui_fc_show_name", "folio_fc_show_name" },
+        { "sui_fc_hide_underline", "folio_fc_hide_underline" },
+        { "sui_fc_label_style", "folio_fc_label_style" },
+        { "sui_fc_label_position", "folio_fc_label_position" },
+        { "sui_fc_badge_position", "folio_fc_badge_position" },
+        { "sui_fc_covers", "folio_fc_covers" },
+        { "sui_titlebar_custom", "folio_titlebar_custom" },
+        { "sui_tb_inj_cfg", "folio_tb_inj_cfg" },
+        { "sui_tb_size", "folio_tb_size" },
+    }
+    for _, e in ipairs(sui_top) do
+        local old_k, new_k = e[1], e[2]
+        local v = G_reader_settings:readSetting(old_k)
+        if v ~= nil and G_reader_settings:readSetting(new_k) == nil then
+            G_reader_settings:saveSetting(new_k, v)
+            G_reader_settings:delSetting(old_k)
+        end
+    end
+    local list = G_reader_settings:readSetting("folio_navbar_custom_qa_list")
+        or G_reader_settings:readSetting("navbar_custom_qa_list") or {}
+    if type(list) == "table" then
+        for _, qa_id in ipairs(list) do
+            if type(qa_id) == "string" then
+                local old_k = "navbar_cqa_" .. qa_id
+                local new_k = "folio_navbar_cqa_" .. qa_id
+                local v = G_reader_settings:readSetting(old_k)
+                if v ~= nil and G_reader_settings:readSetting(new_k) == nil then
+                    G_reader_settings:saveSetting(new_k, v)
+                    G_reader_settings:delSetting(old_k)
+                end
+            end
+        end
+    end
+    for _, id in ipairs({ "home", "homescreen", "collections", "history", "continue", "favorites",
+            "bookmark_browser", "wifi_toggle", "frontlight", "stats_calendar", "power" }) do
+        for _, suf in ipairs({ "label", "icon" }) do
+            local old_k = "navbar_action_" .. id .. "_" .. suf
+            local new_k = "folio_navbar_action_" .. id .. "_" .. suf
+            local v = G_reader_settings:readSetting(old_k)
+            if v ~= nil and G_reader_settings:readSetting(new_k) == nil then
+                G_reader_settings:saveSetting(new_k, v)
+                G_reader_settings:delSetting(old_k)
+            end
+        end
+    end
+    G_reader_settings:saveSetting("folio_plugin_settings_migrated_v1", true)
 end
 
 return M

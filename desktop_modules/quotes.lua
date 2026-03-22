@@ -1,4 +1,4 @@
--- quotes.lua — Simple UI
+-- quotes.lua — Folio
 -- Quote database for the Desktop "Quote of the Day" module.
 -- Edit freely: add, remove or replace entries in the same format.
 -- Format: { q = "Quote text.", a = "Author", b = "Book title (optional)" }

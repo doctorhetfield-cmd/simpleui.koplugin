@@ -1,12 +1,10 @@
--- module_quick_actions.lua — Simple UI
+-- module_quick_actions.lua — Folio
 -- Módulo: Quick Actions (3 slots independentes).
 -- Substitui quickactionswidget.lua — contém todo o código de widget.
 -- Expõe sub_modules = { slot1, slot2, slot3 } para o registry.
 
-local Blitbuffer      = require("ffi/blitbuffer")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local Device          = require("device")
-local Font            = require("ui/font")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
 local GestureRange    = require("ui/gesturerange")
@@ -20,33 +18,33 @@ local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local Screen          = Device.screen
 local _               = require("gettext")
-local Config          = require("sui_config")
-local QA              = require("sui_quickactions")
+local Config          = require("folio_config")
+local QA              = require("folio_quickactions")
+local FolioTheme        = require("folio_theme")
+local Theme           = FolioTheme.Theme
 
-local UI  = require("sui_core")
+local UI  = require("folio_core")
 local PAD = UI.PAD
 local LABEL_H = UI.LABEL_H
 
-local _CLR_BAR_FG = Blitbuffer.gray(0.75)
-
-local _BASE_ICON_SZ   = Screen:scaleBySize(52)
-local _BASE_FRAME_PAD = Screen:scaleBySize(18)
-local _BASE_CORNER_R  = Screen:scaleBySize(22)
-local _BASE_LBL_SP    = Screen:scaleBySize(7)
+local _BASE_FRAME_PAD = Screen:scaleBySize(8)
+local _BASE_LBL_SP    = Screen:scaleBySize(8)
 local _BASE_LBL_H     = Screen:scaleBySize(20)
 local _BASE_LBL_FS    = Screen:scaleBySize(9)
 
-local function _getQADims(scale)
+-- Square tiles in one row; tile width = inner_w / n (editorial mockup).
+local function _getQADims(scale, inner_w, n)
     scale = scale or 1.0
-    local icon_sz   = math.max(16, math.floor(_BASE_ICON_SZ   * scale))
-    local frame_pad = math.max(4,  math.floor(_BASE_FRAME_PAD * scale))
-    local lbl_sp    = math.max(1,  math.floor(_BASE_LBL_SP    * scale))
-    local lbl_h     = math.max(8,  math.floor(_BASE_LBL_H     * scale))
+    n     = math.max(1, n or 4)
+    local frame_sz = math.max(40, math.floor(inner_w / n))
+    local frame_pad = math.max(4, math.floor(_BASE_FRAME_PAD * scale))
+    local icon_sz   = math.max(16, frame_sz - 2 * frame_pad)
+    local lbl_sp    = math.max(1, math.floor(_BASE_LBL_SP * scale))
+    local lbl_h     = math.max(8, math.floor(_BASE_LBL_H * scale))
     return {
         icon_sz   = icon_sz,
         frame_pad = frame_pad,
-        frame_sz  = icon_sz + frame_pad * 2,
-        corner_r  = math.max(4, math.floor(_BASE_CORNER_R * scale)),
+        frame_sz  = frame_sz,
         lbl_sp    = lbl_sp,
         lbl_h     = lbl_h,
         lbl_fs    = math.max(6, math.floor(_BASE_LBL_FS * scale)),
@@ -55,7 +53,7 @@ end
 
 -- ---------------------------------------------------------------------------
 -- Action entry resolution and QA validity cache
--- Delegated to sui_quickactions (single source of truth).
+-- Delegated to folio_quickactions (single source of truth).
 -- ---------------------------------------------------------------------------
 
 local function getEntry(action_id)
@@ -73,7 +71,7 @@ end
 -- ---------------------------------------------------------------------------
 -- Core widget builder (shared by all slots)
 -- ---------------------------------------------------------------------------
-local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d)
+local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, module_id, pfx)
     if not action_ids or #action_ids == 0 then return nil end
 
     local valid_ids = {}
@@ -89,6 +87,9 @@ local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d)
 
     local n        = math.min(#valid_ids, 4)
     local inner_w  = w - PAD * 2
+    local scale    = Config.getModuleScale(module_id, pfx)
+    local d        = _getQADims(scale, inner_w, n)
+    d.lbl_fs = math.max(6, math.floor(d.lbl_fs * Config.getItemLabelScale(module_id, pfx)))
     local lbl_h    = show_labels and d.lbl_h or 0
     local lbl_sp   = show_labels and d.lbl_sp or 0
     local gap      = n <= 1 and 0 or math.floor((inner_w - n * d.frame_sz) / (n - 1))
@@ -100,19 +101,31 @@ local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d)
         local aid   = valid_ids[i]
         local entry = getEntry(aid)
 
+        local iw_args = {
+            file    = entry.icon,
+            width   = d.icon_sz,
+            height  = d.icon_sz,
+            is_icon = true,
+            alpha   = true,
+        }
+        if aid == "wifi_toggle" then
+            local ok_nm, NetworkMgr = pcall(require, "ui/network/manager")
+            local wifi_on = false
+            if ok_nm and NetworkMgr then
+                local ok_s, on = pcall(function() return NetworkMgr:isWifiOn() end)
+                wifi_on = ok_s and on
+            end
+            iw_args.color = wifi_on and Theme.PRIMARY or Theme.TEXT
+        end
+
+        -- Dense grid tile separator: ghost border (DESIGN); not a sectioning line.
         local icon_frame = FrameContainer:new{
             bordersize = 1,
-            color      = _CLR_BAR_FG,
-            background = Blitbuffer.COLOR_WHITE,
-            radius     = d.corner_r,
+            color      = Theme.GHOST_LINE,
+            background = Theme.SURFACE_LOW,
+            radius     = Theme.CORNER_RADIUS,
             padding    = d.frame_pad,
-            ImageWidget:new{
-                file    = entry.icon,
-                width   = d.icon_sz,
-                height  = d.icon_sz,
-                is_icon = true,
-                alpha   = true,
-            },
+            ImageWidget:new(iw_args),
         }
 
         local col = VerticalGroup:new{ align = "center" }
@@ -123,8 +136,8 @@ local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d)
                 dimen = Geom:new{ w = d.frame_sz, h = lbl_h },
                 TextWidget:new{
                     text    = entry.label,
-                    face    = Font:getFace("cfont", d.lbl_fs),
-                    fgcolor = Blitbuffer.COLOR_BLACK,
+                    face    = FolioTheme.faceUI(d.lbl_fs),
+                    fgcolor = Theme.TEXT,
                     width   = d.frame_sz,
                 },
             }
@@ -200,17 +213,18 @@ local function makeSlot(slot)
         local labels_key  = ctx.pfx .. slot_suffix .. "_labels"
         local qa_ids      = G_reader_settings:readSetting(items_key) or {}
         local show_labels = G_reader_settings:nilOrTrue(labels_key)
-        local d           = _getQADims(Config.getModuleScale(S.id, ctx.pfx))
-        -- Apply independent label text scale.
-        local lbl_scale = Config.getItemLabelScale(S.id, ctx.pfx)
-        d.lbl_fs = math.max(6, math.floor(d.lbl_fs * lbl_scale))
-        return buildQAWidget(w, qa_ids, show_labels, ctx.on_qa_tap, d)
+        return buildQAWidget(w, qa_ids, show_labels, ctx.on_qa_tap, S.id, ctx.pfx)
     end
 
     function S.getHeight(ctx)
         local labels_key  = ctx.pfx .. slot_suffix .. "_labels"
         local show_labels = G_reader_settings:nilOrTrue(labels_key)
-        local d           = _getQADims(Config.getModuleScale(S.id, ctx.pfx))
+        local inner_w     = Screen:getWidth() - PAD * 2
+        local items       = G_reader_settings:readSetting(ctx.pfx .. slot_suffix .. "_items") or {}
+        local n           = math.max(1, math.min(#items, 4))
+        local scale       = Config.getModuleScale(S.id, ctx.pfx)
+        local d           = _getQADims(scale, inner_w, n)
+        d.lbl_fs = math.max(6, math.floor(d.lbl_fs * Config.getItemLabelScale(S.id, ctx.pfx)))
         return Config.getScaledLabelH() + (show_labels and (d.frame_sz + d.lbl_sp + d.lbl_h) or d.frame_sz)
     end
 
@@ -255,9 +269,8 @@ local M = {}
 M.sub_modules = { makeSlot(1), makeSlot(2), makeSlot(3) }
 
 -- Expose base frame size for menu.lua (MAX_QA_ITEMS referenced there).
--- Returns the 100%-scale value; callers that need the current scaled value
--- should call _getQADims(Config.getModuleScale(...)).frame_sz directly.
-M.FRAME_SZ             = _BASE_ICON_SZ + _BASE_FRAME_PAD * 2
+-- Reference tile width at current screen width with four columns (approximate).
+M.FRAME_SZ             = math.max(40, math.floor((Screen:getWidth() - PAD * 2) / 4))
 M.invalidateCustomQACache = QA.invalidateCustomQACache
 
 return M

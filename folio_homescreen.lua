@@ -1,7 +1,7 @@
--- homescreen.lua — Simple UI
+-- homescreen.lua — Folio
 -- Fullscreen modular page shown when the "Homescreen" tab is tapped.
 -- Shares the same module registry and module files as the Continue page
--- but is completely independent: separate settings prefix (navbar_homescreen_),
+-- but is completely independent: separate settings prefix (folio_navbar_homescreen_),
 -- separate caches, and a different lifecycle (UIManager stack widget vs
 -- Continue page's FM-injection approach).
 --
@@ -21,7 +21,6 @@
 local Blitbuffer      = require("ffi/blitbuffer")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local Device          = require("device")
-local Font            = require("ui/font")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
 local GestureRange    = require("ui/gesturerange")
@@ -33,10 +32,11 @@ local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local logger          = require("logger")
 local _               = require("gettext")
-local Config          = require("sui_config")
+local Config          = require("folio_config")
+local FolioTheme        = require("folio_theme")
 local Registry        = require("desktop_modules/moduleregistry")
 local Screen          = Device.screen
-local UI              = require("sui_core")
+local UI              = require("folio_core")
 
 -- ---------------------------------------------------------------------------
 -- Layout constants — sourced from ui.lua (single source of truth).
@@ -50,8 +50,8 @@ local _CLR_TEXT_MID      = Blitbuffer.gray(0.45)
 
 -- Settings prefix — all homescreen settings are namespaced here,
 -- completely independent from "navbar_continue_*".
-local PFX    = "navbar_homescreen_"
-local PFX_QA = "navbar_homescreen_quick_actions_"
+local PFX    = "folio_navbar_homescreen_"
+local PFX_QA = "folio_navbar_homescreen_quick_actions_"
 
 -- Forward declaration — must be before HomescreenWidget so that
 -- onCloseWidget() can capture it as an upvalue. Populated at the bottom.
@@ -81,7 +81,7 @@ local function invalidateLabelCache()
 end
 
 local function sectionLabel(text, w)
-    local scale     = require("sui_config").getLabelScale()
+    local scale     = require("folio_config").getLabelScale()
     local fs        = math.max(8, math.floor(_BASE_SECTION_LABEL_SIZE * scale))
     local label_h   = math.max(8, math.floor(Screen:scaleBySize(16) * scale))
     local scale_pct = math.floor(scale * 100)  -- integer key — avoids float noise
@@ -93,7 +93,7 @@ local function sectionLabel(text, w)
             padding_bottom = UI.LABEL_PAD_BOT,
             TextWidget:new{
                 text  = text,
-                face  = Font:getFace("smallinfofont", fs),
+                face  = FolioTheme.faceUI(fs),
                 bold  = true,
                 width = w - PAD * 2,
                 -- Explicitly set height so the container is sized correctly
@@ -115,7 +115,7 @@ local function buildEmptyState(w, h)
                 dimen = Geom:new{ w = w, h = _EMPTY_TITLE_H },
                 TextWidget:new{
                     text = _("No books opened yet"),
-                    face = Font:getFace("smallinfofont", _EMPTY_TITLE_FS),
+                    face = FolioTheme.faceUI(_EMPTY_TITLE_FS),
                     bold = true,
                 },
             },
@@ -124,7 +124,7 @@ local function buildEmptyState(w, h)
                 dimen = Geom:new{ w = w, h = _EMPTY_SUB_H },
                 TextWidget:new{
                     text    = _("Open a book to get started"),
-                    face    = Font:getFace("smallinfofont", _EMPTY_SUB_FS),
+                    face    = FolioTheme.faceUI(_EMPTY_SUB_FS),
                     fgcolor = _CLR_TEXT_MID,
                 },
             },
@@ -164,15 +164,14 @@ function HomescreenWidget:init()
 
     -- Block taps/holds that land on the bottom bar area so they are never
     -- consumed by module InputContainers whose dimen extends into that area.
-    -- This ges_event is evaluated first (InputContainer processes own events
-    -- before propagating to children) and returns true to consume the event.
-    -- _navbar_content_h is set by patches.lua after init(); we use a lazy
-    -- function so it is read at gesture time, not at init time.
+    -- Y threshold must match Bottombar.TOTAL_H() (full reserved strip: separator
+    -- + bar + bottom padding), not raw content height — the latter breaks when
+    -- the top bar is enabled (wrong band vs. actual navbar row).
     local function _in_bar(ges)
-        if not ges then return false end
-        local ch = self._navbar_content_h
-        if not ch then return false end
-        return ges.pos and ges.pos.y and ges.pos.y >= ch
+        if not ges or not ges.pos then return false end
+        local Bottombar = require("folio_bottombar")
+        local bar_y = Screen:getHeight() - Bottombar.TOTAL_H()
+        return ges.pos.y >= bar_y
     end
     self.ges_events = {
         BlockNavbarTap = {
@@ -385,7 +384,7 @@ function HomescreenWidget:init()
             local ok, err = pcall(g.gestureAction, g, ges_name, ges_event)
             UIManager.sendEvent = orig_sendEvent
             if not ok then
-                logger.warn("simpleui hs gesture: gestureAction error:", err)
+                logger.warn("folio hs gesture: gestureAction error:", err)
             end
             return true
         end
@@ -498,7 +497,7 @@ function HomescreenWidget:_buildContent()
                 self._cached_books_state = { current_fp = nil, recent_fps = {}, prefetched_data = {} }
             end
         else
-            logger.warn("simpleui: homescreen: cannot load module_books_shared: " .. tostring(SH))
+            logger.warn("folio: homescreen: cannot load module_books_shared: " .. tostring(SH))
             self._cached_books_state = { current_fp = nil, recent_fps = {}, prefetched_data = {} }
         end
     end
@@ -561,7 +560,7 @@ function HomescreenWidget:_buildContent()
 
     -- ── Build body ───────────────────────────────────────────────────────────
     local body    = VerticalGroup:new{ align = "left" }
-    local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
+    local topbar_on = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
     local top_pad   = topbar_on and MOD_GAP or (MOD_GAP * 2)
     body[#body+1]   = self:_vspan(top_pad)
 
@@ -582,7 +581,7 @@ function HomescreenWidget:_buildContent()
             pfx           = PFX,
             pfx_qa        = PFX_QA,
             refresh       = function()
-                local HS = package.loaded["sui_homescreen"]
+                local HS = package.loaded["folio_homescreen"]
                 if HS and HS._instance then HS._instance:_refresh(false) end
             end,
             UIManager     = UIManager,
@@ -613,7 +612,7 @@ function HomescreenWidget:_buildContent()
     for _, mod in ipairs(enabled_mods) do
         local ok_w, widget = pcall(mod.build, inner_w, ctx)
         if not ok_w then
-            logger.warn("simpleui homescreen: build failed for "
+            logger.warn("folio homescreen: build failed for "
                         .. tostring(mod.id) .. ": " .. tostring(widget))
         elseif widget then
             if first_mod then
@@ -655,9 +654,9 @@ function HomescreenWidget:_buildContent()
                 function wrapper:onHoldMod() return true end  -- claim the hold
                 local _self = self  -- capture HomescreenWidget for the closure
                 function wrapper:onHoldModRelease()
-                    local Topbar    = require("sui_topbar")
-                    local Bottombar = require("sui_bottombar")
-                    local topbar_h  = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
+                    local Topbar    = require("folio_topbar")
+                    local Bottombar = require("folio_bottombar")
+                    local topbar_h  = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
                                       and Topbar.TOTAL_TOP_H() or 0
                     UI.showSettingsMenu(
                         _mod.name or _mod.id,
@@ -798,7 +797,7 @@ function HomescreenWidget:_clockTick()
             return
         end
         -- If build failed fall through to full rebuild below.
-        logger.warn("simpleui: _clockTick: header build failed, falling back to full rebuild")
+        logger.warn("folio: _clockTick: header build failed, falling back to full rebuild")
     end
 
     -- Slow path fallback: full content rebuild (used on first tick or if header

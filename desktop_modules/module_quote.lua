@@ -1,4 +1,4 @@
--- module_quote.lua — Simple UI
+-- module_quote.lua — Folio
 
 -- Quote of the Day module. Three source modes:
 
@@ -14,7 +14,6 @@ local Blitbuffer     = require("ffi/blitbuffer")
 
 local Device         = require("device")
 
-local Font           = require("ui/font")
 
 local FrameContainer = require("ui/widget/container/framecontainer")
 
@@ -32,11 +31,25 @@ local logger         = require("logger")
 
 
 
-local Config       = require("sui_config")
+local Config       = require("folio_config")
+
+local FolioTheme     = require("folio_theme")
+
+local Theme        = FolioTheme.Theme
+
+local Geom         = require("ui/geometry")
+
+local Event        = require("ui/event")
+
+local GestureRange = require("ui/gesturerange")
+
+local InputContainer = require("ui/widget/container/inputcontainer")
+
+local TextWidget   = require("ui/widget/textwidget")
 
 local UIManager       = require("ui/uimanager")
 
-local UI           = require("sui_core")
+local UI           = require("folio_core")
 
 local PAD          = UI.PAD
 
@@ -50,11 +63,11 @@ local _CLR_TEXT_QUOTE = Blitbuffer.COLOR_BLACK
 
 
 
-local _BASE_QUOTE_FS     = Screen:scaleBySize(11)
+local _BASE_QUOTE_FS     = Screen:scaleBySize(11) -- not a spacing token (body size)
 
 local _BASE_QUOTE_ATTR_FS = Screen:scaleBySize(9)
 
-local _BASE_QUOTE_GAP    = Screen:scaleBySize(4)
+local _BASE_QUOTE_GAP    = Screen:scaleBySize(4) -- not a spacing token (tight quote gap)
 
 local _BASE_QUOTE_ATTR_H = Screen:scaleBySize(11)
 
@@ -82,13 +95,31 @@ local MAX_POOL_HIGHLIGHTS = 100
 
 
 
-local SETTING_SOURCE = "quote_source"
+local SETTING_SOURCE = "folio_quote_source"
 
 
 
 local function getSource(pfx)
 
-    return G_reader_settings:readSetting((pfx or "") .. SETTING_SOURCE) or "quotes"
+    local k = (pfx or "") .. SETTING_SOURCE
+
+    local v = G_reader_settings:readSetting(k)
+
+    if v == nil then
+
+        v = G_reader_settings:readSetting((pfx or "") .. "quote_source")
+
+        if v ~= nil then
+
+            G_reader_settings:saveSetting(k, v)
+
+            G_reader_settings:delSetting((pfx or "") .. "quote_source")
+
+        end
+
+    end
+
+    return v or "quotes"
 
 end
 
@@ -150,11 +181,45 @@ end
 
 -- order are persisted in settings so the sequence survives restarts.
 
-local _DECK_KEY  = "quote_deck_order"
+local _DECK_KEY  = "folio_quote_deck_order"
 
-local _POS_KEY   = "quote_deck_pos"
+local _POS_KEY   = "folio_quote_deck_pos"
 
-local _COUNT_KEY = "quote_deck_count"
+local _COUNT_KEY = "folio_quote_deck_count"
+
+
+
+local function _migrateQuoteDeckKeys()
+
+    local map = {
+
+        { "quote_deck_order",  _DECK_KEY },
+
+        { "quote_deck_pos",    _POS_KEY },
+
+        { "quote_deck_count",  _COUNT_KEY },
+
+    }
+
+    for _, e in ipairs(map) do
+
+        local old_k, new_k = e[1], e[2]
+
+        local v = G_reader_settings:readSetting(old_k)
+
+        if v ~= nil and G_reader_settings:readSetting(new_k) == nil then
+
+            G_reader_settings:saveSetting(new_k, v)
+
+            G_reader_settings:delSetting(old_k)
+
+        end
+
+    end
+
+end
+
+_migrateQuoteDeckKeys()
 
 
 
@@ -246,11 +311,11 @@ local function pickQuote()
 
         pos  = 1
 
-        logger.warn("simpleui quote: new deck n=" .. n .. " pos=" .. pos)
+        logger.warn("folio quote: new deck n=" .. n .. " pos=" .. pos)
 
     else
 
-        logger.warn("simpleui quote: loaded deck pos=" .. pos .. "/" .. n)
+        logger.warn("folio quote: loaded deck pos=" .. pos .. "/" .. n)
 
     end
 
@@ -274,7 +339,7 @@ local function pickQuote()
 
         pos = 1
 
-        logger.warn("simpleui quote: reshuffled, next pos=1")
+        logger.warn("folio quote: reshuffled, next pos=1")
 
     end
 
@@ -282,7 +347,7 @@ local function pickQuote()
 
     _saveDeck(deck, pos)
 
-    logger.warn("simpleui quote: showing idx=" .. idx .. " saved pos=" .. pos)
+    logger.warn("folio quote: showing idx=" .. idx .. " saved pos=" .. pos)
 
     return quotes[idx]
 
@@ -324,13 +389,25 @@ end
 
 -- The pool is rebuilt once per session (on invalidateCache from onResume).
 
--- Within a session, pickHighlight() is O(1) with no I/O.
+-- Highlight pool I/O is deferred to the next UIManager tick so the homescreen
+
+-- first paint is not blocked by sidecar scans (Phase 9/10 perf budget).
+
+-- Within a session, pickHighlight() is O(1) after the pool is ready.
 
 -- ---------------------------------------------------------------------------
 
 
 
-local _hl_pool = nil
+-- false = not yet built; table = built (possibly empty)
+
+local _hl_pool = false
+
+local _hl_pool_build_scheduled = false
+
+local _hl_pool_hist_len        = nil
+
+local _personal_pool = nil
 
 
 
@@ -446,18 +523,18 @@ local function _buildPool()
                         texts[i], texts[j] = texts[j], texts[i]
                     end
                     for i = 1, remaining do
-                        pool[#pool + 1] = { text = texts[i], title = book_title, authors = book_authors }
+                        pool[#pool + 1] = { text = texts[i], title = book_title, authors = book_authors, fp = cand.fp }
                     end
                 else
                     for _, t in ipairs(texts) do
-                        pool[#pool + 1] = { text = t, title = book_title, authors = book_authors }
+                        pool[#pool + 1] = { text = t, title = book_title, authors = book_authors, fp = cand.fp }
                     end
                 end
             end
         end
     end
 
-    logger.dbg("simpleui: quote: _buildPool: " .. #pool .. " highlights from "
+    logger.dbg("folio: quote: _buildPool: " .. #pool .. " highlights from "
         .. books_read .. "/" .. n_cand .. " candidate books ("
         .. n_hist .. " in history)")
     return pool
@@ -466,13 +543,67 @@ end
 
 
 
+local function _histFingerprint()
+
+    local ReadHistory = package.loaded["readhistory"]
+
+    local hist        = ReadHistory and ReadHistory.hist
+
+    return hist and #hist or 0
+
+end
+
+
+
+local function _scheduleHlPoolBuild()
+
+    if _hl_pool ~= false then return end
+
+    if _hl_pool_build_scheduled then return end
+
+    _hl_pool_build_scheduled = true
+
+    UIManager:scheduleIn(0, function()
+
+        _hl_pool_build_scheduled = false
+
+        _hl_pool         = _buildPool()
+
+        _hl_pool_hist_len = _histFingerprint()
+
+        _last_hl_idx      = nil
+
+        local ok, HS = pcall(require, "folio_homescreen")
+
+        if ok and HS and HS.refresh then pcall(HS.refresh, false) end
+
+    end)
+
+end
+
+
+
 local function getPool()
 
-    if not _hl_pool then
+    if _hl_pool == false then
 
-        _hl_pool = _buildPool()
+        _scheduleHlPoolBuild()
 
-        _last_hl_idx = nil
+        return {}
+
+    end
+
+    local n = _histFingerprint()
+
+    if _hl_pool_hist_len ~= nil and n ~= _hl_pool_hist_len then
+
+        _hl_pool          = false
+
+        _hl_pool_hist_len = nil
+
+        _scheduleHlPoolBuild()
+
+        return {}
 
     end
 
@@ -486,11 +617,45 @@ end
 
 -- separately so the two decks are independent.
 
-local _HL_DECK_KEY  = "quote_hl_deck_order"
+local _HL_DECK_KEY  = "folio_quote_hl_deck_order"
 
-local _HL_POS_KEY   = "quote_hl_deck_pos"
+local _HL_POS_KEY   = "folio_quote_hl_deck_pos"
 
-local _HL_COUNT_KEY = "quote_hl_deck_count"
+local _HL_COUNT_KEY = "folio_quote_hl_deck_count"
+
+
+
+local function _migrateHlDeckKeys()
+
+    local map = {
+
+        { "quote_hl_deck_order",  _HL_DECK_KEY },
+
+        { "quote_hl_deck_pos",    _HL_POS_KEY },
+
+        { "quote_hl_deck_count",  _HL_COUNT_KEY },
+
+    }
+
+    for _, e in ipairs(map) do
+
+        local old_k, new_k = e[1], e[2]
+
+        local v = G_reader_settings:readSetting(old_k)
+
+        if v ~= nil and G_reader_settings:readSetting(new_k) == nil then
+
+            G_reader_settings:saveSetting(new_k, v)
+
+            G_reader_settings:delSetting(old_k)
+
+        end
+
+    end
+
+end
+
+_migrateHlDeckKeys()
 
 
 
@@ -600,6 +765,216 @@ end
 
 -- ---------------------------------------------------------------------------
 
+-- Random highlight from DocSettings (read history) — preferred over quotes.lua
+
+-- ---------------------------------------------------------------------------
+
+
+
+local function buildPersonalPool()
+
+    local pool = {}
+
+    local ok_DS, DocSettings = pcall(require, "docsettings")
+
+    if not ok_DS then return pool end
+
+    local ReadHistory = package.loaded["readhistory"]
+
+    if not ReadHistory or not ReadHistory.hist then return pool end
+
+    local books = 0
+
+    for _, entry in ipairs(ReadHistory.hist) do
+
+        if books >= MAX_POOL_BOOKS then break end
+
+        local fp = entry.file
+
+        if fp then
+
+            local ok_ds, ds = pcall(DocSettings.open, DocSettings, fp)
+
+            if ok_ds and ds then
+
+                books = books + 1
+
+                local annotations = ds:readSetting("annotations") or {}
+
+                pcall(function() ds:close() end)
+
+                for _, ann in ipairs(annotations) do
+
+                    if ann.highlighted and ann.text then
+
+                        local tlen = #ann.text
+
+                        if tlen >= 20 and tlen <= 300 then
+
+                            pool[#pool + 1] = {
+
+                                text = ann.text,
+
+                                file = fp,
+
+                                page = ann.page,
+
+                                pos = ann.pos,
+
+                                title = entry.title or "Unknown",
+
+                                authors = entry.author or "",
+
+                            }
+
+                        end
+
+                    end
+
+                end
+
+            end
+
+        end
+
+    end
+
+    return pool
+
+end
+
+
+
+local function getPersonalPool()
+
+    if not _personal_pool then
+
+        _personal_pool = buildPersonalPool()
+
+    end
+
+    return _personal_pool
+
+end
+
+
+
+local function pickPersonalQuote()
+
+    local pool = getPersonalPool()
+
+    if #pool == 0 then return nil end
+
+    return pool[math.random(#pool)]
+
+end
+
+
+
+local function openBookAt(filepath, page, pos)
+
+    local ReaderUI = package.loaded["apps/reader/readerui"] or require("apps/reader/readerui")
+
+    if not page and not pos then
+
+        ReaderUI:showReader(filepath)
+
+        return
+
+    end
+
+    ReaderUI:showReader(filepath, nil, true, nil, function(ui)
+
+        if page and type(page) == "number" and ui.paging and ui.paging.onGotoPage then
+
+            pcall(function() ui.paging:onGotoPage(page) end)
+
+        elseif pos and type(pos) == "string" and ui.rolling and ui.rolling.onGotoXPointer then
+
+            pcall(function() ui.rolling:onGotoXPointer(pos) end)
+
+        elseif page and type(page) == "number" then
+
+            pcall(function() ui:handleEvent(Event:new("GotoPage", page)) end)
+
+        end
+
+    end)
+
+end
+
+
+
+local function buildLibraryQuote(inner_w, pq, scale, quote_gap, vspan_gap)
+
+    local face_q = FolioTheme.faceContent(math.max(10, math.floor(Screen:scaleBySize(16) * scale)))
+
+    local face_attr = FolioTheme.faceUI(math.max(9, math.floor(Screen:scaleBySize(13) * scale)))
+
+    local face_top = FolioTheme.faceUI(FolioTheme.sizeMicro())
+
+    local vg = VerticalGroup:new{ align = "center" }
+
+    vg[#vg+1] = TextWidget:new{
+
+        text = _("FROM YOUR LIBRARY"),
+
+        face = face_top,
+
+        fgcolor = Theme.TEXT_MUTED,
+
+        width = inner_w,
+
+    }
+
+    vg[#vg+1] = VerticalSpan:new{ width = quote_gap }
+
+    vg[#vg+1] = TextBoxWidget:new{
+
+        text = "\u{201C}" .. pq.text .. "\u{201D}",
+
+        face = face_q,
+
+        fgcolor = Theme.TEXT,
+
+        width = inner_w,
+
+        alignment = "center",
+
+    }
+
+    vg[#vg+1] = vspan_gap
+
+    local attr = "— " .. (pq.title or "?")
+
+    if pq.authors and pq.authors ~= "" then
+
+        attr = attr .. ",  " .. pq.authors
+
+    end
+
+    vg[#vg+1] = TextBoxWidget:new{
+
+        text = attr,
+
+        face = face_attr,
+
+        fgcolor = Theme.TEXT_MUTED,
+
+        width = inner_w,
+
+        alignment = "center",
+
+    }
+
+    return vg
+
+end
+
+
+
+-- ---------------------------------------------------------------------------
+
 -- Widget builders
 
 -- ---------------------------------------------------------------------------
@@ -684,7 +1059,7 @@ local function buildFromHighlight(inner_w, face_quote, face_attr, vspan_gap)
 
     if not h then
 
-        logger.warn("simpleui: quote: buildFromHighlight: pool empty, showing fallback")
+        logger.warn("folio: quote: buildFromHighlight: pool empty, showing fallback")
 
         return buildWidget(
 
@@ -696,29 +1071,49 @@ local function buildFromHighlight(inner_w, face_quote, face_attr, vspan_gap)
 
             face_quote, face_attr, vspan_gap
 
-        )
+        ), nil
 
     end
 
-    logger.warn("simpleui: quote: showing highlight from '" .. tostring(h.title) .. "': " .. tostring(h.text):sub(1, 60))
+    logger.warn("folio: quote: showing highlight from '" .. tostring(h.title) .. "': " .. tostring(h.text):sub(1, 60))
 
     local attr = "— " .. h.title
 
     if h.authors and h.authors ~= "" then attr = attr .. ",  " .. h.authors end
 
-    return buildWidget(inner_w, "\u{201C}" .. h.text .. "\u{201D}", attr, face_quote, face_attr, vspan_gap)
+    local tap = nil
+
+    if h.fp then
+
+        tap = { file = h.fp, page = h.page, pos = h.pos }
+
+    end
+
+    return buildWidget(inner_w, "\u{201C}" .. h.text .. "\u{201D}", attr, face_quote, face_attr, vspan_gap), tap
 
 end
 
 
 
-local function buildFromMixed(inner_w, face_quote, face_attr, vspan_gap)
+local function buildFromMixed(inner_w, face_quote, face_attr, vspan_gap, scale, quote_gap)
+
+    -- While the highlight pool is still scanning, avoid blocking — show quotes only.
+
+    if _hl_pool == false then
+
+        _scheduleHlPoolBuild()
+
+        return buildFromQuotesSmart(inner_w, face_quote, face_attr, vspan_gap, scale, quote_gap)
+
+    end
 
     local has_highlights = #getPool() > 0
 
     local has_quotes     = #loadQuotes() > 0
 
-    if has_highlights and has_quotes then
+    local has_personal   = #getPersonalPool() > 0
+
+    if has_highlights and (has_quotes or has_personal) then
 
         if math.random(2) == 1 then
 
@@ -726,7 +1121,7 @@ local function buildFromMixed(inner_w, face_quote, face_attr, vspan_gap)
 
         else
 
-            return buildFromQuote(inner_w, face_quote, face_attr, vspan_gap)
+            return buildFromQuotesSmart(inner_w, face_quote, face_attr, vspan_gap, scale, quote_gap)
 
         end
 
@@ -736,9 +1131,27 @@ local function buildFromMixed(inner_w, face_quote, face_attr, vspan_gap)
 
     else
 
-        return buildFromQuote(inner_w, face_quote, face_attr, vspan_gap)
+        return buildFromQuotesSmart(inner_w, face_quote, face_attr, vspan_gap, scale, quote_gap)
 
     end
+
+end
+
+
+
+local function buildFromQuotesSmart(inner_w, face_quote, face_attr, vspan_gap, scale, quote_gap)
+
+    local pq = pickPersonalQuote()
+
+    if pq then
+
+        return buildLibraryQuote(inner_w, pq, scale, quote_gap, vspan_gap),
+
+            { file = pq.file, page = pq.page, pos = pq.pos }
+
+    end
+
+    return buildFromQuote(inner_w, face_quote, face_attr, vspan_gap), nil
 
 end
 
@@ -772,7 +1185,11 @@ M.getCountLabel = nil
 
 function M.invalidateCache()
 
-    _hl_pool = nil
+    _hl_pool          = false
+
+    _hl_pool_hist_len = nil
+
+    _personal_pool    = nil
 
     -- Clear the highlight deck so it is rebuilt from the new pool.
 
@@ -794,9 +1211,9 @@ function M.build(w, ctx)
 
 
 
-    local face_quote = Font:getFace("cfont", quote_fs)
+    local face_quote = FolioTheme.faceContent(quote_fs)
 
-    local face_attr  = Font:getFace("cfont", attr_fs)
+    local face_attr  = FolioTheme.faceUI(attr_fs)
 
     local vspan_gap  = VerticalSpan:new{ width = quote_gap }
 
@@ -806,27 +1223,29 @@ function M.build(w, ctx)
 
     local source  = getSource(ctx and ctx.pfx)
 
-    logger.warn("simpleui: quote: build source=" .. source)
+    logger.warn("folio: quote: build source=" .. source)
 
-    local content
+    local content, tap_info
 
     if source == "highlights" then
 
-        content = buildFromHighlight(inner_w, face_quote, face_attr, vspan_gap)
+        content, tap_info = buildFromHighlight(inner_w, face_quote, face_attr, vspan_gap)
 
     elseif source == "mixed" then
 
-        content = buildFromMixed(inner_w, face_quote, face_attr, vspan_gap)
+        content, tap_info = buildFromMixed(inner_w, face_quote, face_attr, vspan_gap, scale, quote_gap)
 
     else
 
-        content = buildFromQuote(inner_w, face_quote, face_attr, vspan_gap)
+        content, tap_info = buildFromQuotesSmart(inner_w, face_quote, face_attr, vspan_gap, scale, quote_gap)
 
     end
 
-    return FrameContainer:new{
+    local frame = FrameContainer:new{
 
         bordersize     = 0,
+
+        background     = Theme.BG,
 
         padding        = PAD,
 
@@ -835,6 +1254,48 @@ function M.build(w, ctx)
         content,
 
     }
+
+    if tap_info and tap_info.file then
+
+        local tap_h = M.getHeight(ctx)
+
+        local tap = InputContainer:new{
+
+            dimen = Geom:new{ w = w, h = tap_h },
+
+            [1] = frame,
+
+        }
+
+        tap.ges_events = {
+
+            TapQuote = {
+
+                GestureRange:new{
+
+                    ges   = "tap",
+
+                    range = function() return tap.dimen end,
+
+                },
+
+            },
+
+        }
+
+        function tap:onTapQuote()
+
+            openBookAt(tap_info.file, tap_info.page, tap_info.pos)
+
+            return true
+
+        end
+
+        return tap
+
+    end
+
+    return frame
 
 end
 
@@ -850,7 +1311,11 @@ function M.getHeight(_ctx)
 
     local attr_h     = math.max(6, math.floor(_BASE_QUOTE_ATTR_H * scale))
 
-    return PAD + quote_fs * 4 + quote_gap + attr_h + PAD2
+    -- Extra line when "FROM YOUR LIBRARY" label is shown (personal highlight).
+
+    local extra_label = math.max(0, math.floor(Screen:scaleBySize(14)))
+
+    return PAD + quote_fs * 4 + quote_gap + attr_h + PAD2 + extra_label
 
 end
 

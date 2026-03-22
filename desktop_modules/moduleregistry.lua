@@ -1,4 +1,4 @@
--- moduleregistry.lua — Simple UI
+-- moduleregistry.lua — Folio
 -- Registry estático dos módulos partilhados entre páginas.
 --
 -- DESIGN (optimizado para dispositivos lentos)
@@ -58,7 +58,7 @@ local function _load()
     for _, def in ipairs(MODULES) do
         local ok, mod = pcall(require, def.require_mod)
         if not ok or not mod then
-            logger.warn("simpleui: moduleregistry: failed to load '" .. def.require_mod .. "': " .. tostring(mod))
+            logger.warn("folio: moduleregistry: failed to load '" .. def.require_mod .. "': " .. tostring(mod))
         elseif mod then
             local list = mod.sub_modules or { mod }
             for _, m in ipairs(list) do

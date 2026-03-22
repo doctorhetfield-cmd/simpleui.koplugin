@@ -1,4 +1,4 @@
--- ui.lua — Simple UI
+-- ui.lua — Folio
 -- Shared layout infrastructure: side margin, content dimensions,
 -- OverlapGroup composition (wrapWithNavbar), topbar replacement
 -- and access to the UIManager window stack.
@@ -12,13 +12,15 @@ local Device         = require("device")
 local Screen         = Device.screen
 local logger         = require("logger")
 
+local Theme = require("folio_theme").Theme
+
 local M   = {}
 local _dim = {}
 
 -- ---------------------------------------------------------------------------
 -- Shared layout constants — single source of truth for all desktop modules.
 --
--- Every module_*.lua and sui_homescreen.lua reads these instead of declaring
+-- Every module_*.lua and folio_homescreen.lua reads these instead of declaring
 -- their own identical local copies. Values are computed once at load time
 -- via scaleBySize and stored as plain numbers — zero overhead at render time.
 --
@@ -33,8 +35,9 @@ local _dim = {}
 -- SIDE_PAD         : left/right inset of the homescreen content area
 -- ---------------------------------------------------------------------------
 
-M.PAD           = Screen:scaleBySize(14)
-M.PAD2          = Screen:scaleBySize(8)
+M.PAD           = Screen:scaleBySize(14) -- not a spacing token (14px module gutter)
+local _FolioTheme = require("folio_theme")
+M.PAD2          = _FolioTheme.SP.XS
 M.MOD_GAP       = Screen:scaleBySize(23)   -- includes former LABEL_PAD_TOP (8px)
 M.SIDE_PAD      = Screen:scaleBySize(14)
 M.LABEL_PAD_TOP = 0                         -- absorbed into MOD_GAP
@@ -42,9 +45,8 @@ M.LABEL_PAD_BOT = M.PAD2                    -- padding_bottom of sectionLabel (w
 M.LABEL_TEXT_H  = Screen:scaleBySize(16)    -- TextWidget height at SECTION_LABEL_SIZE
 M.LABEL_H       = M.LABEL_PAD_TOP + M.LABEL_PAD_BOT + M.LABEL_TEXT_H
 
--- Shared secondary text colour used across all desktop modules.
--- Edit this single value to retheme every module at once.
-M.CLR_TEXT_SUB  = Blitbuffer.COLOR_BLACK
+-- Shared secondary text colour used across all desktop modules (DESIGN.md TEXT_MUTED).
+M.CLR_TEXT_SUB  = Theme.TEXT_MUTED
 
 -- ---------------------------------------------------------------------------
 -- Shared menu-item resolver
@@ -66,7 +68,7 @@ function M.resolveMenuItems(items)
             -- The resolved table is stored back so repeated opens are free.
             local orig_fn = item.sub_item_table_func
             r.sub_item_table_func = nil
-            r._sui_lazy_fn = orig_fn
+            r._folio_lazy_fn = orig_fn
             r.sub_item_table = nil   -- will be populated on first navigation
         elseif type(item.sub_item_table) == "table" then
             -- Statically-provided sub-tables are resolved eagerly (they are
@@ -106,13 +108,13 @@ end
 
 function M.invalidateDimCache()
     _dim = {}
-    local bb = package.loaded["sui_bottombar"]
+    local bb = package.loaded["folio_bottombar"]
     if bb and bb.invalidateDimCache then bb.invalidateDimCache() end
-    local tb = package.loaded["sui_topbar"]
+    local tb = package.loaded["folio_topbar"]
     if tb and tb.invalidateDimCache then tb.invalidateDimCache() end
     -- Clear VerticalSpan pools so stale px values (computed before resize)
     -- are not reused after scaleBySize produces different numbers.
-    local hs = package.loaded["sui_homescreen"]
+    local hs = package.loaded["folio_homescreen"]
     if hs and hs._instance and hs._instance._vspan_pool then
         hs._instance._vspan_pool = {}
     end
@@ -126,15 +128,15 @@ end
 -- ---------------------------------------------------------------------------
 
 function M.getContentHeight()
-    local Bottombar = require("sui_bottombar")
-    local Topbar    = require("sui_topbar")
-    local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
+    local Bottombar = require("folio_bottombar")
+    local Topbar    = require("folio_topbar")
+    local topbar_on = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
     return Screen:getHeight() - Bottombar.TOTAL_H() - (topbar_on and Topbar.TOTAL_TOP_H() or 0)
 end
 
 function M.getContentTop()
-    local Topbar    = require("sui_topbar")
-    local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
+    local Topbar    = require("folio_topbar")
+    local topbar_on = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
     return topbar_on and Topbar.TOTAL_TOP_H() or 0
 end
 
@@ -162,7 +164,7 @@ function M.replaceTopbar(widget, new_topbar)
             return
         end
     end
-    logger.warn("simpleui: replaceTopbar could not find topbar in container — skipping")
+    logger.warn("folio: replaceTopbar could not find topbar in container — skipping")
 end
 
 -- ---------------------------------------------------------------------------
@@ -170,13 +172,13 @@ end
 -- ---------------------------------------------------------------------------
 
 function M.wrapWithNavbar(inner_widget, active_action_id, tabs, force_no_arrows)
-    local Topbar    = require("sui_topbar")
-    local Bottombar = require("sui_bottombar")
+    local Topbar    = require("folio_topbar")
+    local Bottombar = require("folio_bottombar")
     local screen_w  = Screen:getWidth()
     local screen_h  = Screen:getHeight()
     -- Read both settings once — used multiple times below.
-    local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
-    local navbar_on = G_reader_settings:nilOrTrue("navbar_enabled")
+    local topbar_on = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
+    local navbar_on = G_reader_settings:nilOrTrue("folio_navbar_enabled")
     local topbar_top = topbar_on and Topbar.TOTAL_TOP_H() or 0
     local navbar_h   = Bottombar.TOTAL_H()
     local content_h  = screen_h - topbar_top - navbar_h
@@ -209,11 +211,11 @@ function M.wrapWithNavbar(inner_widget, active_action_id, tabs, force_no_arrows)
 
         local sep_line = LineWidget:new{
             dimen      = Geom:new{ w = screen_w, h = Bottombar.TOP_SP() },
-            background = Blitbuffer.COLOR_WHITE,
+            background = Theme.BG,
         }
         local bot_pad = LineWidget:new{
             dimen      = Geom:new{ w = screen_w, h = Bottombar.BOT_SP() },
-            background = Blitbuffer.COLOR_WHITE,
+            background = Theme.BG,
         }
         sep_line.overlap_offset = { 0, bar_y }
         bar.overlap_offset      = { 0, bar_y + Bottombar.TOP_SP() }
@@ -235,7 +237,7 @@ function M.wrapWithNavbar(inner_widget, active_action_id, tabs, force_no_arrows)
     return navbar_container,
            FrameContainer:new{
                bordersize = 0, padding = 0, margin = 0,
-               background = Blitbuffer.COLOR_WHITE,
+               background = Theme.BG,
                navbar_container,
            },
            bar, topbar, bar_idx, topbar_on, topbar_idx
@@ -247,16 +249,64 @@ end
 -- ---------------------------------------------------------------------------
 
 function M.applyNavbarState(widget, container, bar, topbar, bar_idx, topbar_on, topbar_idx, tabs)
-    local Topbar = require("sui_topbar")
+    local Topbar = require("folio_topbar")
     widget._navbar_container         = container
     widget._navbar_bar               = bar
     widget._navbar_topbar            = topbar
     widget._navbar_topbar_idx        = topbar_idx
-    widget._navbar_tabs              = tabs
+    widget._folio_navbar_tabs              = tabs
     widget._navbar_bar_idx           = bar_idx
     widget._navbar_bar_idx_topbar_on = topbar_on
     widget._navbar_content_h         = M.getContentHeight()
     widget._navbar_topbar_h          = topbar_on and Topbar.TOTAL_TOP_H() or 0
+end
+
+-- ---------------------------------------------------------------------------
+-- Gesture priority for navbar touch zones (InputContainer)
+--
+-- KOReader dispatches Gesture such that WidgetContainer:handleEvent runs
+-- children first; only then does the parent's onGesture run (where
+-- registerTouchZones handlers live). Content below the bottom bar can therefore
+-- steal taps. Run InputContainer.onGesture (zones + ges_events) before
+-- propagating to children. See doc: WidgetContainer:handleEvent / Events.md.
+-- ---------------------------------------------------------------------------
+
+local function _resolveInheritedHandleEvent(target)
+    local own = rawget(target, "handleEvent")
+    if type(own) == "function" then return own end
+    local idx = getmetatable(target) and getmetatable(target).__index
+    while type(idx) == "table" do
+        local fn = rawget(idx, "handleEvent")
+        if type(fn) == "function" then return fn end
+        idx = getmetatable(idx) and getmetatable(idx).__index
+    end
+    return require("ui/widget/container/widgetcontainer").handleEvent
+end
+
+--- Call on any InputContainer that uses registerTouchZones for the navbar (FM
+--- class, Homescreen instance, or UIManager-injected fullscreen widgets).
+function M.applyGesturePriorityHandleEvent(target)
+    if not target or target._folio_gesture_priority_applied then return end
+    local InputContainer  = require("ui/widget/container/inputcontainer")
+    local WidgetContainer = require("ui/widget/container/widgetcontainer")
+    local inherit         = _resolveInheritedHandleEvent(target)
+    target._folio_gesture_priority_applied = true
+    target.handleEvent = function(self, event)
+        if event.handler == "onGesture" then
+            local ges = event.args and event.args[1]
+            if ges and InputContainer.onGesture(self, ges) then
+                return true
+            end
+            return WidgetContainer.propagateEvent(self, event)
+        end
+        return inherit(self, event)
+    end
+end
+
+function M.unapplyGesturePriorityHandleEvent(target)
+    if not target or not target._folio_gesture_priority_applied then return end
+    target.handleEvent = nil
+    target._folio_gesture_priority_applied = nil
 end
 
 -- ---------------------------------------------------------------------------
@@ -266,7 +316,7 @@ end
 function M.getWindowStack()
     local UIManager = require("ui/uimanager")
     if type(UIManager._window_stack) ~= "table" then
-        logger.warn("simpleui: UIManager._window_stack not available — internal API changed?")
+        logger.warn("folio: UIManager._window_stack not available — internal API changed?")
         return {}
     end
     return UIManager._window_stack
@@ -303,11 +353,11 @@ function M.showSettingsMenu(title, item_table_fn, top_offset, screen_h, bottomba
         height     = menu_h,
         width      = Screen:getWidth(),
         onMenuSelect = function(self_menu, item)
-            if item.sub_item_table or item._sui_lazy_fn then
+            if item.sub_item_table or item._folio_lazy_fn then
                 -- Resolve lazy sub-table on first navigation into this item.
-                if item._sui_lazy_fn then
-                    item.sub_item_table = M.resolveMenuItems(item._sui_lazy_fn())
-                    item._sui_lazy_fn   = nil
+                if item._folio_lazy_fn then
+                    item.sub_item_table = M.resolveMenuItems(item._folio_lazy_fn())
+                    item._folio_lazy_fn   = nil
                 end
                 self_menu.item_table.title = self_menu.title
                 table.insert(self_menu.item_table_stack, self_menu.item_table)
@@ -340,7 +390,7 @@ function M.showSettingsMenu(title, item_table_fn, top_offset, screen_h, bottomba
             -- before executing scheduled callbacks — so the HS was painted with
             -- the stale tree before the rebuild ran. The synchronous call ensures
             -- the widget tree is replaced before any paint is flushed.
-            local ok, HS = pcall(require, "sui_homescreen")
+            local ok, HS = pcall(require, "folio_homescreen")
             if not (ok and HS and HS._instance) then return end
             HS._instance:_refreshImmediate(false)
         end,

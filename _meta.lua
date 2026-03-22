@@ -1,9 +1,9 @@
 
 
 return {
-    name        = "simpleui",
-    fullname    = "Simple UI",
-    description = [[A simple UI for KOReader]],
+    name        = "Folio",
+    fullname    = "Folio",
+    description = [[A complete UI replacement for KOReader]],
     version     = "1.2.0",
     author      = "Doctor Hetfield",
 }

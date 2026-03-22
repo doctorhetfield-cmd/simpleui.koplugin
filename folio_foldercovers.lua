@@ -1,4 +1,4 @@
--- sui_foldercovers.lua — Simple UI
+-- folio_foldercovers.lua — Folio
 -- Folder cover art for the CoverBrowser mosaic view.
 --
 -- Implements exactly the same logic as 2-browser-folder-cover.lua, minus
@@ -9,9 +9,9 @@
 --   - Hide selection underline option
 --
 -- Settings keys:
---   simpleui_fc_enabled        — master toggle (default false)
---   simpleui_fc_show_name      — show folder name overlay (default true)
---   simpleui_fc_hide_underline — hide focus underline (default true)
+--   folio_fc_enabled        — master toggle (default false)
+--   folio_fc_show_name      — show folder name overlay (default true)
+--   folio_fc_hide_underline — hide focus underline (default true)
 
 local _ = require("gettext")
 local lfs = require("libs/libkoreader-lfs")
@@ -26,7 +26,6 @@ local BD              = require("ui/bidi")
 local Blitbuffer      = require("ffi/blitbuffer")
 local BottomContainer = require("ui/widget/container/bottomcontainer")
 local CenterContainer = require("ui/widget/container/centercontainer")
-local Font            = require("ui/font")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
@@ -41,17 +40,19 @@ local TextBoxWidget   = require("ui/widget/textboxwidget")
 local TextWidget      = require("ui/widget/textwidget")
 local TopContainer    = require("ui/widget/container/topcontainer")
 
+local FolioTheme = require("folio_theme")
+
 -- ---------------------------------------------------------------------------
 -- Settings
 -- ---------------------------------------------------------------------------
 
 local SK = {
-    enabled        = "simpleui_fc_enabled",
-    show_name      = "simpleui_fc_show_name",
-    hide_underline = "simpleui_fc_hide_underline",
-    label_style    = "simpleui_fc_label_style",
-    label_position = "simpleui_fc_label_position",
-    badge_position = "simpleui_fc_badge_position",
+    enabled        = "folio_fc_enabled",
+    show_name      = "folio_fc_show_name",
+    hide_underline = "folio_fc_hide_underline",
+    label_style    = "folio_fc_label_style",
+    label_position = "folio_fc_label_position",
+    badge_position = "folio_fc_badge_position",
 }
 
 local M = {}
@@ -235,22 +236,26 @@ local function _buildBadge(mandatory, cover_dimen, cv_scale)
     if nb_text == "" or nb_text == "0" then return nil end
 
     local nb_count       = tonumber(nb_text)  -- already validated non-nil by the guard above
-    local nb_size        = math.floor(_BASE_NB_SIZE * cv_scale)
+    -- Square badge reads heavier than a circle — slightly reduce footprint.
+    local nb_size        = math.max(6, math.floor(_BASE_NB_SIZE * cv_scale * 0.8))
     local nb_font_size   = math.floor(nb_size * (_BASE_NB_FS / _BASE_NB_SIZE))
     local badge_margin   = math.max(1, math.floor(_BADGE_MARGIN_BASE   * cv_scale))
     local badge_margin_r = math.max(1, math.floor(_BADGE_MARGIN_R_BASE * cv_scale))
 
+    local badge_pad_h = math.max(1, Screen:scaleBySize(2))
     local badge = FrameContainer:new{
-        padding    = 0,
-        bordersize = 0,
-        background = Blitbuffer.COLOR_BLACK,
-        radius     = math.floor(nb_size / 2),
-        dimen      = Geom:new{ w = nb_size, h = nb_size },
+        padding_left   = badge_pad_h,
+        padding_right  = badge_pad_h,
+        padding        = 0,
+        bordersize     = 0,
+        background     = Blitbuffer.COLOR_BLACK,
+        radius         = 0,
+        dimen          = Geom:new{ w = nb_size, h = nb_size },
         CenterContainer:new{
             dimen = Geom:new{ w = nb_size, h = nb_size },
             TextWidget:new{
                 text    = tostring(math.min(nb_count, 99)),
-                face    = Font:getFace("cfont", nb_font_size),
+                face    = FolioTheme.faceUI(nb_font_size),
                 fgcolor = Blitbuffer.COLOR_WHITE,
                 bold    = true,
             },
@@ -286,10 +291,10 @@ end
 
 -- ---------------------------------------------------------------------------
 -- Cover override — settings-based, identical pattern to module_collections.
--- Key: "simpleui_fc_covers" → table { [dir_path] = book_filepath }
+-- Key: "folio_fc_covers" → table { [dir_path] = book_filepath }
 -- ---------------------------------------------------------------------------
 
-local _FC_COVERS_KEY = "simpleui_fc_covers"
+local _FC_COVERS_KEY = "folio_fc_covers"
 
 local function _getCoverOverrides()
     return G_reader_settings:readSetting(_FC_COVERS_KEY) or {}
@@ -401,7 +406,7 @@ local function _installFileDialogButton(BookInfoManager)
     local ok_fm, FileManager = pcall(require, "apps/filemanager/filemanager")
     if not ok_fm or not FileManager then return end
 
-    FileManager.addFileDialogButtons(FileManager, "simpleui_fc_cover",
+    FileManager.addFileDialogButtons(FileManager, "folio_fc_cover",
         function(file, is_file, _book_props)
             if is_file then return nil end
             -- Hide the button when Folder Covers is disabled in the menu.
@@ -428,7 +433,7 @@ end
 local function _uninstallFileDialogButton()
     local ok_fm, FileManager = pcall(require, "apps/filemanager/filemanager")
     if not ok_fm or not FileManager then return end
-    FileManager.removeFileDialogButtons(FileManager, "simpleui_fc_cover")
+    FileManager.removeFileDialogButtons(FileManager, "folio_fc_cover")
 end
 
 -- ---------------------------------------------------------------------------
@@ -438,13 +443,13 @@ end
 function M.install()
     local MosaicMenuItem, userpatch = _getMosaicMenuItemAndPatch()
     if not MosaicMenuItem then return end
-    if MosaicMenuItem._simpleui_fc_patched then return end
+    if MosaicMenuItem._folio_fc_patched then return end
 
     local BookInfoManager = userpatch.getUpValue(MosaicMenuItem.update, "BookInfoManager")
     if not BookInfoManager then return end
 
-    MosaicMenuItem._simpleui_fc_patched     = true
-    MosaicMenuItem._simpleui_fc_orig_update = MosaicMenuItem.update
+    MosaicMenuItem._folio_fc_patched     = true
+    MosaicMenuItem._folio_fc_orig_update = MosaicMenuItem.update
 
     local original_update = MosaicMenuItem.update
 
@@ -595,7 +600,7 @@ function M.install()
                 local mid = math.floor((lo + hi + 1) / 2)
                 local tw = TextWidget:new{
                     text = longest_word,
-                    face = Font:getFace("cfont", mid),
+                    face = FolioTheme.faceContent(mid),
                     bold = true,
                 }
                 local word_w = tw:getWidth()
@@ -612,7 +617,7 @@ function M.install()
             local mid = math.floor((lo + hi + 1) / 2)
             local tbw = TextBoxWidget:new{
                 text      = text,
-                face      = Font:getFace("cfont", mid),
+                face      = FolioTheme.faceContent(mid),
                 width     = available_w,
                 alignment = "center",
                 bold      = true,
@@ -626,7 +631,7 @@ function M.install()
         -- Final widget at the chosen size — caller takes ownership.
         return TextBoxWidget:new{
             text      = text,
-            face      = Font:getFace("cfont", dir_font_size),
+            face      = FolioTheme.faceContent(dir_font_size),
             width     = available_w,
             alignment = "center",
             bold      = true,
@@ -634,7 +639,7 @@ function M.install()
     end
 
     -- onFocus: hide the underline when the setting is on (default on).
-    MosaicMenuItem._simpleui_fc_orig_onFocus = MosaicMenuItem.onFocus
+    MosaicMenuItem._folio_fc_orig_onFocus = MosaicMenuItem.onFocus
     function MosaicMenuItem:onFocus()
         self._underline_container.color = M.getHideUnderline()
             and Blitbuffer.COLOR_WHITE
@@ -648,18 +653,18 @@ end
 function M.uninstall()
     local MosaicMenuItem, _ = _getMosaicMenuItemAndPatch()
     if not MosaicMenuItem then return end
-    if not MosaicMenuItem._simpleui_fc_patched then return end
-    if MosaicMenuItem._simpleui_fc_orig_update then
-        MosaicMenuItem.update = MosaicMenuItem._simpleui_fc_orig_update
-        MosaicMenuItem._simpleui_fc_orig_update = nil
+    if not MosaicMenuItem._folio_fc_patched then return end
+    if MosaicMenuItem._folio_fc_orig_update then
+        MosaicMenuItem.update = MosaicMenuItem._folio_fc_orig_update
+        MosaicMenuItem._folio_fc_orig_update = nil
     end
-    if MosaicMenuItem._simpleui_fc_orig_onFocus then
-        MosaicMenuItem.onFocus = MosaicMenuItem._simpleui_fc_orig_onFocus
-        MosaicMenuItem._simpleui_fc_orig_onFocus = nil
+    if MosaicMenuItem._folio_fc_orig_onFocus then
+        MosaicMenuItem.onFocus = MosaicMenuItem._folio_fc_orig_onFocus
+        MosaicMenuItem._folio_fc_orig_onFocus = nil
     end
     MosaicMenuItem._setFolderCover      = nil
     MosaicMenuItem._getFolderNameWidget = nil
-    MosaicMenuItem._simpleui_fc_patched = nil
+    MosaicMenuItem._folio_fc_patched = nil
     _uninstallFileDialogButton()
 end
 

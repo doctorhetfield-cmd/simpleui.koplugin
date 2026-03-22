@@ -1,11 +1,10 @@
--- module_clock.lua — Simple UI
+-- module_clock.lua — Folio
 -- Clock module: clock always visible, with optional date and battery toggles.
 
 local Blitbuffer      = require("ffi/blitbuffer")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local datetime        = require("datetime")
 local Device          = require("device")
-local Font            = require("ui/font")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
 local TextWidget      = require("ui/widget/textwidget")
@@ -14,19 +13,18 @@ local VerticalSpan    = require("ui/widget/verticalspan")
 local Screen          = Device.screen
 local _               = require("gettext")
 
-local UI           = require("sui_core")
+local UI           = require("folio_core")
 local UIManager    = require("ui/uimanager")
-local Config       = require("sui_config")
+local Config       = require("folio_config")
+local FolioTheme     = require("folio_theme")
+local Theme        = FolioTheme.Theme
 local PAD          = UI.PAD
 local PAD2         = UI.PAD2
-local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
-
 -- ---------------------------------------------------------------------------
 -- Pixel constants — base values at 100% scale; scaled at render time.
 -- ---------------------------------------------------------------------------
 
 local _BASE_CLOCK_W       = Screen:scaleBySize(50)
-local _BASE_CLOCK_FS      = Screen:scaleBySize(44)
 local _BASE_DATE_H        = Screen:scaleBySize(17)
 local _BASE_DATE_GAP      = Screen:scaleBySize(19)
 local _BASE_DATE_FS       = Screen:scaleBySize(11)
@@ -75,8 +73,6 @@ local function _battInfo()
 end
 
 -- lvl is always a number in [0,100] or nil (normalised by _battInfo).
--- Battery always uses CLR_TEXT_SUB — same subdued grey as date and author text.
-
 -- Builds the battery display string.
 -- Uses ▰/▱ (filled/empty blocks) matching module_header.lua visual style.
 -- Charging replaces the first block with ⚡.
@@ -107,9 +103,9 @@ end
 local function build(w, pfx, vspan_pool)
     local scale     = Config.getModuleScale("clock", pfx)
 
-    -- Scale all dimensions from base values.
-    local clock_w       = math.floor(_BASE_CLOCK_W       * scale)
-    local clock_fs      = math.max(10, math.floor(_BASE_CLOCK_FS  * scale))
+    -- Scale all dimensions from base values; clock uses Newsreader DISPLAY (DESIGN.md).
+    local clock_face_sz = math.max(10, math.floor(FolioTheme.sizeDisplay() * scale))
+    local clock_w       = math.max(math.floor(_BASE_CLOCK_W * scale), clock_face_sz + 8)
     local date_h        = math.max(8,  math.floor(_BASE_DATE_H    * scale))
     local date_gap      = math.max(2,  math.floor(_BASE_DATE_GAP  * scale))
     local date_fs       = math.max(8,  math.floor(_BASE_DATE_FS   * scale))
@@ -129,19 +125,21 @@ local function build(w, pfx, vspan_pool)
         dimen = Geom:new{ w = inner_w, h = clock_w },
         TextWidget:new{
             text = datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock")),
-            face = Font:getFace("smallinfofont", clock_fs),
+            face = FolioTheme.faceContent(clock_face_sz),
             bold = true,
+            fgcolor = Theme.TEXT,
         },
     }
 
     if show_date then
         vg[#vg+1] = _vspan(date_gap, vspan_pool)
+        local date_str = os.date("%A, %B %d")
         vg[#vg+1] = CenterContainer:new{
             dimen = Geom:new{ w = inner_w, h = date_h },
             TextWidget:new{
-                text    = os.date("%A, %d %B"),
-                face    = Font:getFace("smallinfofont", date_fs),
-                fgcolor = CLR_TEXT_SUB,
+                text    = date_str:upper(),
+                face    = FolioTheme.faceUI(date_fs),
+                fgcolor = Theme.TEXT_MUTED,
             },
         }
     end
@@ -153,8 +151,8 @@ local function build(w, pfx, vspan_pool)
             dimen = Geom:new{ w = inner_w, h = batt_h },
             TextWidget:new{
                 text    = _battText(lvl, charging),
-                face    = Font:getFace("smallinfofont", batt_fs),
-                fgcolor = CLR_TEXT_SUB,
+                face    = FolioTheme.faceUI(batt_fs),
+                fgcolor = Theme.TEXT_MUTED,
             },
         }
     end
@@ -196,7 +194,8 @@ end
 
 function M.getHeight(ctx)
     local scale     = Config.getModuleScale("clock", ctx.pfx)
-    local clock_w   = math.floor(_BASE_CLOCK_W   * scale)
+    local clock_face_sz = math.max(10, math.floor(FolioTheme.sizeDisplay() * scale))
+    local clock_w   = math.max(math.floor(_BASE_CLOCK_W * scale), clock_face_sz + 8)
     local date_h    = math.max(8, math.floor(_BASE_DATE_H   * scale))
     local date_gap  = math.max(2, math.floor(_BASE_DATE_GAP * scale))
     local batt_h    = math.max(7, math.floor(_BASE_BATT_H   * scale))

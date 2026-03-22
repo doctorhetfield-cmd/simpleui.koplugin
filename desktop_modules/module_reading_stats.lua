@@ -1,7 +1,6 @@
--- module_reading_stats.lua — Simple UI
+-- module_reading_stats.lua — Folio
 -- Reading Stats module: row of stat cards (today, averages, totals, streak).
 
-local Blitbuffer      = require("ffi/blitbuffer")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local Device          = require("device")
 local Font            = require("ui/font")
@@ -19,18 +18,16 @@ local VerticalGroup   = require("ui/widget/verticalgroup")
 local Screen          = Device.screen
 local _               = require("gettext")
 local logger          = require("logger")
-local Config          = require("sui_config")
+local Config          = require("folio_config")
+local FolioTheme        = require("folio_theme")
+local Theme           = FolioTheme.Theme
 
-local UI      = require("sui_core")
-local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
+local UI      = require("folio_core")
 local PAD     = UI.PAD
 local MOD_GAP = UI.MOD_GAP
 local LABEL_H = UI.LABEL_H
 
-local _CLR_TEXT_BLK  = Blitbuffer.COLOR_BLACK
-local _CLR_CARD_BDR  = Blitbuffer.gray(0.72)
-
-local _BASE_RS_CORNER_R = Screen:scaleBySize(12)
+local _BASE_RS_CORNER_R = 0
 local _BASE_RS_GAP      = Screen:scaleBySize(12)
 local _BASE_RS_CARD_H   = Screen:scaleBySize(96)
 local _BASE_RS_VAL_FS   = Screen:scaleBySize(22)
@@ -38,7 +35,7 @@ local _BASE_RS_LBL_FS   = Screen:scaleBySize(8)
 local _BASE_RS_SEP_W    = Screen:scaleBySize(1)
 local _BASE_RS_PH_FS    = Screen:scaleBySize(11)  -- placeholder "No stats" text
 
-local RS_N_COLS    = 3  -- max columns — not a dimension, no scaling needed
+local RS_N_COLS    = 4  -- max columns — not a dimension, no scaling needed
 
 local SETTING_TYPE = "reading_stats_type"   -- suffix: pfx .. "reading_stats_type"
 
@@ -59,7 +56,7 @@ local function fmtTime(secs)
 end
 
 local STAT_MAP = {
-    today_time  = { display_label = _("Today — Time"),      value = function(s) return fmtTime(s.today_secs) end,   label = _("of reading today") },
+    today_time  = { display_label = _("Today — Time"),      value = function(s) return fmtTime(s.today_secs) end,   label = _("TODAY") },
     today_pages = { display_label = _("Today — Pages"),     value = function(s) return tostring(s.today_pages) end, label = _("pages read today") },
     avg_time    = { display_label = _("Daily avg — Time"),  value = function(s) return fmtTime(s.avg_secs) end,     label = _("daily avg (7 days)") },
     avg_pages   = { display_label = _("Daily avg — Pages"), value = function(s) return tostring(s.avg_pages) end,   label = _("pages/day (7 days)") },
@@ -147,8 +144,9 @@ local function fetchAllStats(shared_conn)
         local start_today = os.time() - (t.hour*3600 + t.min*60 + t.sec)
         local week_start  = start_today - 6*86400
 
+        -- Total reading time since local midnight (raw sum of session durations).
         r.today_secs = tonumber(conn:rowexec(string.format(
-            "SELECT sum(s) FROM (SELECT sum(duration) AS s FROM page_stat WHERE start_time>=%d GROUP BY id_book,page);",
+            "SELECT COALESCE(SUM(duration),0) FROM page_stat WHERE start_time>=%d;",
             start_today))) or 0
 
         -- Use '@' as separator — avoids the integer ambiguity of '-'
@@ -204,7 +202,7 @@ local function fetchAllStats(shared_conn)
                 ELSE 0 END;]], start_today))
         r.streak = tonumber(streak_val) or 0
     end)
-    if not ok then logger.warn("simpleui: reading_stats: fetchAllStats failed: " .. tostring(err)) end
+    if not ok then logger.warn("folio: reading_stats: fetchAllStats failed: " .. tostring(err)) end
     if own_conn then pcall(function() conn:close() end) end
 
     -- Count finished books via sidecar status — respects the user's explicit
@@ -242,24 +240,23 @@ local function buildStatCardWidget(card_w, stat_id, stats, d)
     local lbl_str = entry.label_fn and entry.label_fn(stats) or entry.label
     return FrameContainer:new{
         dimen      = Geom:new{ w = card_w, h = d.card_h },
-        bordersize = 1,
-        color      = _CLR_CARD_BDR,
-        background = Blitbuffer.COLOR_WHITE,
-        radius     = d.corner_r,
+        bordersize = 0,
+        background = Theme.BG,
+        radius     = Theme.CORNER_RADIUS,
         padding    = 0,
         CenterContainer:new{
             dimen = Geom:new{ w = card_w, h = d.card_h },
             VerticalGroup:new{ align = "center",
                 TextWidget:new{
                     text    = val_str,
-                    face    = Font:getFace("smallinfofont", d.val_fs),
+                    face    = FolioTheme.faceContent(d.val_fs),
                     bold    = true,
-                    fgcolor = _CLR_TEXT_BLK,
+                    fgcolor = Theme.TEXT,
                 },
                 TextWidget:new{
                     text    = lbl_str,
-                    face    = Font:getFace("cfont", d.lbl_fs),
-                    fgcolor = CLR_TEXT_SUB,
+                    face    = FolioTheme.faceUI(d.lbl_fs),
+                    fgcolor = Theme.TEXT_MUTED,
                 },
             },
         },
@@ -276,21 +273,21 @@ local function buildStatListCell(cell_w, stat_id, stats, show_sep, d)
     local card = FrameContainer:new{
         dimen      = Geom:new{ w = cell_w, h = d.card_h },
         bordersize = 0,
-        background = Blitbuffer.COLOR_WHITE,
+        background = Theme.BG,
         padding    = 0,
         CenterContainer:new{
             dimen = Geom:new{ w = cell_w, h = d.card_h },
             VerticalGroup:new{ align = "left",
                 TextWidget:new{
                     text    = val_str,
-                    face    = Font:getFace("smallinfofont", d.val_fs),
+                    face    = FolioTheme.faceContent(d.val_fs),
                     bold    = true,
-                    fgcolor = _CLR_TEXT_BLK,
+                    fgcolor = Theme.TEXT,
                 },
                 TextWidget:new{
                     text    = lbl_str,
-                    face    = Font:getFace("cfont", d.lbl_fs),
-                    fgcolor = CLR_TEXT_SUB,
+                    face    = FolioTheme.faceUI(d.lbl_fs),
+                    fgcolor = Theme.TEXT_MUTED,
                 },
             },
         },
@@ -303,7 +300,7 @@ local function buildStatListCell(cell_w, stat_id, stats, show_sep, d)
     if show_sep then
         local sep = LineWidget:new{
             dimen      = Geom:new{ w = d.sep_w, h = d.card_h },
-            background = _CLR_CARD_BDR,
+            background = Theme.GHOST_LINE,
         }
         sep.overlap_offset = { cell_w - d.sep_w, 0 }
         og[#og+1] = sep
@@ -377,13 +374,20 @@ function M.build(w, ctx)
 
     -- Show a placeholder when enabled but no stats have been selected yet.
     if #stat_ids == 0 then
-        return CenterContainer:new{
-            dimen = Geom:new{ w = w, h = d.card_h },
-            TextWidget:new{
-                text    = _("No stats selected"),
-                face    = Font:getFace("smallinfofont", d.ph_fs),
-                fgcolor = CLR_TEXT_SUB,
-                width   = w - PAD * 2,
+        local sp = FolioTheme.scaled(FolioTheme.Spacing.SM)
+        return FrameContainer:new{
+            dimen       = Geom:new{ w = w, h = d.card_h + 2 * sp },
+            bordersize  = 0,
+            background  = Theme.SURFACE_LOW,
+            padding     = sp,
+            CenterContainer:new{
+                dimen = Geom:new{ w = w - 2 * sp, h = d.card_h },
+                TextWidget:new{
+                    text    = _("No stats selected"),
+                    face    = FolioTheme.faceUI(d.ph_fs),
+                    fgcolor = Theme.TEXT_MUTED,
+                    width   = w - PAD * 2,
+                },
             },
         }
     end
@@ -393,10 +397,11 @@ function M.build(w, ctx)
     local mode   = getType(ctx.pfx)
     local row    = HorizontalGroup:new{ align = "center" }
 
-    local label_h = require("sui_config").getScaledLabelH()
+    local label_h = require("folio_config").getScaledLabelH()
+    local section_pad = FolioTheme.scaled(FolioTheme.Spacing.SM)
 
     if mode == "list" then
-        local cell_w = math.floor(w / n)
+        local cell_w = math.floor((w - 2 * section_pad) / n)
         for i = 1, n do
             local cell = buildStatListCell(cell_w, stat_ids[i], stats, i < n, d)
                       or OverlapGroup:new{
@@ -414,14 +419,18 @@ function M.build(w, ctx)
         end
 
         return FrameContainer:new{
-            dimen       = Geom:new{ w = w, h = label_h + d.card_h },
-            bordersize  = 0, padding = 0,
-            padding_top = label_h,
+            dimen          = Geom:new{ w = w, h = label_h + d.card_h + section_pad },
+            bordersize     = 0,
+            background     = Theme.SURFACE_LOW,
+            padding_top    = label_h,
+            padding_left   = section_pad,
+            padding_right  = section_pad,
+            padding_bottom = section_pad,
             row,
         }
     else
-        -- Cards mode: rounded bordered cards with gaps between them.
-        local avail_w = w - PAD * 2
+        -- Cards mode: tonal columns (no card borders).
+        local avail_w = w - 2 * section_pad
         local card_w  = math.floor((avail_w - d.gap * (n - 1)) / n)
         for i = 1, n do
             local card = buildStatCardWidget(card_w, stat_ids[i], stats, d)
@@ -442,11 +451,15 @@ function M.build(w, ctx)
         end
 
         return FrameContainer:new{
-            dimen       = Geom:new{ w = w, h = label_h + d.card_h },
-            bordersize  = 0, padding = 0,
-            padding_top = label_h,
+            dimen          = Geom:new{ w = w, h = label_h + d.card_h + section_pad },
+            bordersize     = 0,
+            background     = Theme.SURFACE_LOW,
+            padding_top    = label_h,
+            padding_left   = section_pad,
+            padding_right  = section_pad,
+            padding_bottom = section_pad,
             CenterContainer:new{
-                dimen = Geom:new{ w = w, h = d.card_h },
+                dimen = Geom:new{ w = w - 2 * section_pad, h = d.card_h },
                 row,
             },
         }
@@ -455,7 +468,8 @@ end
 
 function M.getHeight(_ctx)
     local card_h = math.floor(_BASE_RS_CARD_H * Config.getModuleScale("reading_stats", _ctx and _ctx.pfx))
-    return Config.getScaledLabelH() + card_h
+    local section_pad = FolioTheme.scaled(FolioTheme.Spacing.SM)
+    return Config.getScaledLabelH() + card_h + section_pad
 end
 
 
@@ -553,12 +567,14 @@ function M.getMenuItems(ctx_menu)
             for _, id in ipairs(rs_ids) do
                 sort_items[#sort_items+1] = { text = M.getStatLabel(id), orig_item = id }
             end
-            _UIManager:show(SortWidget:new{ title = _lc("Arrange Reading Stats"), covers_fullscreen = true,
+            local sw = SortWidget:new{ title = _lc("Arrange Reading Stats"), covers_fullscreen = true,
                 item_table = sort_items, callback = function()
                     local new_order = {}
                     for _, item in ipairs(sort_items) do new_order[#new_order+1] = item.orig_item end
                     G_reader_settings:saveSetting(items_key, new_order); refresh()
-                end })
+                end }
+            _UIManager:show(sw)
+            UI.applyGesturePriorityHandleEvent(sw)
         end },
     }
 

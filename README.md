@@ -1,163 +1,87 @@
-# SimpleUI for KOReader
+# Folio
 
-A clean, distraction-free UI plugin for KOReader that transforms your reading experience. SimpleUI adds a **dedicated Home Screen**, a customisable bottom navigation bar, a top status bar, and a reworked library title bar, giving you instant access to your library, history, collections, and reading stats without navigating through nested menus.
+A KOReader plugin that replaces the default file-manager and reader chrome with a calmer, purpose-built surface: a **Home** dashboard, **top and bottom bars** you configure, a **custom title bar** in the library stack, **folder covers**, and **reader-side conveniences** (gestures, optional defaults, Wi‑Fi nudge). Built for e‑ink: large tap targets, readable typography, and a single shared theme (`folio_theme` / `DESIGN.md`).
 
-<div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; max-width: 1000px; justify-content: center;">
-<img src="https://github.com/user-attachments/assets/4ea92760-c2bf-488b-9f5a-1f663157c97f" width="240" height="324" alt="simpleUI1" style="object-fit: contain;" />
-<img src="https://github.com/user-attachments/assets/a1a7a2c7-6c0f-484e-b6fa-c78474661480" width="240" height="324" alt="simpleUI2" style="object-fit: contain;" />
-<img src="https://github.com/user-attachments/assets/1707f5c2-e367-47b8-90a9-9a9549bd9e67" width="240" height="324" alt="simpleUI3" style="object-fit: contain;" />
-<img src="https://github.com/user-attachments/assets/fd443a96-e12c-4dc7-9e69-103c444458af" width="240" height="324" alt="simpleUI4" style="object-fit: contain;" />
-</div>
+Requires [KOReader](https://github.com/koreader/koreader). Clone or download this plugin from your usual Git host.
+
 ---
 
-## Features
+## Why use it
 
-### Home Screen
+KOReader exposes almost everything through menus and dialogs. Folio doesn’t remove that power — it **front-loads** what you use every day: open the book you’re on, jump to collections, see goals and stats, and move in the reader without hunting. Configuration lives under **Menu → Tools → Folio**.
 
-The centrepiece of SimpleUI. A home screen that gives you everything at a glance:
+---
 
-- **Clock & Date** — a large, readable clock with full date display
-- **Currently Reading** — your active book with cover art, title, author, progress bar, percentage read, and estimated time left
-- **Recent Books** — a row of up to 5 recent books with cover thumbnails and progress indicators; tap any to resume reading
-- **Collections** — your KOReader collections displayed as tappable cover cards, right on the home screen
-- **Reading Goals** — visual progress tracker for your annual and daily reading goals, including physical books read
-- **Reading Stats** — compact stat cards showing today's reading time, pages, streaks, and all-time totals
-- **Quick Actions** — up to 3 customisable rows of shortcut buttons (Library, History, Wi-Fi toggle, Brightness, Stats, and more)
-- **Quote of the Day** — optional literary header, randomly picked from a curated list of 100+ quotes; can also show your own highlights
-- **Module ordering** — rearrange Home Screen modules in any order to match your workflow
-- **Per-module scaling** — resize each module independently, or lock all scales together for uniform adjustments
-- **Start with Home Screen** — set the Home Screen as the first screen KOReader opens every time you pick up your device
+## The shell
 
-### Bottom Navigation Bar
+**Home** — Composable modules (clock, quote, current book, recents, collections, goals, stats, quick actions). Reorder them, scale each module or lock scales, and optionally **start KOReader on Home** instead of the raw library.
 
-A persistent tab bar at the bottom of the screen for one-tap navigation:
+**Bottom bar** — Up to **six** slots ( **four** when Navpager is on). Actions span library routes, Home, collections, history, continue, favourites, bookmarks, connectivity, brightness, statistics, power, and **user-defined** folders, collections, or plugins. Icons-only, text-only, or both. **Long-press** the bar for settings.
 
-- Up to **5 fully customisable tabs**: Library, History, Collections, Favourites, Continue Reading, Home Screen, Wi-Fi Toggle, Brightness, Stats, Bookmark Browser, and custom folder or collection shortcuts
-- **3 display modes**: icons only, text only, or icons + text
-- **Navpager mode** — replaces the pagination bar with Prev/Next arrows at the edges of the bottom bar; arrows dim when there is no previous or next page
-- **Hold anywhere on the bar** to instantly open navigation settings
+**Top bar** — Clock, Wi‑Fi, brightness, battery, disk, and RAM — each item can sit on the **left or right** with its own order.
 
-### Top Status Bar
+**Title bar** — Back, search, and menu with size presets; behaviour respects root paths and locked home folder. Where Folio adds pagination context, the subtitle can show **page position**. Library vs inner views can use **different** button layouts where exposed.
 
-A slim status bar always visible at the top of the screen:
+---
 
-- Displays **clock, battery level, Wi-Fi status, frontlight brightness, disk usage, and RAM** all configurable
-- Each item can be placed on the **left or right** side independently
+## Library and history
 
-### Custom Title Bar
+**Folder covers** — Mosaic folders can show art from the first book inside, a **`.cover.*`** file in the folder, or a cover you **pick via long-press**. Optional label and count badge; optional hiding of the selection underline.
 
-A reworked title bar for the Library, History, Collections, and other full-screen views:
+**Reading history** — Folio ships a **dedicated history screen** (timeline-style overview and milestones) integrated via the plugin’s patches, instead of relying on the stock list alone.
 
-- **Back button** — replaces KOReader's default navigation with a cleaner chevron; hides automatically at the root folder, and also hides when the Library's *Lock Home Folder* setting is active and you are already at the home folder
-- **Search button** — quick access to file search, compacts into the freed slot when the back button is hidden
-- **Menu button** — opens the KOReader main menu
-- **Page number in title** — shows "Page X of Y" in the subtitle when browsing multi-page views (enabled automatically by Navpager)
-- **Button size** — three sizes (Compact, Default, Large) for the title bar buttons
-- **Separate layouts** — Library buttons and sub-page buttons (History, Collections, etc.) can be configured independently
+---
 
-### Folder Covers
+## Reader
 
-Custom cover art for folders in the Library mosaic view:
+**One-handed mode** — Remaps forward/back tap zones for left- or right-hand use; turning the mode off **restores** your previous KOReader page-turn zone settings.
 
-- Automatically uses the **first book cover** found inside a folder
-- Supports a **`.cover.*` image file** placed manually in the folder for full control
-- **Long-press any folder** and tap *Set folder cover…* to pick a specific book's cover as the folder's cover, only visible when Folder Covers is enabled
-- Optional **folder name label** with configurable position (top, centre, bottom) and style (solid or transparent background)
-- Optional **item count badge** with configurable position
-- **Hide selection underline** for a cleaner look
+**Swipe-up toolbar** — From the bottom edge of the page, a strip for brightness, font size, and light/night-style toggles (as wired in `folio_readingtoolbar.lua`).
 
-### Quick Actions
+**First-run defaults** — Optional one-time application of a **cleaner reader footer** profile and **screensaver** defaults (cover + message) when you haven’t already set your own — gated by Folio settings flags.
 
-Shortcut buttons configurable both on the Home Screen and in the bottom bar:
-
-- Assign any action to a **custom folder**, **collection**, or **KOReader plugin**
-- Quick **Wi-Fi toggle** and **frontlight control**
-- **Power menu** (Restart, Quit) accessible as a tab
-- **Bookmark Browser** — browse your highlights and bookmarks across all books
-
-### Settings
-
-All features are accessible via **Menu → Tools → SimpleUI**
+**Wi‑Fi reminder** — Optional banner if wireless stays on; dismiss or auto-hide per implementation.
 
 ---
 
 ## Installation
 
-1. Download this repository as a ZIP — click **Code → Download ZIP**
-2. Extract the folder and confirm it is named `simpleui.koplugin`
-3. Copy the folder to the `plugins/` directory on your KOReader device
-4. Restart KOReader
-5. Go to **Menu → Tools → SimpleUI** to enable and configure the plugin
-
-> **Tip:** After enabling the plugin, tap the **Home Screen** tab in the bottom bar to open your new home screen.
-
-> **Tip:** To make the Home Screen your default start screen, go to **Menu → Tools → SimpleUI → Home Screen → Start with Home Screen**. From then on, KOReader opens directly to your home screen every time you turn on your device.
+1. Download this repo (**Code → Download ZIP**).
+2. Unzip so the directory name is **`folio.koplugin`**.
+3. Copy it into your KOReader **`plugins/`** folder.
+4. Restart KOReader.
+5. **Menu → Tools → Folio** — enable the plugin and tune modules and bars.
 
 ---
 
-## 🌍 Translations
+## Translations
 
-SimpleUI has full translation support. The UI language is detected automatically from your KOReader language setting — no configuration needed.
+GNU gettext (`.po`). Language follows KOReader when a matching file exists under `locale/`.
 
-### Included languages
+Shipped: **en** (default), **pt_PT**, **pt_BR**, **es**, **zh_CN**, **ru**.
 
-| Language | File | Status |
-|---|---|---|
-| English | *(built-in)* | Complete |
-| Português (Portugal) | `locale/pt_PT.po` | Complete |
-| Português (Brasil) | `locale/pt_BR.po` | Complete |
-| Español | `locale/es.po` | Complete |
-| 简体中文 (Chinese Simplified) | `locale/zh_CN.po` | Complete |
-| Русский (Russian) | `locale/ru.po` | Complete |
-
-### Adding a new language
-
-All 297 visible strings in the plugin are translatable. To add a new language:
-
-1. Copy `locale/simpleui.pot` to `locale/<lang>.po`, using the standard locale code for your language (examples: `de`, `fr`, `it`, `ja`)
-2. Open the file in any text editor or a dedicated PO editor such as [Poedit](https://poedit.net/)
-3. For each entry, fill in the `msgstr` field with your translation:
-
-```po
-msgid "Currently Reading"
-msgstr "Aktuell gelesen"
-```
-
-4. Save the file inside the `locale/` folder — no code changes needed
-5. Restart KOReader; the plugin picks up the new language automatically
-
-The plugin first tries an exact match for the locale code (e.g. `pt_PT.po`), then falls back to the language prefix (e.g. `pt.po`), then falls back to English.
-
-### Notes for translators
-
-- Placeholders like `%d`, `%s`, and `%%` must be kept in your translation exactly as they appear in the `msgid` — you can reorder them if your language requires it, but not remove them
-- `\n` is a line break — keep it in the same position
-- Never modify the `msgid` line — only edit `msgstr`
-- If a `msgstr` is left empty (`""`), the English original is shown as a fallback
-- Submitting your translation as a Pull Request is very welcome — see [CONTRIBUTING.md](CONTRIBUTING.md)
+To add a language: copy `locale/folio.pot` to `locale/<code>.po`, translate `msgstr` entries (keep `%s` / `%d` / `\n`), restart. Roughly **300** message ids; the total moves as strings are added.
 
 ---
 
-## 🔧 Customising Quotes
+## Quote pool
 
-To add, remove or edit the Quote of the Day pool, open `desktop_modules/quotes.lua` inside the plugin folder. Each entry follows this format:
+Curated lines live in `desktop_modules/quotes.lua`:
 
 ```lua
-{ q = "Quote text.", a = "Author Name", b = "Book Title (optional)" }
+{ q = "…", a = "Author", b = "Optional book title" }
 ```
 
-Changes take effect the next time the Home Screen is opened.
+The Home **Quote** module can also pull **random highlights** from your books or **mix** both sources — configured in Folio’s Home settings.
 
 ---
 
 ## Contributing
 
-Contributions are welcome — bug fixes, new features, translations, and documentation improvements. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get started.
-
-To report a bug, open an **Issue** and include your KOReader version and device model.
+Issues and pull requests are welcome. Guidelines: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
-## 📄 License
+## License
 
-MIT — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).
