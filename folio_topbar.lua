@@ -1,4 +1,4 @@
--- topbar.lua — Simple UI
+-- topbar.lua — Folio
 -- Status bar rendered at the top of the screen: clock, Wi-Fi, battery,
 -- brightness, disk usage and RAM. Supports left/right item placement.
 
@@ -11,7 +11,6 @@ local OverlapGroup    = require("ui/widget/overlapgroup")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local TextWidget      = require("ui/widget/textwidget")
 local Geom            = require("ui/geometry")
-local Font            = require("ui/font")
 local Blitbuffer      = require("ffi/blitbuffer")
 local UIManager       = require("ui/uimanager")
 local InfoMessage     = require("ui/widget/infomessage")
@@ -20,7 +19,9 @@ local Screen          = Device.screen
 local logger          = require("logger")
 local _               = require("gettext")
 
-local Config = require("sui_config")
+local Config = require("folio_config")
+local FolioTheme = require("folio_theme")
+local Theme    = FolioTheme.Theme
 
 local M = {}
 
@@ -68,11 +69,11 @@ local function _cached(key, fn)
 end
 
 local function _getTopbarScale()
-    local Config = require("sui_config")
+    local Config = require("folio_config")
     return Config.getTopbarSizePct() / 100
 end
 
-function M.SIDE_M()        return require("sui_core").SIDE_M()        end  -- delegação para ui.lua
+function M.SIDE_M()        return require("folio_core").SIDE_M()        end  -- delegação para ui.lua
 function M.TOPBAR_SIDE_M() return _cached("topbar_side_m", function() return M.SIDE_M() - 3 end) end
 
 function M.TOPBAR_H()
@@ -114,7 +115,7 @@ local _topbar_disk_time = 0
 local _topbar_ram_mb    = nil
 local _topbar_ram_time  = 0
 
--- Cached result of "navbar_topbar_enabled" setting.
+-- Cached result of "folio_navbar_topbar_enabled" setting.
 -- This setting is read on every timer tick (shouldRunTimer) and on every
 -- touch-zone registration. Caching it avoids repeated settings lookups on
 -- the hot path. Invalidated by invalidateDimCache() on any settings change.
@@ -285,8 +286,8 @@ function M.buildTopbarWidget()
     local pad_top   = M.TOPBAR_PAD_TOP()
     local pad_bot   = M.TOPBAR_PAD_BOT()
     local total_h   = M.TOPBAR_H() + pad_top + pad_bot
-    local face      = Font:getFace("cfont", M.TOPBAR_FS())
-    local icon_face = Font:getFace("xx_smallinfofont", M.TOPBAR_FS())
+    local face      = FolioTheme.faceUI(M.TOPBAR_FS())
+    local icon_face = FolioTheme.faceUI(M.TOPBAR_FS())
     local info      = M.getTopbarInfo()
     local tb_cfg    = getTopbarConfigCached()
 
@@ -327,21 +328,21 @@ function M.buildTopbarWidget()
                     if icon or (label and label ~= "") then
                         if not first then
                             group[#group + 1] = TextWidget:new{
-                                text = "  ", face = face, fgcolor = Blitbuffer.COLOR_BLACK,
+                                text = "  ", face = face, fgcolor = Theme.TEXT,
                             }
                         end
                         if icon then
                             group[#group + 1] = TextWidget:new{
                                 text    = icon,
                                 face    = is_nerd and icon_face or face,
-                                fgcolor = Blitbuffer.COLOR_BLACK,
+                                fgcolor = Theme.TEXT,
                             }
                         end
                         if label and label ~= "" then
                             group[#group + 1] = TextWidget:new{
                                 text    = label,
                                 face    = face,
-                                fgcolor = Blitbuffer.COLOR_BLACK,
+                                fgcolor = Theme.TEXT,
                             }
                         end
                         first = false
@@ -363,13 +364,13 @@ function M.buildTopbarWidget()
         buildSideGroup(tb_cfg.order_right),
     }
 
-    local show_swipe = G_reader_settings:nilOrTrue("navbar_topbar_swipe_indicator")
+    local show_swipe = G_reader_settings:nilOrTrue("folio_navbar_topbar_swipe_indicator")
     local center_w   = show_swipe and CenterContainer:new{
         dimen = Geom:new{ w = inner_w, h = total_h },
         TextWidget:new{
             text    = "\xef\xb9\x80",
-            face    = Font:getFace("cfont", M.TOPBAR_CHEVRON_FS()),
-            fgcolor = Blitbuffer.COLOR_BLACK,
+            face    = FolioTheme.faceUI(M.TOPBAR_CHEVRON_FS()),
+            fgcolor = Theme.TEXT,
         },
     } or nil
 
@@ -381,7 +382,7 @@ function M.buildTopbarWidget()
     return FrameContainer:new{
         bordersize    = 0, padding = 0, margin = 0,
         padding_left  = side_m, padding_right = side_m,
-        background    = Blitbuffer.COLOR_WHITE,
+        background    = Theme.SURFACE_TOP,
         row,
     }
 end
@@ -401,7 +402,7 @@ function M.registerTouchZones(plugin, fm_self)
     end
 
     if _topbar_enabled_cache == nil then
-        _topbar_enabled_cache = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
+        _topbar_enabled_cache = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
     end
     if not _topbar_enabled_cache then return end
 
@@ -422,8 +423,8 @@ function M.registerTouchZones(plugin, fm_self)
             screen_zone = topbar_zone,
             handler = function(_ges)
                 if not plugin._makeTopbarMenu then plugin:addToMainMenu({}) end
-                local UI_mod    = require("sui_core")
-                local Bottombar = require("sui_bottombar")
+                local UI_mod    = require("folio_core")
+                local Bottombar = require("folio_bottombar")
                 -- Delegates to the shared implementation in ui.lua (#4).
                 UI_mod.showSettingsMenu(_("Top Bar"), plugin._makeTopbarMenu,
                     M.TOTAL_TOP_H(), screen_h, Bottombar.TOTAL_H())
@@ -439,7 +440,7 @@ end
 
 local function shouldRunTimer()
     if _topbar_enabled_cache == nil then
-        _topbar_enabled_cache = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
+        _topbar_enabled_cache = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
     end
     if not _topbar_enabled_cache then return false end
     local cfg = getTopbarConfigCached()   -- usa a cache em vez de reconstruir a tabela (#5)
@@ -463,7 +464,7 @@ end
 
 function M.refresh(plugin)
     if not shouldRunTimer() then return end
-    local UI    = require("sui_core")
+    local UI    = require("folio_core")
     local stack = UI.getWindowStack()  -- read once
     -- Each widget gets its own topbar instance. Sharing a single object across
     -- multiple _navbar_containers is unsafe: replaceTopbar mutates overlap_offset
@@ -479,7 +480,7 @@ function M.refresh(plugin)
     refreshWidget(plugin.ui)
     for _, entry in ipairs(stack) do
         local ok, err = pcall(refreshWidget, entry.widget)
-        if not ok then logger.warn("simpleui: topbar refreshWidget failed:", tostring(err)) end
+        if not ok then logger.warn("folio: topbar refreshWidget failed:", tostring(err)) end
     end
     local delay = 60 - (os.time() % 60) + 1
     M.scheduleRefresh(plugin, delay)

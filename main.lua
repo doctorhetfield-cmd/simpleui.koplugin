@@ -1,25 +1,35 @@
--- main.lua — Simple UI
+-- main.lua — Folio
 -- Plugin entry point. Registers the plugin and delegates to specialised modules.
 
 local WidgetContainer = require("ui/widget/container/widgetcontainer")
 local UIManager       = require("ui/uimanager")
+local Device          = require("device")
 local logger          = require("logger")
 
 -- i18n MUST be installed before any other plugin module is require()'d.
 -- All modules capture local _ = require("gettext") at load time — if we
 -- replace package.loaded["gettext"] here, every subsequent require("gettext")
 -- in this plugin receives our wrapper automatically.
-local I18n = require("sui_i18n")
+local I18n = require("folio_i18n")
 I18n.install()
 
-local Config    = require("sui_config")
-local UI        = require("sui_core")
-local Bottombar = require("sui_bottombar")
-local Topbar    = require("sui_topbar")
-local Patches   = require("sui_patches")
+-- Design tokens (Theme, faces). Load early so any subsequent require sees a warm cache.
+-- If this fails, other modules that require("folio_theme") will retry; we only log here.
+do
+    local ok_st, err_st = pcall(require, "folio_theme")
+    if not ok_st then
+        logger.err("folio: folio_theme failed to load (UI theming may break until restart):", err_st)
+    end
+end
 
-local SimpleUIPlugin = WidgetContainer:new{
-    name = "simpleui",
+local Config    = require("folio_config")
+local UI        = require("folio_core")
+local Bottombar = require("folio_bottombar")
+local Topbar    = require("folio_topbar")
+local Patches   = require("folio_patches")
+
+local FolioPlugin = WidgetContainer:new{
+    name = "folio",
 
     active_action             = nil,
     _rebuild_scheduled        = false,
@@ -47,33 +57,78 @@ local SimpleUIPlugin = WidgetContainer:new{
 -- Lifecycle
 -- ---------------------------------------------------------------------------
 
-function SimpleUIPlugin:init()
+function FolioPlugin:init()
     local ok, err = pcall(function()
+        -- Migrate legacy `simpleui_*` / `sui_*` QoL keys before other init (one-time).
+        do
+            if not G_reader_settings:readSetting("folio_keys_migrated") then
+                local keys = {
+                    "simpleui_statusbar_set", "simpleui_screensaver_set",
+                    "simpleui_one_handed_mode", "simpleui_one_handed_tap_backup",
+                    "simpleui_quote_mode", "simpleui_quote_deck_order",
+                    "simpleui_quote_keys_migrated", "simpleui_config_keys_migrated",
+                }
+                local sui_pairs = {
+                    { "sui_statusbar_set", "folio_statusbar_set" },
+                    { "sui_screensaver_set", "folio_screensaver_set" },
+                    { "sui_one_handed_mode", "folio_one_handed_mode" },
+                    { "sui_one_handed_tap_backup", "folio_one_handed_tap_backup" },
+                }
+                for _, old_key in ipairs(keys) do
+                    local val = G_reader_settings:readSetting(old_key)
+                    if val ~= nil then
+                        local new_key = old_key:gsub("^simpleui_", "folio_")
+                        if G_reader_settings:readSetting(new_key) == nil then
+                            G_reader_settings:saveSetting(new_key, val)
+                        end
+                        G_reader_settings:delSetting(old_key)
+                    end
+                end
+                for _, e in ipairs(sui_pairs) do
+                    local o, n = e[1], e[2]
+                    local val = G_reader_settings:readSetting(o)
+                    if val ~= nil and G_reader_settings:readSetting(n) == nil then
+                        G_reader_settings:saveSetting(n, val)
+                        G_reader_settings:delSetting(o)
+                    end
+                end
+                G_reader_settings:saveSetting("folio_keys_migrated", true)
+                G_reader_settings:flush()
+            end
+        end
         -- Detect hot update: compare the version now on disk with what was
         -- running last session. If they differ, warn the user to restart so
         -- that all plugin modules are loaded fresh.
         local meta_ok, meta = pcall(require, "_meta")
         local current_version = meta_ok and meta and meta.version
-        local prev_version = G_reader_settings:readSetting("simpleui_loaded_version")
+        local prev_version = G_reader_settings:readSetting("folio_loaded_version")
         if current_version then
             if prev_version and prev_version ~= current_version then
-                logger.info("simpleui: updated from", prev_version, "to", current_version,
+                logger.info("folio: updated from", prev_version, "to", current_version,
                     "— restart recommended")
                 UIManager:scheduleIn(1, function()
                     local InfoMessage = require("ui/widget/infomessage")
                     UIManager:show(InfoMessage:new{
                         text = string.format(
-                            _("Simple UI was updated (%s → %s).\n\nA restart is recommended to apply all changes cleanly."),
+                            _("Folio was updated (%s → %s).\n\nA restart is recommended to apply all changes cleanly."),
                             prev_version, current_version
                         ),
                         timeout = 6,
                     })
                 end)
             end
-            G_reader_settings:saveSetting("simpleui_loaded_version", current_version)
+            G_reader_settings:saveSetting("folio_loaded_version", current_version)
         end
 
+        Config.migrateLegacySettingsKeysToFolioPrefix()
         Config.applyFirstRunDefaults()
+        if G_reader_settings:nilOrTrue("folio_enabled") then
+            local ok_qol, Qol = pcall(require, "folio_qol")
+            if ok_qol and Qol then
+                if Qol.applySmartStatusBarFirstLaunch then Qol.applySmartStatusBarFirstLaunch() end
+                if Qol.applyScreensaverDefaultsFirstLaunch then Qol.applyScreensaverDefaultsFirstLaunch() end
+            end
+        end
         Config.migrateOldCustomSlots()
         -- Only sanitize QA slots when custom QAs actually exist.
         -- getCustomQAList() is a single settings read; skipping the full
@@ -83,9 +138,9 @@ function SimpleUIPlugin:init()
             Config.sanitizeQASlots()
         end
         self.ui.menu:registerToMainMenu(self)
-        if G_reader_settings:nilOrTrue("simpleui_enabled") then
+        if G_reader_settings:nilOrTrue("folio_enabled") then
             Patches.installAll(self)
-            if G_reader_settings:nilOrTrue("navbar_topbar_enabled") then
+            if G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled") then
                 Topbar.scheduleRefresh(self, 0)
             end
             -- Pre-load desktop modules during boot idle time so the first
@@ -96,7 +151,7 @@ function SimpleUIPlugin:init()
             end)
         end
     end)
-    if not ok then logger.err("simpleui: init failed:", tostring(err)) end
+    if not ok then logger.err("folio: init failed:", tostring(err)) end
 end
 
 -- ---------------------------------------------------------------------------
@@ -105,9 +160,10 @@ end
 -- without restarting KOReader) always loads fresh code.
 -- ---------------------------------------------------------------------------
 local _PLUGIN_MODULES = {
-    "sui_i18n", "sui_config", "sui_core", "sui_bottombar", "sui_topbar",
-    "sui_patches", "sui_menu", "sui_titlebar", "sui_quickactions",
-    "sui_homescreen", "sui_foldercovers",
+    "folio_i18n", "folio_theme", "folio_config", "folio_core", "folio_bottombar", "folio_topbar",
+    "folio_patches", "folio_menu", "folio_titlebar", "folio_quickactions",
+    "folio_homescreen", "folio_foldercovers", "collectionswidget", "folio_history", "folio_power",
+    "folio_readingtoolbar", "folio_qol", "folio_wifi_reminder",
     "desktop_modules/moduleregistry",
     "desktop_modules/module_books_shared",
     "desktop_modules/module_clock",
@@ -121,10 +177,14 @@ local _PLUGIN_MODULES = {
     "desktop_modules/quotes",
 }
 
-function SimpleUIPlugin:onTeardown()
+function FolioPlugin:onTeardown()
     if self._topbar_timer then
         UIManager:unschedule(self._topbar_timer)
         self._topbar_timer = nil
+    end
+    do
+        local ok_rm, Rem = pcall(require, "folio_wifi_reminder")
+        if ok_rm and Rem and Rem.cancelAll then pcall(Rem.cancelAll) end
     end
     Patches.teardownAll(self)
     I18n.uninstall()
@@ -152,7 +212,7 @@ end
 -- System events
 -- ---------------------------------------------------------------------------
 
-function SimpleUIPlugin:onScreenResize()
+function FolioPlugin:onScreenResize()
     UI.invalidateDimCache()
     UIManager:scheduleIn(0.2, function()
         self:_rewrapAllWidgets()
@@ -160,23 +220,38 @@ function SimpleUIPlugin:onScreenResize()
     end)
 end
 
-function SimpleUIPlugin:onNetworkConnected()
+function FolioPlugin:onNetworkConnected()
+    Bottombar.refreshWifiIcon(self)
+    do
+        local ok_rm, Rem = pcall(require, "folio_wifi_reminder")
+        if ok_rm and Rem and Rem.scheduleIdleReminder then
+            local ok_hw, has_wifi = pcall(function() return Device:hasWifiToggle() end)
+            if ok_hw and has_wifi then
+                local ok_nm, NetworkMgr = pcall(require, "ui/network/manager")
+                if ok_nm and NetworkMgr then
+                    local ok_w, on = pcall(function() return NetworkMgr:isWifiOn() end)
+                    if ok_w and on then
+                        Rem.scheduleIdleReminder(self, 60)
+                    end
+                end
+            end
+        end
+    end
+end
+
+function FolioPlugin:onNetworkDisconnected()
     Bottombar.refreshWifiIcon(self)
 end
 
-function SimpleUIPlugin:onNetworkDisconnected()
-    Bottombar.refreshWifiIcon(self)
-end
-
-function SimpleUIPlugin:onSuspend()
+function FolioPlugin:onSuspend()
     if self._topbar_timer then
         UIManager:unschedule(self._topbar_timer)
         self._topbar_timer = nil
     end
 end
 
-function SimpleUIPlugin:onResume()
-    if G_reader_settings:nilOrTrue("navbar_topbar_enabled") then
+function FolioPlugin:onResume()
+    if G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled") then
         Topbar.scheduleRefresh(self, 0)
     end
     local RUI = package.loaded["apps/reader/readerui"]
@@ -195,19 +270,19 @@ function SimpleUIPlugin:onResume()
         -- as read inside the reader and returning here).
         -- If it's not visible, showHSAfterResume will open it and onShow will
         -- run _buildContent from scratch anyway.
-        local HS = package.loaded["sui_homescreen"]
+        local HS = package.loaded["folio_homescreen"]
         if HS and HS._instance then
             HS.refresh(false)
         end
         -- Re-open the Homescreen on wakeup when "Start with Homescreen" is set.
-        if G_reader_settings:nilOrTrue("simpleui_enabled") then
+        if G_reader_settings:nilOrTrue("folio_enabled") then
             Patches.showHSAfterResume(self)
         end
     end
 end
 
-function SimpleUIPlugin:onFrontlightStateChanged()
-    if not G_reader_settings:nilOrTrue("navbar_topbar_enabled") then return end
+function FolioPlugin:onFrontlightStateChanged()
+    if not G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled") then return end
     Topbar.scheduleRefresh(self, 0)
 end
 
@@ -215,16 +290,16 @@ end
 -- Topbar delegation
 -- ---------------------------------------------------------------------------
 
-function SimpleUIPlugin:_registerTouchZones(fm_self)
+function FolioPlugin:_registerTouchZones(fm_self)
     Bottombar.registerTouchZones(self, fm_self)
     Topbar.registerTouchZones(self, fm_self)
 end
 
-function SimpleUIPlugin:_scheduleTopbarRefresh(delay)
+function FolioPlugin:_scheduleTopbarRefresh(delay)
     Topbar.scheduleRefresh(self, delay)
 end
 
-function SimpleUIPlugin:_refreshTopbar()
+function FolioPlugin:_refreshTopbar()
     Topbar.refresh(self)
 end
 
@@ -232,53 +307,53 @@ end
 -- Bottombar delegation
 -- ---------------------------------------------------------------------------
 
-function SimpleUIPlugin:_onTabTap(action_id, fm_self)
+function FolioPlugin:_onTabTap(action_id, fm_self)
     Bottombar.onTabTap(self, action_id, fm_self)
 end
 
-function SimpleUIPlugin:_navigate(action_id, fm_self, tabs, force)
+function FolioPlugin:_navigate(action_id, fm_self, tabs, force)
     Bottombar.navigate(self, action_id, fm_self, tabs, force)
 end
 
-function SimpleUIPlugin:_refreshCurrentView()
+function FolioPlugin:_refreshCurrentView()
     local tabs      = Config.loadTabConfig()
     local action_id = self.active_action or tabs[1] or "home"
     self:_navigate(action_id, self.ui, tabs)
 end
 
-function SimpleUIPlugin:_rebuildAllNavbars()
+function FolioPlugin:_rebuildAllNavbars()
     Bottombar.rebuildAllNavbars(self)
 end
 
-function SimpleUIPlugin:_rewrapAllWidgets()
+function FolioPlugin:_rewrapAllWidgets()
     Bottombar.rewrapAllWidgets(self)
 end
 
-function SimpleUIPlugin:_restoreTabInFM(tabs, prev_action)
+function FolioPlugin:_restoreTabInFM(tabs, prev_action)
     Bottombar.restoreTabInFM(self, tabs, prev_action)
 end
 
-function SimpleUIPlugin:_setPowerTabActive(active, prev_action)
+function FolioPlugin:_setPowerTabActive(active, prev_action)
     Bottombar.setPowerTabActive(self, active, prev_action)
 end
 
-function SimpleUIPlugin:_showPowerDialog(fm_self)
+function FolioPlugin:_showPowerDialog(fm_self)
     Bottombar.showPowerDialog(self, fm_self)
 end
 
-function SimpleUIPlugin:_doWifiToggle()
+function FolioPlugin:_doWifiToggle()
     Bottombar.doWifiToggle(self)
 end
 
-function SimpleUIPlugin:_doRotateScreen()
+function FolioPlugin:_doRotateScreen()
     Bottombar.doRotateScreen()
 end
 
-function SimpleUIPlugin:_showFrontlightDialog()
+function FolioPlugin:_showFrontlightDialog()
     Bottombar.showFrontlightDialog()
 end
 
-function SimpleUIPlugin:_scheduleRebuild()
+function FolioPlugin:_scheduleRebuild()
     if self._rebuild_scheduled then return end
     self._rebuild_scheduled = true
     UIManager:scheduleIn(0.1, function()
@@ -287,36 +362,36 @@ function SimpleUIPlugin:_scheduleRebuild()
     end)
 end
 
-function SimpleUIPlugin:_updateFMHomeIcon() end
+function FolioPlugin:_updateFMHomeIcon() end
 
 -- ---------------------------------------------------------------------------
--- Main menu entry (sui_menu is lazy-loaded on first access)
+-- Main menu entry (folio_menu is lazy-loaded on first access)
 -- ---------------------------------------------------------------------------
 
 local _menu_installer = nil
 
-function SimpleUIPlugin:addToMainMenu(menu_items)
+function FolioPlugin:addToMainMenu(menu_items)
     if not _menu_installer then
-        local ok, result = pcall(require, "sui_menu")
+        local ok, result = pcall(require, "folio_menu")
         if not ok then
-            logger.err("simpleui: sui_menu failed to load: " .. tostring(result))
-            menu_items.simpleui = { sorting_hint = "tools", text = _("Simple UI"), sub_item_table = {} }
+            logger.err("folio: folio_menu failed to load: " .. tostring(result))
+            menu_items.folio = { sorting_hint = "tools", text = _("Folio"), sub_item_table = {} }
             return
         end
         _menu_installer = result
         -- Capture the bootstrap stub before installing so we can detect replacement.
-        local bootstrap_fn = rawget(SimpleUIPlugin, "addToMainMenu")
-        _menu_installer(SimpleUIPlugin)
+        local bootstrap_fn = rawget(FolioPlugin, "addToMainMenu")
+        _menu_installer(FolioPlugin)
         -- The installer replaces addToMainMenu on the class; call the real one now.
-        local real_fn = rawget(SimpleUIPlugin, "addToMainMenu")
+        local real_fn = rawget(FolioPlugin, "addToMainMenu")
         if type(real_fn) == "function" and real_fn ~= bootstrap_fn then
             real_fn(self, menu_items)
         else
-            logger.err("simpleui: sui_menu installer did not replace addToMainMenu")
-            menu_items.simpleui = { sorting_hint = "tools", text = _("Simple UI"), sub_item_table = {} }
+            logger.err("folio: folio_menu installer did not replace addToMainMenu")
+            menu_items.folio = { sorting_hint = "tools", text = _("Folio"), sub_item_table = {} }
         end
         return
     end
 end
 
-return SimpleUIPlugin
+return FolioPlugin

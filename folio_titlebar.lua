@@ -1,4 +1,4 @@
--- titlebar.lua — Simple UI
+-- titlebar.lua — Folio
 -- Encapsulates all title-bar customisations for the FileManager and injected
 -- fullscreen widgets (Collections, History, …).
 --
@@ -21,7 +21,7 @@
 --   We zero ALL paddings before placing, so overlap_offset[1] = icon left edge.
 
 local _ = require("gettext")
-local Config = require("sui_config")
+local Config = require("folio_config")
 
 -- Lua 5.1 compatibility: unpack is a global; table.unpack was added in 5.2 / LuaJIT compat.
 local _unpack = table.unpack or unpack
@@ -61,12 +61,12 @@ M.ITEMS = {
 -- Settings
 -- ---------------------------------------------------------------------------
 
-local SETTING_KEY = "simpleui_titlebar_custom"
-local FM_CFG_KEY  = "simpleui_tb_fm_cfg"
-local INJ_CFG_KEY = "simpleui_tb_inj_cfg"
-local SIZE_KEY    = "simpleui_tb_size"
+local SETTING_KEY = "folio_titlebar_custom"
+local FM_CFG_KEY  = "folio_tb_fm_cfg"
+local INJ_CFG_KEY = "folio_tb_inj_cfg"
+local SIZE_KEY    = "folio_tb_size"
 
-local function _visKey(id) return "simpleui_tb_item_" .. id end
+local function _visKey(id) return "folio_tb_item_" .. id end
 
 local _VIS_DEFAULTS = {
     menu_button   = true,
@@ -691,7 +691,7 @@ function M.reapplyAll(fm_self, window_stack)
         local ok, err = pcall(M.reapply, fm_self)
         if not ok then
             local logger = require("logger")
-            logger.warn("simpleui: titlebar.reapplyAll FM failed:", tostring(err))
+            logger.warn("folio: titlebar.reapplyAll FM failed:", tostring(err))
         end
     end
     if type(window_stack) == "table" then
@@ -704,7 +704,7 @@ function M.reapplyAll(fm_self, window_stack)
                 end)
                 if not ok then
                     local logger = require("logger")
-                    logger.warn("simpleui: titlebar.reapplyAll widget failed:", tostring(err))
+                    logger.warn("folio: titlebar.reapplyAll widget failed:", tostring(err))
                 end
             end
         end

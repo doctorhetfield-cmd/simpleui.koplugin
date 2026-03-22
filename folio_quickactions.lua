@@ -1,12 +1,12 @@
--- sui_quickactions.lua — Simple UI
+-- folio_quickactions.lua — Folio
 -- Single source of truth for Quick Actions:
 --   • Storage: custom QA CRUD, default-action label/icon overrides
 --   • Resolution: getEntry(id) — used by both bottombar and module_quick_actions
 --   • Menus: icon picker, rename dialog, create/edit/delete flows
 --
--- Both sui_bottombar (buildTabCell) and module_quick_actions (buildQAWidget)
+-- Both folio_bottombar (buildTabCell) and module_quick_actions (buildQAWidget)
 -- call QA.getEntry(id) so every label/icon change propagates everywhere
--- automatically.  sui_menu.lua calls QA.makeMenuItems(plugin) to obtain
+-- automatically.  folio_menu.lua calls QA.makeMenuItems(plugin) to obtain
 -- the Create / Change Icons / Rename sub-menu items.
 
 local UIManager = require("ui/uimanager")
@@ -16,7 +16,8 @@ local lfs       = require("libs/libkoreader-lfs")
 local logger    = require("logger")
 local _         = require("gettext")
 
-local Config    = require("sui_config")
+local Config    = require("folio_config")
+local UI        = require("folio_core")
 
 local QA = {}
 
@@ -31,13 +32,13 @@ QA.ICONS_DIR = _qa_plugin_dir .. "icons/custom"
 
 -- ---------------------------------------------------------------------------
 -- Default-action label / icon overrides
--- Setting keys: navbar_action_<id>_label  /  navbar_action_<id>_icon
--- These are the authoritative get/set functions; sui_config.lua delegates
+-- Setting keys: folio_navbar_action_<id>_label  /  folio_navbar_action_<id>_icon
+-- These are the authoritative get/set functions; folio_config.lua delegates
 -- to here for any external callers that still use Config.get/setDefaultAction*.
 -- ---------------------------------------------------------------------------
 
-local function _defaultLabelKey(id) return "navbar_action_" .. id .. "_label" end
-local function _defaultIconKey(id)  return "navbar_action_" .. id .. "_icon"  end
+local function _defaultLabelKey(id) return "folio_navbar_action_" .. id .. "_label" end
+local function _defaultIconKey(id)  return "folio_navbar_action_" .. id .. "_icon"  end
 
 function QA.getDefaultActionLabel(id)
     return G_reader_settings:readSetting(_defaultLabelKey(id))
@@ -68,7 +69,7 @@ end
 --
 -- Returns { icon = path, label = string } for any action id.
 -- Applies label/icon overrides for default actions.
--- For custom QAs: reads from settings directly (same key as sui_config).
+-- For custom QAs: reads from settings directly (same key as folio_config).
 -- Never returns nil.
 -- ---------------------------------------------------------------------------
 
@@ -78,7 +79,7 @@ local _wifi_entry = { icon = "", label = "" }
 function QA.getEntry(id)
     -- Custom QA
     if id and id:match("^custom_qa_%d+$") then
-        local cfg = G_reader_settings:readSetting("navbar_cqa_" .. id) or {}
+        local cfg = G_reader_settings:readSetting("folio_navbar_cqa_" .. id) or {}
         local default_icon
         if cfg.dispatcher_action and cfg.dispatcher_action ~= "" then
             default_icon = Config.CUSTOM_DISPATCHER_ICON
@@ -96,7 +97,7 @@ function QA.getEntry(id)
     -- Default action: look up catalogue
     local a = Config.ACTION_BY_ID[id]
     if not a then
-        logger.warn("simpleui: QA.getEntry: unknown id " .. tostring(id))
+        logger.warn("folio: QA.getEntry: unknown id " .. tostring(id))
         return { icon = Config.ICON.library, label = tostring(id) }
     end
 
@@ -234,7 +235,7 @@ local function _scanFMPlugins()
         dictionary=true, wikipedia=true, devicestatus=true, devicelistener=true,
         networklistener=true,
     }
-    local our_name  = "simpleui"
+    local our_name  = "folio"
     local seen_keys = {}
     local fm_val_to_key = {}
     for k, v in pairs(fm) do
@@ -303,7 +304,7 @@ end
 
 -- ---------------------------------------------------------------------------
 -- Create / Edit dialog
--- plugin: the SimpleUI plugin instance (for _rebuildAllNavbars)
+-- plugin: the Folio plugin instance (for _rebuildAllNavbars)
 -- qa_id:  existing id to edit, or nil to create new
 -- on_done: optional zero-arg callback after save
 -- ---------------------------------------------------------------------------
@@ -322,7 +323,7 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
     local start_path  = cfg.path or G_reader_settings:readSetting("home_dir") or "/"
     local chosen_icon = cfg.icon
     local dlg_title   = qa_id and _("Edit Quick Action") or _("New Quick Action")
-    local TOTAL_H     = require("sui_bottombar").TOTAL_H
+    local TOTAL_H     = require("folio_bottombar").TOTAL_H
 
     local function iconButtonLabel(default_lbl)
         if not chosen_icon then return default_lbl or _("Icon: Default") end
@@ -393,7 +394,7 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
     local sanitize = Config.sanitizeLabel
 
     local function openPathChooser()
-        UIManager:show(PathChooser:new{
+        local pc = PathChooser:new{
             select_directory = true, select_file = false, show_files = false,
             path = start_path, covers_fullscreen = true,
             height = Screen:getHeight() - TOTAL_H(),
@@ -423,7 +424,9 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
                     end,
                 })
             end,
-        })
+        }
+        UIManager:show(pc)
+        UI.applyGesturePriorityHandleEvent(pc)
     end
 
     local function openCollectionPicker()
@@ -521,7 +524,7 @@ end
 
 -- ---------------------------------------------------------------------------
 -- makeMenuItems(plugin) — returns the items table for the Quick Actions menu
--- Called from sui_menu.lua; replaces the old makeQuickActionsMenu closure.
+-- Called from folio_menu.lua; replaces the old makeQuickActionsMenu closure.
 -- ---------------------------------------------------------------------------
 
 function QA.makeMenuItems(plugin)

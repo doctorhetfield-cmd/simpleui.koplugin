@@ -1,4 +1,4 @@
--- bottombar.lua — Simple UI
+-- bottombar.lua — Folio
 -- Bottom tab bar: dimensions, widget construction, touch zones, navigation, rebuild helpers.
 
 local FrameContainer  = require("ui/widget/container/framecontainer")
@@ -6,12 +6,9 @@ local CenterContainer = require("ui/widget/container/centercontainer")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
-local LineWidget      = require("ui/widget/linewidget")
 local TextWidget      = require("ui/widget/textwidget")
 local ImageWidget     = require("ui/widget/imagewidget")
 local Geom            = require("ui/geometry")
-local Font            = require("ui/font")
-local Blitbuffer      = require("ffi/blitbuffer")
 local UIManager       = require("ui/uimanager")
 local _InfoMessage
 local function InfoMessage() _InfoMessage = _InfoMessage or require("ui/widget/infomessage"); return _InfoMessage end
@@ -20,20 +17,22 @@ local Screen          = Device.screen
 local logger          = require("logger")
 local _               = require("gettext")
 
-local Config = require("sui_config")
+local Config = require("folio_config")
+local FolioTheme = require("folio_theme")
+local Theme    = FolioTheme.Theme
 
 local M = {}
 
--- Bar colors.
-M.COLOR_INACTIVE_TEXT = Blitbuffer.gray(0.55)
-M.COLOR_SEPARATOR     = Blitbuffer.gray(0.7)
+-- Legacy: muted labels on inactive tabs (prefer Theme.TEXT_MUTED in new code).
+M.COLOR_INACTIVE_TEXT = Theme.TEXT_MUTED
+M.COLOR_SEPARATOR     = Theme.GHOST_LINE
 
--- Returns the separator colour: transparent when the user has hidden it.
+-- Returns the separator colour when legacy 1px separators are shown (hidden → canvas).
 local function _sepColor()
-    if G_reader_settings:isTrue("navbar_hide_separator") then
-        return Blitbuffer.COLOR_WHITE
+    if G_reader_settings:isTrue("folio_navbar_hide_separator") then
+        return Theme.BG
     end
-    return M.COLOR_SEPARATOR
+    return Theme.GHOST_LINE
 end
 
 -- ---------------------------------------------------------------------------
@@ -44,7 +43,7 @@ local _dim = {}
 
 -- Reads the current navbar size setting and returns a scale factor.
 -- Now uses a numeric percentage (Config.getBarSizePct()) instead of named keys.
--- Legacy string key "navbar_bar_size" is ignored.
+-- Legacy string key "folio_navbar_bar_size" is ignored.
 local function _getNavbarScale()
     return Config.getBarSizePct() / 100
 end
@@ -64,8 +63,9 @@ end
 -- Dimensions that scale with navbar size setting.
 -- BOT_SP, TOP_SP, SEP_H and SIDE_M are structural/device-safe-area values —
 -- they do not scale with the bar size.
-function M.BAR_H()       return _cached("bar_h",   function() return math.floor(Screen:scaleBySize(96) * _getNavbarScale()) end) end
-function M.ICON_SZ()     return _cached("icon_sz", function() return math.floor(Screen:scaleBySize(44) * _getNavbarScale() * (Config.getIconScalePct()  / 100)) end) end
+-- Editorial bar: ~72px content band at 100% scale (icon + label + padding).
+function M.BAR_H()       return _cached("bar_h",   function() return math.floor(Screen:scaleBySize(72) * _getNavbarScale()) end) end
+function M.ICON_SZ()     return _cached("icon_sz", function() return math.floor(Screen:scaleBySize(28) * _getNavbarScale() * (Config.getIconScalePct()  / 100)) end) end
 function M.ICON_TOP_SP() return _cached("it_sp",   function() return math.floor(Screen:scaleBySize(10) * _getNavbarScale()) end) end
 function M.ICON_TXT_SP() return _cached("itxt_sp", function() return math.floor(Screen:scaleBySize(4)  * _getNavbarScale()) end) end
 function M.LABEL_FS()    return _cached("lbl_fs",  function() return math.floor(Screen:scaleBySize(9)  * _getNavbarScale() * (Config.getLabelScalePct() / 100)) end) end
@@ -78,7 +78,7 @@ function M.SIDE_M()      return _cached("side_m",  function() return Screen:scal
 function M.SEP_H()       return _cached("sep_h",   function() return Screen:scaleBySize(1)  end) end
 
 function M.TOTAL_H()
-    if not G_reader_settings:nilOrTrue("navbar_enabled") then return 0 end
+    if not G_reader_settings:nilOrTrue("folio_navbar_enabled") then return 0 end
     return M.BAR_H() + M.TOP_SP() + M.BOT_SP()
 end
 
@@ -87,14 +87,14 @@ end
 -- ---------------------------------------------------------------------------
 
 function M.getPaginationIconSize()
-    local key = G_reader_settings:readSetting("navbar_pagination_size") or "s"
+    local key = G_reader_settings:readSetting("folio_navbar_pagination_size") or "s"
     if key == "xs" then return Screen:scaleBySize(20)
     elseif key == "s" then return Screen:scaleBySize(28)
     else return Screen:scaleBySize(36) end
 end
 
 function M.getPaginationFontSize()
-    local key = G_reader_settings:readSetting("navbar_pagination_size") or "s"
+    local key = G_reader_settings:readSetting("folio_navbar_pagination_size") or "s"
     if key == "xs" then return 11
     elseif key == "s" then return 14
     else return 20 end
@@ -146,20 +146,11 @@ end
 local _vspan_icon_top = nil
 local _vspan_icon_txt = nil
 
--- Builds one tab cell: separator, active indicator, icon and/or label.
+-- Builds one tab cell: solid black block when active (mockup), tonal bar when inactive.
 function M.buildTabCell(action_id, active, tab_w, mode)
-    local action          = Config.getActionById(action_id)
-    local indicator_color = active and Blitbuffer.COLOR_BLACK or Blitbuffer.COLOR_WHITE
-    local vg              = VerticalGroup:new{ align = "center" }
+    local action = Config.getActionById(action_id)
+    local vg     = VerticalGroup:new{ align = "center" }
 
-    vg[#vg + 1] = LineWidget:new{
-        dimen      = Geom:new{ w = tab_w, h = M.SEP_H() },
-        background = _sepColor(),
-    }
-    vg[#vg + 1] = LineWidget:new{
-        dimen      = Geom:new{ w = tab_w, h = M.INDIC_H() },
-        background = indicator_color,
-    }
     if not _vspan_icon_top then _vspan_icon_top = VerticalSpan:new{ width = M.ICON_TOP_SP() } end
     vg[#vg + 1] = _vspan_icon_top
 
@@ -170,6 +161,7 @@ function M.buildTabCell(action_id, active, tab_w, mode)
             height  = M.ICON_SZ(),
             is_icon = true,
             alpha   = true,
+            invert  = active and true or false,
         }
     end
 
@@ -180,26 +172,32 @@ function M.buildTabCell(action_id, active, tab_w, mode)
         end
         vg[#vg + 1] = TextWidget:new{
             text    = action.label,
-            face    = Font:getFace("cfont", M.LABEL_FS()),
-            fgcolor = active and Blitbuffer.COLOR_BLACK or M.COLOR_INACTIVE_TEXT,
+            face    = FolioTheme.faceUI(M.LABEL_FS()),
+            fgcolor = active and Theme.ON_PRIMARY or Theme.TEXT_MUTED,
         }
     end
 
-    return CenterContainer:new{
-        dimen = Geom:new{ w = tab_w, h = M.BAR_H() },
-        vg,
+    return FrameContainer:new{
+        bordersize  = 0,
+        padding     = 0,
+        margin      = 0,
+        background  = active and Theme.PRIMARY or Theme.SURFACE_TOP,
+        dimen       = Geom:new{ w = tab_w, h = M.BAR_H() },
+        CenterContainer:new{
+            dimen = Geom:new{ w = tab_w, h = M.BAR_H() },
+            vg,
+        },
     }
 end
 
 -- Builds a navpager arrow cell (Prev or Next).
 -- `enabled`  — false → dimmed (no prev/next page exists).
 -- `is_prev`  — true → left arrow, false → right arrow.
-local _NAVPAGER_COLOR_ACTIVE  = Blitbuffer.COLOR_BLACK
-local _NAVPAGER_COLOR_DIMMED  = nil  -- initialised lazily (grey(0.75))
+local _NAVPAGER_COLOR_DIMMED = nil  -- initialised lazily
 
 local function _navpagerColor()
     if not _NAVPAGER_COLOR_DIMMED then
-        _NAVPAGER_COLOR_DIMMED = Blitbuffer.gray(0.75)
+        _NAVPAGER_COLOR_DIMMED = Theme.TEXT_MUTED
     end
     return _NAVPAGER_COLOR_DIMMED
 end
@@ -207,20 +205,10 @@ end
 function M.buildNavpagerArrowCell(is_prev, enabled, tab_w, mode)
     local icon_file = is_prev and Config.ICON.nav_prev or Config.ICON.nav_next
     local label     = is_prev and _("Prev") or _("Next")
-    local color     = enabled and _NAVPAGER_COLOR_ACTIVE or _navpagerColor()
+    local color     = enabled and Theme.TEXT or _navpagerColor()
 
     local vg = VerticalGroup:new{ align = "center" }
 
-    -- Top separator line (same visual rhythm as regular tabs).
-    vg[#vg + 1] = LineWidget:new{
-        dimen      = Geom:new{ w = tab_w, h = M.SEP_H() },
-        background = _sepColor(),
-    }
-    -- No active indicator line for arrow buttons (always transparent).
-    vg[#vg + 1] = LineWidget:new{
-        dimen      = Geom:new{ w = tab_w, h = M.INDIC_H() },
-        background = Blitbuffer.COLOR_WHITE,
-    }
     if not _vspan_icon_top then _vspan_icon_top = VerticalSpan:new{ width = M.ICON_TOP_SP() } end
     vg[#vg + 1] = _vspan_icon_top
 
@@ -248,15 +236,22 @@ function M.buildNavpagerArrowCell(is_prev, enabled, tab_w, mode)
         end
         tw = TextWidget:new{
             text    = label,
-            face    = Font:getFace("cfont", M.LABEL_FS()),
+            face    = FolioTheme.faceUI(M.LABEL_FS()),
             fgcolor = color,
         }
         vg[#vg + 1] = tw
     end
 
-    local cc = CenterContainer:new{
-        dimen = Geom:new{ w = tab_w, h = M.BAR_H() },
-        vg,
+    local cc = FrameContainer:new{
+        bordersize  = 0,
+        padding     = 0,
+        margin      = 0,
+        background  = Theme.SURFACE_TOP,
+        dimen       = Geom:new{ w = tab_w, h = M.BAR_H() },
+        CenterContainer:new{
+            dimen = Geom:new{ w = tab_w, h = M.BAR_H() },
+            vg,
+        },
     }
     -- Annotate with mutable-widget handles and current enabled state.
     -- updateNavpagerArrows reads these directly — O(1), no tree traversal.
@@ -299,7 +294,7 @@ function M.updateNavpagerArrows(widget, has_prev, has_next)
             cc._arrow_image.dim = not enabled or nil
         end
         if cc._arrow_text then
-            cc._arrow_text.fgcolor = enabled and _NAVPAGER_COLOR_ACTIVE or dimmed
+            cc._arrow_text.fgcolor = enabled and Theme.TEXT or dimmed
         end
     end
     _apply(prev_cc, has_prev)
@@ -336,7 +331,7 @@ function M.buildBarWidget(active_action_id, tab_config, num_tabs, mode)
         padding_left  = side_m,
         padding_right = side_m,
         margin        = 0,
-        background    = Blitbuffer.COLOR_WHITE,
+        background    = Theme.SURFACE_TOP,
         HorizontalGroup:new(hg_args),
     }
 end
@@ -382,7 +377,7 @@ function M.buildBarWidgetWithArrows(active_action_id, tab_config, mode, has_prev
         padding_left  = side_m,
         padding_right = side_m,
         margin        = 0,
-        background    = Blitbuffer.COLOR_WHITE,
+        background    = Theme.SURFACE_TOP,
         HorizontalGroup:new(hg_args),
     }
     fc._navpager_has_arrows = true
@@ -391,20 +386,20 @@ end
 
 -- Swaps the bar widget inside an already-wrapped widget, preserving overlap_offset.
 function M.replaceBar(widget, new_bar, tabs)
-    if not G_reader_settings:nilOrTrue("navbar_enabled") then
-        if widget and tabs then widget._navbar_tabs = tabs end
+    if not G_reader_settings:nilOrTrue("folio_navbar_enabled") then
+        if widget and tabs then widget._folio_navbar_tabs = tabs end
         return
     end
     local container = widget._navbar_container
     if not container then return end
     local idx = widget._navbar_bar_idx
     if not idx then
-        logger.err("simpleui: replaceBar called without _navbar_bar_idx — widget not initialised.")
+        logger.err("folio: replaceBar called without _navbar_bar_idx — widget not initialised.")
         return
     end
-    local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
+    local topbar_on = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
     if widget._navbar_bar_idx_topbar_on ~= nil and widget._navbar_bar_idx_topbar_on ~= topbar_on then
-        logger.warn("simpleui: replaceBar — bar_idx out of sync, skipping.")
+        logger.warn("folio: replaceBar — bar_idx out of sync, skipping.")
         return
     end
     local old_bar = container[idx]
@@ -413,7 +408,7 @@ function M.replaceBar(widget, new_bar, tabs)
     end
     container[idx]     = new_bar
     widget._navbar_bar = new_bar
-    if tabs then widget._navbar_tabs = tabs end
+    if tabs then widget._folio_navbar_tabs = tabs end
 end
 
 -- ---------------------------------------------------------------------------
@@ -424,7 +419,7 @@ function M.registerTouchZones(plugin, fm_self)
     local num_tabs  = Config.getNumTabs()
     local screen_w  = Screen:getWidth()
     local screen_h  = Screen:getHeight()
-    local navbar_on = G_reader_settings:nilOrTrue("navbar_enabled")
+    local navbar_on = G_reader_settings:nilOrTrue("folio_navbar_enabled")
     -- Full navbar strip height (separator + bar + bottom padding) — must match
     -- wrapWithNavbar / TOTAL_H so touch targets cover the entire bottom region.
     -- Using BAR_H() alone leaves the top separator and bottom safe-area bands
@@ -440,7 +435,7 @@ function M.registerTouchZones(plugin, fm_self)
     local total_slots = arrows_active and (num_tabs + 2) or num_tabs
     local widths      = M.getTabWidths(total_slots, usable_w)
 
-    logger.dbg("simpleui tz: registerTouchZones on=", tostring(fm_self and fm_self.name),
+    logger.dbg("folio tz: registerTouchZones on=", tostring(fm_self and fm_self.name),
         "navpager=", tostring(navpager),
         "num_tabs=", tostring(num_tabs))
 
@@ -464,7 +459,7 @@ function M.registerTouchZones(plugin, fm_self)
     }
 
     -- Helper: find and call a page-navigation method on the topmost pageable widget.
-    local UI_mod = require("sui_core")
+    local UI_mod = require("folio_core")
     local function _callPageFn(fn_name)
         local stack  = UI_mod.getWindowStack()
         for i = #stack, 1, -1 do
@@ -501,7 +496,7 @@ function M.registerTouchZones(plugin, fm_self)
             },
             handler = function(_ges)
                 local has_prev, _ = Config.getNavpagerState()
-                logger.dbg("simpleui tz: navbar_pos_prev fired has_prev=", tostring(has_prev))
+                logger.dbg("folio tz: navbar_pos_prev fired has_prev=", tostring(has_prev))
                 if has_prev then _callPageFn("onPrevPage") end
                 return true
             end,
@@ -527,7 +522,7 @@ function M.registerTouchZones(plugin, fm_self)
                 handler = function(_ges)
                     local t         = Config.loadTabConfig()
                     local action_id = t[pos]
-                    logger.dbg("simpleui tz: navbar_pos_", pos, "fired action=", tostring(action_id))
+                    logger.dbg("folio tz: navbar_pos_", pos, "fired action=", tostring(action_id))
                     if not action_id then return true end
                     plugin:_onTabTap(action_id, fm_self)
                     return true
@@ -633,9 +628,9 @@ function M.registerTouchZones(plugin, fm_self)
         screen_zone = bar_screen_zone,
         handler = function(_ges)
             if not plugin._makeNavbarMenu then plugin:addToMainMenu({}) end
-            local UI_mod     = require("sui_core")
-            local topbar_on  = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
-            local top_offset = topbar_on and require("sui_topbar").TOTAL_TOP_H() or 0
+            local UI_mod     = require("folio_core")
+            local topbar_on  = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
+            local top_offset = topbar_on and require("folio_topbar").TOTAL_TOP_H() or 0
             UI_mod.showSettingsMenu(_("Bottom Bar"), plugin._makeNavbarMenu,
                 top_offset, screen_h, M.TOTAL_H())
             return true
@@ -667,7 +662,6 @@ end
 function M.onTabTap(plugin, action_id, fm_self)
     -- Action-only tabs: open their dialog/action without changing the active tab.
     -- The indicator stays on whatever tab was active before the tap.
-    if action_id == "power"            then M.showPowerDialog(plugin);                      return end
     if action_id == "wifi_toggle"      then M.doWifiToggle(plugin);                         return end
     if action_id == "frontlight"       then M.showFrontlightDialog();                       return end
     if action_id == "bookmark_browser" then M.showBookmarkBrowserSourceDialog(plugin.ui);   return end
@@ -687,7 +681,7 @@ function M.onTabTap(plugin, action_id, fm_self)
     -- Also skip when already_active: the indicator is already correct and
     -- rebuilding the bar would allocate all widgets for an identical result.
     local hs_open = (function()
-        local HS = package.loaded["sui_homescreen"]
+        local HS = package.loaded["folio_homescreen"]
         return HS and HS._instance ~= nil
     end)()
     if fm_self._navbar_container and action_id ~= "homescreen" and not hs_open
@@ -712,7 +706,7 @@ local function setActiveAndRefreshFM(plugin, action_id, tabs)
     plugin.active_action = action_id
     local fm = plugin.ui
     if fm and fm._navbar_container then
-        M.replaceBar(fm, M.buildBarWidget(action_id, fm._navbar_tabs or tabs), tabs)
+        M.replaceBar(fm, M.buildBarWidget(action_id, fm._folio_navbar_tabs or tabs), tabs)
         UIManager:setDirty(fm, "ui")
     end
     return action_id
@@ -728,7 +722,6 @@ M.setActiveAndRefreshFM = setActiveAndRefreshFM
 local function _isInPlaceAction(action_id)
     if action_id == "wifi_toggle"      then return true end
     if action_id == "frontlight"       then return true end
-    if action_id == "power"            then return true end
     if action_id == "stats_calendar"   then return true end
     if action_id == "bookmark_browser" then return true end
     if action_id:match("^custom_qa_%d+$") then
@@ -819,9 +812,9 @@ end
 -- After execution the HS is restored to the top and repainted.
 -- ---------------------------------------------------------------------------
 local function _executeInPlace(action_id, plugin, fm)
-    local HS      = package.loaded["sui_homescreen"]
+    local HS      = package.loaded["folio_homescreen"]
     local hs_inst = HS and HS._instance
-    local UI_mod  = require("sui_core")
+    local UI_mod  = require("folio_core")
     local stack   = UI_mod.getWindowStack()
     local hs_idx  = nil
 
@@ -841,9 +834,6 @@ local function _executeInPlace(action_id, plugin, fm)
 
     elseif action_id == "frontlight" then
         M.showFrontlightDialog()
-
-    elseif action_id == "power" then
-        M.showPowerDialog(plugin)
 
     elseif action_id == "stats_calendar" then
         local ok, err = pcall(function()
@@ -870,7 +860,7 @@ local function _executeInPlace(action_id, plugin, fm)
                     Dispatcher:execute({ [cfg.dispatcher_action] = true })
                 end)
                 if not ok then
-                    logger.warn("simpleui: dispatcher_action failed:", cfg.dispatcher_action, tostring(err))
+                    logger.warn("folio: dispatcher_action failed:", cfg.dispatcher_action, tostring(err))
                     showUnavailable(string.format(_("System action error: %s"), tostring(err)))
                 end
             else
@@ -915,7 +905,7 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
             fm = live
             -- Also sync active_action to the live plugin so the indicator is
             -- updated on the correct plugin instance.
-            local live_plugin = live._simpleui_plugin
+            local live_plugin = live._folio_plugin
             if live_plugin and live_plugin ~= plugin then
                 live_plugin.active_action = plugin.active_action
                 plugin = live_plugin
@@ -925,10 +915,10 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
 
     -- Detect if the homescreen is currently open (fm_self is the FM but the
     -- HS is on top — the tap came through the HS's injected bottombar).
-    local HS = package.loaded["sui_homescreen"]
+    local HS = package.loaded["folio_homescreen"]
     local hs_open = HS and HS._instance ~= nil
 
-    logger.dbg("simpleui navigate: action=", action_id, "hs_open=", hs_open)
+    logger.dbg("folio navigate: action=", action_id, "hs_open=", hs_open)
 
     -- In-place actions (toggle nightmode, frontlight, wifi, dispatcher, etc.)
     -- must NOT close the homescreen. Execute them directly and return.
@@ -1042,7 +1032,7 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
         if not ok then showUnavailable(_("History not available.")) end
 
     elseif action_id == "homescreen" then
-        local ok_hs, HS = pcall(require, "sui_homescreen")
+        local ok_hs, HS = pcall(require, "folio_homescreen")
         if ok_hs and HS and type(HS.show) == "function" then
             -- QA taps from the homescreen must NOT go through _onTabTap:
             -- _onTabTap calls replaceBar(fm) which schedules a full FM repaint,
@@ -1074,6 +1064,14 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
             _bb_ui = ReaderUI.instance
         end
         M.showBookmarkBrowserSourceDialog(_bb_ui)
+
+    elseif action_id == "power" then
+        local ok_p, P = pcall(require, "folio_power")
+        if ok_p and P and type(P.show) == "function" then
+            P.show(plugin)
+        else
+            showUnavailable(_("Power screen not available."))
+        end
 
     elseif action_id == "continue" then
         local RH = package.loaded["readhistory"] or require("readhistory")
@@ -1117,7 +1115,7 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
                         Dispatcher:execute({ [cfg.dispatcher_action] = true })
                     end)
                     if not ok then
-                        logger.warn("simpleui: dispatcher_action failed:", cfg.dispatcher_action, tostring(err))
+                        logger.warn("folio: dispatcher_action failed:", cfg.dispatcher_action, tostring(err))
                         showUnavailable(string.format(_("System action error: %s"), tostring(err)))
                     end
                 else
@@ -1139,7 +1137,7 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
             elseif cfg.path and cfg.path ~= "" then
                 if fm.file_chooser then fm.file_chooser:changeToPath(cfg.path) end
             else
-                showUnavailable(_("No folder, collection or plugin configured.\nGo to Simple UI → Settings → Quick Actions to set one."))
+                showUnavailable(_("No folder, collection or plugin configured.\nGo to Folio → Settings → Quick Actions to set one."))
             end
         end
     end
@@ -1166,19 +1164,30 @@ function M.doWifiToggle(plugin)
         Config.wifi_optimistic = false
         pcall(function() NetworkMgr:turnOffWifi() end)
         UIManager:show(InfoMessage():new{ text = _("Wi-Fi off"), timeout = 1 })
+        do
+            local ok_rm, Rem = pcall(require, "folio_wifi_reminder")
+            if ok_rm and Rem and Rem.cancelAll then Rem.cancelAll() end
+        end
     else
         Config.wifi_optimistic = true
         local ok_on, err = pcall(function() NetworkMgr:turnOnWifi() end)
         if not ok_on then
-            logger.warn("simpleui: Wi-Fi turn-on error:", tostring(err))
+            logger.warn("folio: Wi-Fi turn-on error:", tostring(err))
             Config.wifi_optimistic = nil
+        else
+            do
+                local ok_rm, Rem = pcall(require, "folio_wifi_reminder")
+                if ok_rm and Rem and Rem.scheduleIdleReminder then
+                    Rem.scheduleIdleReminder(plugin, 60)
+                end
+            end
         end
     end
 
     -- Immediately refresh the bar and topbar with the optimistic Wi-Fi state.
     if plugin then
         plugin:_rebuildAllNavbars()
-        local Topbar = require("sui_topbar")
+        local Topbar = require("folio_topbar")
         local cfg    = Config.getTopbarConfig()
         if (cfg.side["wifi"] or "hidden") ~= "hidden" then
             Topbar.scheduleRefresh(plugin, 0)
@@ -1209,14 +1218,14 @@ end
 -- ---------------------------------------------------------------------------
 
 function M.rebuildAllNavbars(plugin)
-    local UI        = require("sui_core")
-    local Topbar    = require("sui_topbar")
+    local UI        = require("folio_core")
+    local Topbar    = require("folio_topbar")
     M.invalidateDimCache()
     -- Read config once; these values are shared across every widget in the loop.
     local tabs      = Config.loadTabConfig()
     local num_tabs  = Config.getNumTabs()
     local mode      = Config.getNavbarMode()
-    local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
+    local topbar_on = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
     local stack     = UI.getWindowStack()  -- read once for the entire operation
 
     -- Build topbar once and reuse across all widgets — it is identical for all.
@@ -1236,10 +1245,10 @@ function M.rebuildAllNavbars(plugin)
 
     rebuildWidget(plugin.ui)
     local ok_icon, err_icon = pcall(function() plugin:_updateFMHomeIcon() end)
-    if not ok_icon then logger.warn("simpleui: _updateFMHomeIcon failed:", tostring(err_icon)) end
+    if not ok_icon then logger.warn("folio: _updateFMHomeIcon failed:", tostring(err_icon)) end
     for _i, entry in ipairs(stack) do
         local ok, err = pcall(rebuildWidget, entry.widget)
-        if not ok then logger.warn("simpleui: rebuildWidget failed:", tostring(err)) end
+        if not ok then logger.warn("folio: rebuildWidget failed:", tostring(err)) end
     end
 end
 
@@ -1258,17 +1267,17 @@ function M.setPowerTabActive(plugin, active, prev_action)
         UIManager:setDirty(w._navbar_container, "partial")
     end
 
-    local UI    = require("sui_core")
+    local UI    = require("folio_core")
     local stack = UI.getWindowStack()
     updateWidget(plugin.ui)
     for _i, entry in ipairs(stack) do
         local ok, err = pcall(updateWidget, entry.widget)
-        if not ok then logger.warn("simpleui: setPowerTabActive updateWidget failed:", tostring(err)) end
+        if not ok then logger.warn("folio: setPowerTabActive updateWidget failed:", tostring(err)) end
     end
 end
 
 function M.rewrapAllWidgets(plugin)
-    local UI        = require("sui_core")
+    local UI        = require("folio_core")
     local tabs      = Config.loadTabConfig()
     local stack     = UI.getWindowStack()  -- read once for the entire operation
     local seen      = {}
@@ -1292,7 +1301,7 @@ function M.rewrapAllWidgets(plugin)
     rewrapWidget(plugin.ui)
     for _i, entry in ipairs(stack) do
         local ok, err = pcall(rewrapWidget, entry.widget)
-        if not ok then logger.warn("simpleui: rewrapWidget failed:", tostring(err)) end
+        if not ok then logger.warn("folio: rewrapWidget failed:", tostring(err)) end
     end
 end
 
@@ -1300,7 +1309,7 @@ function M.restoreTabInFM(plugin, tabs, prev_action)
     local fm = plugin.ui
     if not (fm and fm._navbar_container) then return end
     local should_skip = false
-    local UI = require("sui_core")
+    local UI = require("folio_core")
     pcall(function()
         for _i, entry in ipairs(UI.getWindowStack()) do
             if entry.widget and entry.widget._navbar_injected and entry.widget ~= fm then
@@ -1312,7 +1321,7 @@ function M.restoreTabInFM(plugin, tabs, prev_action)
     -- Always load tabs fresh: the `tabs` argument was captured at widget-open time
     -- and may be stale if the user changed tab config while the widget was open.
     local t = Config.loadTabConfig()
-    local Patches = require("sui_patches")
+    local Patches = require("folio_patches")
     local restored = (fm.file_chooser and Patches._resolveTabForPath(fm.file_chooser.path, t))
                   or prev_action or (t[1])
     plugin.active_action = restored

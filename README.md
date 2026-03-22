@@ -1,12 +1,14 @@
-# SimpleUI for KOReader
+# Folio for KOReader
 
-A clean, distraction-free UI plugin for KOReader that transforms your reading experience. SimpleUI adds a **dedicated Home Screen**, a customisable bottom navigation bar, a top status bar, and a reworked library title bar, giving you instant access to your library, history, collections, and reading stats without navigating through nested menus.
+Folio began as a fork of SimpleUI by doctorhetfield-cmd and has grown into a complete reimagining of the KOReader interface.
+
+A clean, distraction-free UI plugin for KOReader that transforms your reading experience. Folio adds a **dedicated Home Screen**, a customisable bottom navigation bar, a top status bar, and a reworked library title bar, giving you instant access to your library, history, collections, and reading stats without navigating through nested menus.
 
 <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; max-width: 1000px; justify-content: center;">
-<img src="https://github.com/user-attachments/assets/4ea92760-c2bf-488b-9f5a-1f663157c97f" width="240" height="324" alt="simpleUI1" style="object-fit: contain;" />
-<img src="https://github.com/user-attachments/assets/a1a7a2c7-6c0f-484e-b6fa-c78474661480" width="240" height="324" alt="simpleUI2" style="object-fit: contain;" />
-<img src="https://github.com/user-attachments/assets/1707f5c2-e367-47b8-90a9-9a9549bd9e67" width="240" height="324" alt="simpleUI3" style="object-fit: contain;" />
-<img src="https://github.com/user-attachments/assets/fd443a96-e12c-4dc7-9e69-103c444458af" width="240" height="324" alt="simpleUI4" style="object-fit: contain;" />
+<img src="https://github.com/user-attachments/assets/4ea92760-c2bf-488b-9f5a-1f663157c97f" width="240" height="324" alt="Folio screenshot 1" style="object-fit: contain;" />
+<img src="https://github.com/user-attachments/assets/a1a7a2c7-6c0f-484e-b6fa-c78474661480" width="240" height="324" alt="Folio screenshot 2" style="object-fit: contain;" />
+<img src="https://github.com/user-attachments/assets/1707f5c2-e367-47b8-90a9-9a9549bd9e67" width="240" height="324" alt="Folio screenshot 3" style="object-fit: contain;" />
+<img src="https://github.com/user-attachments/assets/fd443a96-e12c-4dc7-9e69-103c444458af" width="240" height="324" alt="Folio screenshot 4" style="object-fit: contain;" />
 </div>
 ---
 
@@ -14,7 +16,7 @@ A clean, distraction-free UI plugin for KOReader that transforms your reading ex
 
 ### Home Screen
 
-The centrepiece of SimpleUI. A home screen that gives you everything at a glance:
+The centrepiece of Folio. A home screen that gives you everything at a glance:
 
 - **Clock & Date** — a large, readable clock with full date display
 - **Currently Reading** — your active book with cover art, title, author, progress bar, percentage read, and estimated time left
@@ -77,27 +79,27 @@ Shortcut buttons configurable both on the Home Screen and in the bottom bar:
 
 ### Settings
 
-All features are accessible via **Menu → Tools → SimpleUI**
+All features are accessible via **Menu → Tools → Folio**
 
 ---
 
 ## Installation
 
 1. Download this repository as a ZIP — click **Code → Download ZIP**
-2. Extract the folder and confirm it is named `simpleui.koplugin`
+2. Extract the folder and confirm it is named `folio.koplugin`
 3. Copy the folder to the `plugins/` directory on your KOReader device
 4. Restart KOReader
-5. Go to **Menu → Tools → SimpleUI** to enable and configure the plugin
+5. Go to **Menu → Tools → Folio** to enable and configure the plugin
 
 > **Tip:** After enabling the plugin, tap the **Home Screen** tab in the bottom bar to open your new home screen.
 
-> **Tip:** To make the Home Screen your default start screen, go to **Menu → Tools → SimpleUI → Home Screen → Start with Home Screen**. From then on, KOReader opens directly to your home screen every time you turn on your device.
+> **Tip:** To make the Home Screen your default start screen, go to **Menu → Tools → Folio → Home Screen → Start with Home Screen**. From then on, KOReader opens directly to your home screen every time you turn on your device.
 
 ---
 
 ## 🌍 Translations
 
-SimpleUI has full translation support. The UI language is detected automatically from your KOReader language setting — no configuration needed.
+Folio has full translation support. The UI language is detected automatically from your KOReader language setting — no configuration needed.
 
 ### Included languages
 
@@ -114,7 +116,7 @@ SimpleUI has full translation support. The UI language is detected automatically
 
 All 297 visible strings in the plugin are translatable. To add a new language:
 
-1. Copy `locale/simpleui.pot` to `locale/<lang>.po`, using the standard locale code for your language (examples: `de`, `fr`, `it`, `ja`)
+1. Copy `locale/folio.pot` to `locale/<lang>.po`, using the standard locale code for your language (examples: `de`, `fr`, `it`, `ja`)
 2. Open the file in any text editor or a dedicated PO editor such as [Poedit](https://poedit.net/)
 3. For each entry, fill in the `msgstr` field with your translation:
 

@@ -1,11 +1,9 @@
--- module_collections.lua — Simple UI
+-- module_collections.lua — Folio
 -- Módulo: Collections.
 -- Substitui collectionswidget.lua — contém todo o código de widget.
 
-local Blitbuffer      = require("ffi/blitbuffer")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local Device          = require("device")
-local Font            = require("ui/font")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
 local GestureRange    = require("ui/gesturerange")
@@ -23,10 +21,11 @@ local Screen          = Device.screen
 local logger          = require("logger")
 local lfs             = require("libs/libkoreader-lfs")
 local _               = require("gettext")
-local Config          = require("sui_config")
+local Config          = require("folio_config")
+local FolioTheme        = require("folio_theme")
+local Theme           = FolioTheme.Theme
 
-local UI           = require("sui_core")
-local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
+local UI           = require("folio_core")
 local PAD     = UI.PAD
 local PAD2    = UI.PAD2
 local MOD_GAP = UI.MOD_GAP
@@ -48,12 +47,8 @@ local _BASE_BADGE_FS     = Screen:scaleBySize(6)    -- badge font (~0.375 x badg
 local _BASE_EMPTY_H      = Screen:scaleBySize(36)
 local _BASE_EMPTY_FS     = Screen:scaleBySize(10)
 
-local EDGE_COLOR = Blitbuffer.gray(0.55)
 local EDGE_H1    = 0.97   -- inner line height fraction of COLL_H
 local EDGE_H2    = 0.94   -- outer line height fraction
-
-local _CLR_COVER_BORDER = Blitbuffer.COLOR_BLACK
-local _CLR_COVER_BG     = Blitbuffer.gray(0.88)
 
 local LABEL_H = UI.LABEL_H  -- kept for any external callers; getHeight() uses getScaledLabelH()
 
@@ -104,9 +99,9 @@ end
 -- ---------------------------------------------------------------------------
 -- Settings keys
 -- ---------------------------------------------------------------------------
-local SETTINGS_KEY       = "navbar_collections_list"
-local COVER_OVERRIDE_KEY = "navbar_collections_covers"
-local BADGE_POSITION_KEY = "navbar_collections_badge_position"
+local SETTINGS_KEY       = "folio_navbar_collections_list"
+local COVER_OVERRIDE_KEY = "folio_navbar_collections_covers"
+local BADGE_POSITION_KEY = "folio_navbar_collections_badge_position"
 
 local function getBadgePosition()
     return G_reader_settings:readSetting(BADGE_POSITION_KEY) or "top"
@@ -176,8 +171,9 @@ local function buildCoverCell(files, cover_override, coll_name, count, d)
     if front_fp and lfs.attributes(front_fp, "mode") == "file" then
         local raw = getBookCover(front_fp, d.coll_w, d.coll_h)
         if raw then
+            -- Cover chrome: 1px edge defines bitmap boundary vs canvas (DESIGN ghost border).
             cover = FrameContainer:new{
-                bordersize = 1, color = _CLR_COVER_BORDER,
+                bordersize = 1, color = Theme.GHOST_LINE,
                 padding    = 0, margin = 0,
                 dimen      = Geom:new{ w = d.coll_w, h = d.coll_h },
                 raw,
@@ -186,14 +182,15 @@ local function buildCoverCell(files, cover_override, coll_name, count, d)
     end
     if not cover then
         cover = FrameContainer:new{
-            bordersize = 1, color = _CLR_COVER_BORDER,
-            background = _CLR_COVER_BG, padding = 0,
+            bordersize = 1, color = Theme.GHOST_LINE,
+            background = Theme.SURFACE, padding = 0,
             dimen      = Geom:new{ w = d.coll_w, h = d.coll_h },
             CenterContainer:new{
                 dimen = Geom:new{ w = d.coll_w, h = d.coll_h },
                 TextWidget:new{
                     text = (coll_name or "?"):sub(1, 2):upper(),
-                    face = Font:getFace("smallinfofont", d.ph_cover_fs),
+                    face = FolioTheme.faceContent(d.ph_cover_fs),
+                    fgcolor = Theme.TEXT,
                 },
             },
         }
@@ -207,7 +204,7 @@ local function buildCoverCell(files, cover_override, coll_name, count, d)
     local function edgeLine(h, y_off)
         local line = LineWidget:new{
             dimen      = Geom:new{ w = d.edge_thick, h = h },
-            background = EDGE_COLOR,
+            background = Theme.GHOST_LINE,
         }
         line.overlap_offset = { 0, y_off }
         return OverlapGroup:new{
@@ -227,7 +224,7 @@ local function buildCoverCell(files, cover_override, coll_name, count, d)
 
     local accent = FrameContainer:new{
         bordersize = 0, padding = 0,
-        background = Blitbuffer.COLOR_BLACK,
+        background = Theme.PRIMARY,
         dimen      = Geom:new{ w = d.coll_w, h = d.accent_h },
         VerticalSpan:new{ width = 0 },
     }
@@ -238,17 +235,20 @@ local function buildCoverCell(files, cover_override, coll_name, count, d)
         dimen = Geom:new{ w = d.badge_sz, h = d.badge_sz },
         TextWidget:new{
             text    = tostring(math.min(count, 99)),
-            face    = Font:getFace("cfont", d.badge_fs),
-            fgcolor = Blitbuffer.COLOR_WHITE,
+            face    = FolioTheme.faceUI(d.badge_fs),
+            fgcolor = Theme.ON_PRIMARY,
             bold    = true,
         },
     }
+    local badge_pad_h = math.max(1, Screen:scaleBySize(2))
     local badge = FrameContainer:new{
-        bordersize = 0,
-        background = Blitbuffer.COLOR_BLACK,
-        radius     = math.floor(d.badge_sz / 2),
-        padding    = 0,
-        dimen      = Geom:new{ w = d.badge_sz, h = d.badge_sz },
+        bordersize     = 0,
+        background     = Theme.PRIMARY,
+        radius         = 0,
+        padding_left   = badge_pad_h,
+        padding_right  = badge_pad_h,
+        padding        = 0,
+        dimen          = Geom:new{ w = d.badge_sz, h = d.badge_sz },
         badge_inner,
     }
     badge.overlap_offset = {
@@ -316,13 +316,19 @@ function M.build(w, ctx)
     local selected = getSelectedCollections()
 
     if #selected == 0 then
-        return CenterContainer:new{
-            dimen = Geom:new{ w = w, h = d.empty_h },
-            TextWidget:new{
-                text    = _("No collections selected"),
-                face    = Font:getFace("cfont", d.empty_fs),
-                fgcolor = CLR_TEXT_SUB,
-                width   = w - PAD * 2,
+        return FrameContainer:new{
+            bordersize    = 0,
+            background    = Theme.SURFACE_LOW,
+            padding_left  = PAD,
+            padding_right = PAD,
+            CenterContainer:new{
+                dimen = Geom:new{ w = w - PAD * 2, h = d.empty_h },
+                TextWidget:new{
+                    text    = _("No collections selected"),
+                    face    = FolioTheme.faceUI(d.empty_fs),
+                    fgcolor = Theme.TEXT_MUTED,
+                    width   = w - PAD * 2,
+                },
             },
         }
     end
@@ -351,8 +357,9 @@ function M.build(w, ctx)
 
         local label_w = TextWidget:new{
             text      = coll_name,
-            face      = Font:getFace("cfont", d.coll_lbl_fs),
-            fgcolor   = CLR_TEXT_SUB,
+            face      = FolioTheme.faceContent(d.coll_lbl_fs),
+            bold      = true,
+            fgcolor   = Theme.TEXT,
             width     = d.stack_cell_w,
             alignment = "center",
         }
@@ -390,7 +397,10 @@ function M.build(w, ctx)
     end
 
     return FrameContainer:new{
-        bordersize = 0, padding = PAD, padding_top = 0, padding_bottom = 0,
+        bordersize  = 0,
+        background  = Theme.SURFACE_LOW,
+        padding     = PAD,
+        padding_top = 0,
         row,
     }
 end

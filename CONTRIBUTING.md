@@ -1,4 +1,4 @@
-# Contributing to SimpleUI
+# Contributing to Folio
 
 Thank you for your interest in contributing! There are several ways to help — fixing bugs, improving the code, adding a translation, or improving the documentation. All contributions are welcome.
 
@@ -41,7 +41,7 @@ Translations live in the `locale/` folder as standard `.po` files. No programmin
 
 ### Adding a new language
 
-1. Copy `locale/simpleui.pot` to `locale/<lang>.po`, using the standard locale code for your language — for example `de.po`, `fr.po`, `es.po`, `it.po`, `zh_CN.po`, `ja.po`
+1. Copy `locale/folio.pot` to `locale/<lang>.po`, using the standard locale code for your language — for example `de.po`, `fr.po`, `es.po`, `it.po`, `zh_CN.po`, `ja.po`
 2. Open the file in any text editor or a dedicated PO editor such as [Poedit](https://poedit.net/)
 3. Fill in the header fields at the top of the file:
 
@@ -80,7 +80,7 @@ Open the existing `.po` file for your language, correct or complete the `msgstr`
 
 ### Setup
 
-SimpleUI is a standard KOReader plugin written in Lua. No build system or compilation step is required. The plugin runs directly from the source files.
+Folio is a standard KOReader plugin written in Lua. No build system or compilation step is required. The plugin runs directly from the source files.
 
 To test changes:
 
@@ -110,7 +110,7 @@ UIManager:show(InfoMessage:new{ text = "Something went wrong." })
 ```
 
 5. If your change introduces new strings, add them to the translation template:
-   - Run the extraction command below, or manually add entries to `locale/simpleui.pot`
+   - Run the extraction command below, or manually add entries to `locale/folio.pot`
    - Add the English text as `msgid` and leave `msgstr` as `""`
    - Update any existing `.po` files you are able to translate
 
@@ -124,7 +124,7 @@ git commit -m "Fix progress bar not updating after resume"
 
 ### Extracting translatable strings
 
-If you have Python 3 available, you can regenerate `simpleui.pot` from the source files by running the following from the plugin root:
+If you have Python 3 available, you can regenerate `folio.pot` from the source files by running the following from the plugin root:
 
 ```bash
 python3 -c "
@@ -139,8 +139,8 @@ lines = []
 for s in sorted(strings):
     lines.append(f'msgid \"{s}\"\nmsgstr \"\"\n')
 
-pathlib.Path('locale/simpleui.pot').write_text('\n'.join(lines))
-print(f'{len(strings)} strings written to locale/simpleui.pot')
+pathlib.Path('locale/folio.pot').write_text('\n'.join(lines))
+print(f'{len(strings)} strings written to locale/folio.pot')
 "
 ```
 
@@ -155,7 +155,7 @@ print(f'{len(strings)} strings written to locale/simpleui.pot')
 ### File structure
 
 ```
-simpleui.koplugin/
+folio.koplugin/
 ├── main.lua                  — plugin entry point and lifecycle
 ├── config.lua                — constants, action catalogue, settings helpers
 ├── ui.lua                    — shared layout infrastructure
@@ -177,7 +177,7 @@ simpleui.koplugin/
 │   ├── module_quick_actions.lua — Quick Actions module
 │   └── module_books_shared.lua  — shared helpers for book modules
 └── locale/
-    ├── simpleui.pot          — translation template (190 strings)
+    ├── folio.pot          — translation template (190 strings)
     ├── pt_PT.po              — Portuguese (Portugal)
     └── pt_BR.po              — Portuguese (Brazil)
 ```
@@ -190,10 +190,10 @@ Before submitting, please check:
 
 - [ ] The change works on a real device or the KOReader emulator
 - [ ] Any new UI strings are wrapped in `_()`
-- [ ] New strings are added to `locale/simpleui.pot`
+- [ ] New strings are added to `locale/folio.pot`
 - [ ] The commit message clearly describes the change
 - [ ] No debug logging or commented-out code is left in
 
 ---
 
-Thank you for helping make SimpleUI better!
+Thank you for helping make Folio better!

@@ -1,4 +1,4 @@
--- patches.lua — Simple UI
+-- patches.lua — Folio
 -- Monkey-patches applied to KOReader on plugin load.
 
 local UIManager  = require("ui/uimanager")
@@ -6,10 +6,10 @@ local Screen     = require("device").screen
 local logger     = require("logger")
 local _          = require("gettext")
 
-local Config    = require("sui_config")
-local UI        = require("sui_core")
-local Bottombar = require("sui_bottombar")
-local Titlebar  = require("sui_titlebar")
+local Config    = require("folio_config")
+local UI        = require("folio_core")
+local Bottombar = require("folio_bottombar")
+local Titlebar  = require("folio_titlebar")
 
 local M = {}
 
@@ -28,7 +28,7 @@ local _hs_boot_done = false
 -- the homescreen is open, eliminating the flash between reader and homescreen.
 local _hs_pending_after_reader = false
 
--- Cached result of the "start_with == homescreen_simpleui" setting.
+-- Cached result of the "start_with == homescreen_folio" setting.
 -- nil means stale; invalidated in teardownAll and updated in patchStartWithMenu.
 local _start_with_hs = nil
 
@@ -40,7 +40,7 @@ local _navpager_rebuild_pending = false
 -- repeated settings lookups on every call.
 local function isStartWithHS()
     if _start_with_hs == nil then
-        _start_with_hs = G_reader_settings:readSetting("start_with", "filemanager") == "homescreen_simpleui"
+        _start_with_hs = G_reader_settings:readSetting("start_with", "filemanager") == "homescreen_folio"
     end
     return _start_with_hs
 end
@@ -72,12 +72,12 @@ function M.patchFileManagerClass(plugin)
     local orig_setupLayout = FileManager.setupLayout
     plugin._orig_fm_setup  = orig_setupLayout
 
-    -- Navbar touch zones must run before FileChooser/scroll children (sui_core).
+    -- Navbar touch zones must run before FileChooser/scroll children (folio_core).
     UI.applyGesturePriorityHandleEvent(FileManager)
 
     FileManager.setupLayout = function(fm_self)
-        local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
-        fm_self._navbar_height = Bottombar.TOTAL_H() + (topbar_on and require("sui_topbar").TOTAL_TOP_H() or 0)
+        local topbar_on = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
+        fm_self._navbar_height = Bottombar.TOTAL_H() + (topbar_on and require("folio_topbar").TOTAL_TOP_H() or 0)
 
         -- Patch FileChooser.init once on the class so repeated FM rebuilds
         -- don't re-wrap. Reduces height to the content area.
@@ -117,7 +117,7 @@ function M.patchFileManagerClass(plugin)
             UI.wrapWithNavbar(inner_widget, plugin.active_action, tabs)
         UI.applyNavbarState(fm_self, navbar_container, bar, topbar, bar_idx, topbar_on2, topbar_idx, tabs)
         fm_self[1] = wrapped
-        fm_self._simpleui_plugin = plugin
+        fm_self._folio_plugin = plugin
 
         plugin:_updateFMHomeIcon()
 
@@ -141,9 +141,9 @@ function M.patchFileManagerClass(plugin)
             if this._hs_autoopen_pending then
                 this._hs_autoopen_pending = nil
                 UIManager:scheduleIn(0, function()
-                    local HS = package.loaded["sui_homescreen"]
+                    local HS = package.loaded["folio_homescreen"]
                     if not HS then
-                        local ok, m = pcall(require, "sui_homescreen")
+                        local ok, m = pcall(require, "folio_homescreen")
                         HS = ok and m
                     end
                     if HS then
@@ -238,11 +238,11 @@ function M.patchStartWithMenu()
         FileManagerMenu = ok and m or nil
     end
     if not FileManagerMenu then return end
-    if FileManagerMenu._simpleui_startwith_patched then return end
+    if FileManagerMenu._folio_startwith_patched then return end
     local orig_fn = FileManagerMenu.getStartWithMenuTable
     if not orig_fn then return end
-    FileManagerMenu._simpleui_startwith_patched = true
-    FileManagerMenu._simpleui_startwith_orig    = orig_fn
+    FileManagerMenu._folio_startwith_patched = true
+    FileManagerMenu._folio_startwith_orig    = orig_fn
     FileManagerMenu.getStartWithMenuTable = function(fmm_self)
         local result = orig_fn(fmm_self)
         local sub = result.sub_item_table
@@ -257,7 +257,7 @@ function M.patchStartWithMenu()
                 text         = _("Home Screen"),
                 checked_func = function() return isStartWithHS() end,
                 callback = function()
-                    G_reader_settings:saveSetting("start_with", "homescreen_simpleui")
+                    G_reader_settings:saveSetting("start_with", "homescreen_folio")
                     _start_with_hs = true  -- update cache immediately
                 end,
                 radio = true,
@@ -299,7 +299,7 @@ end
 -- FMColl.onShowCollList + Menu.new + ReadCollection
 -- Reduces the coll_list Menu height to the content area. patch_depth gates
 -- Menu.new so only menus created during onShowCollList are affected.
--- Also syncs the SimpleUI collections pool when KOReader renames/deletes.
+-- Also syncs the Folio collections pool when KOReader renames/deletes.
 -- ---------------------------------------------------------------------------
 
 function M.patchCollections(plugin)
@@ -313,6 +313,21 @@ function M.patchCollections(plugin)
 
     local orig_onShowCollList = FMColl.onShowCollList
     FMColl.onShowCollList = function(fmc_self, ...)
+        -- Select mode (add book to collections, etc.) keeps KOReader's Menu.
+        if select(1, ...) ~= nil then
+            patch_depth = patch_depth + 1
+            local ok2, result = pcall(orig_onShowCollList, fmc_self, ...)
+            patch_depth = patch_depth - 1
+            if not ok2 then error(result) end
+            return result
+        end
+        local ok_cw, CW = pcall(require, "collectionswidget")
+        if ok_cw and CW and type(CW.show) == "function" then
+            local plug = fmc_self.ui and fmc_self.ui._folio_plugin
+            if plug and CW.show(plug, fmc_self) then
+                return true
+            end
+        end
         patch_depth = patch_depth + 1
         local ok2, result = pcall(orig_onShowCollList, fmc_self, ...)
         patch_depth = patch_depth - 1
@@ -338,7 +353,7 @@ function M.patchCollections(plugin)
     local ok_rc, RC = pcall(require, "readcollection")
     if not (ok_rc and RC) then return end
 
-    -- Removes a collection from the SimpleUI selected list and cover-override table.
+    -- Removes a collection from the Folio selected list and cover-override table.
     local function _removeFromPool(name)
         local CW = package.loaded["collectionswidget"]
         if not CW then return end
@@ -358,7 +373,7 @@ function M.patchCollections(plugin)
         end
     end
 
-    -- Renames a collection in the SimpleUI selected list and cover-override table.
+    -- Renames a collection in the Folio selected list and cover-override table.
     local function _renameInPool(old_name, new_name)
         local CW = package.loaded["collectionswidget"]
         if not CW then return end
@@ -390,7 +405,7 @@ function M.patchCollections(plugin)
                 Config.invalidateTabsCache()
                 plugin:_scheduleRebuild()
             end)
-            if not ok2 then logger.warn("simpleui: removeCollection hook:", tostring(err)) end
+            if not ok2 then logger.warn("folio: removeCollection hook:", tostring(err)) end
             return result
         end
     end
@@ -405,9 +420,34 @@ function M.patchCollections(plugin)
                 Config.renameQACollection(old_name, new_name)
                 plugin:_scheduleRebuild()
             end)
-            if not ok2 then logger.warn("simpleui: renameCollection hook:", tostring(err)) end
+            if not ok2 then logger.warn("folio: renameCollection hook:", tostring(err)) end
             return result
         end
+    end
+end
+
+-- ---------------------------------------------------------------------------
+-- FileManagerHistory.onShowHist → folio_history (Mockup 3)
+-- Search mode keeps KOReader's BookList; plain open uses the custom screen.
+-- ---------------------------------------------------------------------------
+
+function M.patchHistory(plugin)
+    local ok, FMH = pcall(require, "apps/filemanager/filemanagerhistory")
+    if not (ok and FMH) then return end
+    plugin._orig_fmh_show = FMH.onShowHist
+    local orig = FMH.onShowHist
+    FMH.onShowHist = function(fmh_self, search_info, ...)
+        if search_info ~= nil then
+            return orig(fmh_self, search_info, ...)
+        end
+        local ok2, H = pcall(require, "folio_history")
+        if ok2 and H and type(H.show) == "function" then
+            local plug = fmh_self.ui and fmh_self.ui._folio_plugin
+            if plug and H.show(plug, fmh_self) then
+                return true
+            end
+        end
+        return orig(fmh_self, search_info, ...)
     end
 end
 
@@ -493,7 +533,7 @@ function M.patchUIManagerShow(plugin)
     plugin._orig_uimanager_show = orig_show
     local _show_depth = 0
 
-    local INJECT_NAMES = { collections = true, history = true, coll_list = true, homescreen = true }
+    local INJECT_NAMES = { collections = true, history = true, coll_list = true, homescreen = true, power = true }
 
     -- Resolves the live FileManager menu at call time, never capturing a stale
     -- reference. The FM is destroyed and recreated each time the reader closes,
@@ -515,7 +555,7 @@ function M.patchUIManagerShow(plugin)
     UIManager.show = function(um_self, widget, ...)
         -- Fast path: the vast majority of show() calls are non-fullscreen
         -- widgets (dialogs, menus, InfoMessage, toasts, etc.). None of the
-        -- SimpleUI injection logic applies to them — skip everything.
+        -- Folio injection logic applies to them — skip everything.
         if not (widget and widget.covers_fullscreen) then
             return orig_show(um_self, widget, ...)
         end
@@ -540,9 +580,9 @@ function M.patchUIManagerShow(plugin)
             else
                 orig_show(um_self, widget)
             end
-            local HS = package.loaded["sui_homescreen"]
+            local HS = package.loaded["folio_homescreen"]
             if not HS then
-                local ok2, m = pcall(require, "sui_homescreen")
+                local ok2, m = pcall(require, "folio_homescreen")
                 HS = ok2 and m
             end
             if HS and not HS._instance then
@@ -639,6 +679,8 @@ function M.patchUIManagerShow(plugin)
             effective_action = Bottombar.setActiveAndRefreshFM(plugin, "history", tabs)
         elseif widget.name == "homescreen" and tabs_set["homescreen"] then
             effective_action = Bottombar.setActiveAndRefreshFM(plugin, "homescreen", tabs)
+        elseif widget.name == "power" and tabs_set["power"] then
+            effective_action = Bottombar.setActiveAndRefreshFM(plugin, "power", tabs)
         elseif widget.name == "coll_list"
                or (widget.name == "collections" and not Config.isFavoritesWidget(widget)) then
             if tabs_set["collections"] then
@@ -695,7 +737,7 @@ function M.patchUIManagerShow(plugin)
             if DTAP_ZONE_MENU and DTAP_ZONE_MENU_EXT then
                 widget:registerTouchZones({
                     {
-                        id          = "simpleui_menu_tap",
+                        id          = "folio_menu_tap",
                         ges         = "tap",
                         screen_zone = {
                             ratio_x = DTAP_ZONE_MENU.x, ratio_y = DTAP_ZONE_MENU.y,
@@ -706,19 +748,19 @@ function M.patchUIManagerShow(plugin)
                         end,
                     },
                     {
-                        id          = "simpleui_menu_ext_tap",
+                        id          = "folio_menu_ext_tap",
                         ges         = "tap",
                         screen_zone = {
                             ratio_x = DTAP_ZONE_MENU_EXT.x, ratio_y = DTAP_ZONE_MENU_EXT.y,
                             ratio_w = DTAP_ZONE_MENU_EXT.w, ratio_h = DTAP_ZONE_MENU_EXT.h,
                         },
-                        overrides = { "simpleui_menu_tap" },
+                        overrides = { "folio_menu_tap" },
                         handler = function(ges)
                             local m = _fmMenu(); if m then return m:onTapShowMenu(ges) end
                         end,
                     },
                     {
-                        id          = "simpleui_menu_swipe",
+                        id          = "folio_menu_swipe",
                         ges         = "swipe",
                         screen_zone = {
                             ratio_x = DTAP_ZONE_MENU.x, ratio_y = DTAP_ZONE_MENU.y,
@@ -729,13 +771,13 @@ function M.patchUIManagerShow(plugin)
                         end,
                     },
                     {
-                        id          = "simpleui_menu_ext_swipe",
+                        id          = "folio_menu_ext_swipe",
                         ges         = "swipe",
                         screen_zone = {
                             ratio_x = DTAP_ZONE_MENU_EXT.x, ratio_y = DTAP_ZONE_MENU_EXT.y,
                             ratio_w = DTAP_ZONE_MENU_EXT.w, ratio_h = DTAP_ZONE_MENU_EXT.h,
                         },
-                        overrides = { "simpleui_menu_swipe" },
+                        overrides = { "folio_menu_swipe" },
                         handler = function(ges)
                             local m = _fmMenu(); if m then return m:onSwipeShowMenu(ges) end
                         end,
@@ -759,16 +801,16 @@ function M.patchUIManagerShow(plugin)
 
         -- Navpager: schedule an arrow update for the next event-loop cycle.
         -- Skipped when a coalescence-flagged update is already queued.
-        if G_reader_settings:isTrue("navbar_navpager_enabled") and not _navpager_rebuild_pending then
-            logger.dbg("simpleui navpager: post-show update scheduled for widget=", tostring(widget.name))
+        if G_reader_settings:isTrue("folio_navbar_navpager_enabled") and not _navpager_rebuild_pending then
+            logger.dbg("folio navpager: post-show update scheduled for widget=", tostring(widget.name))
             _navpager_rebuild_pending = true
             UIManager:scheduleIn(0, function()
                 _navpager_rebuild_pending = false
-                if not G_reader_settings:isTrue("navbar_navpager_enabled") then return end
+                if not G_reader_settings:isTrue("folio_navbar_navpager_enabled") then return end
                 local fm2 = plugin.ui
                 if not (fm2 and fm2._navbar_container) then return end
                 local has_prev, has_next = Config.getNavpagerState()
-                logger.dbg("simpleui navpager: post-show getNavpagerState =>",
+                logger.dbg("folio navpager: post-show getNavpagerState =>",
                     "has_prev=", tostring(has_prev), "has_next=", tostring(has_next))
                 local target2 = (widget._navbar_container and widget) or fm2
                 if not Bottombar.updateNavpagerArrows(target2, has_prev, has_next) then
@@ -776,7 +818,7 @@ function M.patchUIManagerShow(plugin)
                     local mode2 = Config.getNavbarMode()
                     local new_bar = Bottombar.buildBarWidgetWithArrows(
                         plugin.active_action, tabs2, mode2, has_prev, has_next)
-                    logger.dbg("simpleui tz: post-show replaceBar target=", tostring(target2.name))
+                    logger.dbg("folio tz: post-show replaceBar target=", tostring(target2.name))
                     Bottombar.replaceBar(target2, new_bar, tabs2)
                 end
                 UIManager:setDirty(target2, "ui")
@@ -786,7 +828,7 @@ function M.patchUIManagerShow(plugin)
         end) -- end pcall
         _show_depth = _show_depth - 1
         if not ok then
-            logger.warn("simpleui: UIManager.show patch error:", tostring(result))
+            logger.warn("folio: UIManager.show patch error:", tostring(result))
         end
 
         -- Close the homescreen if a different fullscreen widget just appeared on top.
@@ -795,7 +837,7 @@ function M.patchUIManagerShow(plugin)
         if _show_depth == 0 and widget and widget.covers_fullscreen
                 and widget.name ~= "homescreen"
                 and widget ~= plugin.ui
-                and not widget._sui_keep_homescreen then
+                and not widget._folio_keep_homescreen then
             local stack = UI.getWindowStack()
             for _i, entry in ipairs(stack) do
                 local w = entry.widget
@@ -811,7 +853,7 @@ end
 
 -- ---------------------------------------------------------------------------
 -- UIManager.close
--- On close of a SimpleUI-injected widget: restores the active tab and,
+-- On close of a Folio-injected widget: restores the active tab and,
 -- when "Start with Homescreen" is set, re-opens the homescreen.
 -- Non-fullscreen widgets are passed straight through (fast path).
 -- ---------------------------------------------------------------------------
@@ -823,7 +865,7 @@ function M.patchUIManagerClose(plugin)
     -- Closes any orphaned non-fullscreen widgets, then shows the homescreen.
     -- Defined once at patch-install time, not re-created on every close() call.
     local function _doShowHS(fm, plugin_ref)
-        local HS = package.loaded["sui_homescreen"]
+        local HS = package.loaded["folio_homescreen"]
         if not HS or HS._instance then return end
         -- Re-check the stack at execution time: between the scheduleIn(0) call
         -- and this function running, a new fullscreen widget (e.g. coll_list
@@ -867,7 +909,7 @@ function M.patchUIManagerClose(plugin)
 
     UIManager.close = function(um_self, widget, ...)
         -- Fast path: non-fullscreen widgets (dialogs, menus, InfoMessage, etc.)
-        -- are the vast majority of close() calls — skip all SimpleUI logic.
+        -- are the vast majority of close() calls — skip all Folio logic.
         if not (widget and widget.covers_fullscreen) then
             return orig_close(um_self, widget, ...)
         end
@@ -876,7 +918,7 @@ function M.patchUIManagerClose(plugin)
         -- FM has no name field at class level (name = "filemanager" belongs to its
         -- FileChooser child), so widget.name is nil — we identify it by identity.
         local widget_is_fm = (widget == plugin.ui)
-        -- Restore the active tab when a SimpleUI-injected widget closes normally
+        -- Restore the active tab when a Folio-injected widget closes normally
         -- (not via intentional tab navigation).
         -- _navbar_injected is cleared immediately after processing so that a
         -- second close() on the same widget (e.g. from the native close_callback
@@ -921,7 +963,7 @@ function M.patchUIManagerClose(plugin)
         -- ever called explicitly. The event loop exits only when the stack empties.
         -- Without this, the HS remains on the stack and the app never terminates.
         if widget_is_fm then
-            local HS = package.loaded["sui_homescreen"]
+            local HS = package.loaded["folio_homescreen"]
             local hs_inst = HS and HS._instance
             if hs_inst then
                 -- _navbar_closing_intentionally suppresses tab-restore and
@@ -990,7 +1032,7 @@ end
 -- ---------------------------------------------------------------------------
 -- Menu.init
 -- Removes the pagination bar from fullscreen FM-style menus when
--- "navbar_pagination_visible" is off.
+-- "folio_navbar_pagination_visible" is off.
 -- ---------------------------------------------------------------------------
 
 function M.patchMenuInitForPagination(plugin)
@@ -1003,7 +1045,7 @@ function M.patchMenuInitForPagination(plugin)
 
     Menu.init = function(menu_self, ...)
         orig_menu_init(menu_self, ...)
-        if G_reader_settings:nilOrTrue("navbar_pagination_visible") then return end
+        if G_reader_settings:nilOrTrue("folio_navbar_pagination_visible") then return end
         if not TARGET_NAMES[menu_self.name]
            and not (menu_self.covers_fullscreen
                     and menu_self.is_borderless
@@ -1046,23 +1088,23 @@ end
 -- Menu.updatePageInfo hook for Navpager
 -- When the navpager is active, rebuilds the bottom bar after every page
 -- change so the Prev/Next arrows reflect the new enabled/disabled state.
--- This patch is lightweight: it only fires when navbar_navpager_enabled is
+-- This patch is lightweight: it only fires when folio_navbar_navpager_enabled is
 -- true AND the menu's page or page_num has actually changed.
 -- ---------------------------------------------------------------------------
 
 function M.patchMenuForNavpager(plugin)
     local Menu = require("ui/widget/menu")
     -- Guard: don't double-patch if installAll is called again.
-    if Menu._simpleui_navpager_patched then return end
-    Menu._simpleui_navpager_patched = true
+    if Menu._folio_navpager_patched then return end
+    Menu._folio_navpager_patched = true
 
-    logger.dbg("simpleui navpager: patchMenuForNavpager installed")
+    logger.dbg("folio navpager: patchMenuForNavpager installed")
 
     -- _getNavbarTarget: returns the topmost fullscreen widget with a navbar,
     -- falling back to fm. Fixes bar updates going to FM even when an injected
     -- widget (Favorites, Collections…) is visible on top.
     local function _getNavbarTarget(fm)
-        local UI    = require("sui_core")
+        local UI    = require("folio_core")
         local stack = UI.getWindowStack()
         for i = #stack, 1, -1 do
             local w = stack[i] and stack[i].widget
@@ -1077,8 +1119,8 @@ function M.patchMenuForNavpager(plugin)
     -- _subtitleEnabled: true when the title-bar page subtitle should be shown.
     -- Fires for navpager (original) OR the standalone pagination subtitle setting.
     local function _subtitleEnabled()
-        return G_reader_settings:isTrue("navbar_navpager_enabled")
-            or G_reader_settings:isTrue("navbar_pagination_show_subtitle")
+        return G_reader_settings:isTrue("folio_navbar_navpager_enabled")
+            or G_reader_settings:isTrue("folio_navbar_pagination_show_subtitle")
     end
     M._subtitleEnabled = _subtitleEnabled
 
@@ -1110,7 +1152,7 @@ function M.patchMenuForNavpager(plugin)
 
         if not _subtitleEnabled() then return end
 
-        logger.dbg("simpleui navpager: updatePageInfo fired name=",
+        logger.dbg("folio navpager: updatePageInfo fired name=",
             tostring(menu_self.name),
             "page=", tostring(menu_self.page),
             "page_num=", tostring(menu_self.page_num))
@@ -1125,14 +1167,14 @@ function M.patchMenuForNavpager(plugin)
         local UIManager = require("ui/uimanager")
         UIManager:scheduleIn(0, function()
             _navpager_rebuild_pending = false
-            if not G_reader_settings:isTrue("navbar_navpager_enabled") then return end
-            local Bottombar = require("sui_bottombar")
-            local Config    = require("sui_config")
+            if not G_reader_settings:isTrue("folio_navbar_navpager_enabled") then return end
+            local Bottombar = require("folio_bottombar")
+            local Config    = require("folio_config")
             local fm        = plugin.ui
             if not (fm and fm._navbar_container) then return end
 
             local has_prev, has_next = Config.getNavpagerState()
-            logger.dbg("simpleui navpager: scheduleIn updating arrows",
+            logger.dbg("folio navpager: scheduleIn updating arrows",
                 "has_prev=", tostring(has_prev), "has_next=", tostring(has_next))
 
             local target = M._getNavbarTarget(fm)
@@ -1141,7 +1183,7 @@ function M.patchMenuForNavpager(plugin)
                 local mode = Config.getNavbarMode()
                 local new_bar = Bottombar.buildBarWidgetWithArrows(
                     plugin.active_action, tabs, mode, has_prev, has_next)
-                logger.dbg("simpleui tz: updatePageInfo replaceBar target=", tostring(target.name))
+                logger.dbg("folio tz: updatePageInfo replaceBar target=", tostring(target.name))
                 Bottombar.replaceBar(target, new_bar, tabs)
             end
             UIManager:setDirty(target, "ui")
@@ -1193,7 +1235,7 @@ end
 --   • the Homescreen is not already on screen (HS._instance is nil)
 --   • UIManager is not in quit/exit state
 --
--- Called from SimpleUIPlugin:onResume() in main.lua.
+-- Called from FolioPlugin:onResume() in main.lua.
 -- Reuses the already-installed _doShowHS closure from patchUIManagerClose
 -- by looking up the live FM instance the same way that function does.
 -- scheduleIn(0) defers until the event loop has finished processing the
@@ -1213,7 +1255,7 @@ function M.showHSAfterResume(plugin)
     if not tabInTabs("homescreen", tabs) then return end
 
     -- Guard 4: HS must not already be open.
-    local HS = package.loaded["sui_homescreen"]
+    local HS = package.loaded["folio_homescreen"]
     if HS and HS._instance then return end
 
     -- Guard 5: UIManager must not be shutting down.
@@ -1225,7 +1267,7 @@ function M.showHSAfterResume(plugin)
         if UIManager._exit_code ~= nil then return end
         local RUI2 = package.loaded["apps/reader/readerui"]
         if RUI2 and RUI2.instance then return end
-        local HS2 = package.loaded["sui_homescreen"]
+        local HS2 = package.loaded["folio_homescreen"]
         if HS2 and HS2._instance then return end
 
         local FM = package.loaded["apps/filemanager/filemanager"]
@@ -1234,7 +1276,7 @@ function M.showHSAfterResume(plugin)
 
         -- Lazily load Homescreen if not yet in package.loaded.
         if not HS2 then
-            local ok, m = pcall(require, "sui_homescreen")
+            local ok, m = pcall(require, "folio_homescreen")
             HS2 = ok and m
         end
         if not HS2 then return end
@@ -1253,30 +1295,82 @@ function M.showHSAfterResume(plugin)
     end)
 end
 
+-- ---------------------------------------------------------------------------
+-- ReaderUI.init — register bottom-edge swipe-up for folio_readingtoolbar
+-- ---------------------------------------------------------------------------
+function M.patchReaderUIReadingToolbar(plugin)
+    local ok, ReaderUI = pcall(require, "apps/reader/readerui")
+    if not ok or not ReaderUI then return end
+    if ReaderUI._folio_reading_toolbar_patched then return end
+    ReaderUI._folio_reading_toolbar_patched = true
+    plugin._orig_readerui_init = ReaderUI.init
+    ReaderUI.init = function(self, ...)
+        local ret = plugin._orig_readerui_init(self, ...)
+        UIManager:scheduleIn(0, function()
+            if not G_reader_settings:nilOrTrue("folio_enabled") then return end
+            local R = package.loaded["apps/reader/readerui"]
+            if not R or R.instance ~= self then return end
+            local ok_rt, RT = pcall(require, "folio_readingtoolbar")
+            if ok_rt and RT and RT.onReaderReady then
+                RT.onReaderReady(self)
+            end
+            local ok_qol, Qol = pcall(require, "folio_qol")
+            if ok_qol and Qol and Qol.onReaderReady then
+                Qol.onReaderReady()
+            end
+        end)
+        return ret
+    end
+end
+
 function M.installAll(plugin)
+    do
+        local ok_qol, Qol = pcall(require, "folio_qol")
+        if ok_qol and Qol and Qol.patchReaderViewGetTapZones then
+            Qol.patchReaderViewGetTapZones()
+        end
+    end
     M.patchFileManagerClass(plugin)
     M.patchStartWithMenu()
     M.patchBookList(plugin)
     M.patchCollections(plugin)
+    M.patchHistory(plugin)
     M.patchFullscreenWidgets(plugin)
     M.patchUIManagerShow(plugin)
     M.patchUIManagerClose(plugin)
     M.patchMenuInitForPagination(plugin)
     M.patchMenuForNavpager(plugin)
+    M.patchReaderUIReadingToolbar(plugin)
     -- Folder covers: only install when the feature is enabled.
     -- Installing unconditionally wraps MosaicMenuItem.update even when FC is
     -- disabled, hiding the BookInfoManager upvalue from subsequent
     -- userpatch.getUpValue() calls made by third-party user-patches (such as
     -- 2-browser-folder-cover.lua).  When FC is disabled we leave
     -- MosaicMenuItem.update untouched so those patches work correctly.
-    -- FC.install() is also called from sui_menu.lua when the toggle is turned on.
-    local ok_fc, FC = pcall(require, "sui_foldercovers")
+    -- FC.install() is also called from folio_menu.lua when the toggle is turned on.
+    local ok_fc, FC = pcall(require, "folio_foldercovers")
     if ok_fc and FC and FC.isEnabled() then
         pcall(FC.install)
     end
 end
 
 function M.teardownAll(plugin)
+    do
+        local ok_qol, Qol = pcall(require, "folio_qol")
+        if ok_qol and Qol and Qol.unpatchReaderViewGetTapZones then
+            Qol.unpatchReaderViewGetTapZones()
+        end
+    end
+    local ok_rt, RT = pcall(require, "folio_readingtoolbar")
+    if ok_rt and RT and RT.teardown then
+        pcall(RT.teardown)
+    end
+    local ReaderUI = package.loaded["apps/reader/readerui"]
+    if ReaderUI and plugin._orig_readerui_init then
+        ReaderUI.init = plugin._orig_readerui_init
+        plugin._orig_readerui_init = nil
+        ReaderUI._folio_reading_toolbar_patched = nil
+    end
     -- Restore UIManager patches first (highest call frequency).
     if plugin._orig_uimanager_show then
         UIManager.show  = plugin._orig_uimanager_show
@@ -1299,7 +1393,7 @@ function M.teardownAll(plugin)
             Menu.updatePageInfo              = plugin._orig_menu_update_page_info
             plugin._orig_menu_update_page_info = nil
         end
-        Menu._simpleui_navpager_patched = nil
+        Menu._folio_navpager_patched = nil
     end
     local FileManager2 = package.loaded["apps/filemanager/filemanager"]
     if FileManager2 and plugin._orig_fm_updateTitleBarPath then
@@ -1309,6 +1403,10 @@ function M.teardownAll(plugin)
     local FMColl = package.loaded["apps/filemanager/filemanagercollection"]
     if FMColl and plugin._orig_fmcoll_show then
         FMColl.onShowCollList = plugin._orig_fmcoll_show; plugin._orig_fmcoll_show = nil
+    end
+    local FMH = package.loaded["apps/filemanager/filemanagerhistory"]
+    if FMH and plugin._orig_fmh_show then
+        FMH.onShowHist = plugin._orig_fmh_show; plugin._orig_fmh_show = nil
     end
     local RC = package.loaded["readcollection"]
     if RC then
@@ -1330,17 +1428,17 @@ function M.teardownAll(plugin)
         plugin._orig_fc_init        = nil
     end
     local FileManager = package.loaded["apps/filemanager/filemanager"]
-    if FileManager and FileManager._simpleui_gesture_priority_applied then
+    if FileManager and FileManager._folio_gesture_priority_applied then
         UI.unapplyGesturePriorityHandleEvent(FileManager)
     end
     if FileManager and plugin._orig_fm_setup then
         FileManager.setupLayout = plugin._orig_fm_setup; plugin._orig_fm_setup = nil
     end
     local FileManagerMenu = package.loaded["apps/filemanager/filemanagermenu"]
-    if FileManagerMenu and FileManagerMenu._simpleui_startwith_patched then
-        FileManagerMenu.getStartWithMenuTable       = FileManagerMenu._simpleui_startwith_orig
-        FileManagerMenu._simpleui_startwith_orig    = nil
-        FileManagerMenu._simpleui_startwith_patched = nil
+    if FileManagerMenu and FileManagerMenu._folio_startwith_patched then
+        FileManagerMenu.getStartWithMenuTable       = FileManagerMenu._folio_startwith_orig
+        FileManagerMenu._folio_startwith_orig    = nil
+        FileManagerMenu._folio_startwith_patched = nil
     end
     -- Reset all module-level state so a re-enable cycle starts clean.
     _hs_boot_done              = false
@@ -1350,7 +1448,7 @@ function M.teardownAll(plugin)
     Config.reset()
     local Registry = package.loaded["desktop_modules/moduleregistry"]
     if Registry then Registry.invalidate() end
-    local FC = package.loaded["sui_foldercovers"]
+    local FC = package.loaded["folio_foldercovers"]
     if FC then
         pcall(FC.uninstall)
     end

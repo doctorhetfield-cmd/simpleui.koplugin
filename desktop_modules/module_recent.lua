@@ -1,10 +1,9 @@
--- module_recent.lua — Simple UI
+-- module_recent.lua — Folio
 -- Módulo: Recent Books.
 -- Substitui a parte "recent" de recentbookswidget.lua.
 
 local Blitbuffer      = require("ffi/blitbuffer")
 local Device          = require("device")
-local Font            = require("ui/font")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
 local GestureRange    = require("ui/gesturerange")
@@ -23,13 +22,14 @@ local function getSH()
     if not _SH then
         local ok, m = pcall(require, "desktop_modules/module_books_shared")
         if ok and m then _SH = m
-        else logger.warn("simpleui: module_recent: cannot load module_books_shared: " .. tostring(m)) end
+        else logger.warn("folio: module_recent: cannot load module_books_shared: " .. tostring(m)) end
     end
     return _SH
 end
 
-local Config       = require("sui_config")
-local UI           = require("sui_core")
+local Config       = require("folio_config")
+local FolioTheme     = require("folio_theme")
+local UI           = require("folio_core")
 local PAD          = UI.PAD
 local PAD2         = UI.PAD2
 local MOD_GAP      = UI.MOD_GAP
@@ -68,7 +68,7 @@ function M.build(w, ctx)
     local inner_w = w - PAD * 2
     local gap     = math.floor((inner_w - 5 * cw) / 4)
     -- Hoist the face lookup — same args for every cell, no need to call per iteration.
-    local pct_face = Font:getFace("smallinfofont", pct_fs)
+    local pct_face = FolioTheme.faceUI(pct_fs)
 
     local row = HorizontalGroup:new{ align = "top" }
     for i = 1, cols do
@@ -128,7 +128,7 @@ function M.getHeight(_ctx)
     local SH = getSH()
     local D  = SH.getDims(Config.getModuleScale("recent", _ctx and _ctx.pfx),
                            Config.getThumbScale("recent", _ctx and _ctx.pfx))
-    return require("sui_config").getScaledLabelH() + D.RECENT_CELL_H
+    return require("folio_config").getScaledLabelH() + D.RECENT_CELL_H
 end
 
 
@@ -140,8 +140,8 @@ local function _makeScaleItem(ctx_menu)
         enabled_func = function() return not Config.isScaleLinked() end,
         title        = _lc("Scale"),
         info         = _lc("Scale for this module.\n100% is the default size."),
-        get          = function() return require("sui_config").getModuleScalePct("recent", pfx) end,
-        set          = function(v) require("sui_config").setModuleScale(v, "recent", pfx) end,
+        get          = function() return require("folio_config").getModuleScalePct("recent", pfx) end,
+        set          = function(v) require("folio_config").setModuleScale(v, "recent", pfx) end,
         refresh      = ctx_menu.refresh,
     })
 end
@@ -154,8 +154,8 @@ local function _makeThumbScaleItem(ctx_menu)
         separator = true,
         title     = _lc("Cover size"),
         info      = _lc("Scale for the cover thumbnails only.\nText and progress bar follow the module scale.\n100% is the default size."),
-        get       = function() return require("sui_config").getThumbScalePct("recent", pfx) end,
-        set       = function(v) require("sui_config").setThumbScale(v, "recent", pfx) end,
+        get       = function() return require("folio_config").getThumbScalePct("recent", pfx) end,
+        set       = function(v) require("folio_config").setThumbScale(v, "recent", pfx) end,
         refresh   = ctx_menu.refresh,
     })
 end

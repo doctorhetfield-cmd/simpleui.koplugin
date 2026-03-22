@@ -1,4 +1,4 @@
--- menu.lua — Simple UI
+-- menu.lua — Folio
 -- Builds the full settings submenu registered in the KOReader main menu
 -- (Top Bar, Bottom Bar, Quick Actions, Pagination Bar).
 -- Returns an installer: require("menu")(plugin) populates plugin.addToMainMenu.
@@ -20,17 +20,18 @@ local function MultiInputDialog() return require("ui/widget/multiinputdialog") e
 local function PathChooser()      return require("ui/widget/pathchooser")       end
 local function SortWidget()       return require("ui/widget/sortwidget")        end
 
-local Config    = require("sui_config")
-local UI        = require("sui_core")
-local Bottombar = require("sui_bottombar")
+local Config    = require("folio_config")
+local UI        = require("folio_core")
+local Bottombar = require("folio_bottombar")
+local Qol       = require("folio_qol")
 
 -- ---------------------------------------------------------------------------
 -- Installer function
 -- ---------------------------------------------------------------------------
 
-return function(SimpleUIPlugin)
+return function(FolioPlugin)
 
-SimpleUIPlugin.addToMainMenu = function(self, menu_items)
+FolioPlugin.addToMainMenu = function(self, menu_items)
     local plugin = self
 
     -- Local aliases for Config functions.
@@ -293,16 +294,16 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             -- ── Default (was "Pagination Bar On/Off") ──────────────────────
             {
                 text_func    = function()
-                    local state = G_reader_settings:nilOrTrue("navbar_pagination_visible") and _("On") or _("Off")
+                    local state = G_reader_settings:nilOrTrue("folio_navbar_pagination_visible") and _("On") or _("Off")
                     return _("Default") .. " — " .. state
                 end,
-                checked_func = function() return G_reader_settings:nilOrTrue("navbar_pagination_visible") end,
+                checked_func = function() return G_reader_settings:nilOrTrue("folio_navbar_pagination_visible") end,
                 callback     = function()
-                    local on = G_reader_settings:nilOrTrue("navbar_pagination_visible")
-                    G_reader_settings:saveSetting("navbar_pagination_visible", not on)
+                    local on = G_reader_settings:nilOrTrue("folio_navbar_pagination_visible")
+                    G_reader_settings:saveSetting("folio_navbar_pagination_visible", not on)
                     -- Mutual exclusion: enabling Default disables Navpager.
                     if not on then
-                        G_reader_settings:saveSetting("navbar_navpager_enabled", false)
+                        G_reader_settings:saveSetting("folio_navbar_navpager_enabled", false)
                     end
                     local state_text = on and _("hidden") or _("visible")
                     UIManager:show(ConfirmBox():new{
@@ -318,7 +319,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             -- ── Size (indented, only active when Default is on) ─────────────
             {
                 text           = _("    Size"),
-                enabled_func   = function() return G_reader_settings:nilOrTrue("navbar_pagination_visible") end,
+                enabled_func   = function() return G_reader_settings:nilOrTrue("folio_navbar_pagination_visible") end,
                 sub_item_table = (function()
                     local sizes = {
                         { label = _("Extra Small"), key = "xs" },
@@ -331,10 +332,10 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                         items[#items + 1] = {
                             text         = s.label,
                             checked_func = function()
-                                return (G_reader_settings:readSetting("navbar_pagination_size") or "s") == key
+                                return (G_reader_settings:readSetting("folio_navbar_pagination_size") or "s") == key
                             end,
                             callback     = function()
-                                G_reader_settings:saveSetting("navbar_pagination_size", key)
+                                G_reader_settings:saveSetting("folio_navbar_pagination_size", key)
                                 UIManager:show(ConfirmBox():new{
                                     text = _("Pagination bar size will change after restart.\n\nRestart now?"),
                                     ok_text = _("Restart"), cancel_text = _("Later"),
@@ -352,37 +353,37 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             -- ── Page number in title bar (disabled when navpager is on) ─────
             {
                 text_func    = function()
-                    local on = G_reader_settings:isTrue("navbar_pagination_show_subtitle")
+                    local on = G_reader_settings:isTrue("folio_navbar_pagination_show_subtitle")
                     return _("Page number in title bar") .. " — " .. (on and _("On") or _("Off"))
                 end,
                 checked_func = function()
-                    return G_reader_settings:isTrue("navbar_pagination_show_subtitle")
+                    return G_reader_settings:isTrue("folio_navbar_pagination_show_subtitle")
                 end,
                 enabled_func = function()
                     return not Config.isNavpagerEnabled()
                 end,
                 help_text    = _("Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\nNavpager enables this automatically.\nNot available when Navpager is active."),
                 callback     = function()
-                    local on = G_reader_settings:isTrue("navbar_pagination_show_subtitle")
-                    G_reader_settings:saveSetting("navbar_pagination_show_subtitle", not on)
+                    local on = G_reader_settings:isTrue("folio_navbar_pagination_show_subtitle")
+                    G_reader_settings:saveSetting("folio_navbar_pagination_show_subtitle", not on)
                     plugin:_scheduleRebuild()
                 end,
             },
             -- ── Navpager ────────────────────────────────────────────────────
             {
                 text_func    = function()
-                    local state = G_reader_settings:isTrue("navbar_navpager_enabled") and _("On") or _("Off")
+                    local state = G_reader_settings:isTrue("folio_navbar_navpager_enabled") and _("On") or _("Off")
                     return _("Navpager") .. " — " .. state
                 end,
-                checked_func = function() return G_reader_settings:isTrue("navbar_navpager_enabled") end,
+                checked_func = function() return G_reader_settings:isTrue("folio_navbar_navpager_enabled") end,
                 help_text    = _("Replaces the pagination bar with Prev/Next arrows at the edges of the bottom bar.\nThe arrows dim when there is no previous or next page.\nWith navpager active, as few as 1 tab and at most 4 tabs can be configured."),
                 callback     = function()
-                    local on = G_reader_settings:isTrue("navbar_navpager_enabled")
-                    G_reader_settings:saveSetting("navbar_navpager_enabled", not on)
+                    local on = G_reader_settings:isTrue("folio_navbar_navpager_enabled")
+                    G_reader_settings:saveSetting("folio_navbar_navpager_enabled", not on)
                     -- When enabling navpager, hide the old pagination bar
                     -- (the two features are mutually exclusive).
                     if not on then
-                        G_reader_settings:saveSetting("navbar_pagination_visible", false)
+                        G_reader_settings:saveSetting("folio_navbar_pagination_visible", false)
                         -- Trim tabs to navpager limit if needed.
                         local tabs = Config.loadTabConfig()
                         if #tabs > Config.MAX_TABS_NAVPAGER then
@@ -416,10 +417,10 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         items[#items + 1] = {
             text           = _("Swipe Indicator"),
             keep_menu_open = true,
-            checked_func   = function() return G_reader_settings:nilOrTrue("navbar_topbar_swipe_indicator") end,
+            checked_func   = function() return G_reader_settings:nilOrTrue("folio_navbar_topbar_swipe_indicator") end,
             callback = function()
-                G_reader_settings:saveSetting("navbar_topbar_swipe_indicator",
-                    not G_reader_settings:nilOrTrue("navbar_topbar_swipe_indicator"))
+                G_reader_settings:saveSetting("folio_navbar_topbar_swipe_indicator",
+                    not G_reader_settings:nilOrTrue("folio_navbar_topbar_swipe_indicator"))
                 plugin:_scheduleRebuild()
             end,
             separator = true,
@@ -529,13 +530,13 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         return {
             {
                 text_func    = function()
-                    return _("Top Bar") .. " — " .. (G_reader_settings:nilOrTrue("navbar_topbar_enabled") and _("On") or _("Off"))
+                    return _("Top Bar") .. " — " .. (G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled") and _("On") or _("Off"))
                 end,
-                checked_func = function() return G_reader_settings:nilOrTrue("navbar_topbar_enabled") end,
+                checked_func = function() return G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled") end,
                 keep_menu_open = true,
                 callback     = function()
-                    local on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
-                    G_reader_settings:saveSetting("navbar_topbar_enabled", not on)
+                    local on = G_reader_settings:nilOrTrue("folio_navbar_topbar_enabled")
+                    G_reader_settings:saveSetting("folio_navbar_topbar_enabled", not on)
                     UIManager:show(ConfirmBox():new{
                         text = string.format(_("Top Bar will be %s after restart.\n\nRestart now?"), on and _("disabled") or _("enabled")),
                         ok_text = _("Restart"), cancel_text = _("Later"),
@@ -568,7 +569,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                             Config.setTopbarSizePct(spin.value)
                             UI.invalidateDimCache()
                             plugin:_rewrapAllWidgets()
-                            local ok_hs, HS = pcall(require, "sui_homescreen")
+                            local ok_hs, HS = pcall(require, "folio_homescreen")
                             if ok_hs and HS then HS.refresh(true) end
                         end,
                     })
@@ -586,13 +587,13 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         return {
             {
                 text_func    = function()
-                    return _("Bottom Bar") .. " — " .. (G_reader_settings:nilOrTrue("navbar_enabled") and _("On") or _("Off"))
+                    return _("Bottom Bar") .. " — " .. (G_reader_settings:nilOrTrue("folio_navbar_enabled") and _("On") or _("Off"))
                 end,
-                checked_func = function() return G_reader_settings:nilOrTrue("navbar_enabled") end,
+                checked_func = function() return G_reader_settings:nilOrTrue("folio_navbar_enabled") end,
                 keep_menu_open = true,
                 callback     = function()
-                    local on = G_reader_settings:nilOrTrue("navbar_enabled")
-                    G_reader_settings:saveSetting("navbar_enabled", not on)
+                    local on = G_reader_settings:nilOrTrue("folio_navbar_enabled")
+                    G_reader_settings:saveSetting("folio_navbar_enabled", not on)
                     UIManager:show(ConfirmBox():new{
                         text = string.format(_("Bottom Bar will be %s after restart.\n\nRestart now?"), on and _("disabled") or _("enabled")),
                         ok_text = _("Restart"), cancel_text = _("Later"),
@@ -626,7 +627,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                             Config.setBarSizePct(spin.value)
                             UI.invalidateDimCache()
                             plugin:_rewrapAllWidgets()
-                            local ok_hs, HS = pcall(require, "sui_homescreen")
+                            local ok_hs, HS = pcall(require, "folio_homescreen")
                             if ok_hs and HS then HS.refresh(true) end
                         end,
                     })
@@ -674,15 +675,15 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             }),
             {
                 text_func    = function()
-                    return _("Top separator") .. " — " .. (G_reader_settings:isTrue("navbar_hide_separator") and _("Hidden") or _("Visible"))
+                    return _("Top separator") .. " — " .. (G_reader_settings:isTrue("folio_navbar_hide_separator") and _("Hidden") or _("Visible"))
                 end,
-                checked_func = function() return not G_reader_settings:isTrue("navbar_hide_separator") end,
+                checked_func = function() return not G_reader_settings:isTrue("folio_navbar_hide_separator") end,
                 keep_menu_open = true,
                 callback     = function()
-                    local hidden = G_reader_settings:isTrue("navbar_hide_separator")
-                    G_reader_settings:saveSetting("navbar_hide_separator", not hidden)
+                    local hidden = G_reader_settings:isTrue("folio_navbar_hide_separator")
+                    G_reader_settings:saveSetting("folio_navbar_hide_separator", not hidden)
                     plugin:_rebuildAllNavbars()
-                    local ok_hs, HS = pcall(require, "sui_homescreen")
+                    local ok_hs, HS = pcall(require, "folio_homescreen")
                     if ok_hs and HS then HS.refresh(true) end
                 end,
             },
@@ -715,17 +716,17 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- Resolves the live FM + window stack and re-applies (or restores) all
     -- titlebar state. Called by every toggle in this submenu.
     local function _reapplyAllTitlebars()
-        local Titlebar = require("sui_titlebar")
+        local Titlebar = require("folio_titlebar")
         local FM = package.loaded["apps/filemanager/filemanager"]
         local fm = FM and FM.instance
-        local stack = require("sui_core").getWindowStack()
+        local stack = require("folio_core").getWindowStack()
         Titlebar.reapplyAll(fm, stack)
         if fm then UIManager:setDirty(fm[1], "ui") end
     end
 
     -- Builds a visibility toggle list for one context ("fm" or "inj").
     local function makeTitleBarItemsForCtx(ctx)
-        local Titlebar = require("sui_titlebar")
+        local Titlebar = require("folio_titlebar")
         local items = {}
         for _i, item in ipairs(Titlebar.ITEMS) do
             if item.ctx == ctx then
@@ -753,7 +754,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- cfg_getter / cfg_saver — functions that load/save the side config.
     -- ctx — "fm" or "inj", used to filter M.ITEMS.
     local function makeTitleBarArrangeMenu(ctx, cfg_getter, cfg_saver)
-        local Titlebar   = require("sui_titlebar")
+        local Titlebar   = require("folio_titlebar")
         local SEP_LEFT   = "__sep_left__"
         local SEP_RIGHT  = "__sep_right__"
 
@@ -833,7 +834,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     end
 
     local function makeTitleBarFMMenu()
-        local Titlebar = require("sui_titlebar")
+        local Titlebar = require("folio_titlebar")
         local items = makeTitleBarItemsForCtx("fm")
         if #items > 0 then items[#items].separator = true end
         items[#items + 1] = {
@@ -848,7 +849,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     end
 
     local function makeTitleBarInjMenu()
-        local Titlebar = require("sui_titlebar")
+        local Titlebar = require("folio_titlebar")
         local items = makeTitleBarItemsForCtx("inj")
         if #items > 0 then items[#items].separator = true end
         items[#items + 1] = {
@@ -868,9 +869,9 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 text         = label,
                 radio        = true,
                 keep_menu_open = true,
-                checked_func = function() return require("sui_titlebar").getSizeKey() == key end,
+                checked_func = function() return require("folio_titlebar").getSizeKey() == key end,
                 callback     = function()
-                    require("sui_titlebar").setSizeKey(key)
+                    require("folio_titlebar").setSizeKey(key)
                     _reapplyAllTitlebars()
                 end,
             }
@@ -878,13 +879,13 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         return {
             {
                 text_func    = function()
-                    local on = require("sui_titlebar").isEnabled()
+                    local on = require("folio_titlebar").isEnabled()
                     return _("Custom Title Bar") .. " — " .. (on and _("On") or _("Off"))
                 end,
-                checked_func = function() return require("sui_titlebar").isEnabled() end,
+                checked_func = function() return require("folio_titlebar").isEnabled() end,
                 separator    = true,
                 callback     = function()
-                    local Titlebar = require("sui_titlebar")
+                    local Titlebar = require("folio_titlebar")
                     local on = Titlebar.isEnabled()
                     Titlebar.setEnabled(not on)
                     G_reader_settings:flush()
@@ -903,7 +904,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             },
             {
                 text      = _("Button Size"),
-                enabled_func = function() return require("sui_titlebar").isEnabled() end,
+                enabled_func = function() return require("folio_titlebar").isEnabled() end,
                 separator = true,
                 sub_item_table = {
                     sizeItem(_("Compact"), "compact"),
@@ -913,12 +914,12 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             },
             {
                 text         = _("Library Buttons"),
-                enabled_func = function() return require("sui_titlebar").isEnabled() end,
+                enabled_func = function() return require("folio_titlebar").isEnabled() end,
                 sub_item_table_func = makeTitleBarFMMenu,
             },
             {
                 text         = _("Sub-pages Buttons"),
-                enabled_func = function() return require("sui_titlebar").isEnabled() end,
+                enabled_func = function() return require("folio_titlebar").isEnabled() end,
                 sub_item_table_func = makeTitleBarInjMenu,
             },
         }
@@ -930,8 +931,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- Quick Actions
     -- -----------------------------------------------------------------------
 
-    -- Quick Actions — delegated to sui_quickactions.lua
-    local QA = require("sui_quickactions")
+    -- Quick Actions — delegated to folio_quickactions.lua
+    local QA = require("folio_quickactions")
     local function makeQuickActionsMenu()
         return QA.makeMenuItems(plugin)
     end
@@ -952,7 +953,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         -- only repaints the menu frame region, not the full HS. nextTick runs after
         -- the current event's onCloseWidget teardown, so the HS is the top widget
         -- by the time the dirty is processed.
-        local HS = package.loaded["sui_homescreen"]
+        local HS = package.loaded["folio_homescreen"]
         if not (HS and HS._instance) then return end
         local hs = HS._instance
         hs:_refreshImmediate(false)
@@ -966,8 +967,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- _goalTapCallback: shown when the user taps the Reading Goals widget on
     -- the Homescreen. Lets them set annual/physical goals.
     self._goalTapCallback = function()
-        local goal     = G_reader_settings:readSetting("navbar_reading_goal") or 0
-        local physical = G_reader_settings:readSetting("navbar_reading_goal_physical") or 0
+        local goal     = G_reader_settings:readSetting("folio_navbar_reading_goal") or 0
+        local physical = G_reader_settings:readSetting("folio_navbar_reading_goal_physical") or 0
         local ButtonDialog = require("ui/widget/buttondialog")
         local dlg
         dlg = ButtonDialog:new{ title = _("Annual Reading Goal"), buttons = {
@@ -990,16 +991,16 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- -----------------------------------------------------------------------
     -- Shared parametric helpers
     -- All menu-building functions below accept a `ctx` table:
-    --   ctx.pfx       — settings key prefix, e.g. "navbar_homescreen_"
-    --   ctx.pfx_qa    — QA settings prefix, e.g. "navbar_homescreen_quick_actions_"
+    --   ctx.pfx       — settings key prefix, e.g. "folio_navbar_homescreen_"
+    --   ctx.pfx_qa    — QA settings prefix, e.g. "folio_navbar_homescreen_quick_actions_"
     --   ctx.refresh   — zero-arg function to refresh the page after a change
     -- -----------------------------------------------------------------------
 
     local MAX_QA_ITEMS = 4  -- max actions per QA slot (used by makeQAMenu)
 
     local HOMESCREEN_CTX = {
-        pfx     = "navbar_homescreen_",
-        pfx_qa  = "navbar_homescreen_quick_actions_",
+        pfx     = "folio_navbar_homescreen_",
+        pfx_qa  = "folio_navbar_homescreen_quick_actions_",
         refresh = refreshHomescreen,
     }
 
@@ -1060,11 +1061,13 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                   local pool_labels = {}; for _i, a in ipairs(getQAPool()) do pool_labels[a.id] = a.label end
                   local sort_items = {}
                   for _i, id in ipairs(qa_ids) do sort_items[#sort_items+1] = { text = pool_labels[id] or id, orig_item = id } end
-                  UIManager:show(SortWidget():new{ title = string.format(_("Arrange %s"), slot_label), covers_fullscreen = true, item_table = sort_items,
+                  local sw = SortWidget():new{ title = string.format(_("Arrange %s"), slot_label), covers_fullscreen = true, item_table = sort_items,
                       callback = function()
                           local new_order = {}; for _i, item in ipairs(sort_items) do new_order[#new_order+1] = item.orig_item end
                           G_reader_settings:saveSetting(items_key, new_order); ctx.refresh()
-                      end })
+                      end }
+                  UIManager:show(sw)
+                  UI.applyGesturePriorityHandleEvent(sw)
               end },
         }
         local sorted_pool = {}
@@ -1091,7 +1094,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- Fully registry-driven: no module ids hardcoded here.
     local function makeModulesMenu(ctx)
         local MAX_MOD      = 3
-        local NO_LIMIT_KEY = "navbar_homescreen_no_module_limit"
+        local NO_LIMIT_KEY = "folio_navbar_homescreen_no_module_limit"
 
         local function isUnlimited()
             return G_reader_settings:readSetting(NO_LIMIT_KEY) == true
@@ -1316,7 +1319,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                             default_value = Config.SCALE_DEF,
                                             callback = function(spin)
                                                 Config.setModuleScale(spin.value)
-                                                local HS = package.loaded["sui_homescreen"]
+                                                local HS = package.loaded["folio_homescreen"]
                                                 if HS and HS.invalidateLabelCache then HS.invalidateLabelCache() end
                                                 ctx.refresh()
                                             end,
@@ -1351,7 +1354,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                             default_value = Config.SCALE_DEF,
                                             callback = function(spin)
                                                 Config.setLabelScale(spin.value)
-                                                local HS = package.loaded["sui_homescreen"]
+                                                local HS = package.loaded["folio_homescreen"]
                                                 if HS and HS.invalidateLabelCache then HS.invalidateLabelCache() end
                                                 ctx.refresh()
                                             end,
@@ -1370,7 +1373,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                     ok_text = _("Reset"),
                                     ok_callback = function()
                                         Config.resetAllScales(ctx.pfx, ctx.pfx_qa)
-                                        local HS = package.loaded["sui_homescreen"]
+                                        local HS = package.loaded["folio_homescreen"]
                                         if HS and HS.invalidateLabelCache then HS.invalidateLabelCache() end
                                         ctx.refresh()
                                     end,
@@ -1395,24 +1398,24 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         return {
             {
                 text_func    = function()
-                    local on = G_reader_settings:nilOrTrue("navbar_homescreen_enabled")
+                    local on = G_reader_settings:nilOrTrue("folio_navbar_homescreen_enabled")
                     return _("Home Screen") .. " — " .. (on and _("On") or _("Off"))
                 end,
-                checked_func = function() return G_reader_settings:nilOrTrue("navbar_homescreen_enabled") end,
+                checked_func = function() return G_reader_settings:nilOrTrue("folio_navbar_homescreen_enabled") end,
                 callback     = function()
-                    local on = G_reader_settings:nilOrTrue("navbar_homescreen_enabled")
-                    G_reader_settings:saveSetting("navbar_homescreen_enabled", not on)
+                    local on = G_reader_settings:nilOrTrue("folio_navbar_homescreen_enabled")
+                    G_reader_settings:saveSetting("folio_navbar_homescreen_enabled", not on)
                     plugin:_scheduleRebuild()
                 end,
             },
             {
                 text         = _("Start with Home Screen"),
                 checked_func = function()
-                    return G_reader_settings:readSetting("start_with", "filemanager") == "homescreen_simpleui"
+                    return G_reader_settings:readSetting("start_with", "filemanager") == "homescreen_folio"
                 end,
                 callback = function()
-                    local on = G_reader_settings:readSetting("start_with", "filemanager") == "homescreen_simpleui"
-                    G_reader_settings:saveSetting("start_with", on and "filemanager" or "homescreen_simpleui")
+                    local on = G_reader_settings:readSetting("start_with", "filemanager") == "homescreen_folio"
+                    G_reader_settings:saveSetting("start_with", on and "filemanager" or "homescreen_folio")
                 end,
                 separator = true,
             },
@@ -1427,7 +1430,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         plugin_ref.active_action = action_id
         local fm = plugin_ref.ui
         if fm and fm._navbar_container then
-            Bottombar.replaceBar(fm, Bottombar.buildBarWidget(action_id, fm._navbar_tabs or tabs), tabs)
+            Bottombar.replaceBar(fm, Bottombar.buildBarWidget(action_id, fm._folio_navbar_tabs or tabs), tabs)
             UIManager:setDirty(fm[1], "ui")
         end
         return action_id
@@ -1439,7 +1442,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
 
     -- sorting_hint = "tools" places this entry in the Tools section of the
     -- KOReader main menu (where Statistics, Terminal, etc. live).
-    -- Using a dedicated key "simpleui" avoids colliding with the section table.
+    -- Using a dedicated key "folio" avoids colliding with the section table.
     --
     -- OPT-H: All sub-menus are now built lazily via sub_item_table_func.
     -- Previously makeNavbarMenu(), makePaginationBarMenu() and makeTopbarMenu()
@@ -1447,24 +1450,24 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- (checked_func, callback, enabled_func, etc.) even if the user never opens
     -- the menu. With sub_item_table_func the closures are only allocated when
     -- the user actually taps the menu entry.
-    menu_items.simpleui = {
+    menu_items.folio = {
         sorting_hint = "tools",
-        text = _("Simple UI"),
+        text = _("Folio"),
         sub_item_table = {
             {
                 text_func    = function()
-                    return _("Simple UI") .. " — " .. (G_reader_settings:nilOrTrue("simpleui_enabled") and _("On") or _("Off"))
+                    return _("Folio") .. " — " .. (G_reader_settings:nilOrTrue("folio_enabled") and _("On") or _("Off"))
                 end,
-                checked_func = function() return G_reader_settings:nilOrTrue("simpleui_enabled") end,
+                checked_func = function() return G_reader_settings:nilOrTrue("folio_enabled") end,
                 callback     = function()
-                    local on = G_reader_settings:nilOrTrue("simpleui_enabled")
-                    G_reader_settings:saveSetting("simpleui_enabled", not on)
+                    local on = G_reader_settings:nilOrTrue("folio_enabled")
+                    G_reader_settings:saveSetting("folio_enabled", not on)
                     -- Flush immediately so a hard reboot / crash cannot leave the
                     -- setting unsaved, which would cause a white-screen boot loop
                     -- the next time KOReader starts with the plugin installed.
                     G_reader_settings:flush()
                     UIManager:show(ConfirmBox():new{
-                        text        = string.format(_("Simple UI will be %s after restart.\n\nRestart now?"), on and _("disabled") or _("enabled")),
+                        text        = string.format(_("Folio will be %s after restart.\n\nRestart now?"), on and _("disabled") or _("enabled")),
                         ok_text     = _("Restart"), cancel_text = _("Later"),
                         ok_callback = function()
                             UIManager:restartKOReader()
@@ -1505,9 +1508,38 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                             sub_item_table_func = makeQuickActionsMenu,
                         },
                         {
+                            text = _("One-handed reading"),
+                            help_text = _(
+                                "If the reader status bar was configured for you on first launch, you can change it anytime under KOReader → Settings → Status bar."
+                            ),
+                            sub_item_table = {
+                                {
+                                    text = _("Off"),
+                                    radio = true,
+                                    separator = true,
+                                    checked_func = function() return Qol.getOneHandedMode() == "off" end,
+                                    callback = function() Qol.applyOneHandedMode("off") end,
+                                },
+                                {
+                                    text = _("Right hand"),
+                                    help_text = _("Next page: right 80% of the screen. Previous: left 20%."),
+                                    radio = true,
+                                    checked_func = function() return Qol.getOneHandedMode() == "right" end,
+                                    callback = function() Qol.applyOneHandedMode("right") end,
+                                },
+                                {
+                                    text = _("Left hand"),
+                                    help_text = _("Next page: left 80% of the screen. Previous: right 20%."),
+                                    radio = true,
+                                    checked_func = function() return Qol.getOneHandedMode() == "left" end,
+                                    callback = function() Qol.applyOneHandedMode("left") end,
+                                },
+                            },
+                        },
+                        {
                             text = _("Library"),
                             sub_item_table_func = function()
-                                local ok_fc, FC = pcall(require, "sui_foldercovers")
+                                local ok_fc, FC = pcall(require, "folio_foldercovers")
                                 if not ok_fc or not FC then return {} end
                                 -- Refresh the mosaic view immediately after any setting change.
                                 local function _refreshFC()
