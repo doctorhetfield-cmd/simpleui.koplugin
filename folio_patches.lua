@@ -13,6 +13,9 @@ local Titlebar  = require("folio_titlebar")
 
 local M = {}
 
+-- Tracks KOReader night_mode so folio_theme can refresh when it flips.
+M._folio_last_night = nil
+
 -- Sentinel table reused for UIManager.show calls with no extra args,
 -- avoiding a table allocation on every call.
 local _EMPTY = {}
@@ -553,6 +556,15 @@ function M.patchUIManagerShow(plugin)
     end
 
     UIManager.show = function(um_self, widget, ...)
+        do
+            local nm = G_reader_settings:isTrue("night_mode")
+            if M._folio_last_night ~= nm then
+                M._folio_last_night = nm
+                pcall(function()
+                    require("folio_theme").refreshThemeForNightMode()
+                end)
+            end
+        end
         -- Fast path: the vast majority of show() calls are non-fullscreen
         -- widgets (dialogs, menus, InfoMessage, toasts, etc.). None of the
         -- Folio injection logic applies to them — skip everything.
@@ -1355,6 +1367,7 @@ function M.installAll(plugin)
 end
 
 function M.teardownAll(plugin)
+    M._folio_last_night = nil
     do
         local ok_qol, Qol = pcall(require, "folio_qol")
         if ok_qol and Qol and Qol.unpatchReaderViewGetTapZones then

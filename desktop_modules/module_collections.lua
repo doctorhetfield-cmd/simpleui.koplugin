@@ -316,21 +316,46 @@ function M.build(w, ctx)
     local selected = getSelectedCollections()
 
     if #selected == 0 then
-        return FrameContainer:new{
-            bordersize    = 0,
-            background    = Theme.SURFACE_LOW,
-            padding_left  = PAD,
-            padding_right = PAD,
-            CenterContainer:new{
-                dimen = Geom:new{ w = w - PAD * 2, h = d.empty_h },
-                TextWidget:new{
-                    text    = _("No collections selected"),
-                    face    = FolioTheme.faceUI(d.empty_fs),
-                    fgcolor = Theme.TEXT_MUTED,
-                    width   = w - PAD * 2,
+        local inner_w = w - PAD * 2
+        local dim = Geom:new{ w = w, h = d.empty_h + Screen:scaleBySize(8) }
+        local tap = InputContainer:new{
+            dimen = dim,
+            ges_events = {
+                Tap = {
+                    GestureRange:new{
+                        ges = "tap",
+                        range = function() return dim end,
+                    },
                 },
             },
         }
+        function tap:onTap()
+            local FM = package.loaded["apps/filemanager/filemanager"]
+                and package.loaded["apps/filemanager/filemanager"].instance
+            if FM and FM.collections and FM.collections.onShowCollList then
+                pcall(function() FM.collections:onShowCollList() end)
+            end
+            return true
+        end
+        tap[1] = FrameContainer:new{
+            bordersize    = 1,
+            color         = Theme.GHOST_LINE,
+            background    = Theme.SURFACE_LOW,
+            padding_left  = PAD,
+            padding_right = PAD,
+            padding_top   = Screen:scaleBySize(6),
+            padding_bottom = Screen:scaleBySize(6),
+            CenterContainer:new{
+                dimen = Geom:new{ w = inner_w, h = d.empty_h },
+                TextWidget:new{
+                    text    = _("Add your first collection →"),
+                    face    = FolioTheme.faceUI(math.max(8, Screen:scaleBySize(13))),
+                    fgcolor = Theme.TEXT_MUTED,
+                    width   = inner_w,
+                },
+            },
+        }
+        return tap
     end
 
     local inner_w   = w - PAD * 2

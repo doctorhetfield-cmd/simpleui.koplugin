@@ -68,7 +68,7 @@ function M.BAR_H()       return _cached("bar_h",   function() return math.floor(
 function M.ICON_SZ()     return _cached("icon_sz", function() return math.floor(Screen:scaleBySize(28) * _getNavbarScale() * (Config.getIconScalePct()  / 100)) end) end
 function M.ICON_TOP_SP() return _cached("it_sp",   function() return math.floor(Screen:scaleBySize(10) * _getNavbarScale()) end) end
 function M.ICON_TXT_SP() return _cached("itxt_sp", function() return math.floor(Screen:scaleBySize(4)  * _getNavbarScale()) end) end
-function M.LABEL_FS()    return _cached("lbl_fs",  function() return math.floor(Screen:scaleBySize(9)  * _getNavbarScale() * (Config.getLabelScalePct() / 100)) end) end
+function M.LABEL_FS()    return _cached("lbl_fs",  function() return math.floor(Screen:scaleBySize(13) * _getNavbarScale() * (Config.getLabelScalePct() / 100)) end) end
 function M.INDIC_H()     return _cached("indic_h", function() return math.floor(Screen:scaleBySize(3)  * _getNavbarScale()) end) end
 
 -- Structural dimensions — not affected by the size setting.
@@ -162,6 +162,8 @@ function M.buildTabCell(action_id, active, tab_w, mode)
             is_icon = true,
             alpha   = true,
             invert  = active and true or false,
+            -- Inactive: tint icons so they stay visible on SURFACE_TOP (night + day).
+            color   = active and nil or Theme.TEXT,
         }
     end
 

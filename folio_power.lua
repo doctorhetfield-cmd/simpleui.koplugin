@@ -442,6 +442,76 @@ function PowerScreenWidget:_settingsRow(label, sub, on, on_toggle)
     }
 end
 
+function PowerScreenWidget:_restartExitRow(sw, margin_h)
+    local w = sw - 2 * margin_h
+    local h = Screen:scaleBySize(48)
+    local gap = FolioTheme.scaled(FolioTheme.Spacing.SM)
+    local half = math.floor((w - gap) / 2)
+    local facebtn = FolioTheme.faceUI(math.max(12, Screen:scaleBySize(14)))
+    local dim_r = Geom:new{ w = half, h = h }
+    local dim_e = Geom:new{ w = half, h = h }
+
+    local restart = InputContainer:new{
+        dimen = dim_r,
+        ges_events = {
+            Tap = { GestureRange:new{ ges = "tap", range = function() return dim_r end } },
+        },
+    }
+    function restart:onTap()
+        G_reader_settings:flush()
+        UIManager:restartKOReader()
+        return true
+    end
+    restart[1] = FrameContainer:new{
+        bordersize = 2,
+        color      = Theme.PRIMARY,
+        background = Theme.SURFACE,
+        radius     = 0,
+        width      = half,
+        height     = h,
+        CenterContainer:new{
+            dimen = dim_r,
+            TextWidget:new{ text = _("RESTART"), face = facebtn, fgcolor = Theme.TEXT },
+        },
+    }
+
+    local exit = InputContainer:new{
+        dimen = dim_e,
+        ges_events = {
+            Tap = { GestureRange:new{ ges = "tap", range = function() return dim_e end } },
+        },
+    }
+    function exit:onTap()
+        G_reader_settings:flush()
+        UIManager:quit(0)
+        return true
+    end
+    exit[1] = FrameContainer:new{
+        bordersize = 0,
+        radius     = 0,
+        background = Theme.PRIMARY,
+        width      = half,
+        height     = h,
+        CenterContainer:new{
+            dimen = dim_e,
+            TextWidget:new{ text = _("EXIT KOREADER"), face = facebtn, fgcolor = Theme.ON_PRIMARY },
+        },
+    }
+
+    return FrameContainer:new{
+        bordersize  = 0,
+        padding     = 0,
+        margin_left = margin_h,
+        margin_right = margin_h,
+        width       = sw,
+        HorizontalGroup:new{
+            restart,
+            HorizontalSpan:new{ width = gap },
+            exit,
+        },
+    }
+end
+
 function PowerScreenWidget:_updateSoftwareBar(sw, margin_h)
     local w = sw - 2 * margin_h
     local h = Screen:scaleBySize(72)
@@ -560,7 +630,7 @@ function PowerScreenWidget:_footerText()
     local ko_v = getKoReaderVersionString()
     local dev = getDeviceModelString():upper()
     local line = string.format(
-        "SIMPLEUI V%s · KOREADER V%s · %s",
+        "FOLIO V%s · KOREADER V%s · %s",
         folio_v, ko_v, dev
     )
     return TextWidget:new{
@@ -646,6 +716,8 @@ function PowerScreenWidget:_buildMainContent()
         vg_rows,
     }
 
+    body[#body + 1] = VerticalSpan:new{ width = FolioTheme.scaled(FolioTheme.Spacing.MD) }
+    body[#body + 1] = self:_restartExitRow(sw, margin_h)
     body[#body + 1] = VerticalSpan:new{ width = FolioTheme.scaled(FolioTheme.Spacing.MD) }
     body[#body + 1] = self:_updateSoftwareBar(sw, margin_h)
     body[#body + 1] = VerticalSpan:new{ width = FolioTheme.scaled(FolioTheme.Spacing.XL) }

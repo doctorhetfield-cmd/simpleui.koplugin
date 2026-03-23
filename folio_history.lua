@@ -22,7 +22,7 @@ local VerticalGroup       = require("ui/widget/verticalgroup")
 local VerticalSpan        = require("ui/widget/verticalspan")
 local Screen              = Device.screen
 local logger              = require("logger")
-local _                   = require("gettext")
+local gettext             = require("gettext")
 
 local Config   = require("folio_config")
 local FolioTheme = require("folio_theme")
@@ -144,9 +144,9 @@ local function gatherMilestones()
                     local authors = doc_props.authors or ""
                     local line
                     if authors ~= "" then
-                        line = string.format(_("Finished %s by %s"), title, authors)
+                        line = string.format(gettext("Finished %s by %s"), title, authors)
                     else
-                        line = string.format(_("Finished %s"), title)
+                        line = string.format(gettext("Finished %s"), title)
                     end
                     out[#out + 1] = {
                         ts      = ts,
@@ -193,7 +193,7 @@ local function gatherMilestones()
                             file      = nil,
                             title     = btitle,
                             authors   = authors,
-                            line_main = string.format(_("Reading session — %s"), btitle),
+                            line_main = string.format(gettext("Reading session — %s"), btitle),
                             start_t   = st,
                             duration  = dur,
                             sub_line  = nil,
@@ -229,7 +229,7 @@ local function gatherMilestones()
                         file     = fp,
                         title    = title,
                         authors  = doc_props.authors or "",
-                        line_main = string.format(_("Highlights in %s"), title),
+                        line_main = string.format(gettext("Highlights in %s"), title),
                         sub_line = nil,
                         icon     = "highlight",
                     }
@@ -304,7 +304,7 @@ function HistoryScreenWidget:init()
     self.title_bar = TitleBar:new{
         show_parent             = self,
         fullscreen              = true,
-        title                   = _("Reading History"),
+        title                   = gettext("Reading History"),
     }
 
     local sw, sh = Screen:getWidth(), Screen:getHeight()
@@ -324,7 +324,7 @@ function HistoryScreenWidget:_buildTopRow(sw, header_h)
     local side_pad   = FolioTheme.scaled(FolioTheme.Spacing.SM)
 
     local title_w = TextWidget:new{
-        text    = _("Reading History"),
+        text    = gettext("Reading History"),
         face    = face_title,
         bold    = true,
         fgcolor = Theme.TEXT,
@@ -401,11 +401,11 @@ function HistoryScreenWidget:_monthOverviewCard(sw, margin_h)
     local face_lbl = FolioTheme.faceUI(FolioTheme.sizeMicro())
 
     local month_names = {
-        _("January"), _("February"), _("March"), _("April"), _("May"), _("June"),
-        _("July"), _("August"), _("September"), _("October"), _("November"), _("December"),
+        gettext("January"), gettext("February"), gettext("March"), gettext("April"), gettext("May"), gettext("June"),
+        gettext("July"), gettext("August"), gettext("September"), gettext("October"), gettext("November"), gettext("December"),
     }
     local month_name = month_names[tt.month] or ""
-    local header_txt = string.format("%s %d %s", month_name:upper(), tt.year, _("OVERVIEW"))
+    local header_txt = string.format("%s %d %s", month_name:upper(), tt.year, gettext("OVERVIEW"))
 
     local inner_w = sw - 2 * margin_h
 
@@ -416,7 +416,7 @@ function HistoryScreenWidget:_monthOverviewCard(sw, margin_h)
         },
         VerticalSpan:new{ width = FolioTheme.scaled(FolioTheme.Spacing.XS) },
         TextWidget:new{
-            text = _("BOOKS COMPLETED"), face = face_lbl, fgcolor = Theme.TEXT_MUTED,
+            text = gettext("BOOKS COMPLETED"), face = face_lbl, fgcolor = Theme.TEXT_MUTED,
         },
     }
 
@@ -424,14 +424,16 @@ function HistoryScreenWidget:_monthOverviewCard(sw, margin_h)
         align = "center",
         HorizontalGroup:new{
             TextWidget:new{ text = tostring(h_num), face = face48, fgcolor = Theme.TEXT },
+            HorizontalSpan:new{ width = FolioTheme.scaled(FolioTheme.Spacing.XS) },
             TextWidget:new{ text = "h", face = face22, fgcolor = Theme.TEXT },
-            HorizontalSpan:new{ width = 4 },
+            HorizontalSpan:new{ width = FolioTheme.scaled(FolioTheme.Spacing.XS) },
             TextWidget:new{ text = tostring(m_num), face = face48, fgcolor = Theme.TEXT },
+            HorizontalSpan:new{ width = FolioTheme.scaled(FolioTheme.Spacing.XS) },
             TextWidget:new{ text = "m", face = face22, fgcolor = Theme.TEXT },
         },
         VerticalSpan:new{ width = FolioTheme.scaled(FolioTheme.Spacing.XS) },
         TextWidget:new{
-            text = _("TOTAL TIME INVESTED"), face = face_lbl, fgcolor = Theme.TEXT_MUTED,
+            text = gettext("TOTAL TIME INVESTED"), face = face_lbl, fgcolor = Theme.TEXT_MUTED,
         },
     }
 
@@ -521,9 +523,9 @@ function HistoryScreenWidget:_milestoneRows(inner_w)
         if not sub then
             if ms.kind == "session" and ms.start_t and ms.duration then
                 local end_t = ms.start_t + ms.duration
-                sub = string.format(_("COMPLETED AT %s"), os.date("%I:%M %p", end_t))
+                sub = string.format(gettext("COMPLETED AT %s"), os.date("%I:%M %p", end_t))
             else
-                sub = string.format(_("COMPLETED AT %s"), os.date("%I:%M %p", ms.ts))
+                sub = string.format(gettext("COMPLETED AT %s"), os.date("%I:%M %p", ms.ts))
             end
         end
 
@@ -598,7 +600,7 @@ function HistoryScreenWidget:_loadMoreBarFixed(sw, margin_h)
         CenterContainer:new{
             dimen = dim,
             TextWidget:new{
-                text = _("LOAD MORE HISTORY"),
+                text = gettext("LOAD MORE HISTORY"),
                 face = FolioTheme.faceUI(math.max(12, Screen:scaleBySize(16))),
                 fgcolor = Theme.ON_PRIMARY,
             },
@@ -634,7 +636,7 @@ function HistoryScreenWidget:_buildScrollBody(sw, content_h, header_h)
         LeftContainer:new{
             dimen = Geom:new{ w = inner_w, h = hdr_h },
             TextWidget:new{
-                text = _("Recent Milestones"),
+                text = gettext("Recent Milestones"),
                 face = FolioTheme.faceContent(FolioTheme.sizeTitleMd()),
                 bold = true,
                 fgcolor = Theme.TEXT,
@@ -643,7 +645,7 @@ function HistoryScreenWidget:_buildScrollBody(sw, content_h, header_h)
         RightContainer:new{
             dimen = Geom:new{ w = inner_w, h = hdr_h },
             TextWidget:new{
-                text = _("SORTED BY DATE"),
+                text = gettext("SORTED BY DATE"),
                 face = FolioTheme.faceUI(FolioTheme.sizeMicro()),
                 fgcolor = Theme.TEXT_MUTED,
             },
