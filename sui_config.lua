@@ -754,6 +754,8 @@ function M.reset()
     _navbar_mode_cache           = nil
     M.wifi_optimistic            = nil
     M.cover_extraction_pending   = false
+    M._cover_extract_next_ok     = 0
+    M._cover_extract_pending     = {}
     _Device                      = nil
     _NetworkMgr                  = nil
     _has_wifi_toggle             = nil
@@ -779,6 +781,8 @@ end
 -- Previously each module kept its own flag, causing up to 2 parallel poll
 -- timers (60 × 0.5 s each). One centralised flag prevents duplicates.
 M.cover_extraction_pending = false
+M._cover_extract_next_ok   = 0
+M._cover_extract_pending   = {}
 
 local _BookInfoManager = nil
 
@@ -897,6 +901,9 @@ function M.getCoverBB(filepath, w, h)
         if not (bookinfo.cover_fetched and bookinfo.has_cover and bookinfo.cover_bb) then
             return cached.bb
         end
+        if M._cover_extract_pending then
+            M._cover_extract_pending[filepath] = nil
+        end
         local src_w = bookinfo.cover_bb:getWidth()
         local src_h = bookinfo.cover_bb:getHeight()
         if src_w >= w and src_h >= h then
@@ -916,21 +923,28 @@ function M.getCoverBB(filepath, w, h)
     local ok, bookinfo = pcall(function() return bim:getBookInfo(filepath, true) end)
     if not ok then return nil end
 
+    local function scheduleExtract()
+        if not M._cover_extract_pending then M._cover_extract_pending = {} end
+        if M._cover_extract_pending[filepath] then return end
+        local now = os.time()
+        if (M._cover_extract_next_ok or 0) > now then return end
+        M._cover_extract_next_ok = now + 1
+        M._cover_extract_pending[filepath] = now
+        pcall(function()
+            bim:extractInBackground({{
+                filepath    = filepath,
+                cover_specs = { max_cover_w = w, max_cover_h = h },
+            }})
+        end)
+    end
+
     -- CORREÇÃO: Verificar se a tentativa de extração já foi feita
     if bookinfo and bookinfo.cover_fetched then
         if bookinfo.has_cover and bookinfo.cover_bb then
             local src_w = bookinfo.cover_bb:getWidth()
             local src_h = bookinfo.cover_bb:getHeight()
             local lowres = (src_w < w or src_h < h)
-            if lowres and not M.cover_extraction_pending then
-                M.cover_extraction_pending = true
-                pcall(function()
-                    bim:extractInBackground({{
-                        filepath    = filepath,
-                        cover_specs = { max_cover_w = w, max_cover_h = h },
-                    }})
-                end)
-            end
+            if lowres then scheduleExtract() end
             local bb = _scaleBBToSlot(bookinfo.cover_bb, w, h)
             if _bim_cover_count >= BIM_MAX_COVERS then _evictOldestCover() end
             _bim_cover_cache[key] = { bb = bb, t = os.time(), lowres = lowres or nil, chk = os.time(), src_w = src_w, src_h = src_h }
@@ -943,15 +957,7 @@ function M.getCoverBB(filepath, w, h)
         end
     end
 
-    if not M.cover_extraction_pending then
-        M.cover_extraction_pending = true
-        pcall(function()
-            bim:extractInBackground({{
-                filepath    = filepath,
-                cover_specs = { max_cover_w = w, max_cover_h = h },
-            }})
-        end)
-    end
+    scheduleExtract()
     return nil
 end
 
