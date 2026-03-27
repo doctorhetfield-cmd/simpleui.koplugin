@@ -151,7 +151,7 @@ end
 -- Returns the normalised topbar config, migrating legacy formats when needed.
 function M.getTopbarConfig()
     local raw = G_reader_settings:readSetting("navbar_topbar_config")
-    local cfg = { side = {}, order_left = {}, order_right = {}, show = {}, order = {} }
+    local cfg = { side = {}, order_left = {}, order_right = {}, order_center = {}, show = {}, order = {} }
     if type(raw) == "table" then
         if type(raw.side) == "table" then
             for k, v in pairs(raw.side) do cfg.side[k] = v end
@@ -161,6 +161,9 @@ function M.getTopbarConfig()
         end
         if type(raw.order_right) == "table" then
             for _i, v in ipairs(raw.order_right) do cfg.order_right[#cfg.order_right + 1] = v end
+        end
+        if type(raw.order_center) == "table" then
+            for _i, v in ipairs(raw.order_center) do cfg.order_center[#cfg.order_center + 1] = v end
         end
         if not next(cfg.side) and type(raw.show) == "table" then
             for k, v in pairs(raw.show) do
@@ -191,6 +194,12 @@ function M.getTopbarConfig()
     if #cfg.order_right == 0 then
         for k, s in pairs(cfg.side) do
             if s == "right" then cfg.order_right[#cfg.order_right + 1] = k end
+        end
+    end
+    -- Sync order_center from side map (items assigned to "center")
+    if #cfg.order_center == 0 then
+        for k, s in pairs(cfg.side) do
+            if s == "center" then cfg.order_center[#cfg.order_center + 1] = k end
         end
     end
     return cfg
@@ -569,6 +578,50 @@ function M.sanitizeLabel(s)
     return s
 end
 
+-- ---------------------------------------------------------------------------
+-- Nerd Font icon helpers
+--
+-- Nerd Font icons are stored as the sentinel string "nerd:XXXX" where XXXX
+-- is a 1–6 digit hexadecimal Unicode codepoint (e.g. "nerd:E001").
+-- This keeps the icon field a plain string and requires no schema changes.
+-- The symbols.ttf file shipped with KOReader is registered by the Font module
+-- under the face name "symbols" and covers the full Nerd Fonts symbol range.
+-- ---------------------------------------------------------------------------
+
+-- Converts a "nerd:XXXX" sentinel to its UTF-8 encoded character.
+-- Returns the UTF-8 string on success, or nil if the value is not a Nerd icon.
+function M.nerdIconChar(icon_value)
+    if type(icon_value) ~= "string" then return nil end
+    local hex = icon_value:match("^nerd:([0-9A-Fa-f]+)$")
+    if not hex then return nil end
+    local cp = tonumber(hex, 16)
+    if not cp or cp < 0 or cp > 0x10FFFF then return nil end
+    -- Encode as UTF-8.
+    if cp < 0x80 then
+        return string.char(cp)
+    elseif cp < 0x800 then
+        return string.char(
+            0xC0 + math.floor(cp / 0x40),
+            0x80 + (cp % 0x40))
+    elseif cp < 0x10000 then
+        return string.char(
+            0xE0 + math.floor(cp / 0x1000),
+            0x80 + math.floor((cp % 0x1000) / 0x40),
+            0x80 + (cp % 0x40))
+    else
+        return string.char(
+            0xF0 + math.floor(cp / 0x40000),
+            0x80 + math.floor((cp % 0x40000) / 0x1000),
+            0x80 + math.floor((cp % 0x1000) / 0x40),
+            0x80 + (cp % 0x40))
+    end
+end
+
+-- Returns true when icon_value is a valid Nerd Font sentinel.
+function M.isNerdIcon(icon_value)
+    return M.nerdIconChar(icon_value) ~= nil
+end
+
 function M.migrateOldCustomSlots()
     if G_reader_settings:readSetting("navbar_custom_qa_migrated_v1") then return end
     local id_map  = {}
@@ -761,7 +814,7 @@ end
 -- order-list approach, with zero extra allocation per cache hit.
 -- ---------------------------------------------------------------------------
 
-local BIM_MAX_COVERS   = 8
+local BIM_MAX_COVERS   = 12
 -- _bim_cover_cache[key] = { bb = <blitbuffer>, t = <os.time()> }
 local _bim_cover_cache = {}
 local _bim_cover_count = 0
@@ -840,6 +893,18 @@ function M.getCoverBB(filepath, w, h)
     -- CORREÇÃO: Verificar se a tentativa de extração já foi feita
     if bookinfo and bookinfo.cover_fetched then
         if bookinfo.has_cover and bookinfo.cover_bb then
+            -- Guard: the BookInfoManager's cover_bb is a shared reference.
+            -- The CoverBrowser plugin may have replaced it with a scaled-down
+            -- copy sized for its own mosaic cells. If the bitmap is smaller
+            -- than our target slot in either dimension, scaling up would
+            -- produce a distorted/blurry result. Skip it and return nil so
+            -- the caller shows the placeholder — the BIM will eventually
+            -- provide a fresh native bitmap on the next render cycle.
+            local src_w = bookinfo.cover_bb:getWidth()
+            local src_h = bookinfo.cover_bb:getHeight()
+            if src_w < w or src_h < h then
+                return nil
+            end
             local bb = _scaleBBToSlot(bookinfo.cover_bb, w, h)
             if _bim_cover_count >= BIM_MAX_COVERS then _evictOldestCover() end
             _bim_cover_cache[key] = { bb = bb, t = os.time() }
@@ -1135,6 +1200,35 @@ M.TOPBAR_SIZE_DEF  = TOPBAR_SIZE_DEF
 M.TOPBAR_SIZE_MIN  = TOPBAR_SIZE_MIN
 M.TOPBAR_SIZE_MAX  = TOPBAR_SIZE_MAX
 M.TOPBAR_SIZE_STEP = SCALE_STEP
+
+-- ---------------------------------------------------------------------------
+-- Bottom bar bottom margin — extra space below the bar.
+-- Stored as "navbar_bottom_margin_pct" (integer %, default 100).
+-- 100% = default BOT_SP; 0% = no bottom margin.
+-- ---------------------------------------------------------------------------
+
+local BOT_MARGIN_KEY  = "navbar_bottom_margin_pct"
+local BOT_MARGIN_DEF  = 100
+local BOT_MARGIN_MIN  = 0
+local BOT_MARGIN_MAX  = 300
+local BOT_MARGIN_STEP = 10
+
+function M.getBottomMarginPct()
+    local v = G_reader_settings:readSetting(BOT_MARGIN_KEY)
+    local n = tonumber(v)
+    if not n then return BOT_MARGIN_DEF end
+    return math.max(BOT_MARGIN_MIN, math.min(BOT_MARGIN_MAX, math.floor(n)))
+end
+
+function M.setBottomMarginPct(pct)
+    G_reader_settings:saveSetting(BOT_MARGIN_KEY,
+        math.max(BOT_MARGIN_MIN, math.min(BOT_MARGIN_MAX, math.floor(pct))))
+end
+
+M.BOT_MARGIN_DEF  = BOT_MARGIN_DEF
+M.BOT_MARGIN_MIN  = BOT_MARGIN_MIN
+M.BOT_MARGIN_MAX  = BOT_MARGIN_MAX
+M.BOT_MARGIN_STEP = BOT_MARGIN_STEP
 
 -- ---------------------------------------------------------------------------
 -- Reading Stats text scale — multiplicative on top of module scale.

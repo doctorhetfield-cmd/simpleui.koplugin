@@ -18,6 +18,12 @@ local Font           = require("ui/font")
 
 local FrameContainer = require("ui/widget/container/framecontainer")
 
+local GestureRange   = require("ui/gesturerange")
+
+local ConfirmBox     = require("ui/widget/confirmbox")
+
+local InputContainer = require("ui/widget/container/inputcontainer")
+
 local TextBoxWidget  = require("ui/widget/textboxwidget")
 
 local VerticalGroup  = require("ui/widget/verticalgroup")
@@ -446,11 +452,11 @@ local function _buildPool()
                         texts[i], texts[j] = texts[j], texts[i]
                     end
                     for i = 1, remaining do
-                        pool[#pool + 1] = { text = texts[i], title = book_title, authors = book_authors }
+                        pool[#pool + 1] = { text = texts[i], title = book_title, authors = book_authors, filepath = cand.fp }
                     end
                 else
                     for _, t in ipairs(texts) do
-                        pool[#pool + 1] = { text = t, title = book_title, authors = book_authors }
+                        pool[#pool + 1] = { text = t, title = book_title, authors = book_authors, filepath = cand.fp }
                     end
                 end
             end
@@ -696,7 +702,7 @@ local function buildFromHighlight(inner_w, face_quote, face_attr, vspan_gap)
 
             face_quote, face_attr, vspan_gap
 
-        )
+        ), nil
 
     end
 
@@ -706,7 +712,7 @@ local function buildFromHighlight(inner_w, face_quote, face_attr, vspan_gap)
 
     if h.authors and h.authors ~= "" then attr = attr .. ",  " .. h.authors end
 
-    return buildWidget(inner_w, "\u{201C}" .. h.text .. "\u{201D}", attr, face_quote, face_attr, vspan_gap)
+    return buildWidget(inner_w, "\u{201C}" .. h.text .. "\u{201D}", attr, face_quote, face_attr, vspan_gap), h.filepath, h.title
 
 end
 
@@ -726,7 +732,7 @@ local function buildFromMixed(inner_w, face_quote, face_attr, vspan_gap)
 
         else
 
-            return buildFromQuote(inner_w, face_quote, face_attr, vspan_gap)
+            return buildFromQuote(inner_w, face_quote, face_attr, vspan_gap), nil, nil
 
         end
 
@@ -736,7 +742,7 @@ local function buildFromMixed(inner_w, face_quote, face_attr, vspan_gap)
 
     else
 
-        return buildFromQuote(inner_w, face_quote, face_attr, vspan_gap)
+        return buildFromQuote(inner_w, face_quote, face_attr, vspan_gap), nil, nil
 
     end
 
@@ -810,13 +816,17 @@ function M.build(w, ctx)
 
     local content
 
+    local hl_filepath
+
+    local hl_title
+
     if source == "highlights" then
 
-        content = buildFromHighlight(inner_w, face_quote, face_attr, vspan_gap)
+        content, hl_filepath, hl_title = buildFromHighlight(inner_w, face_quote, face_attr, vspan_gap)
 
     elseif source == "mixed" then
 
-        content = buildFromMixed(inner_w, face_quote, face_attr, vspan_gap)
+        content, hl_filepath, hl_title = buildFromMixed(inner_w, face_quote, face_attr, vspan_gap)
 
     else
 
@@ -824,7 +834,7 @@ function M.build(w, ctx)
 
     end
 
-    return FrameContainer:new{
+    local frame = FrameContainer:new{
 
         bordersize     = 0,
 
@@ -835,6 +845,65 @@ function M.build(w, ctx)
         content,
 
     }
+
+    local open_fn = ctx and ctx.open_fn
+
+    if hl_filepath and open_fn then
+
+        local tappable = InputContainer:new{
+
+            dimen  = frame:getSize(),
+
+            _fp    = hl_filepath,
+
+            _title = hl_title or hl_filepath:match("([^/]+)%.[^%.]+$") or "?",
+
+            _open  = open_fn,
+
+            [1]    = frame,
+
+        }
+
+        tappable.ges_events = {
+
+            TapQuote = {
+
+                GestureRange:new{
+
+                    ges   = "tap",
+
+                    range = function() return tappable.dimen end,
+
+                },
+
+            },
+
+        }
+
+        function tappable:onTapQuote()
+
+            local fp    = self._fp
+            local title = self._title
+            local open  = self._open
+            UIManager:show(ConfirmBox:new{
+                text    = string.format(_(
+                    "Open \"%s\" to see this highlight?"), title),
+                ok_text     = _("Open"),
+                cancel_text = _("Cancel"),
+                ok_callback = function()
+                    if open then open(fp) end
+                end,
+            })
+
+            return true
+
+        end
+
+        return tappable
+
+    end
+
+    return frame
 
 end
 

@@ -188,6 +188,14 @@ function M.getTopbarInfo()
             info.charging    = powerd:isCharging() == true
             local chd        = powerd:isCharged()
             info.battery_sym = powerd:getBatterySymbol(chd, info.charging, cap) or ""
+            if Device:hasAuxBattery() and powerd:isAuxBatteryConnected() then
+                local aux_cap = powerd:getAuxCapacity()
+                if type(aux_cap) == "number" then
+                    info.aux_battery     = aux_cap
+                    info.aux_battery_sym = powerd:getBatterySymbol(
+                        powerd:isAuxCharged(), powerd:isAuxCharging(), aux_cap) or ""
+                end
+            end
         end)
     end
 
@@ -216,18 +224,24 @@ function M.getTopbarInfo()
     end
 
     -- Brightness: single pcall wrapping the two-step lookup.
+    -- Mostra o valor quando ligado, ou "Off" quando desligado (igual ao patch).
     pcall(function()
         local pd = Device:getPowerDevice()
-        local br = pd and pd:frontlightIntensity()
-        if type(br) == "number" then
-            info.brightness = br
-        else
-            local sc_br = Screen:getBrightness()
-            if type(sc_br) == "number" then
-                info.brightness = sc_br > 1
-                    and math.floor(sc_br / 255 * 100 + 0.5)
-                    or  math.floor(sc_br * 100 + 0.5)
+        if not pd then return end
+        if pd:isFrontlightOn() then
+            local br = pd:frontlightIntensity()
+            if type(br) == "number" then
+                info.brightness = br
+            else
+                local sc_br = Screen:getBrightness()
+                if type(sc_br) == "number" then
+                    info.brightness = sc_br > 1
+                        and math.floor(sc_br / 255 * 100 + 0.5)
+                        or  math.floor(sc_br * 100 + 0.5)
+                end
             end
+        else
+            info.brightness_off = true  -- frontlight existe mas está desligado
         end
     end)
 
@@ -295,16 +309,28 @@ function M.buildTopbarWidget()
             return nil, info.time, false
         end,
         wifi = function()
-            if not info.wifi then return nil, nil end
-            return "\u{ECA8}", nil, true
+            if info.wifi then
+                return "\u{ECA8}", nil, true   -- ícone wifi ligado
+            elseif hwHasWifi() then
+                return "\u{ECA9}", nil, true   -- ícone wifi desligado
+            end
+            return nil, nil
         end,
         brightness = function()
-            if not info.brightness then return nil, nil end
-            return "\xe2\x98\x80", " " .. info.brightness, false
+            if info.brightness then
+                return "\xe2\x98\x80", " " .. info.brightness, false
+            elseif info.brightness_off then
+                return "\xe2\x98\x80", " Off", false
+            end
+            return nil, nil
         end,
         battery = function()
             if not info.battery then return nil, nil end
-            return (info.battery_sym or ""), info.battery .. "%", false
+            local label = info.battery .. "%"
+            if info.aux_battery then
+                label = label .. " +" .. (info.aux_battery_sym or "") .. info.aux_battery .. "%"
+            end
+            return (info.battery_sym or ""), label, false
         end,
         disk = function()
             if not info.disk then return nil, nil end
@@ -363,15 +389,34 @@ function M.buildTopbarWidget()
         buildSideGroup(tb_cfg.order_right),
     }
 
-    local show_swipe = G_reader_settings:nilOrTrue("navbar_topbar_swipe_indicator")
-    local center_w   = show_swipe and CenterContainer:new{
-        dimen = Geom:new{ w = inner_w, h = total_h },
-        TextWidget:new{
-            text    = "\xef\xb9\x80",
-            face    = Font:getFace("cfont", M.TOPBAR_CHEVRON_FS()),
-            fgcolor = Blitbuffer.COLOR_BLACK,
-        },
-    } or nil
+    -- Build the center group (items assigned to "center" position).
+    -- If there are any visible center items, show them and suppress the chevron.
+    local order_center = tb_cfg.order_center or {}
+    local center_has_items = false
+    for _, key in ipairs(order_center) do
+        if (tb_cfg.side[key] or "hidden") == "center" then
+            center_has_items = true
+            break
+        end
+    end
+
+    local show_swipe = (not center_has_items) and G_reader_settings:nilOrTrue("navbar_topbar_swipe_indicator")
+    local center_w
+    if center_has_items then
+        center_w = CenterContainer:new{
+            dimen = Geom:new{ w = inner_w, h = total_h },
+            buildSideGroup(order_center),
+        }
+    elseif show_swipe then
+        center_w = CenterContainer:new{
+            dimen = Geom:new{ w = inner_w, h = total_h },
+            TextWidget:new{
+                text    = "\xef\xb9\x80",
+                face    = Font:getFace("cfont", M.TOPBAR_CHEVRON_FS()),
+                fgcolor = Blitbuffer.COLOR_BLACK,
+            },
+        }
+    end
 
     local row = OverlapGroup:new{
         dimen  = Geom:new{ w = inner_w, h = total_h },
@@ -437,7 +482,7 @@ end
 -- Refresh timer
 -- ---------------------------------------------------------------------------
 
-local function shouldRunTimer()
+local function shouldRunTimer(plugin)
     if _topbar_enabled_cache == nil then
         _topbar_enabled_cache = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
     end
@@ -448,6 +493,9 @@ local function shouldRunTimer()
     -- while a book is open, and the timer is cancelled before that anyway.
     local RUI = package.loaded["apps/reader/readerui"]
     if RUI and RUI.instance then return false end
+    -- Do not run while the device is suspended — the timer may fire during
+    -- the suspend transition on some devices (Kobo) before the scheduler pauses.
+    if plugin and plugin._simpleui_suspended then return false end
     return true
 end
 
@@ -456,13 +504,13 @@ function M.scheduleRefresh(plugin, delay)
         UIManager:unschedule(plugin._topbar_timer)
         plugin._topbar_timer = nil
     end
-    if not shouldRunTimer() then return end
+    if not shouldRunTimer(plugin) then return end
     plugin._topbar_timer = function() M.refresh(plugin) end
     UIManager:scheduleIn(delay, plugin._topbar_timer)
 end
 
 function M.refresh(plugin)
-    if not shouldRunTimer() then return end
+    if not shouldRunTimer(plugin) then return end
     local UI    = require("sui_core")
     local stack = UI.getWindowStack()  -- read once
     -- Each widget gets its own topbar instance. Sharing a single object across
@@ -481,6 +529,9 @@ function M.refresh(plugin)
         local ok, err = pcall(refreshWidget, entry.widget)
         if not ok then logger.warn("simpleui: topbar refreshWidget failed:", tostring(err)) end
     end
+    -- Re-check suspended state before scheduling the next tick — the device
+    -- may have suspended during the refresh work above.
+    if plugin and plugin._simpleui_suspended then return end
     local delay = 60 - (os.time() % 60) + 1
     M.scheduleRefresh(plugin, delay)
 end

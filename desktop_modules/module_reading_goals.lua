@@ -89,54 +89,9 @@ local function invalidateStatsCache()
     _stats_cache_day = nil
 end
 
--- Counts books marked as read (summary.status = "complete") in the sidecar files.
--- Scans only the summary block of each sidecar to avoid loading large annotation data.
--- Optionally filters to a specific year. Result is cached per calendar day.
-local function _countMarkedRead(year_str)
-    local ok_lfs, lfs = pcall(require, "libs/libkoreader-lfs")
-    if not ok_lfs then return 0 end
-    local ok_DS, DocSettings = pcall(require, "docsettings")
-    if not ok_DS then return 0 end
-
-    local ReadHistory = package.loaded["readhistory"]
-    if not ReadHistory or not ReadHistory.hist then return 0 end
-
-    local year_pfx = year_str and ('["modified"] = "' .. year_str) or nil
-    local count = 0
-
-    for _, entry in ipairs(ReadHistory.hist) do
-        local fp = entry.file
-        if fp and lfs.attributes(fp, "mode") == "file" then
-            local sidecar = DocSettings:findSidecarFile(fp)
-            if sidecar then
-                local f = io.open(sidecar, "r")
-                if f then
-                    local in_summary = false
-                    local found_status, found_year = false, not year_pfx
-                    for line in f:lines() do
-                        if not in_summary then
-                            if line:find('["summary"]', 1, true) then
-                                in_summary = true
-                            end
-                        else
-                            if line:find('"complete"', 1, true)
-                               and line:find('"status"', 1, true) then
-                                found_status = true
-                            end
-                            if year_pfx and line:find(year_pfx, 1, true) then
-                                found_year = true
-                            end
-                            if line:find("^%s*},?%s*$") then break end
-                        end
-                    end
-                    f:close()
-                    if found_status and found_year then count = count + 1 end
-                end
-            end
-        end
-    end
-    return count
-end
+-- countMarkedRead is provided by module_books_shared (shared implementation).
+local _SH = require("desktop_modules/module_books_shared")
+local _countMarkedRead = _SH.countMarkedRead
 
 -- Returns books_read, year_secs, today_secs. Uses shared DB connection if provided.
 -- Caches results for the current calendar day.
@@ -226,21 +181,41 @@ local function buildProgressBar(w, pct, bar_h)
     }
 end
 
+-- Measures the rendered width of each active label using the given face and
+-- returns the smallest lbl_w that fits all of them, with a minimum floor.
+-- Called once per M.build so both rows share the same column width.
+local function _measureLblW(labels, face, floor_w)
+    local max_w = 0
+    for _, lbl in ipairs(labels) do
+        local tw = TextWidget:new{ text = lbl, face = face, bold = true }
+        local w  = tw:getSize().w
+        tw:free()
+        if w > max_w then max_w = w end
+    end
+    return math.max(max_w, floor_w)
+end
+
 -- Builds a single inline row: Label [bar] XX%  detail
 -- Used by the Compact layout. All elements are horizontally laid out and vertically centred.
-local function buildCompactGoalRow(inner_w, label_str, pct, pct_str, detail_str, on_tap)
+-- lbl_w is pre-computed by _measureLblW so both rows share the same column width.
+local function buildCompactGoalRow(inner_w, lbl_w, label_str, pct, pct_str, detail_str, on_tap)
     local LeftContainer  = require("ui/widget/container/leftcontainer")
     local RightContainer = require("ui/widget/container/rightcontainer")
 
     local ROW_H       = _COMPACT_ROW_H
-    local LBL_BAR_GAP = _COMPACT_COL_GAP * 3
+    local LBL_BAR_GAP = _COMPACT_COL_GAP
     local right_w        = math.floor(inner_w * 0.28)
+    local BAR_PCT_GAP    = _COMPACT_COL_GAP
+    local available      = inner_w - lbl_w - LBL_BAR_GAP - BAR_PCT_GAP - right_w
+    if available < Screen:scaleBySize(40) then
+        -- lbl_w grew — shrink right_w before the bar goes below minimum
+        available = Screen:scaleBySize(40)
+        right_w = math.max(0, inner_w - lbl_w - LBL_BAR_GAP - BAR_PCT_GAP - available)
+    end
+    local bar_w          = available
     local PCT_W          = math.floor(right_w * 0.30)
     local PCT_DETAIL_GAP = math.floor(right_w * 0.15)
     local DETAIL_W       = right_w - PCT_W - PCT_DETAIL_GAP
-    local BAR_PCT_GAP    = _COMPACT_COL_GAP
-    local bar_w          = math.max(Screen:scaleBySize(40),
-                               inner_w - _COMPACT_LBL_W - LBL_BAR_GAP - BAR_PCT_GAP - right_w)
 
     local function vcenter_left(child, col_w)
         return LeftContainer:new{ dimen = Geom:new{ w = col_w, h = ROW_H }, child }
@@ -256,8 +231,8 @@ local function buildCompactGoalRow(inner_w, label_str, pct, pct_str, detail_str,
             face    = Font:getFace("smallinfofont", _COMPACT_ROW_FS),
             bold    = true,
             fgcolor = _CLR_TEXT_LBL,
-            width   = _COMPACT_LBL_W,
-        }, _COMPACT_LBL_W),
+            width   = lbl_w,
+        }, lbl_w),
         HorizontalSpan:new{ width = LBL_BAR_GAP },
         vcenter_left(buildProgressBar(bar_w, pct, _COMPACT_BAR_H), bar_w),
         HorizontalSpan:new{ width = BAR_PCT_GAP },
@@ -307,9 +282,14 @@ end
 -- Used by the Default layout. Accepts a pre-computed dims table from _scaledDims.
 local function buildGoalRow(inner_w, label_str, pct, pct_str, detail_str, on_tap, d)
     local PCT_W       = d.pct_w
+    local LBL_BAR_GAP = d.col_gap
     local BAR_PCT_GAP = d.col_gap
-    local bar_w       = math.max(d.min_bar_w,
-                            inner_w - d.lbl_w - d.col_gap - BAR_PCT_GAP - PCT_W)
+    local available   = inner_w - d.lbl_w - LBL_BAR_GAP - BAR_PCT_GAP - PCT_W
+    if available < d.min_bar_w then
+        available = d.min_bar_w
+        PCT_W = math.max(0, inner_w - d.lbl_w - LBL_BAR_GAP - BAR_PCT_GAP - available)
+    end
+    local bar_w = available
 
     local block = VerticalGroup:new{
         align = "left",
@@ -322,13 +302,13 @@ local function buildGoalRow(inner_w, label_str, pct, pct_str, detail_str, on_tap
                 fgcolor = _CLR_TEXT_LBL,
                 width   = d.lbl_w,
             },
-            HorizontalSpan:new{ width = d.col_gap },
+            HorizontalSpan:new{ width = LBL_BAR_GAP },
             buildProgressBar(bar_w, pct, d.bar_h),
             HorizontalSpan:new{ width = BAR_PCT_GAP },
             TextWidget:new{
                 text      = pct_str,
                 face      = d.face_row,
-                bold      = false,
+                bold      = true,
                 fgcolor   = _CLR_TEXT_PCT,
                 width     = PCT_W,
                 alignment = "right",
@@ -495,10 +475,12 @@ function M.build(w, ctx)
     local rows = VerticalGroup:new{ align = "left" }
 
     if isCompact() then
+        local face = Font:getFace("smallinfofont", _COMPACT_ROW_FS)
         if show_ann then
             local pct, pct_str, detail = _annualData(books_read)
+            local lbl_w = _measureLblW({ _getYearStr() }, face, _COMPACT_LBL_W)
             rows[#rows+1] = buildCompactGoalRow(
-                inner_w, _getYearStr(), pct, pct_str, detail,
+                inner_w, lbl_w, _getYearStr(), pct, pct_str, detail,
                 function() showAnnualGoalDialog() end)
         end
         if show_ann and show_day then
@@ -506,8 +488,9 @@ function M.build(w, ctx)
         end
         if show_day then
             local pct, pct_str, detail = _dailyData(today_secs)
+            local lbl_w = _measureLblW({ _("Today") }, face, _COMPACT_LBL_W)
             rows[#rows+1] = buildCompactGoalRow(
-                inner_w, _("Today"), pct, pct_str, detail,
+                inner_w, lbl_w, _("Today"), pct, pct_str, detail,
                 function() showDailySettingsDialog() end)
         end
     else
@@ -515,18 +498,24 @@ function M.build(w, ctx)
         local d     = _scaledDims(scale)
         if show_ann then
             local pct, pct_str, detail = _annualData(books_read)
+            local ann_d = {}
+            for k, v in pairs(d) do ann_d[k] = v end
+            ann_d.lbl_w = _measureLblW({ _getYearStr() }, d.face_row, d.lbl_w)
             rows[#rows+1] = buildGoalRow(
                 inner_w, _getYearStr(), pct, pct_str, detail,
-                function() showAnnualGoalDialog() end, d)
+                function() showAnnualGoalDialog() end, ann_d)
         end
         if show_ann and show_day then
             rows[#rows+1] = VerticalSpan:new{ width = d.row_gap }
         end
         if show_day then
             local pct, pct_str, detail = _dailyData(today_secs)
+            local day_d = {}
+            for k, v in pairs(d) do day_d[k] = v end
+            day_d.lbl_w = _measureLblW({ _("Today") }, d.face_row, d.lbl_w)
             rows[#rows+1] = buildGoalRow(
                 inner_w, _("Today"), pct, pct_str, detail,
-                function() showDailySettingsDialog() end, d)
+                function() showDailySettingsDialog() end, day_d)
         end
     end
 

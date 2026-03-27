@@ -38,9 +38,11 @@ local function _isLockedAtHome(path)
     if not path then return false end
     local home = G_reader_settings:readSetting("home_dir")
     if not home then return false end
-    -- Normalise trailing slash before comparing.
-    local p = path:gsub("/$", "")
-    local h = home:gsub("/$", "")
+    local ffiUtil = require("ffi/util")
+    local ok_p, p = pcall(ffiUtil.realpath, path)
+    local ok_h, h = pcall(ffiUtil.realpath, home)
+    p = (ok_p and p or path):gsub("/$", "")
+    h = (ok_h and h or home):gsub("/$", "")
     return p == h
 end
 
@@ -366,6 +368,8 @@ function M.apply(fm_self)
         end
     end
 
+
+
     -- Left button ("up_button") ---------------------------------------------
     if tb.left_button then
         local lb = tb.left_button
@@ -374,13 +378,35 @@ function M.apply(fm_self)
         if show_up then
             placeBtn("up_button", lb)
 
-            -- If the home folder is locked and the FM is already sitting at
-            -- the home folder, hide the back button immediately — before the
-            -- first genItemTable fires — so it is never briefly visible.
-            if fm_self.file_chooser and _isLockedAtHome(fm_self.file_chooser.path) then
-                lb.overlap_offset = { sw + 100, 0 }
-                lb.callback       = function() end
-                lb.hold_callback  = function() end
+            -- Hide the back button immediately when we are at a location where
+            -- it should not be visible: either the real filesystem root (no
+            -- is_go_up item exists) or a locked home folder.  We do this before
+            -- the first genItemTable fires so the button is never briefly shown.
+            do
+                local fc0 = fm_self.file_chooser
+                local at_root = false
+                if fc0 then
+                    local p0 = fc0.path or ""
+                    if p0 == "/" then at_root = true end
+                    if fc0.item_table then
+                        local has_go_up = false
+                        for _, item in ipairs(fc0.item_table) do
+                            if item.is_go_up or (item.text and item.text:find("\u{2B06}")) then
+                                has_go_up = true
+                                at_root = false
+                                break
+                            end
+                        end
+                        if not has_go_up then at_root = true end
+                    end
+                    -- lock_home_folder: always treat home as root regardless.
+                    if _isLockedAtHome(fc0.path) then at_root = true end
+                end
+                if at_root then
+                    lb.overlap_offset = { sw + 100, 0 }
+                    lb.callback       = function() end
+                    lb.hold_callback  = function() end
+                end
             end
 
             local fc = fm_self.file_chooser
@@ -413,6 +439,7 @@ function M.apply(fm_self)
                 end
 
                 local up_slot = slot_map["up_button"].slot  -- configured slot of back button
+                fm_self._simpleui_up_x = _buttonX("left", up_slot, iw, pad, gap, sw)
 
                 -- fold_up_cb is built lazily the first time is_sub is true, then
                 -- reused — avoids allocating a new closure on every folder change.
@@ -438,6 +465,11 @@ function M.apply(fm_self)
                     if _isLockedAtHome(path or fc_self.path) then
                         is_sub = false
                     end
+                    local p = (path or fc_self.path or ""):gsub("/$", "")
+                    if p == "/" then
+                        is_sub = false
+                    end
+                    fc_self._simpleui_has_go_up = is_sub
                     local tb2 = fm_self.title_bar
                     if tb2 and tb2.left_button then
                         local btn = tb2.left_button
@@ -496,7 +528,7 @@ function M.apply(fm_self)
         if ok_ib and IconButton then
             local s = slot_map["search_button"]
             if s then
-                local btn_padding = (tb.button_padding) or Screen:scaleBySize(11)
+                local btn_padding = (tb.button_padding) or require("device").screen:scaleBySize(11)
                 local search_btn = IconButton:new{
                     icon           = "appbar.search",
                     width          = iw,
@@ -531,22 +563,32 @@ function M.apply(fm_self)
                 -- TitleBar is itself an OverlapGroup: inject directly.
                 table.insert(tb, search_btn)
                 fm_self._titlebar_search_btn = search_btn
+                fm_self._simpleui_search_x = _buttonX(s.side, s.slot, iw, pad, gap, sw)
+                if s.side == "left" then
+                    local up_slot2 = slot_map["up_button"] and slot_map["up_button"].slot or 0
+                    local display_slot = s.slot > up_slot2 and s.slot - 1 or s.slot
+                    fm_self._simpleui_search_x_compact = _buttonX("left", display_slot, iw, pad, gap, sw)
+                end
 
                 -- If show_up is also active, detect the initial folder state:
                 -- if already at root (back button hidden), compact left slots now.
                 if show_up and fm_self.file_chooser then
                     local fc2 = fm_self.file_chooser
                     local cur = fc2.item_table or {}
-                    local at_root = true
-                    for _, item in ipairs(cur) do
-                        if item.is_go_up or (item.text and item.text:find("\u{2B06}")) then
-                            at_root = false; break
+                    local at_root = false
+                    local p2 = fc2.path or ""
+                    if p2 == "/" then at_root = true end
+                    if #cur > 0 then
+                        local has_go_up = false
+                        for _, item in ipairs(cur) do
+                            if item.is_go_up or (item.text and item.text:find("\u{2B06}")) then
+                                has_go_up = true; break
+                            end
                         end
+                        if not has_go_up then at_root = true end
                     end
                     -- Also treat locked-at-home as root (back hidden).
-                    if not at_root and _isLockedAtHome(fc2.path) then
-                        at_root = true
-                    end
+                    if _isLockedAtHome(fc2.path) then at_root = true end
                     if at_root and slot_map["search_button"] and slot_map["search_button"].side == "left" then
                         local up_slot2 = slot_map["up_button"] and slot_map["up_button"].slot or 0
                         local ss = slot_map["search_button"]

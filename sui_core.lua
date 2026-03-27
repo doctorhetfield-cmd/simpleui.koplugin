@@ -260,6 +260,54 @@ function M.applyNavbarState(widget, container, bar, topbar, bar_idx, topbar_on, 
 end
 
 -- ---------------------------------------------------------------------------
+-- Gesture priority for navbar touch zones (InputContainer)
+--
+-- KOReader dispatches Gesture such that WidgetContainer:handleEvent runs
+-- children first; only then does the parent's onGesture run (where
+-- registerTouchZones handlers live). Content below the bottom bar can therefore
+-- steal taps. Run InputContainer.onGesture (zones + ges_events) before
+-- propagating to children. See doc: WidgetContainer:handleEvent / Events.md.
+-- ---------------------------------------------------------------------------
+
+local function _resolveInheritedHandleEvent(target)
+    local own = rawget(target, "handleEvent")
+    if type(own) == "function" then return own end
+    local idx = getmetatable(target) and getmetatable(target).__index
+    while type(idx) == "table" do
+        local fn = rawget(idx, "handleEvent")
+        if type(fn) == "function" then return fn end
+        idx = getmetatable(idx) and getmetatable(idx).__index
+    end
+    return require("ui/widget/container/widgetcontainer").handleEvent
+end
+
+--- Call on any InputContainer that uses registerTouchZones for the navbar (FM
+--- class, Homescreen instance, or UIManager-injected fullscreen widgets).
+function M.applyGesturePriorityHandleEvent(target)
+    if not target or target._simpleui_gesture_priority_applied then return end
+    local InputContainer  = require("ui/widget/container/inputcontainer")
+    local WidgetContainer = require("ui/widget/container/widgetcontainer")
+    local inherit         = _resolveInheritedHandleEvent(target)
+    target._simpleui_gesture_priority_applied = true
+    target.handleEvent = function(self, event)
+        if event.handler == "onGesture" then
+            local ges = event.args and event.args[1]
+            if ges and InputContainer.onGesture(self, ges) then
+                return true
+            end
+            return inherit(self, event)
+        end
+        return inherit(self, event)
+    end
+end
+
+function M.unapplyGesturePriorityHandleEvent(target)
+    if not target or not target._simpleui_gesture_priority_applied then return end
+    target.handleEvent = nil
+    target._simpleui_gesture_priority_applied = nil
+end
+
+-- ---------------------------------------------------------------------------
 -- Safe access to the UIManager window stack
 -- ---------------------------------------------------------------------------
 
@@ -285,6 +333,7 @@ end
 -- ---------------------------------------------------------------------------
 
 function M.showSettingsMenu(title, item_table_fn, top_offset, screen_h, bottombar_h)
+    local logger = require("logger")
     if not item_table_fn then return end
     top_offset = top_offset or 0
     local Menu      = require("ui/widget/menu")
@@ -302,6 +351,7 @@ function M.showSettingsMenu(title, item_table_fn, top_offset, screen_h, bottomba
         item_table = M.resolveMenuItems(item_table_fn()),
         height     = menu_h,
         width      = Screen:getWidth(),
+        is_popout  = false,
         onMenuSelect = function(self_menu, item)
             if item.sub_item_table or item._sui_lazy_fn then
                 -- Resolve lazy sub-table on first navigation into this item.
@@ -313,12 +363,14 @@ function M.showSettingsMenu(title, item_table_fn, top_offset, screen_h, bottomba
                 table.insert(self_menu.item_table_stack, self_menu.item_table)
                 self_menu:switchItemTable(item.text, M.resolveMenuItems(item.sub_item_table))
             elseif item.callback then
-                item.callback()
-                _had_changes = true
+                local _suppress = false
+                local function suppress_refresh() _suppress = true end
+                item.callback(self_menu, suppress_refresh)
                 if item.keep_menu_open then
                     -- Stay open: just redraw the item list to reflect the change.
                     self_menu:updateItems()
                 else
+                    if not _suppress then _had_changes = true end
                     -- Close the menu; onCloseWidget will fire the HS refresh.
                     UIManager:close(self_menu)
                 end

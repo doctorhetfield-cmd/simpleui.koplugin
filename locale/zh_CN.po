@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: simpleui\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-03-16 21:54+0000\n"
-"PO-Revision-Date: 2026-03-24 00:00+0000\n"
+"PO-Revision-Date: 2026-03-18 00:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: Chinese (Simplified)\n"
 "Language: zh_CN\n"
@@ -48,7 +48,7 @@ msgid "%s read"
 msgstr "已读 %s"
 
 msgid "Add at least 2 actions to arrange."
-msgstr "请至少添加 2 个操作来排序。"
+msgstr "请至少添加 2 个动作来排序。"
 
 msgid "Add at least 2 stats to arrange."
 msgstr "请至少添加 2 个统计项来排序。"
@@ -279,7 +279,7 @@ msgid "Library"
 msgstr "书库"
 
 msgid "Maximum %d actions per module reached. Remove one first."
-msgstr "每个模块最多 %d 个操作。请先删除一个。"
+msgstr "每个模块最多 %d 个动作。请先删除一个。"
 
 msgid "Maximum %d modules active. Disable one first."
 msgstr "最多 %d 个活跃模块。请先禁用一个。"
@@ -357,7 +357,7 @@ msgid "No stats selected"
 msgstr "未选择任何统计项"
 
 msgid "No system actions found."
-msgstr "未找到系统操作。"
+msgstr "未找到系统动作。"
 
 msgid "OK"
 msgstr "确定"
@@ -367,6 +367,12 @@ msgstr "关闭"
 
 msgid "On"
 msgstr "开启"
+
+msgid "Open"
+msgstr "打开"
+
+msgid "Open \"%s\" to see this highlight?"
+msgstr "打开《%s》查看此高亮？"
 
 msgid "Open a book to get started"
 msgstr "打开一本书开始阅读"
@@ -483,10 +489,10 @@ msgid "Swipe Indicator"
 msgstr "滑动指示"
 
 msgid "System Actions"
-msgstr "系统操作"
+msgstr "系统动作"
 
 msgid "System action error: %s"
-msgstr "系统操作错误：%s"
+msgstr "系统动作错误：%s"
 
 msgid "Tabs  (%d/%d — %d left)"
 msgstr "标签页  (%d/%d — 剩余 %d 个)"
@@ -761,6 +767,7 @@ msgstr "缩放  —  %d%%"
 msgid "Scale  —  %d%% / %d%%"
 msgstr "缩放  —  %d%% / %d%%"
 
+
 msgid "Scale for the collection thumbnails only.\nThe label text follows the module scale.\n100% is the default size."
 msgstr "仅用于收藏夹缩略图的缩放。\n标签文本跟随模块缩放。\n100% 为默认大小。"
 
@@ -793,6 +800,10 @@ msgstr "可见"
 
 msgid "Your highlights"
 msgstr "您的高亮内容"
+
+msgid "Disable \"Linked Scale\" first to set a per-module scale."
+msgstr "请先关闭\"联动缩放\"，再设置单个模块的缩放比例。"
+
 
 msgid "Lock Scale"
 msgstr "锁定缩放"
@@ -907,3 +918,36 @@ msgstr "进度条"
 
 msgid "Percentage read"
 msgstr "已读百分比"
+
+msgid "Folder Name"
+msgstr "文件夹名称"
+
+msgid "Number of Books in Folder"
+msgstr "文件夹中的书籍数量"
+
+msgid "Number of Pages"
+msgstr "页数"
+
+msgid "Overlay"
+msgstr "覆盖层"
+
+msgid "Overlays"
+msgstr "覆盖层"
+
+msgid "Uniformize Covers (2:3)"
+msgstr "统一封面比例 (2:3)"
+
+msgid "Invalid arrangement.\nKeep the Left, Center and Right separators in order."
+msgstr "排列无效。\n请保持左、中、右分隔符的顺序。"
+
+msgid "Invalid arrangement.\nKeep items between the Left and Right separators."
+msgstr "排列无效。\n请将项目保持在左右分隔符之间。"
+
+msgid "Fetching bookmarks…"
+msgstr "正在获取书签…"
+
+msgid "Path chooser not available."
+msgstr "路径选择器不可用。"
+
+msgid "e.g. Comics…"
+msgstr "例如：漫画…"

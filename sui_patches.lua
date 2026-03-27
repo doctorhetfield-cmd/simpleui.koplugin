@@ -72,9 +72,16 @@ function M.patchFileManagerClass(plugin)
     local orig_setupLayout = FileManager.setupLayout
     plugin._orig_fm_setup  = orig_setupLayout
 
+    -- Navbar touch zones must run before FileChooser/scroll children (sui_core).
+    UI.applyGesturePriorityHandleEvent(FileManager)
+
     FileManager.setupLayout = function(fm_self)
         local topbar_on = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
         fm_self._navbar_height = Bottombar.TOTAL_H() + (topbar_on and require("sui_topbar").TOTAL_TOP_H() or 0)
+
+        -- Each setupLayout call produces a fresh widget tree — reset the
+        -- "already shown" guard so the next onShow does the proper go-home init.
+        fm_self._navbar_already_shown = nil
 
         -- Patch FileChooser.init once on the class so repeated FM rebuilds
         -- don't re-wrap. Reduces height to the content area.
@@ -153,7 +160,15 @@ function M.patchFileManagerClass(plugin)
                 return
             end
 
-            -- Normal FM show: reset the active tab to "home" and navigate to home_dir.
+            -- Guard: only do the "go home" reset on the *first* show of a fresh FM
+            -- instance. When the FM reappears because a menu was closed (or a
+            -- fullscreen sub-widget closed), _navbar_already_shown is already true
+            -- and we must NOT reset active_action — that would discard whatever tab
+            -- the user was on and break quick-actions until the next library open.
+            if this._navbar_already_shown then return end
+            this._navbar_already_shown = true
+
+            -- First genuine show: reset the active tab to "home" and navigate to home_dir.
             if this._navbar_container then
                 local t = Config.loadTabConfig()
                 plugin.active_action = "home"
@@ -163,10 +178,36 @@ function M.patchFileManagerClass(plugin)
                     this._navbar_suppress_path_change = true
                     this.file_chooser:changeToPath(home)
                     this._navbar_suppress_path_change = nil
+                    -- updateTitleBarPath is skipped when onPathChanged is suppressed,
+                    -- so call it explicitly to clear the subtitle at the home folder.
+                    -- Pass force_home=true so the function treats this as "at home"
+                    -- even when item_table is not yet populated (avoids stale subtitle).
+                    if this.updateTitleBarPath then
+                        this:updateTitleBarPath(home, true)
+                    end
                 end
                 Bottombar.replaceBar(this, Bottombar.buildBarWidget("home", t), t)
                 UIManager:setDirty(this, "ui")
             end
+        end
+
+        -- onCloseAllMenus fires when the main KOReader menu (TouchMenu) closes.
+        -- After a menu session the FM's navbar touch-zones can become stale —
+        -- particularly if a settings change caused an internal widget rebuild.
+        -- Re-registering touch zones and repainting the bar with the current
+        -- active_action restores quick-action taps immediately without requiring
+        -- the user to navigate away and back.
+        local orig_onCloseAllMenus = fm_self.onCloseAllMenus
+        fm_self.onCloseAllMenus = function(this)
+            if orig_onCloseAllMenus then orig_onCloseAllMenus(this) end
+            if not this._navbar_container then return end
+            local t = Config.loadTabConfig()
+            -- Re-register touch zones so any widget rebuild during the menu
+            -- session does not leave stale gesture handlers behind.
+            plugin:_registerTouchZones(this)
+            -- Repaint the bar with the tab that was active before the menu opened.
+            Bottombar.replaceBar(this, Bottombar.buildBarWidget(plugin.active_action, t), t)
+            UIManager:setDirty(this, "ui")
         end
 
         plugin:_registerTouchZones(fm_self)
@@ -189,6 +230,13 @@ function M.patchFileManagerClass(plugin)
         -- the bar rebuild themselves, making this handler redundant in those cases.
         fm_self.onPathChanged = function(this, new_path)
             if this._navbar_suppress_path_change then return end
+            -- Update the title bar subtitle with the new path (mirrors what
+            -- FileManager.updateTitleBarPath / onPathChanged originally did).
+            if this.updateTitleBarPath then
+                local home_dir2 = G_reader_settings:readSetting("home_dir") or ""
+                local is_home = new_path and (new_path:gsub("/$","") == home_dir2:gsub("/$",""))
+                this:updateTitleBarPath(new_path, is_home or nil)
+            end
             local t          = Config.loadTabConfig()
             local new_active = M._resolveTabForPath(new_path, t) or "home"
             plugin.active_action = new_active
@@ -682,33 +730,36 @@ function M.patchUIManagerShow(plugin)
         widget._navbar_prev_action = action_before
         widget[1]                  = wrapped
         plugin:_registerTouchZones(widget)
+        UI.applyGesturePriorityHandleEvent(widget)
 
         -- Register top-of-screen tap/swipe zones to open the KOReader main menu,
         -- mirroring FileManagerMenu:initGesListener for all injected pages.
+        -- When the topbar is enabled, shrink the zone to exactly the topbar
+        -- height (TOTAL_TOP_H) plus the first module gap (MOD_GAP), so that
+        -- the touch target matches the visible topbar strip rather than the
+        -- larger default KOReader zone.
         if widget.registerTouchZones then
             local DTAP_ZONE_MENU     = G_defaults:readSetting("DTAP_ZONE_MENU")
             local DTAP_ZONE_MENU_EXT = G_defaults:readSetting("DTAP_ZONE_MENU_EXT")
             if DTAP_ZONE_MENU and DTAP_ZONE_MENU_EXT then
+                local screen_h    = Screen:getHeight()
+                local topbar_on   = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
+                local zone_ratio_h
+                if topbar_on then
+                    local Topbar  = require("sui_topbar")
+                    local UI_core = require("sui_core")
+                    zone_ratio_h  = (Topbar.TOTAL_TOP_H() + UI_core.MOD_GAP) / screen_h
+                else
+                    zone_ratio_h  = DTAP_ZONE_MENU.h
+                end
                 widget:registerTouchZones({
                     {
                         id          = "simpleui_menu_tap",
                         ges         = "tap",
                         screen_zone = {
-                            ratio_x = DTAP_ZONE_MENU.x, ratio_y = DTAP_ZONE_MENU.y,
-                            ratio_w = DTAP_ZONE_MENU.w, ratio_h = DTAP_ZONE_MENU.h,
+                            ratio_x = 0, ratio_y = 0,
+                            ratio_w = 1, ratio_h = zone_ratio_h,
                         },
-                        handler = function(ges)
-                            local m = _fmMenu(); if m then return m:onTapShowMenu(ges) end
-                        end,
-                    },
-                    {
-                        id          = "simpleui_menu_ext_tap",
-                        ges         = "tap",
-                        screen_zone = {
-                            ratio_x = DTAP_ZONE_MENU_EXT.x, ratio_y = DTAP_ZONE_MENU_EXT.y,
-                            ratio_w = DTAP_ZONE_MENU_EXT.w, ratio_h = DTAP_ZONE_MENU_EXT.h,
-                        },
-                        overrides = { "simpleui_menu_tap" },
                         handler = function(ges)
                             local m = _fmMenu(); if m then return m:onTapShowMenu(ges) end
                         end,
@@ -717,21 +768,9 @@ function M.patchUIManagerShow(plugin)
                         id          = "simpleui_menu_swipe",
                         ges         = "swipe",
                         screen_zone = {
-                            ratio_x = DTAP_ZONE_MENU.x, ratio_y = DTAP_ZONE_MENU.y,
-                            ratio_w = DTAP_ZONE_MENU.w, ratio_h = DTAP_ZONE_MENU.h,
+                            ratio_x = 0, ratio_y = 0,
+                            ratio_w = 1, ratio_h = zone_ratio_h,
                         },
-                        handler = function(ges)
-                            local m = _fmMenu(); if m then return m:onSwipeShowMenu(ges) end
-                        end,
-                    },
-                    {
-                        id          = "simpleui_menu_ext_swipe",
-                        ges         = "swipe",
-                        screen_zone = {
-                            ratio_x = DTAP_ZONE_MENU_EXT.x, ratio_y = DTAP_ZONE_MENU_EXT.y,
-                            ratio_w = DTAP_ZONE_MENU_EXT.w, ratio_h = DTAP_ZONE_MENU_EXT.h,
-                        },
-                        overrides = { "simpleui_menu_swipe" },
                         handler = function(ges)
                             local m = _fmMenu(); if m then return m:onSwipeShowMenu(ges) end
                         end,
@@ -1104,37 +1143,61 @@ function M.patchMenuForNavpager(plugin)
     Menu.updatePageInfo = function(menu_self, select_number)
         orig_updatePageInfo(menu_self, select_number)
 
+        -- Fix: when the plugin has resized a fullscreen menu widget to
+        -- getContentHeight(), the widget's dimen no longer covers the native
+        -- pagination bar (page_info group), which sits just below the content
+        -- area. CoverMenu:updateItems (used by CoverBrowser in History /
+        -- Collections mosaic mode) calls setDirty with the widget's dimen,
+        -- so the bar never gets repainted after a page turn — chevrons stay
+        -- frozen in their initial enabled/disabled state.
+        -- Forcing a setDirty on the page_info widget itself fixes this.
+        if menu_self.page_info and menu_self._navbar_injected then
+            local UIManager_fix = require("ui/uimanager")
+            UIManager_fix:setDirty(menu_self.show_parent or menu_self, "ui",
+                menu_self.page_info.dimen)
+        end
+
         if not _subtitleEnabled() then return end
+
+        local captured_page     = menu_self.page     or 0
+        local captured_page_num = menu_self.page_num or 0
 
         logger.dbg("simpleui navpager: updatePageInfo fired name=",
             tostring(menu_self.name),
-            "page=", tostring(menu_self.page),
-            "page_num=", tostring(menu_self.page_num))
+            "page=", tostring(captured_page),
+            "page_num=", tostring(captured_page_num))
 
         -- Update the subtitle immediately (synchronous).
-        _setPageSubtitle(menu_self.title_bar, menu_self.page or 0, menu_self.page_num or 0)
+        _setPageSubtitle(menu_self.title_bar, captured_page, captured_page_num)
 
         -- Coalesce: skip if an update is already queued for this tick.
+        -- But always update captured state so the latest page is used.
         if _navpager_rebuild_pending then return end
         _navpager_rebuild_pending = true
+
+        -- Derive has_prev/has_next from the captured state now, not inside the
+        -- closure. getNavpagerState() re-reads the widget after a tick and can
+        -- race with a second updatePageInfo call during switchItemTable init,
+        -- causing the arrows to reflect the wrong page position.
+        local has_prev = captured_page > 1
+        local has_next = captured_page < captured_page_num
 
         local UIManager = require("ui/uimanager")
         UIManager:scheduleIn(0, function()
             _navpager_rebuild_pending = false
             if not G_reader_settings:isTrue("navbar_navpager_enabled") then return end
             local Bottombar = require("sui_bottombar")
-            local Config    = require("sui_config")
             local fm        = plugin.ui
             if not (fm and fm._navbar_container) then return end
 
-            local has_prev, has_next = Config.getNavpagerState()
             logger.dbg("simpleui navpager: scheduleIn updating arrows",
                 "has_prev=", tostring(has_prev), "has_next=", tostring(has_next))
 
             local target = M._getNavbarTarget(fm)
             if not Bottombar.updateNavpagerArrows(target, has_prev, has_next) then
-                local tabs = Config.loadTabConfig()
-                local mode = Config.getNavbarMode()
+                local Config  = require("sui_config")
+                local tabs    = Config.loadTabConfig()
+                local mode    = Config.getNavbarMode()
                 local new_bar = Bottombar.buildBarWidgetWithArrows(
                     plugin.active_action, tabs, mode, has_prev, has_next)
                 logger.dbg("simpleui tz: updatePageInfo replaceBar target=", tostring(target.name))
@@ -1155,23 +1218,92 @@ function M.patchMenuForNavpager(plugin)
     local orig_updateTitleBarPath = FileManager.updateTitleBarPath
     plugin._orig_fm_updateTitleBarPath = orig_updateTitleBarPath
 
-    FileManager.updateTitleBarPath = function(fm_self, path)
-        -- Call the original to set the path text first.
-        orig_updateTitleBarPath(fm_self, path)
-        -- Then append the page info if navpager is on.
+    FileManager.updateTitleBarPath = function(fm_self, path, force_home)
+        local ffiUtil = require("ffi/util")
+        local function _norm(p)
+            if not p then return "" end
+            p = p:gsub("/$", "")
+            local ok, rp = pcall(ffiUtil.realpath, p)
+            if ok and rp then p = rp:gsub("/$", "") end
+            return p
+        end
+        local fc_path    = fm_self.file_chooser and fm_self.file_chooser.path or nil
+        local home_dir   = _norm(G_reader_settings:readSetting("home_dir"))
+        local clean_path = _norm(path or fc_path)
+        local at_home    = force_home or (home_dir ~= "" and clean_path == home_dir)
+
+        -- Determine whether the back button should be hidden at this path.
+        -- Mirrors the logic in genItemTable (sui_titlebar.lua) so that
+        -- programmatic navigations (Library button, boot onShow) that call
+        -- updateTitleBarPath directly also hide the button correctly.
+        --
+        -- Desired behaviour:
+        --   - Hide at filesystem root.
+        --   - Hide at the library home folder only when "Lock Home Folder" is enabled.
+        local at_root = (clean_path == "/")
+        if not at_root then
+            local fc_cur = fm_self.file_chooser
+            if fc_cur and fc_cur._simpleui_has_go_up ~= nil then
+                at_root = not fc_cur._simpleui_has_go_up
+            end
+        end
+        -- lock_home_folder: treat the home path as root.
+        if not at_root and G_reader_settings:isTrue("lock_home_folder") and at_home then
+            at_root = true
+        end
+
+        -- Force the back button off-screen when at root (or locked-at-home).
+        -- genItemTable handles the show case (is_sub=true) with the correct
+        -- icon and callback; we only force-hide here for navigations that
+        -- genItemTable may miss (Library button tap, suppress-flagged boot).
+        local tb = fm_self.title_bar
+        if tb and tb.left_button and fm_self._titlebar_patched then
+            if at_root then
+                local Screen = require("device").screen
+                tb.left_button.overlap_offset = { Screen:getWidth() + 100, 0 }
+                tb.left_button.callback       = function() end
+                tb.left_button.hold_callback  = function() end
+                local sb = fm_self._titlebar_search_btn
+                local x  = fm_self._simpleui_search_x_compact
+                if sb and x and sb.overlap_offset then
+                    sb.overlap_offset = { x, 0 }
+                end
+            else
+                local sb = fm_self._titlebar_search_btn
+                local x  = fm_self._simpleui_search_x
+                if sb and x and sb.overlap_offset then
+                    sb.overlap_offset = { x, 0 }
+                end
+            end
+            local UIManager = require("ui/uimanager")
+            UIManager:setDirty(tb.show_parent or fm_self, "ui", tb.dimen)
+        end
+
+        if at_home then
+            -- At home: clear the path text (title "Library" is enough).
+            if tb and tb.subtitle_widget then tb:setSubTitle("") end
+        else
+            -- In a subfolder: let the original write the path.
+            orig_updateTitleBarPath(fm_self, path)
+        end
+
+        -- Append page pagination if enabled.
         if not _subtitleEnabled() then return end
         local fc = fm_self.file_chooser
         if not fc then return end
-        local tb = fm_self.title_bar
+        tb = fm_self.title_bar
         if not tb or not tb.subtitle_widget then return end
         local page     = fc.page     or 0
         local page_num = fc.page_num or 0
         if page_num > 1 then
-            local T    = require("ffi/util").template
-            -- The original set the path text; now re-read it and append page info.
-            -- subtitle_widget.text is the raw string last passed to setText/init.
-            local base = tb.subtitle_widget.text or ""
-            tb:setSubTitle(base .. " — " .. T(_("Page %1 of %2"), page, page_num))
+            local T        = require("ffi/util").template
+            local base     = tb.subtitle_widget.text or ""
+            local page_str = T(_("Page %1 of %2"), page, page_num)
+            if base ~= "" then
+                tb:setSubTitle(base .. "  ·  " .. page_str)
+            else
+                tb:setSubTitle(page_str)
+            end
         end
     end
 end
@@ -1326,6 +1458,9 @@ function M.teardownAll(plugin)
         plugin._orig_fc_init        = nil
     end
     local FileManager = package.loaded["apps/filemanager/filemanager"]
+    if FileManager and FileManager._simpleui_gesture_priority_applied then
+        UI.unapplyGesturePriorityHandleEvent(FileManager)
+    end
     if FileManager and plugin._orig_fm_setup then
         FileManager.setupLayout = plugin._orig_fm_setup; plugin._orig_fm_setup = nil
     end

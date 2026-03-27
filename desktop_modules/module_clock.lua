@@ -22,6 +22,40 @@ local PAD2         = UI.PAD2
 local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
 
 -- ---------------------------------------------------------------------------
+-- Translated date string
+-- os.date("%A, %d %B") always returns English on most eReader locales.
+-- We use os.date("*t") for the numeric indices and look up translated names.
+-- ---------------------------------------------------------------------------
+
+-- _WEEKDAYS and _MONTHS are intentionally built inside _localDate so that
+-- _() is called at render time, after the user's locale has been loaded.
+-- Building them at module-load time (file level) would freeze them to the
+-- default locale because require() runs before KOReader applies translations.
+local function _localDate()
+    -- Pass os.time() explicitly: os.date("*t") without argument can return
+    -- nil in LuaJIT on some platforms (macOS emulator) when timezone handling
+    -- fails. os.date("*t", os.time()) is always safe.
+    local now = os.time()
+    local t   = os.date("*t", now)
+    if not t or not t.mday then
+        -- Fallback via the datetime module's locale-aware formatter.
+        return datetime.secondsToDate(now, true)
+    end
+    local weekdays = {
+        _("Sunday"), _("Monday"), _("Tuesday"), _("Wednesday"),
+        _("Thursday"), _("Friday"), _("Saturday"),
+    }
+    local months = {
+        _("January"), _("February"), _("March"),     _("April"),
+        _("May"),     _("June"),     _("July"),       _("August"),
+        _("September"), _("October"), _("November"),  _("December"),
+    }
+    local weekday = weekdays[t.wday] or os.date("%A", now)
+    local month   = months[t.month]  or os.date("%B", now)
+    return string.format("%s, %d %s", weekday, t.mday, month)
+end
+
+-- ---------------------------------------------------------------------------
 -- Pixel constants — base values at 100% scale; scaled at render time.
 -- ---------------------------------------------------------------------------
 
@@ -139,7 +173,7 @@ local function build(w, pfx, vspan_pool)
         vg[#vg+1] = CenterContainer:new{
             dimen = Geom:new{ w = inner_w, h = date_h },
             TextWidget:new{
-                text    = os.date("%A, %d %B"),
+                text    = _localDate(),
                 face    = Font:getFace("smallinfofont", date_fs),
                 fgcolor = CLR_TEXT_SUB,
             },
@@ -190,7 +224,110 @@ end
 
 M.getCountLabel = nil
 
+-- ---------------------------------------------------------------------------
+-- Surgical clock tick — rebuilds only the clock widget inside the body
+-- VerticalGroup, without triggering a full homescreen rebuild.
+--
+-- The homescreen records _clock_body_ref, _clock_body_idx, and
+-- _clock_is_wrapped during _buildContent() (see below).  The tick reads
+-- those fields to do a targeted swap, then marks only the navbar container
+-- dirty.  Falls back to a full _refresh() if the index was not recorded.
+-- ---------------------------------------------------------------------------
+
+local _timer     = nil   -- scheduled function reference (module-level singleton)
+local _hs_widget = nil   -- weak reference to the live HomescreenWidget
+
+local function _tick()
+    _timer = nil   -- timer has fired; clear before rescheduling
+
+    -- Abort if the homescreen instance has changed or gone away.
+    local hs = _hs_widget
+    if not hs then return end
+    local HS = package.loaded["sui_homescreen"]
+    if not HS or HS._instance ~= hs then _hs_widget = nil; return end
+
+    -- Do not update while suspended — some platforms fire pending timers
+    -- during the suspend transition before the scheduler pauses.
+    if hs._simpleui_suspended or hs._suspended then
+        M.scheduleRefresh(hs)   -- reschedule so we resume on wakeup
+        return
+    end
+
+    -- Do not update while a book is open — the homescreen is hidden anyway.
+    local RUI = package.loaded["apps/reader/readerui"]
+    if RUI and RUI.instance then
+        M.scheduleRefresh(hs)
+        return
+    end
+
+    -- Fast path: swap only the clock widget in the body VerticalGroup.
+    local body       = hs._clock_body_ref
+    local idx        = hs._clock_body_idx
+    local is_wrapped = hs._clock_is_wrapped
+    local swapped    = false
+
+    if body and idx and body[idx] and hs._navbar_container then
+        local sw      = Screen:getWidth()
+        local SIDE_PAD = require("sui_core").SIDE_M()
+        local inner_w  = hs._clock_inner_w or (sw - SIDE_PAD * 2)
+        local ok_w, new_widget = pcall(build, inner_w, hs._clock_pfx,
+                                        hs._vspan_pool)
+        if ok_w and new_widget then
+            if is_wrapped then
+                -- The clock was wrapped in an InputContainer for hold-to-settings.
+                -- Replace the inner slot [1] to keep the gesture handler alive.
+                body[idx][1] = new_widget
+            else
+                body[idx] = new_widget
+            end
+            UIManager:setDirty(hs._navbar_container, "ui")
+            swapped = true
+        end
+    end
+
+    if not swapped then
+        -- Slow-path fallback: trigger a full homescreen refresh.
+        local ok = pcall(function() hs:_refresh(false) end)
+        if not ok then _hs_widget = nil; return end
+    end
+
+    M.scheduleRefresh(hs)
+end
+
+-- Schedule the next tick, aligned to the next minute boundary.
+-- Safe to call repeatedly — cancels any pending timer first.
+function M.scheduleRefresh(hs)
+    if _timer then
+        UIManager:unschedule(_timer)
+        _timer = nil
+    end
+    _hs_widget = hs
+    local secs = 60 - (os.time() % 60) + 1
+    _timer = _tick
+    UIManager:scheduleIn(secs, _timer)
+end
+
+-- Cancel any pending timer and release the homescreen reference.
+-- Called from onSuspend and onCloseWidget.
+function M.cancelRefresh()
+    if _timer then
+        UIManager:unschedule(_timer)
+        _timer = nil
+    end
+    _hs_widget = nil
+end
+
 function M.build(w, ctx)
+    -- Record swap coordinates on the homescreen widget so the tick can do a
+    -- surgical replacement without rebuilding the entire page.  These fields
+    -- are written here (inside build) because build() is called from within
+    -- the module loop in _buildContent(), at which point the body index is
+    -- not yet known to the homescreen.  The homescreen sets _clock_body_idx
+    -- immediately after build() returns (see sui_homescreen.lua).
+    if ctx._hs_widget then
+        ctx._hs_widget._clock_pfx      = ctx.pfx
+        ctx._hs_widget._clock_inner_w  = w
+    end
     return build(w, ctx.pfx, ctx.vspan_pool)
 end
 

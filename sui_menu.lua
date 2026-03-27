@@ -432,7 +432,14 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         for _i, key in ipairs(sorted_keys) do
             local k = key
             items[#items + 1] = {
-                text_func    = function() return TOPBAR_ITEM_LABEL(k) end,
+                text_func    = function()
+                    local side = Config.getTopbarConfigCached().side[k] or "hidden"
+                    local label = TOPBAR_ITEM_LABEL(k)
+                    if side == "left"   then return label .. "  ◂"
+                    elseif side == "center" then return label .. "  ◆"
+                    elseif side == "right"  then return label .. "  ▸"
+                    else return label end
+                end,
                 -- Uses the cached config so opening the menu doesn't rebuild
                 -- the config table once per item (#16).
                 checked_func = function()
@@ -442,14 +449,21 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 callback = function()
                     -- Reads fresh config for the mutation, then invalidates cache.
                     local cfg = getTopbarConfig()
+                    if not cfg.order_center then cfg.order_center = {} end
                     if (cfg.side[k] or "hidden") == "hidden" then
+                        -- Restore to the last known slot, checking all three lists.
                         local last_side = "right"
-                        for _i, v in ipairs(cfg.order_left) do if v == k then last_side = "left"; break end end
+                        for _i, v in ipairs(cfg.order_left)   do if v == k then last_side = "left";   break end end
+                        for _i, v in ipairs(cfg.order_center) do if v == k then last_side = "center"; break end end
                         cfg.side[k] = last_side
                         if last_side == "left" then
                             local found = false
                             for _i, v in ipairs(cfg.order_left) do if v == k then found = true; break end end
                             if not found then cfg.order_left[#cfg.order_left + 1] = k end
+                        elseif last_side == "center" then
+                            local found = false
+                            for _i, v in ipairs(cfg.order_center) do if v == k then found = true; break end end
+                            if not found then cfg.order_center[#cfg.order_center + 1] = k end
                         else
                             local found = false
                             for _i, v in ipairs(cfg.order_right) do if v == k then found = true; break end end
@@ -470,12 +484,20 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             keep_menu_open = true,
             callback       = function()
                 local cfg        = getTopbarConfig()
+                if not cfg.order_center then cfg.order_center = {} end
                 local SEP_LEFT   = "__sep_left__"
+                local SEP_CENTER = "__sep_center__"
                 local SEP_RIGHT  = "__sep_right__"
                 local sort_items = {}
                 sort_items[#sort_items + 1] = { text = "── " .. _("Left") .. " ──", orig_item = SEP_LEFT, dim = true }
                 for _i, key in ipairs(cfg.order_left) do
                     if cfg.side[key] ~= "hidden" then
+                        sort_items[#sort_items + 1] = { text = TOPBAR_ITEM_LABEL(key), orig_item = key }
+                    end
+                end
+                sort_items[#sort_items + 1] = { text = "── " .. _("Center") .. " ──", orig_item = SEP_CENTER, dim = true }
+                for _i, key in ipairs(cfg.order_center) do
+                    if cfg.side[key] == "center" then
                         sort_items[#sort_items + 1] = { text = TOPBAR_ITEM_LABEL(key), orig_item = key }
                     end
                 end
@@ -490,32 +512,39 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     item_table        = sort_items,
                     covers_fullscreen = true,
                     callback          = function()
-                        local sep_left_pos, sep_right_pos
+                        local sep_left_pos, sep_center_pos, sep_right_pos
                         for j, item in ipairs(sort_items) do
-                            if item.orig_item == SEP_LEFT  then sep_left_pos  = j end
-                            if item.orig_item == SEP_RIGHT then sep_right_pos = j end
+                            if item.orig_item == SEP_LEFT   then sep_left_pos   = j end
+                            if item.orig_item == SEP_CENTER then sep_center_pos = j end
+                            if item.orig_item == SEP_RIGHT  then sep_right_pos  = j end
                         end
-                        if not sep_left_pos or not sep_right_pos or sep_left_pos > sep_right_pos
+                        if not sep_left_pos or not sep_center_pos or not sep_right_pos
+                                or sep_left_pos > sep_center_pos or sep_center_pos > sep_right_pos
                                 or (sort_items[1] and sort_items[1].orig_item ~= SEP_LEFT) then
                             UIManager:show(InfoMessage():new{
-                                text    = _("Invalid arrangement.\nKeep items between the Left and Right separators."),
+                                text    = _("Invalid arrangement.\nKeep the Left, Center and Right separators in order."),
                                 timeout = 3,
                             })
                             return
                         end
-                        local new_left, new_right = {}, {}
+                        local new_left, new_center, new_right = {}, {}, {}
                         local current_side = nil
                         for _i, item in ipairs(sort_items) do
-                            if     item.orig_item == SEP_LEFT  then current_side = "left"
-                            elseif item.orig_item == SEP_RIGHT then current_side = "right"
-                            elseif current_side == "left"  then new_left[#new_left + 1] = item.orig_item;  cfg.side[item.orig_item] = "left"
-                            elseif current_side == "right" then new_right[#new_right + 1] = item.orig_item; cfg.side[item.orig_item] = "right"
+                            if     item.orig_item == SEP_LEFT   then current_side = "left"
+                            elseif item.orig_item == SEP_CENTER then current_side = "center"
+                            elseif item.orig_item == SEP_RIGHT  then current_side = "right"
+                            elseif current_side == "left"   then new_left[#new_left + 1]     = item.orig_item; cfg.side[item.orig_item] = "left"
+                            elseif current_side == "center" then new_center[#new_center + 1] = item.orig_item; cfg.side[item.orig_item] = "center"
+                            elseif current_side == "right"  then new_right[#new_right + 1]   = item.orig_item; cfg.side[item.orig_item] = "right"
                             end
                         end
-                        for _i, key in ipairs(cfg.order_left)  do if cfg.side[key] == "hidden" then new_left[#new_left + 1]   = key end end
-                        for _i, key in ipairs(cfg.order_right) do if cfg.side[key] == "hidden" then new_right[#new_right + 1] = key end end
-                        cfg.order_left  = new_left
-                        cfg.order_right = new_right
+                        -- Keep hidden items at the tail of each list so they can be restored later.
+                        for _i, key in ipairs(cfg.order_left)   do if cfg.side[key] == "hidden" then new_left[#new_left + 1]     = key end end
+                        for _i, key in ipairs(cfg.order_center) do if cfg.side[key] == "hidden" then new_center[#new_center + 1] = key end end
+                        for _i, key in ipairs(cfg.order_right)  do if cfg.side[key] == "hidden" then new_right[#new_right + 1]   = key end end
+                        cfg.order_left   = new_left
+                        cfg.order_center = new_center
+                        cfg.order_right  = new_right
                         saveTopbarConfig(cfg)
                         plugin:_scheduleRebuild()
                     end,
@@ -632,6 +661,28 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     })
                 end,
             },
+            Config.makeScaleItem({
+                text_func     = function()
+                    local pct = Config.getBottomMarginPct()
+                    return pct == Config.BOT_MARGIN_DEF
+                        and _("Bottom Margin")
+                        or  string.format(_("Bottom Margin — %d%%"), pct)
+                end,
+                title         = _("Bottom Margin"),
+                info          = _("Space below the bottom navigation bar.\n100% is the default spacing."),
+                get           = function() return Config.getBottomMarginPct() end,
+                set           = function(pct) Config.setBottomMarginPct(pct) end,
+                refresh       = function()
+                    UI.invalidateDimCache()
+                    plugin:_rewrapAllWidgets()
+                    local ok_hs, HS = pcall(require, "sui_homescreen")
+                    if ok_hs and HS then HS.refresh(true) end
+                end,
+                value_min     = Config.BOT_MARGIN_MIN,
+                value_max     = Config.BOT_MARGIN_MAX,
+                value_step    = Config.BOT_MARGIN_STEP,
+                default_value = Config.BOT_MARGIN_DEF,
+            }),
             Config.makeScaleItem({
                 text_func     = function()
                     local pct = Config.getIconScalePct()
@@ -995,7 +1046,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     --   ctx.refresh   — zero-arg function to refresh the page after a change
     -- -----------------------------------------------------------------------
 
-    local MAX_QA_ITEMS = 4  -- max actions per QA slot (used by makeQAMenu)
+    local MAX_QA_ITEMS = 6  -- max actions per QA slot (used by makeQAMenu)
 
     local HOMESCREEN_CTX = {
         pfx     = "navbar_homescreen_",
@@ -1048,31 +1099,31 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             end
             G_reader_settings:saveSetting(items_key, new_items); ctx.refresh()
         end
-        local sub = {
-            { text = _("Show Labels"),
-              checked_func = function() return G_reader_settings:nilOrTrue(labels_key) end,
-              keep_menu_open = true, callback = function()
-                  G_reader_settings:saveSetting(labels_key, not G_reader_settings:nilOrTrue(labels_key)); ctx.refresh()
-              end },
-            { text = _("Arrange"), keep_menu_open = true, separator = true, callback = function()
-                  local qa_ids = getItems()
-                  if #qa_ids < 2 then UIManager:show(InfoMessage():new{ text = _("Add at least 2 actions to arrange."), timeout = 2 }); return end
-                  local pool_labels = {}; for _i, a in ipairs(getQAPool()) do pool_labels[a.id] = a.label end
-                  local sort_items = {}
-                  for _i, id in ipairs(qa_ids) do sort_items[#sort_items+1] = { text = pool_labels[id] or id, orig_item = id } end
-                  UIManager:show(SortWidget():new{ title = string.format(_("Arrange %s"), slot_label), covers_fullscreen = true, item_table = sort_items,
-                      callback = function()
-                          local new_order = {}; for _i, item in ipairs(sort_items) do new_order[#new_order+1] = item.orig_item end
-                          G_reader_settings:saveSetting(items_key, new_order); ctx.refresh()
-                      end })
-              end },
-        }
+        local items_sub = {}
         local sorted_pool = {}
         for _i, a in ipairs(getQAPool()) do sorted_pool[#sorted_pool+1] = a end
         table.sort(sorted_pool, function(a, b) return a.label:lower() < b.label:lower() end)
+        items_sub[#items_sub+1] = {
+            text           = _("Arrange Items"),
+            keep_menu_open = true,
+            separator      = true,
+            enabled_func   = function() return #getItems() >= 2 end,
+            callback       = function()
+              local qa_ids = getItems()
+              if #qa_ids < 2 then UIManager:show(InfoMessage():new{ text = _("Add at least 2 actions to arrange."), timeout = 2 }); return end
+              local pool_labels = {}; for _i, a in ipairs(getQAPool()) do pool_labels[a.id] = a.label end
+              local sort_items = {}
+              for _i, id in ipairs(qa_ids) do sort_items[#sort_items+1] = { text = pool_labels[id] or id, orig_item = id } end
+              UIManager:show(SortWidget():new{ title = string.format(_("Arrange %s"), slot_label), covers_fullscreen = true, item_table = sort_items,
+                  callback = function()
+                      local new_order = {}; for _i, item in ipairs(sort_items) do new_order[#new_order+1] = item.orig_item end
+                      G_reader_settings:saveSetting(items_key, new_order); ctx.refresh()
+                  end })
+          end,
+        }
         for _i, a in ipairs(sorted_pool) do
             local aid = a.id; local _lbl = a.label
-            sub[#sub+1] = {
+            items_sub[#items_sub+1] = {
                 text_func = function()
                     if isSelected(aid) then return _lbl end
                     local rem = MAX_QA_ITEMS - #getItems()
@@ -1080,11 +1131,27 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     if rem <= 2 then return _lbl .. "  (" .. rem .. " left)" end
                     return _lbl
                 end,
-                checked_func = function() return isSelected(aid) end,
-                keep_menu_open = true, callback = function() toggleItem(aid) end,
+                checked_func   = function() return isSelected(aid) end,
+                keep_menu_open = true,
+                callback       = function() toggleItem(aid) end,
             }
         end
-        return sub
+        return {
+            {
+                text           = _("Hide Text"),
+                checked_func   = function() return not G_reader_settings:nilOrTrue(labels_key) end,
+                keep_menu_open = true,
+                separator      = true,
+                callback       = function()
+                    G_reader_settings:saveSetting(labels_key, not G_reader_settings:nilOrTrue(labels_key))
+                    ctx.refresh()
+                end,
+            },
+            {
+                text                = _("Items"),
+                sub_item_table_func = function() return items_sub end,
+            },
+        }
     end
 
     -- Builds the full "Modules" sub-menu for a given ctx.
@@ -1459,6 +1526,12 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 callback     = function()
                     local on = G_reader_settings:nilOrTrue("simpleui_enabled")
                     G_reader_settings:saveSetting("simpleui_enabled", not on)
+                    -- When disabling SimpleUI, reset "Start with Homescreen" if active,
+                    -- because "homescreen_simpleui" is not a value the base KOReader
+                    -- understands — leaving it set would cause a blank screen on next boot.
+                    if on and G_reader_settings:readSetting("start_with") == "homescreen_simpleui" then
+                        G_reader_settings:saveSetting("start_with", "filemanager")
+                    end
                     -- Flush immediately so a hard reboot / crash cannot leave the
                     -- setting unsaved, which would cause a white-screen boot loop
                     -- the next time KOReader starts with the plugin installed.
@@ -1539,78 +1612,114 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                         end,
                                     },
                                     {
-                                        text         = _("Label"),
+                                        text         = _("Overlays"),
                                         enabled_func = function() return FC.isEnabled() end,
                                         sub_item_table = {
                                             {
-                                                text           = _("Show label"),
-                                                checked_func   = function() return FC.getShowName() end,
-                                                keep_menu_open = true,
-                                                separator      = true,
-                                                callback       = function() FC.setShowName(not FC.getShowName()); _refreshFC() end,
+                                                text         = _("Number of Books in Folder"),
+                                                sub_item_table = {
+                                                    {
+                                                        text           = _("Hidden"),
+                                                        checked_func   = function() return FC.getBadgeHidden() end,
+                                                        keep_menu_open = true,
+                                                        separator      = true,
+                                                        callback       = function()
+                                                            FC.setBadgeHidden(not FC.getBadgeHidden())
+                                                            FC.invalidateCache()
+                                                            _refreshFC()
+                                                        end,
+                                                    },
+                                                    {
+                                                        text           = _("Top"),
+                                                        radio          = true,
+                                                        checked_func   = function() return not FC.getBadgeHidden() and FC.getBadgePosition() == "top" end,
+                                                        enabled_func   = function() return not FC.getBadgeHidden() end,
+                                                        keep_menu_open = true,
+                                                        callback       = function() FC.setBadgePosition("top"); _refreshFC() end,
+                                                    },
+                                                    {
+                                                        text           = _("Bottom"),
+                                                        radio          = true,
+                                                        checked_func   = function() return not FC.getBadgeHidden() and FC.getBadgePosition() == "bottom" end,
+                                                        enabled_func   = function() return not FC.getBadgeHidden() end,
+                                                        keep_menu_open = true,
+                                                        callback       = function() FC.setBadgePosition("bottom"); _refreshFC() end,
+                                                    },
+                                                },
                                             },
                                             {
-                                                text           = _("Transparent"),
-                                                checked_func   = function() return FC.getLabelStyle() == "alpha" end,
-                                                enabled_func   = function() return FC.getShowName() end,
+                                                text           = _("Number of Pages"),
+                                                checked_func   = function() return FC.getOverlayPages() end,
                                                 keep_menu_open = true,
-                                                callback       = function()
-                                                    FC.setLabelStyle(FC.getLabelStyle() == "alpha" and "solid" or "alpha")
-                                                    _refreshFC()
-                                                end,
+                                                callback       = function() FC.setOverlayPages(not FC.getOverlayPages()); FC.invalidateCache(); _refreshFC() end,
                                             },
                                             {
-                                                text           = _("Top"),
-                                                radio          = true,
-                                                checked_func   = function() return FC.getLabelPosition() == "top" end,
-                                                enabled_func   = function() return FC.getShowName() end,
-                                                keep_menu_open = true,
-                                                callback       = function() FC.setLabelPosition("top"); _refreshFC() end,
-                                            },
-                                            {
-                                                text           = _("Center"),
-                                                radio          = true,
-                                                checked_func   = function() return FC.getLabelPosition() == "center" end,
-                                                enabled_func   = function() return FC.getShowName() end,
-                                                keep_menu_open = true,
-                                                callback       = function() FC.setLabelPosition("center"); _refreshFC() end,
-                                            },
-                                            {
-                                                text           = _("Bottom"),
-                                                radio          = true,
-                                                checked_func   = function() return FC.getLabelPosition() == "bottom" end,
-                                                enabled_func   = function() return FC.getShowName() end,
-                                                keep_menu_open = true,
-                                                callback       = function() FC.setLabelPosition("bottom"); _refreshFC() end,
+                                                text         = _("Folder Name"),
+                                                sub_item_table = {
+                                                    {
+                                                        text           = _("Hidden"),
+                                                        checked_func   = function() return FC.getLabelMode() == "hidden" end,
+                                                        keep_menu_open = true,
+                                                        separator      = true,
+                                                        callback       = function()
+                                                            FC.setLabelMode(FC.getLabelMode() == "hidden" and "overlay" or "hidden")
+                                                            _refreshFC()
+                                                        end,
+                                                    },
+                                                    {
+                                                        text           = _("Transparent"),
+                                                        checked_func   = function() return FC.getLabelStyle() == "alpha" end,
+                                                        enabled_func   = function() return FC.getLabelMode() ~= "hidden" end,
+                                                        keep_menu_open = true,
+                                                        separator      = true,
+                                                        callback       = function()
+                                                            FC.setLabelStyle(FC.getLabelStyle() == "alpha" and "solid" or "alpha")
+                                                            _refreshFC()
+                                                        end,
+                                                    },
+                                                    {
+                                                        text           = _("Top"),
+                                                        radio          = true,
+                                                        checked_func   = function() return FC.getLabelPosition() == "top" end,
+                                                        enabled_func   = function() return FC.getLabelMode() ~= "hidden" end,
+                                                        keep_menu_open = true,
+                                                        callback       = function() FC.setLabelPosition("top"); _refreshFC() end,
+                                                    },
+                                                    {
+                                                        text           = _("Center"),
+                                                        radio          = true,
+                                                        checked_func   = function() return FC.getLabelPosition() == "center" end,
+                                                        enabled_func   = function() return FC.getLabelMode() ~= "hidden" end,
+                                                        keep_menu_open = true,
+                                                        callback       = function() FC.setLabelPosition("center"); _refreshFC() end,
+                                                    },
+                                                    {
+                                                        text           = _("Bottom"),
+                                                        radio          = true,
+                                                        checked_func   = function() return FC.getLabelPosition() == "bottom" end,
+                                                        enabled_func   = function() return FC.getLabelMode() ~= "hidden" end,
+                                                        keep_menu_open = true,
+                                                        callback       = function() FC.setLabelPosition("bottom"); _refreshFC() end,
+                                                    },
+                                                },
                                             },
                                         },
                                     },
                                     {
-                                        text         = _("Badge"),
-                                        enabled_func = function() return FC.isEnabled() end,
-                                        sub_item_table = {
-                                            {
-                                                text           = _("Top"),
-                                                radio          = true,
-                                                checked_func   = function() return FC.getBadgePosition() == "top" end,
-                                                keep_menu_open = true,
-                                                callback       = function() FC.setBadgePosition("top"); _refreshFC() end,
-                                            },
-                                            {
-                                                text           = _("Bottom"),
-                                                radio          = true,
-                                                checked_func   = function() return FC.getBadgePosition() == "bottom" end,
-                                                keep_menu_open = true,
-                                                callback       = function() FC.setBadgePosition("bottom"); _refreshFC() end,
-                                            },
-                                        },
+                                        text           = _("Uniformize Covers (2:3)"),
+                                        checked_func   = function() return FC.getCoverMode() == "2_3" end,
+                                        enabled_func   = function() return FC.isEnabled() end,
+                                        keep_menu_open = true,
+                                        callback       = function()
+                                            FC.setCoverMode(FC.getCoverMode() == "2_3" and "default" or "2_3")
+                                            _refreshFC()
+                                        end,
                                     },
                                     {
                                         text           = _("Hide selection underline"),
                                         checked_func   = function() return FC.getHideUnderline() end,
                                         enabled_func   = function() return FC.isEnabled() end,
                                         keep_menu_open = true,
-                                        separator      = true,
                                         callback       = function() FC.setHideUnderline(not FC.getHideUnderline()); _refreshFC() end,
                                     },
                                 }

@@ -48,7 +48,7 @@ local _BASE_BADGE_FS     = Screen:scaleBySize(6)    -- badge font (~0.375 x badg
 local _BASE_EMPTY_H      = Screen:scaleBySize(36)
 local _BASE_EMPTY_FS     = Screen:scaleBySize(10)
 
-local EDGE_COLOR = Blitbuffer.gray(0.55)
+local EDGE_COLOR = Blitbuffer.gray(0.70)
 local EDGE_H1    = 0.97   -- inner line height fraction of COLL_H
 local EDGE_H2    = 0.94   -- outer line height fraction
 
@@ -349,19 +349,26 @@ function M.build(w, ctx)
         local count     = #files
         local thumb     = buildCoverCell(files, overrides[coll_name], coll_name, count, d)
 
+        -- Label centred over the cover thumbnail only, not the full stack_cell_w
+        -- (which includes the spine on the left). A leading HorizontalSpan
+        -- of stack_extra pushes the label to start at the thumbnail left edge.
         local label_w = TextWidget:new{
             text      = coll_name,
             face      = Font:getFace("cfont", d.coll_lbl_fs),
             fgcolor   = CLR_TEXT_SUB,
-            width     = d.stack_cell_w,
+            width     = d.coll_w,
             alignment = "center",
+        }
+        local label_aligned = HorizontalGroup:new{
+            HorizontalSpan:new{ width = d.stack_extra },
+            label_w,
         }
 
         local cell_vg = VerticalGroup:new{
             align = "center",
             thumb,
             VerticalSpan:new{ width = d.label_gap },
-            label_w,
+            label_aligned,
         }
 
         local tappable = InputContainer:new{

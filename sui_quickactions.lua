@@ -160,6 +160,169 @@ local function _loadCustomIconList()
     return icons
 end
 
+-- Shows a preview dialog for a validated Nerd Font icon.
+-- on_confirm(sentinel) applies the icon; on_back() reopens the input dialog.
+local function _showNerdIconPreview(sentinel, on_confirm, on_back)
+    local Font            = require("ui/font")
+    local BB              = require("ffi/blitbuffer")
+    local TextWidget      = require("ui/widget/textwidget")
+    local FrameContainer  = require("ui/widget/container/framecontainer")
+    local CenterContainer = require("ui/widget/container/centercontainer")
+    local InputContainer  = require("ui/widget/container/inputcontainer")
+    local GestureRange    = require("ui/gesturerange")
+    local VerticalGroup   = require("ui/widget/verticalgroup")
+    local VerticalSpan    = require("ui/widget/verticalspan")
+    local ButtonTable     = require("ui/widget/buttontable")
+    local Geom            = require("ui/geometry")
+
+    local nerd_char = Config.nerdIconChar(sentinel)
+    local hex       = sentinel:match("nerd:(.+)")
+
+    local preview_dlg
+    local function _close() UIManager:close(preview_dlg) end
+
+    local btn_table = ButtonTable:new{
+        width   = Screen:scaleBySize(280),
+        buttons = {{
+            {
+                text     = _("Cancel"),
+                -- on_back=nil means the InputDialog is still on the stack;
+                -- closing the preview is enough to return to it.
+                callback = function()
+                    _close()
+                    if on_back then on_back() end
+                end,
+            },
+            {
+                text     = _("Confirm"),
+                callback = function() _close() ; on_confirm(sentinel) end,
+            },
+        }},
+    }
+
+    local content = FrameContainer:new{
+        background = BB.COLOR_WHITE,
+        bordersize = Screen:scaleBySize(1),
+        radius     = Screen:scaleBySize(8),
+        padding    = Screen:scaleBySize(20),
+        VerticalGroup:new{
+            align = "center",
+            CenterContainer:new{
+                dimen = Geom:new{ w = Screen:scaleBySize(280), h = Screen:scaleBySize(110) },
+                TextWidget:new{
+                    text    = nerd_char,
+                    face    = Font:getFace("symbols", Screen:scaleBySize(80)),
+                    fgcolor = BB.COLOR_BLACK,
+                },
+            },
+            VerticalSpan:new{ width = Screen:scaleBySize(6) },
+            CenterContainer:new{
+                dimen = Geom:new{ w = Screen:scaleBySize(280), h = Screen:scaleBySize(26) },
+                TextWidget:new{
+                    text    = ("U+%s"):format(hex),
+                    face    = Font:getFace("cfont", Screen:scaleBySize(15)),
+                    fgcolor = BB.COLOR_BLACK,
+                },
+            },
+            VerticalSpan:new{ width = Screen:scaleBySize(16) },
+            btn_table,
+        },
+    }
+
+    -- Wrap in an InputContainer that intercepts all taps over the full screen.
+    -- This prevents taps on the preview buttons from leaking to the InputDialog
+    -- below (which has is_always_active=true and would close itself on outside taps).
+    local full = Geom:new{ w = Screen:getWidth(), h = Screen:getHeight() }
+    local inner = CenterContainer:new{ dimen = full, content }
+    preview_dlg = InputContainer:new{
+        dimen             = full,
+        covers_fullscreen = true,
+        modal             = true,
+        inner,
+    }
+    -- Consume all tap/touch events so they never reach always_active widgets below.
+    preview_dlg.ges_events = {
+        TapAny = { GestureRange:new{ ges = "tap",   range = full } },
+        HoldAny= { GestureRange:new{ ges = "hold",  range = full } },
+    }
+    function preview_dlg:onTapAny()  return true end
+    function preview_dlg:onHoldAny() return true end
+    UIManager:show(preview_dlg)
+end
+
+-- Opens an InputDialog for entering a Nerd Font hex codepoint.
+-- on_select is called with "nerd:XXXX" on success, or nothing on cancel.
+local function _showNerdIconInput(current_icon, on_select, on_cancel)
+    local InputDialog = require("ui/widget/inputdialog")
+    local InfoMessage = require("ui/widget/infomessage")
+
+    -- Pre-fill with the current hex code if the icon is already a Nerd Font.
+    local current_hex = ""
+    if current_icon then
+        current_hex = current_icon:match("^nerd:([0-9A-Fa-f]+)$") or ""
+    end
+
+    local dlg
+    local function _openInputDlg()
+        dlg = InputDialog:new{
+            title       = _("Nerd Font Icon"),
+            input       = current_hex:upper(),
+            input_hint  = _("hex code, e.g. E001"),
+            description = _("Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\nYou can look up codes with wakamaifondue.com using the file:\n  /koreader/fonts/nerdfonts/symbols.ttf\nLeave blank and press OK to remove a Nerd Font icon."),
+            buttons = {{
+                {
+                    text     = _("Cancel"),
+                    callback = function()
+                        UIManager:close(dlg)
+                        if on_cancel then on_cancel() end
+                    end,
+                },
+                {
+                    text             = _("OK"),
+                    is_enter_default = true,
+                    callback         = function()
+                        local raw = dlg:getInputText()
+                        -- Empty input â clear the nerd icon (caller gets nil).
+                        if raw:match("^%s*$") then
+                            UIManager:close(dlg)
+                            on_select(nil)
+                            return
+                        end
+                        local hex = raw:match("^%s*([0-9A-Fa-f]+)%s*$")
+                        if hex and #hex >= 1 and #hex <= 6 then
+                            -- Validate that Config can convert it (range check).
+                            local sentinel = "nerd:" .. hex:upper()
+                            if Config.nerdIconChar(sentinel) then
+                                -- Close dlg first, then show preview on top.
+                                -- Cancel in preview reopens the InputDialog via nextTick
+                                -- so the tap that closed the preview is fully consumed
+                                -- before the new dialog appears (otherwise the same tap
+                                -- event lands on the freshly-opened dialog and closes it).
+                                UIManager:close(dlg)
+                                _showNerdIconPreview(sentinel,
+                                    on_select,
+                                    function() UIManager:nextTick(_openInputDlg) end)
+                            else
+                                UIManager:show(InfoMessage:new{
+                                    text    = _("Codepoint out of valid Unicode range (0â10FFFF)."),
+                                    timeout = 3,
+                                })
+                            end
+                        else
+                            UIManager:show(InfoMessage:new{
+                                text    = _("Invalid input. Please enter 1â6 hexadecimal digits (0â9, AâF)."),
+                                timeout = 3,
+                            })
+                        end
+                    end,
+                },
+            }},
+        }
+        UIManager:show(dlg)
+    end
+    _openInputDlg()
+end
+
 -- on_select(path_or_nil) is called with the chosen icon path, or nil for "reset".
 -- _picker_handle: table where the open dialog will be stored (e.g. plugin table).
 -- picker_key: key on that table (e.g. "_qa_icon_picker").
@@ -170,6 +333,10 @@ function QA.showIconPicker(current_icon, on_select, default_label, _picker_handl
     local ButtonDialog = require("ui/widget/buttondialog")
     local icons   = _loadCustomIconList()
     local buttons = {}
+
+    -- "Default" row — marked when no custom icon is active.
+    local is_nerd    = Config.isNerdIcon(current_icon)
+    local is_svg     = current_icon and not is_nerd
     local default_marker = (not current_icon) and "  ✓" or ""
     buttons[#buttons + 1] = {{
         text     = (default_label or _("Default")) .. default_marker,
@@ -178,6 +345,22 @@ function QA.showIconPicker(current_icon, on_select, default_label, _picker_handl
             on_select(nil)
         end,
     }}
+
+    -- "Nerd Font…" row — opens the hex input dialog.
+    local nerd_char   = Config.nerdIconChar(current_icon)
+    local nerd_marker = is_nerd and ("  " .. nerd_char .. "  ✓") or ""
+    buttons[#buttons + 1] = {{
+        text     = _("Nerd Font symbol…") .. nerd_marker,
+        callback = function()
+            UIManager:close(_picker_handle[picker_key])
+            _showNerdIconInput(current_icon, function(new_icon)
+                on_select(new_icon)
+            end, function()
+                QA.showIconPicker(current_icon, on_select, default_label, _picker_handle, picker_key)
+            end)
+        end,
+    }}
+
     if #icons == 0 then
         buttons[#buttons + 1] = {{
             text    = _("No icons found in:") .. "\n" .. QA.ICONS_DIR,
@@ -187,7 +370,7 @@ function QA.showIconPicker(current_icon, on_select, default_label, _picker_handl
         for _i, icon in ipairs(icons) do
             local p = icon
             buttons[#buttons + 1] = {{
-                text     = p.label .. ((current_icon == p.path) and "  ✓" or ""),
+                text     = p.label .. ((is_svg and current_icon == p.path) and "  ✓" or ""),
                 callback = function()
                     UIManager:close(_picker_handle[picker_key])
                     on_select(p.path)
@@ -310,7 +493,6 @@ end
 
 function QA.showQuickActionDialog(plugin, qa_id, on_done)
     local MultiInputDialog = require("ui/widget/multiinputdialog")
-    local PathChooser      = require("ui/widget/pathchooser")
     local InfoMessage      = require("ui/widget/infomessage")
     local ButtonDialog     = require("ui/widget/buttondialog")
 
@@ -326,6 +508,12 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
 
     local function iconButtonLabel(default_lbl)
         if not chosen_icon then return default_lbl or _("Icon: Default") end
+        local nerd_char = Config.nerdIconChar(chosen_icon)
+        if nerd_char then
+            -- Show the rendered glyph plus the hex code as confirmation.
+            local hex = chosen_icon:match("nerd:(.+)")
+            return _("Icon") .. ": " .. nerd_char .. " (" .. hex .. ")"
+        end
         local fname = chosen_icon:match("([^/]+)$") or chosen_icon
         local stem  = (fname:match("^(.+)%.[^%.]+$") or fname):gsub("_", " ")
         return _("Icon") .. ": " .. stem
@@ -392,38 +580,37 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
 
     local sanitize = Config.sanitizeLabel
 
-    local function openPathChooser()
-        UIManager:show(PathChooser:new{
-            select_directory = true, select_file = false, show_files = false,
-            path = start_path, covers_fullscreen = true,
-            height = Screen:getHeight() - TOTAL_H(),
-            onConfirm = function(chosen_path)
-                _buildSaveDialog({
-                    fields = {
-                        { description = _("Name"),
-                          text = cfg.label or (chosen_path:match("([^/]+)$") or ""),
-                          hint = _("e.g. Books…") },
-                        { description = _("Folder"), text = chosen_path, hint = "/path/to/folder" },
-                    },
-                    icon_default_label = _("Default (Folder)"),
-                    validate = function(inputs)
-                        local p = inputs[2] ~= "" and inputs[2] or chosen_path
-                        local attr = lfs.attributes(p)
-                        if not attr then
-                            return string.format(_("Folder not found:\n%s"), p)
-                        end
-                        if attr.mode ~= "directory" then
-                            return string.format(_("Path is not a folder:\n%s"), p)
-                        end
-                    end,
-                    on_save = function(inputs)
-                        local new_path = inputs[2] ~= "" and inputs[2] or chosen_path
-                        commitQA(sanitize(inputs[1]) or (new_path:match("([^/]+)$") or "?"),
-                            new_path, nil, Config.CUSTOM_ICON)
-                    end,
-                })
+
+    local function openFolderPicker()
+        local ok_pc, PathChooser = pcall(require, "ui/widget/pathchooser")
+        if not ok_pc or not PathChooser then
+            UIManager:show(InfoMessage:new{ text = _("Path chooser not available."), timeout = 3 })
+            return
+        end
+        local pc = PathChooser:new{
+            select_directory = true,
+            select_file      = false,
+            show_files       = false,
+            path             = start_path,
+            onConfirm        = function(chosen_path)
+                -- Strip trailing slash for consistency with the rest of the plugin.
+                chosen_path = chosen_path:gsub("/$", "")
+                local default_label = chosen_path:match("([^/]+)$") or chosen_path
+                -- Defer until the PathChooser has fully closed and all pending
+                -- input events (tap/hold_release) have been consumed, otherwise
+                -- the dialog opens and is immediately closed by the lingering event.
+                UIManager:scheduleIn(0.3, function()
+                    _buildSaveDialog({
+                        fields = { { description = _("Name"), text = cfg.label or default_label, hint = _("e.g. Comics…") } },
+                        icon_default_label = _("Default (Folder)"),
+                        on_save = function(inputs)
+                            commitQA(sanitize(inputs[1]) or default_label, chosen_path, nil, Config.CUSTOM_ICON)
+                        end,
+                    })
+                end)
             end,
-        })
+        }
+        UIManager:show(pc)
     end
 
     local function openCollectionPicker()
@@ -505,10 +692,10 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
 
     local choice_dialog
     choice_dialog = ButtonDialog:new{ buttons = {
+        {{ text = _("Folder"),
+           callback = function() UIManager:close(choice_dialog); openFolderPicker() end }},
         {{ text = _("Collection"), enabled = #collections > 0,
            callback = function() UIManager:close(choice_dialog); openCollectionPicker() end }},
-        {{ text = _("Folder"),
-           callback = function() UIManager:close(choice_dialog); openPathChooser() end }},
         {{ text = _("Plugin"),
            callback = function() UIManager:close(choice_dialog); openPluginPicker() end }},
         {{ text = _("System Actions"),
@@ -594,6 +781,8 @@ function QA.makeMenuItems(plugin)
                         end
                         QA.invalidateCustomQACache()
                         plugin:_rebuildAllNavbars()
+                        local ok, HS = pcall(require, "sui_homescreen")
+                        if ok and HS and HS._instance then HS._instance:_refreshImmediate(false) end
                     end, default_label, plugin, "_qa_icon_picker")
                 end,
             }
@@ -683,7 +872,7 @@ function QA.makeMenuItems(plugin)
     items[#items + 1] = {
         text         = _("Create Quick Action"),
         enabled_func = function() return #Config.getCustomQAList() < MAX_CUSTOM_QA end,
-        callback     = function()
+        callback     = function(_menu_self, suppress_refresh)
             if #Config.getCustomQAList() >= MAX_CUSTOM_QA then
                 UIManager:show(InfoMessage:new{
                     text    = string.format(_("Maximum %d quick actions reached. Delete one first."), MAX_CUSTOM_QA),
@@ -691,7 +880,11 @@ function QA.makeMenuItems(plugin)
                 })
                 return
             end
-            QA.showQuickActionDialog(plugin, nil, nil)
+            if suppress_refresh then suppress_refresh() end
+            QA.showQuickActionDialog(plugin, nil, function()
+                local ok, HS = pcall(require, "sui_homescreen")
+                if ok and HS and HS._instance then HS._instance:_refreshImmediate(false) end
+            end)
         end,
     }
 
@@ -745,7 +938,13 @@ function QA.makeMenuItems(plugin)
                 }
                 sub[#sub + 1] = {
                     text     = _("Edit"),
-                    callback = function() QA.showQuickActionDialog(plugin, _id, nil) end,
+                    callback = function(_menu_self, suppress_refresh)
+                        if suppress_refresh then suppress_refresh() end
+                        QA.showQuickActionDialog(plugin, _id, function()
+                            local ok, HS = pcall(require, "sui_homescreen")
+                            if ok and HS and HS._instance then HS._instance:_refreshImmediate(false) end
+                        end)
+                    end,
                 }
                 sub[#sub + 1] = {
                     text     = _("Delete"),
@@ -770,6 +969,81 @@ function QA.makeMenuItems(plugin)
     end
 
     return items
+end
+
+-- ---------------------------------------------------------------------------
+-- executeCustomQA(action_id, fm, show_unavailable_fn)
+--
+-- Single source of truth for running a custom QA action.
+-- Called by sui_bottombar from both _executeInPlace and navigate so that
+-- execution logic lives here rather than being duplicated across two call sites.
+--
+--   action_id           — e.g. "custom_qa_1"
+--   fm                  — the live FileManager (or ReaderUI) instance
+--   show_unavailable_fn — optional function(msg) for surfacing errors;
+--                         defaults to an InfoMessage toast
+-- ---------------------------------------------------------------------------
+function QA.executeCustomQA(action_id, fm, show_unavailable_fn)
+    local function _unavail(msg)
+        if show_unavailable_fn then
+            show_unavailable_fn(msg)
+        else
+            local InfoMessage = require("ui/widget/infomessage")
+            UIManager:show(InfoMessage:new{ text = msg, timeout = 3 })
+        end
+    end
+
+    local cfg = G_reader_settings:readSetting("navbar_cqa_" .. action_id) or {}
+
+    if cfg.dispatcher_action and cfg.dispatcher_action ~= "" then
+        local ok_disp, Dispatcher = pcall(require, "dispatcher")
+        if ok_disp and Dispatcher then
+            local ok, err = pcall(function()
+                Dispatcher:execute({ [cfg.dispatcher_action] = true })
+            end)
+            if not ok then
+                logger.warn("simpleui: dispatcher_action failed:", cfg.dispatcher_action, tostring(err))
+                _unavail(string.format(_("System action error: %s"), tostring(err)))
+            end
+        else
+            _unavail(_("Dispatcher not available."))
+        end
+
+    elseif cfg.plugin_key and cfg.plugin_method and cfg.plugin_key ~= "" then
+        local plugin_inst = fm and fm[cfg.plugin_key]
+        if plugin_inst and type(plugin_inst[cfg.plugin_method]) == "function" then
+            local ok, err = pcall(function() plugin_inst[cfg.plugin_method](plugin_inst) end)
+            if not ok then _unavail(string.format(_("Plugin error: %s"), tostring(err))) end
+        else
+            _unavail(string.format(_("Plugin not available: %s"), cfg.plugin_key))
+        end
+
+    elseif cfg.collection and cfg.collection ~= "" then
+        if fm and fm.collections then
+            local ok, err = pcall(function() fm.collections:onShowColl(cfg.collection) end)
+            if not ok then _unavail(string.format(_("Collection not available: %s"), cfg.collection)) end
+        end
+
+    elseif cfg.path and cfg.path ~= "" then
+        if fm and fm.file_chooser then fm.file_chooser:changeToPath(cfg.path) end
+
+    else
+        _unavail(_("No folder, collection or plugin configured.\nGo to Simple UI \xe2\x86\x92 Settings \xe2\x86\x92 Quick Actions to set one."))
+    end
+end
+
+-- ---------------------------------------------------------------------------
+-- isInPlaceCustomQA(action_id)
+--
+-- Returns true when the custom QA executes without opening a new fullscreen
+-- view (dispatcher_action or plugin_method).  Used by sui_bottombar's
+-- _isInPlaceAction so the homescreen is not closed for in-place actions.
+-- ---------------------------------------------------------------------------
+function QA.isInPlaceCustomQA(action_id)
+    local cfg = G_reader_settings:readSetting("navbar_cqa_" .. action_id) or {}
+    if cfg.dispatcher_action and cfg.dispatcher_action ~= "" then return true end
+    if cfg.plugin_key and cfg.plugin_method and cfg.plugin_key ~= "" then return true end
+    return false
 end
 
 return QA

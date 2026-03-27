@@ -22,6 +22,22 @@ local _               = require("gettext")
 
 local Config = require("sui_config")
 
+-- Lazy reference to sui_quickactions — single source of truth for QA resolution
+-- and execution.  Loaded on first use to avoid a circular require at startup.
+local function _QA()
+    return package.loaded["sui_quickactions"] or require("sui_quickactions")
+end
+
+-- Action-only tabs: these fire a dialog/toggle without becoming the active tab.
+-- Used by onTabTap (early-return guard) AND setActiveAndRefreshFM (write guard).
+-- Keeping the list in one place makes it impossible for the two sites to drift.
+local _ACTION_ONLY = {
+    bookmark_browser = true,
+    wifi_toggle      = true,
+    frontlight       = true,
+    power            = true,
+}
+
 local M = {}
 
 -- Bar colors.
@@ -73,7 +89,7 @@ function M.INDIC_H()     return _cached("indic_h", function() return math.floor(
 
 -- Structural dimensions — not affected by the size setting.
 function M.TOP_SP()      return _cached("top_sp",  function() return Screen:scaleBySize(2)  end) end
-function M.BOT_SP()      return _cached("bot_sp",  function() return Screen:scaleBySize(12) end) end
+function M.BOT_SP()      return _cached("bot_sp",  function() return math.floor(Screen:scaleBySize(12) * Config.getBottomMarginPct() / 100) end) end
 function M.SIDE_M()      return _cached("side_m",  function() return Screen:scaleBySize(24) end) end
 function M.SEP_H()       return _cached("sep_h",   function() return Screen:scaleBySize(1)  end) end
 
@@ -164,13 +180,29 @@ function M.buildTabCell(action_id, active, tab_w, mode)
     vg[#vg + 1] = _vspan_icon_top
 
     if mode == "icons" or mode == "both" then
-        vg[#vg + 1] = ImageWidget:new{
-            file    = action.icon,
-            width   = M.ICON_SZ(),
-            height  = M.ICON_SZ(),
-            is_icon = true,
-            alpha   = true,
-        }
+        local nerd_char = Config.nerdIconChar(action.icon)
+        if nerd_char then
+            local icon_sz = M.ICON_SZ()
+            -- Use tab_w as the outer width so the nerd glyph is centred
+            -- in exactly the same horizontal space as an SVG ImageWidget.
+            vg[#vg + 1] = CenterContainer:new{
+                dimen = Geom:new{ w = tab_w, h = icon_sz },
+                TextWidget:new{
+                    text    = nerd_char,
+                    face    = Font:getFace("symbols", math.floor(icon_sz * 0.6)),
+                    fgcolor = Blitbuffer.COLOR_BLACK,
+                    padding = 0,
+                },
+            }
+        else
+            vg[#vg + 1] = ImageWidget:new{
+                file    = action.icon,
+                width   = M.ICON_SZ(),
+                height  = M.ICON_SZ(),
+                is_icon = true,
+                alpha   = true,
+            }
+        end
     end
 
     if mode == "text" or mode == "both" then
@@ -433,10 +465,14 @@ function M.registerTouchZones(plugin, fm_self)
     local screen_w  = Screen:getWidth()
     local screen_h  = Screen:getHeight()
     local navbar_on = G_reader_settings:nilOrTrue("navbar_enabled")
-    local bar_h     = navbar_on and M.BAR_H() or 0
+    -- Full navbar strip height (separator + bar + bottom padding) — must match
+    -- wrapWithNavbar / TOTAL_H so touch targets cover the entire bottom region.
+    -- Using BAR_H() alone leaves the top separator and bottom safe-area bands
+    -- where underlying scroll/content can still win hit-testing.
+    local nav_h     = navbar_on and M.TOTAL_H() or 0
     local side_m    = M.SIDE_M()
     local usable_w  = screen_w - side_m * 2
-    local bar_y     = navbar_on and (screen_h - bar_h - M.BOT_SP()) or screen_h
+    local bar_y     = navbar_on and (screen_h - nav_h) or screen_h
     local navpager  = Config.isNavpagerEnabled()
 
     local center_n    = num_tabs
@@ -491,6 +527,46 @@ function M.registerTouchZones(plugin, fm_self)
         end
     end
 
+    -- Helper: jump to a specific page on the topmost pageable widget.
+    -- Pass page=1 for first page, page=nil to jump to the last page (page_num).
+    local function _callGotoPage(page)
+        local stack = UI_mod.getWindowStack()
+        for i = #stack, 1, -1 do
+            local w = stack[i] and stack[i].widget
+            if w then
+                local target, fn
+                if type(w.onGotoPage) == "function" and type(w.page_num) == "number" then
+                    target = page or w.page_num
+                    fn     = function() w:onGotoPage(target) end
+                else
+                    local fc = w.file_chooser
+                    if fc and type(fc.onGotoPage) == "function" and type(fc.page_num) == "number" then
+                        target = page or fc.page_num
+                        fn     = function() fc:onGotoPage(target) end
+                    end
+                end
+                if fn then pcall(fn); return end
+            end
+        end
+        -- Fallback: FM file_chooser.
+        local fm_mod  = package.loaded["apps/filemanager/filemanager"]
+        local fm_inst = fm_mod and fm_mod.instance
+        if fm_inst and fm_inst.file_chooser then
+            local fc = fm_inst.file_chooser
+            if type(fc.onGotoPage) == "function" and type(fc.page_num) == "number" then
+                local target = page or fc.page_num
+                pcall(function() fc:onGotoPage(target) end)
+            end
+        end
+    end
+
+    -- Arrow boundary x-coordinates in screen pixels — used both by the tap
+    -- zones and by the hold_release handler to determine which area was held.
+    -- Defined here (in scope for the whole function) so the hold_settings
+    -- handler can read them without capturing a stale local from a nested block.
+    local prev_end_x = arrows_active and (side_m + widths[1])                      or 0
+    local next_x     = arrows_active and (side_m + usable_w - widths[total_slots]) or screen_w
+
     if arrows_active then
         -- ── Prev arrow (slot 1) ──────────────────────────────────────────────
         zones[#zones + 1] = {
@@ -501,7 +577,7 @@ function M.registerTouchZones(plugin, fm_self)
                 ratio_x = side_m    / screen_w,
                 ratio_y = bar_y     / screen_h,
                 ratio_w = widths[1] / screen_w,
-                ratio_h = bar_h     / screen_h,
+                ratio_h = nav_h     / screen_h,
             },
             handler = function(_ges)
                 local has_prev, _ = Config.getNavpagerState()
@@ -526,7 +602,7 @@ function M.registerTouchZones(plugin, fm_self)
                     ratio_x = x_start    / screen_w,
                     ratio_y = bar_y      / screen_h,
                     ratio_w = this_tab_w / screen_w,
-                    ratio_h = bar_h      / screen_h,
+                    ratio_h = nav_h      / screen_h,
                 },
                 handler = function(_ges)
                     local t         = Config.loadTabConfig()
@@ -550,7 +626,6 @@ function M.registerTouchZones(plugin, fm_self)
         end
 
         -- ── Next arrow (last slot) ───────────────────────────────────────────
-        local next_x = side_m + usable_w - widths[total_slots]
         zones[#zones + 1] = {
             id          = "navbar_pos_next",
             ges         = "tap",
@@ -559,7 +634,7 @@ function M.registerTouchZones(plugin, fm_self)
                 ratio_x = next_x              / screen_w,
                 ratio_y = bar_y               / screen_h,
                 ratio_w = widths[total_slots] / screen_w,
-                ratio_h = bar_h               / screen_h,
+                ratio_h = nav_h               / screen_h,
             },
             handler = function(_ges)
                 local _, has_next = Config.getNavpagerState()
@@ -591,7 +666,7 @@ function M.registerTouchZones(plugin, fm_self)
                     ratio_x = x_start    / screen_w,
                     ratio_y = bar_y      / screen_h,
                     ratio_w = this_tab_w / screen_w,
-                    ratio_h = bar_h      / screen_h,
+                    ratio_h = nav_h      / screen_h,
                 },
                 handler = function(_ges)
                     if not active then return false end
@@ -621,7 +696,7 @@ function M.registerTouchZones(plugin, fm_self)
         ratio_x = 0,
         ratio_y = bar_y / screen_h,
         ratio_w = 1,
-        ratio_h = bar_h / screen_h,
+        ratio_h = nav_h / screen_h,
     }
     zones[#zones + 1] = {
         id          = "navbar_hold_start",
@@ -635,7 +710,25 @@ function M.registerTouchZones(plugin, fm_self)
         id          = "navbar_hold_settings",
         ges         = "hold_release",
         screen_zone = bar_screen_zone,
-        handler = function(_ges)
+        handler = function(ges)
+            -- When navpager is active, a hold on the Prev or Next arrow jumps
+            -- to the first or last page instead of opening the settings menu.
+            if arrows_active then
+                local x = ges and ges.pos and ges.pos.x or -1
+                if x >= 0 and x < prev_end_x then
+                    -- Held on Prev arrow → jump to first page.
+                    local has_prev, _ = Config.getNavpagerState()
+                    if has_prev then _callGotoPage(1) end
+                    return true
+                end
+                if x >= next_x then
+                    -- Held on Next arrow → jump to last page.
+                    local _, has_next = Config.getNavpagerState()
+                    if has_next then _callGotoPage(nil) end
+                    return true
+                end
+            end
+            -- Held anywhere else on the bar → open settings menu.
             if not plugin._makeNavbarMenu then plugin:addToMainMenu({}) end
             local UI_mod     = require("sui_core")
             local topbar_on  = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
@@ -671,10 +764,16 @@ end
 function M.onTabTap(plugin, action_id, fm_self)
     -- Action-only tabs: open their dialog/action without changing the active tab.
     -- The indicator stays on whatever tab was active before the tap.
-    if action_id == "power"            then M.showPowerDialog(plugin);                      return end
-    if action_id == "wifi_toggle"      then M.doWifiToggle(plugin);                         return end
-    if action_id == "frontlight"       then M.showFrontlightDialog();                       return end
-    if action_id == "bookmark_browser" then M.showBookmarkBrowserSourceDialog(plugin.ui);   return end
+    -- _ACTION_ONLY is the single authoritative list — same one used by
+    -- setActiveAndRefreshFM so the two sites can never drift.
+    if _ACTION_ONLY[action_id] then
+        if     action_id == "power"            then M.showPowerDialog(plugin)
+        elseif action_id == "wifi_toggle"      then M.doWifiToggle(plugin)
+        elseif action_id == "frontlight"       then M.showFrontlightDialog()
+        elseif action_id == "bookmark_browser" then M.showBookmarkBrowserSourceDialog(plugin.ui)
+        end
+        return
+    end
 
     -- Load tabs once — navigate reuses this table instead of reloading.
     local tabs = Config.loadTabConfig()
@@ -713,7 +812,12 @@ local function showUnavailable(msg)
 end
 
 local function setActiveAndRefreshFM(plugin, action_id, tabs)
-    plugin.active_action = action_id
+    -- Never mark an action-only tab (bookmark_browser, wifi, etc.) as the
+    -- active navigation tab — doing so would light up its indicator even
+    -- though the user never "navigated" to it.
+    if not _ACTION_ONLY[action_id] then
+        plugin.active_action = action_id
+    end
     local fm = plugin.ui
     if fm and fm._navbar_container then
         M.replaceBar(fm, M.buildBarWidget(action_id, fm._navbar_tabs or tabs), tabs)
@@ -736,12 +840,8 @@ local function _isInPlaceAction(action_id)
     if action_id == "stats_calendar"   then return true end
     if action_id == "bookmark_browser" then return true end
     if action_id:match("^custom_qa_%d+$") then
-        local cfg = Config.getCustomQAConfig(action_id)
-        -- dispatcher_action and plugin_method are in-place (they toggle state
-        -- or call a plugin method without opening a new fullscreen widget).
-        -- collection and path navigate away — those must close the HS.
-        if cfg.dispatcher_action and cfg.dispatcher_action ~= "" then return true end
-        if cfg.plugin_key and cfg.plugin_method and cfg.plugin_key ~= "" then return true end
+        -- Delegate to sui_quickactions — single source of truth for QA config.
+        return _QA().isInPlaceCustomQA(action_id)
     end
     return false
 end
@@ -866,29 +966,8 @@ local function _executeInPlace(action_id, plugin, fm)
         M.showBookmarkBrowserSourceDialog(_bb_ui)
 
     elseif action_id:match("^custom_qa_%d+$") then
-        local cfg = Config.getCustomQAConfig(action_id)
-        if cfg.dispatcher_action and cfg.dispatcher_action ~= "" then
-            local ok_disp, Dispatcher = pcall(require, "dispatcher")
-            if ok_disp and Dispatcher then
-                local ok, err = pcall(function()
-                    Dispatcher:execute({ [cfg.dispatcher_action] = true })
-                end)
-                if not ok then
-                    logger.warn("simpleui: dispatcher_action failed:", cfg.dispatcher_action, tostring(err))
-                    showUnavailable(string.format(_("System action error: %s"), tostring(err)))
-                end
-            else
-                showUnavailable(_("Dispatcher not available."))
-            end
-        elseif cfg.plugin_key and cfg.plugin_method and cfg.plugin_key ~= "" then
-            local plugin_inst = fm and fm[cfg.plugin_key]
-            if plugin_inst and type(plugin_inst[cfg.plugin_method]) == "function" then
-                local ok, err = pcall(function() plugin_inst[cfg.plugin_method](plugin_inst) end)
-                if not ok then showUnavailable(string.format(_("Plugin error: %s"), tostring(err))) end
-            else
-                showUnavailable(string.format(_("Plugin not available: %s"), cfg.plugin_key))
-            end
-        end
+        -- Delegate to sui_quickactions — single source of truth for QA execution.
+        _QA().executeCustomQA(action_id, fm, showUnavailable)
     end
 
     -- Restore HS to its original position and repaint to reflect any changes
@@ -971,6 +1050,11 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
             target_fm._navbar_suppress_path_change = true
             fc:changeToPath(home)
             target_fm._navbar_suppress_path_change = nil
+        end
+        if target_fm.updateTitleBarPath then
+            pcall(function()
+                target_fm:updateTitleBarPath(home, true)
+            end)
         end
         return true
     end
@@ -1110,41 +1194,11 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
 
     else
         if action_id:match("^custom_qa_%d+$") then
-            local cfg = Config.getCustomQAConfig(action_id)
             -- dispatcher_action and plugin_method are handled by _executeInPlace
             -- when the HS is open (caught by _isInPlaceAction above). This branch
             -- only runs when the HS is already closed (e.g. tap from the FM bar).
-            if cfg.dispatcher_action and cfg.dispatcher_action ~= "" then
-                local ok_disp, Dispatcher = pcall(require, "dispatcher")
-                if ok_disp and Dispatcher then
-                    local ok, err = pcall(function()
-                        Dispatcher:execute({ [cfg.dispatcher_action] = true })
-                    end)
-                    if not ok then
-                        logger.warn("simpleui: dispatcher_action failed:", cfg.dispatcher_action, tostring(err))
-                        showUnavailable(string.format(_("System action error: %s"), tostring(err)))
-                    end
-                else
-                    showUnavailable(_("Dispatcher not available."))
-                end
-            elseif cfg.plugin_key and cfg.plugin_method and cfg.plugin_key ~= "" then
-                local plugin_inst = fm and fm[cfg.plugin_key]
-                if plugin_inst and type(plugin_inst[cfg.plugin_method]) == "function" then
-                    local ok, err = pcall(function() plugin_inst[cfg.plugin_method](plugin_inst) end)
-                    if not ok then showUnavailable(string.format(_("Plugin error: %s"), tostring(err))) end
-                else
-                    showUnavailable(string.format(_("Plugin not available: %s"), cfg.plugin_key))
-                end
-            elseif cfg.collection and cfg.collection ~= "" then
-                if fm and fm.collections then
-                    local ok, err = pcall(function() fm.collections:onShowColl(cfg.collection) end)
-                    if not ok then showUnavailable(string.format(_("Collection not available: %s"), cfg.collection)) end
-                end
-            elseif cfg.path and cfg.path ~= "" then
-                if fm.file_chooser then fm.file_chooser:changeToPath(cfg.path) end
-            else
-                showUnavailable(_("No folder, collection or plugin configured.\nGo to Simple UI → Settings → Quick Actions to set one."))
-            end
+            -- Delegate to sui_quickactions — single source of truth for QA execution.
+            _QA().executeCustomQA(action_id, fm, showUnavailable)
         end
     end
 end
@@ -1213,6 +1267,7 @@ end
 -- ---------------------------------------------------------------------------
 
 function M.rebuildAllNavbars(plugin)
+    if plugin and plugin._simpleui_suspended then return end
     local UI        = require("sui_core")
     local Topbar    = require("sui_topbar")
     M.invalidateDimCache()

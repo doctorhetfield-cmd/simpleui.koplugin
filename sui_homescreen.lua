@@ -41,11 +41,10 @@ local UI              = require("sui_core")
 -- ---------------------------------------------------------------------------
 -- Layout constants — sourced from ui.lua (single source of truth).
 -- ---------------------------------------------------------------------------
-local PAD              = UI.PAD
-local MOD_GAP          = UI.MOD_GAP
-local SIDE_PAD         = UI.SIDE_PAD
-local LABEL_H          = UI.LABEL_H
-local SECTION_LABEL_SIZE = 13
+local PAD                = UI.PAD
+local MOD_GAP            = UI.MOD_GAP
+local SIDE_PAD           = UI.SIDE_PAD
+local SECTION_LABEL_SIZE = 11
 local _CLR_TEXT_MID      = Blitbuffer.gray(0.45)
 
 -- Settings prefix — all homescreen settings are namespaced here,
@@ -151,8 +150,9 @@ end
 -- ---------------------------------------------------------------------------
 
 local HomescreenWidget = InputContainer:extend{
-    name              = "homescreen",
-    covers_fullscreen = true,
+    name                = "homescreen",
+    covers_fullscreen   = true,
+    disable_double_tap  = true,
     -- Set by patches.lua after navbar injection:
     _on_qa_tap        = nil,
     -- Set by menu.lua goal dialog wiring:
@@ -164,15 +164,14 @@ function HomescreenWidget:init()
 
     -- Block taps/holds that land on the bottom bar area so they are never
     -- consumed by module InputContainers whose dimen extends into that area.
-    -- This ges_event is evaluated first (InputContainer processes own events
-    -- before propagating to children) and returns true to consume the event.
-    -- _navbar_content_h is set by patches.lua after init(); we use a lazy
-    -- function so it is read at gesture time, not at init time.
+    -- Y threshold must match Bottombar.TOTAL_H() (full reserved strip: separator
+    -- + bar + bottom padding), not raw content height — the latter breaks when
+    -- the top bar is enabled (wrong band vs. actual navbar row).
     local function _in_bar(ges)
-        if not ges then return false end
-        local ch = self._navbar_content_h
-        if not ch then return false end
-        return ges.pos and ges.pos.y and ges.pos.y >= ch
+        if not ges or not ges.pos then return false end
+        local Bottombar = require("sui_bottombar")
+        local bar_y = Screen:getHeight() - Bottombar.TOTAL_H()
+        return ges.pos.y >= bar_y
     end
     self.ges_events = {
         BlockNavbarTap = {
@@ -404,15 +403,35 @@ function HomescreenWidget:init()
     function self:onHSPinch(_args, ges)        return _fmGestureAction(ges) end
     function self:onHSRotate(_args, ges)       return _fmGestureAction(ges) end
 
-    -- Tap forwarding: only fires for taps that land in a corner zone AND were
-    -- NOT consumed by onBlockNavbarTap (which returns true for navbar taps).
-    -- Since onBlockNavbarTap runs first (it is defined first in ges_events) and
-    -- returns nil for non-navbar taps, InputContainer will continue dispatching
-    -- and reach this handler.  We therefore forward corner taps here; taps that
-    -- fall outside all corner zones produce no ges_name and are silently ignored.
+    -- Tap forwarding: gesture actions take priority over the navbar guard.
+    -- _fmGestureAction is tried first; it only returns true when the tap lands
+    -- on a configured corner zone (tap_top_left_corner, tap_left_bottom_corner,
+    -- etc.) and the action is executed.  Only if no corner zone matched do we
+    -- fall through to the navbar guard.  This ensures that corner gestures
+    -- configured in the library (e.g. toggle frontlight on bottom-left corner)
+    -- work even when the corner zone overlaps with the bottom navigation bar.
     function self:onBlockNavbarTap(_args, ges)
-        if _in_bar(ges) then return true end  -- consume navbar taps
-        return _fmGestureAction(ges)          -- forward corner taps to FM gestures
+        if _fmGestureAction(ges) then return true end  -- corner gesture takes priority
+        -- Do not block taps that land in a bottom corner zone even when no FM
+        -- action is bound to that corner — the gesture plugin zones overlap with
+        -- the bottombar area, so without this guard a tap on an unconfigured
+        -- bottom corner would be silently swallowed by _in_bar instead of
+        -- reaching the bottombar tabs or underlying content.
+        if ges and ges.pos then
+            local sw = Screen:getWidth()
+            local sh = Screen:getHeight()
+            local x, y = ges.pos.x, ges.pos.y
+            local function _inZoneRaw(key)
+                local d = G_defaults:readSetting(key)
+                if not d then return false end
+                return x >= d.x * sw and x < (d.x + d.w) * sw
+                   and y >= d.y * sh and y < (d.y + d.h) * sh
+            end
+            if _inZoneRaw("DTAP_ZONE_BOTTOM_LEFT") or _inZoneRaw("DTAP_ZONE_BOTTOM_RIGHT") then
+                return  -- let it through
+            end
+        end
+        if _in_bar(ges) then return true end           -- then block bare navbar taps
     end
     function self:onBlockNavbarHold(_args, ges)
         if _in_bar(ges) then return true end  -- consume navbar holds
@@ -432,9 +451,15 @@ function HomescreenWidget:init()
 
     -- Per-instance caches — freed in onCloseWidget.
     self._vspan_pool         = {}
-    self._cached_books_state = nil
+    self._cached_books_state = self._cached_books_state  -- preserve value passed via new{} if any
     self._clock_timer        = nil
     self._cover_poll_timer   = nil
+    -- Clock module swap state — set during _buildContent, freed in onCloseWidget.
+    self._clock_body_ref   = nil
+    self._clock_body_idx   = nil
+    self._clock_is_wrapped = nil
+    self._clock_pfx        = nil
+    self._clock_inner_w    = nil
 
     -- Build a minimal placeholder. The real content is built in onShow() once
     -- patches.lua has injected the navbar and set _navbar_content_h correctly.
@@ -534,6 +559,7 @@ function HomescreenWidget:_buildContent()
         current_fp   = bs.current_fp,
         recent_fps   = bs.recent_fps,
         sectionLabel = sectionLabel,
+        _hs_widget   = self,   -- used by module_clock to record swap coordinates
     }
 
     -- ── Module loop ──────────────────────────────────────────────────────────
@@ -630,6 +656,11 @@ function HomescreenWidget:_buildContent()
                 self._header_body_idx  = #body + 1
                 self._header_is_wrapped = has_menu
             end
+            if mod.id == "clock" then
+                self._clock_body_idx   = #body + 1
+                self._clock_body_ref   = body
+                self._clock_is_wrapped = has_menu
+            end
             if has_menu then
                 -- Capture mod in a local so the closure in onHoldModRelease
                 -- always refers to this iteration's module, not the loop var.
@@ -667,7 +698,7 @@ function HomescreenWidget:_buildContent()
                             local gap_item = Config.makeGapItem({
                                 text_func = function()
                                     local pct = Config.getModuleGapPct(_mod.id, PFX)
-                                    return string.format(_tr("Gap  (%d%%)"), pct)
+                                    return string.format(_tr("Top Margin  (%d%%)"), pct)
                                 end,
                                 title   = _mod.name or _mod.id,
                                 info    = _tr("Vertical space above this module.\n100% is the default spacing."),
@@ -760,49 +791,50 @@ function HomescreenWidget:_refreshImmediate(keep_cache)
 end
 
 -- ---------------------------------------------------------------------------
--- Clock refresh timer — only runs when header mode is clock or clock_date.
--- Performs a surgical swap of only the header widget inside the existing body
+-- Clock refresh timer — runs when the clock module is enabled.
+-- Performs a surgical swap of only the clock widget inside the existing body
 -- VerticalGroup, avoiding a full _buildContent() rebuild (no DB queries, no
 -- cover loads, no module allocations) just to update two TextWidgets.
--- _header_body_idx and _header_body_ref are set during _buildContent().
--- Falls back to a full rebuild if the index was not recorded (e.g. header
+-- _clock_body_idx and _clock_body_ref are set during _buildContent().
+-- Falls back to a full rebuild if the index was not recorded (e.g. clock
 -- disabled, or first tick before any build has run).
 -- ---------------------------------------------------------------------------
 function HomescreenWidget:_clockTick()
     if not self._navbar_container then return end
-    local hdr_mod = Registry.get("header")
-    if not hdr_mod or not Registry.isEnabled(hdr_mod, PFX) then return end
+    local clk_mod = Registry.get("clock")
+    if not clk_mod or not Registry.isEnabled(clk_mod, PFX) then return end
 
-    local body = self._header_body_ref
-    local idx  = self._header_body_idx
+    local body = self._clock_body_ref
+    local idx  = self._clock_body_idx
 
     if body and idx and body[idx] then
-        -- Fast path: replace only the header widget in the body VerticalGroup.
+        -- Fast path: replace only the clock widget in the body VerticalGroup.
         local sw      = Screen:getWidth()
-        local inner_w = self._header_inner_w or (sw - SIDE_PAD * 2)
-        local ctx_hdr = {
+        local inner_w = self._clock_inner_w or (sw - SIDE_PAD * 2)
+        local ctx_clk = {
             pfx        = PFX,
             vspan_pool = self._vspan_pool,
+            _hs_widget = self,
         }
-        local ok_w, new_hdr = pcall(hdr_mod.build, inner_w, ctx_hdr)
-        if ok_w and new_hdr then
-            -- When the header was wrapped in a hold-settings InputContainer,
+        local ok_w, new_clk = pcall(clk_mod.build, inner_w, ctx_clk)
+        if ok_w and new_clk then
+            -- When the clock was wrapped in a hold-settings InputContainer,
             -- replace the inner slot [1] rather than the wrapper itself, so
             -- the gesture handler stays alive across clock ticks.
-            if self._header_is_wrapped then
-                body[idx][1] = new_hdr
+            if self._clock_is_wrapped then
+                body[idx][1] = new_clk
             else
-                body[idx] = new_hdr
+                body[idx] = new_clk
             end
             UIManager:setDirty(self._navbar_container, "ui")
             return
         end
         -- If build failed fall through to full rebuild below.
-        logger.warn("simpleui: _clockTick: header build failed, falling back to full rebuild")
+        logger.warn("simpleui: _clockTick: clock build failed, falling back to full rebuild")
     end
 
-    -- Slow path fallback: full content rebuild (used on first tick or if header
-    -- index was not captured, e.g. header widget returned nil from build()).
+    -- Slow path fallback: full content rebuild (used on first tick or if clock
+    -- index was not captured, e.g. clock widget returned nil from build()).
     local content    = self._navbar_container[1]
     local old_offset = content and content.overlap_offset
     local new_content = self:_buildContent()
@@ -816,16 +848,17 @@ function HomescreenWidget:_scheduleClockRefresh()
         UIManager:unschedule(self._clock_timer)
         self._clock_timer = nil
     end
-    local hdr  = Registry.get("header")
-    local mode = hdr and G_reader_settings:readSetting(PFX .. "header") or "nothing"
-    if mode == nil then mode = "clock_date" end
-    -- Only schedule the timer for modes that actually show the time.
-    if mode ~= "clock" and mode ~= "clock_date" then return end
+    -- Schedule the homescreen-level timer only when the clock module is active.
+    local clk_mod = Registry.get("clock")
+    if not clk_mod or not Registry.isEnabled(clk_mod, PFX) then return end
     local secs = 60 - (os.time() % 60) + 1
     self._clock_timer = function()
         self._clock_timer = nil
         -- If this widget is no longer the live instance, stop the chain.
         if Homescreen._instance ~= self then return end
+        -- Do not update the clock while suspended — the device may fire
+        -- a pending timer during the suspend transition on some platforms.
+        if self._suspended then return end
         -- Skip if a book is open — no need to update a hidden homescreen.
         local RUI = package.loaded["apps/reader/readerui"]
         if RUI and RUI.instance then self:_scheduleClockRefresh(); return end
@@ -873,13 +906,19 @@ function HomescreenWidget:onShow()
     --   self._navbar_container[1] = inner_widget (our placeholder, the _navbar_inner)
     --
     -- We replace the inner slot directly so the navbar (bar, topbar) is untouched.
-    
-    -- Invalidate reading stat caches so the build always shows fresh data,
-    -- e.g. after returning from the reader without a suspend/resume cycle.
-    local ok_rs, RS = pcall(require, "desktop_modules/module_reading_stats")
-    if ok_rs and RS and RS.invalidateCache then RS.invalidateCache() end
-    local ok_rg, RG = pcall(require, "desktop_modules/module_reading_goals")
-    if ok_rg and RG and RG.invalidateCache then RG.invalidateCache() end
+    -- Only invalidate reading stat caches when flagged as needed (e.g. after
+    -- returning from the reader). On plain tab-switches the stats have not changed
+    -- and re-fetching them from the DB on every open is unnecessary work.
+    -- The flag may be set on the instance (by onResume) or on the module table
+    -- (by main.lua's onCloseDocument when the HS was not visible at close time).
+    if self._stats_need_refresh or Homescreen._stats_need_refresh then
+        self._stats_need_refresh       = nil
+        Homescreen._stats_need_refresh = nil
+        local ok_rs, RS = pcall(require, "desktop_modules/module_reading_stats")
+        if ok_rs and RS and RS.invalidateCache then RS.invalidateCache() end
+        local ok_rg, RG = pcall(require, "desktop_modules/module_reading_goals")
+        if ok_rg and RG and RG.invalidateCache then RG.invalidateCache() end
+    end
     if self._navbar_container then
         local old = self._navbar_container[1]
         local new = self:_buildContent()
@@ -892,6 +931,11 @@ function HomescreenWidget:onShow()
     end
     UIManager:setDirty(self, "ui")
     self:_scheduleClockRefresh()
+    -- Start the module_clock timer if the clock module is active.
+    local ClockMod = Registry.get("clock")
+    if ClockMod and Registry.isEnabled(ClockMod, PFX) and ClockMod.scheduleRefresh then
+        ClockMod.scheduleRefresh(self)
+    end
 end
 
 function HomescreenWidget:onClose()
@@ -900,6 +944,7 @@ function HomescreenWidget:onClose()
 end
 
 function HomescreenWidget:onSuspend()
+    self._suspended = true
     -- Cancel the clock timer so it doesn't fire unnecessarily during suspend.
     -- _scheduleClockRefresh already deduplicates, so onResume can safely
     -- restart it without checking whether it was running before.
@@ -907,13 +952,33 @@ function HomescreenWidget:onSuspend()
         UIManager:unschedule(self._clock_timer)
         self._clock_timer = nil
     end
+    -- Also cancel the module_clock timer.
+    local ClockMod = Registry.get("clock")
+    if ClockMod and ClockMod.cancelRefresh then ClockMod.cancelRefresh() end
 end
 
 function HomescreenWidget:onResume()
+    self._suspended = false
+    -- Invalidate reading stat caches — the device may have been suspended
+    -- during or after a reading session, so stats need refreshing.
+    -- Book metadata (covers, titles) has not changed during suspend, so we
+    -- preserve _cached_books_state by passing keep_cache=true to _refresh,
+    -- avoiding the expensive prefetchBooks() IO (5-6 DocSettings.open calls).
+    local ok_rs, RS = pcall(require, "desktop_modules/module_reading_stats")
+    if ok_rs and RS and RS.invalidateCache then RS.invalidateCache() end
+    local ok_rg, RG = pcall(require, "desktop_modules/module_reading_goals")
+    if ok_rg and RG and RG.invalidateCache then RG.invalidateCache() end
+    -- Rebuild with fresh stats but preserved book cache.
+    self:_refresh(true)
     -- Restart the clock timer. _scheduleClockRefresh recalculates the phase
     -- from os.time(), so the clock is always correct after wakeup regardless
     -- of how long the device was suspended.
     self:_scheduleClockRefresh()
+    -- Also restart the module_clock timer.
+    local ClockMod = Registry.get("clock")
+    if ClockMod and Registry.isEnabled(ClockMod, PFX) and ClockMod.scheduleRefresh then
+        ClockMod.scheduleRefresh(self)
+    end
 end
 
 function HomescreenWidget:onCloseWidget()
@@ -934,16 +999,50 @@ function HomescreenWidget:onCloseWidget()
     self._pending_refresh_token = {}   -- new object → old token never matches
     self._refresh_scheduled     = false
     self._pending_cover_clear   = nil
-    -- Free per-instance caches.
+
+    -- Promote the cached book state to the Homescreen module table before
+    -- freeing per-instance state. This lets the next Homescreen.show() pass
+    -- it straight into the new widget, skipping the expensive prefetchBooks()
+    -- IO (5-6 DocSettings.open calls) on every tab-switch.
+    -- On a real close (FM exit, quit) we clear it so stale data is never used
+    -- after a session boundary.
+    if self._navbar_closing_intentionally then
+        -- Tab-switch: preserve book data for the next open.
+        Homescreen._cached_books_state = self._cached_books_state
+    else
+        -- Real close: discard stale data.
+        Homescreen._cached_books_state = nil
+    end
+
+    -- Always free per-instance widget state — the widget is always destroyed,
+    -- never reused, so keeping these references alive would be a memory leak.
     self._vspan_pool         = nil
     self._cached_books_state = nil
-    -- Release header swap state so stale body references don't keep the
-    -- widget tree alive after close.
-    self._header_body_ref  = nil
-    self._header_body_idx  = nil
-    self._header_inner_w   = nil
-    self._header_is_wrapped = nil
-    self._hs_ctx_menu       = nil
+    self._header_body_ref    = nil
+    self._header_body_idx    = nil
+    self._header_inner_w     = nil
+    self._header_is_wrapped  = nil
+    self._hs_ctx_menu        = nil
+    self._shown_once         = nil
+    self._stats_need_refresh = nil
+
+    -- Cancel the module_clock timer and release clock swap state.
+    local ClockMod = Registry.get("clock")
+    if ClockMod and ClockMod.cancelRefresh then ClockMod.cancelRefresh() end
+    self._clock_body_ref   = nil
+    self._clock_body_idx   = nil
+    self._clock_is_wrapped = nil
+    self._clock_pfx        = nil
+    self._clock_inner_w    = nil
+
+    -- Free cached cover bitmaps only when the library was visited since the
+    -- last homescreen open. When the CoverBrowser plugin renders the library
+    -- mosaic it replaces the BookInfoManager's cover_bb references with
+    -- scaled-down copies, making them unsafe for the homescreen to reuse.
+    -- When returning directly from a book (no library visit), the BIM bitmaps
+    -- are still native-size and the cache is valid — keeping it avoids the
+    -- 4-5 s re-scale on every book→homescreen transition.
+    -- The flag is set in sui_patches.lua's onPathChanged hook and cleared here.
     -- Free all cached cover bitmaps. We own these scaled copies (not the BIM),
     -- and it is safe to free them here because the widget tree has been torn
     -- down before onCloseWidget fires. On the next open, getCoverBB will
@@ -956,7 +1055,10 @@ function HomescreenWidget:onCloseWidget()
             MH.freeQuotesIfUnused()
         end
     end)
-    -- Clear singleton reference.
+
+    -- Always clear the singleton — the widget is always destroyed on close.
+    -- Homescreen.show() creates a fresh widget each time, passing in the
+    -- promoted _cached_books_state from the Homescreen table.
     if Homescreen._instance == self then
         Homescreen._instance = nil
     end
@@ -968,14 +1070,22 @@ end
 -- (Homescreen table was forward-declared at the top of this file)
 
 function Homescreen.show(on_qa_tap, on_goal_tap)
-    -- Close any existing instance first to avoid stacking.
+    -- Close any existing widget instance first to avoid stacking.
+    -- We do NOT keep the widget alive between opens because KOReader frees
+    -- native bitmap resources (_bb) on TextBoxWidgets during close, leaving
+    -- the Lua widget table alive but its paintTo broken (nil _bb crash).
     if Homescreen._instance then
         UIManager:close(Homescreen._instance)
         Homescreen._instance = nil
     end
     local w = HomescreenWidget:new{
-        _on_qa_tap   = on_qa_tap,
-        _on_goal_tap = on_goal_tap,
+        _on_qa_tap         = on_qa_tap,
+        _on_goal_tap       = on_goal_tap,
+        -- Transfer the cached book state from the previous instance so
+        -- prefetchBooks() (the expensive part: 5-6 DocSettings.open calls)
+        -- is skipped. The widget tree is always rebuilt fresh, but from
+        -- in-memory data rather than from disk IO.
+        _cached_books_state = Homescreen._cached_books_state,
     }
     Homescreen._instance = w
     UIManager:show(w)
@@ -1000,6 +1110,8 @@ function Homescreen.close()
         UIManager:close(Homescreen._instance)
         Homescreen._instance = nil
     end
+    -- Discard the promoted book cache on an explicit close (e.g. FM exit).
+    Homescreen._cached_books_state = nil
 end
 
 -- Clears the section-label widget cache.

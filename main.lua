@@ -17,6 +17,7 @@ local UI        = require("sui_core")
 local Bottombar = require("sui_bottombar")
 local Topbar    = require("sui_topbar")
 local Patches   = require("sui_patches")
+local _ = require("gettext")
 
 local SimpleUIPlugin = WidgetContainer:new{
     name = "simpleui",
@@ -61,9 +62,10 @@ function SimpleUIPlugin:init()
                     "— restart recommended")
                 UIManager:scheduleIn(1, function()
                     local InfoMessage = require("ui/widget/infomessage")
+                    local _t = require("gettext")
                     UIManager:show(InfoMessage:new{
                         text = string.format(
-                            _("Simple UI was updated (%s → %s).\n\nA restart is recommended to apply all changes cleanly."),
+                            _t("Simple UI was updated (%s → %s).\n\nA restart is recommended to apply all changes cleanly."),
                             prev_version, current_version
                         ),
                         timeout = 6,
@@ -153,22 +155,45 @@ end
 -- ---------------------------------------------------------------------------
 
 function SimpleUIPlugin:onScreenResize()
+    if self._simpleui_suspended then return end
     UI.invalidateDimCache()
     UIManager:scheduleIn(0.2, function()
+        if self._simpleui_suspended then return end
         self:_rewrapAllWidgets()
         self:_refreshCurrentView()
     end)
 end
 
 function SimpleUIPlugin:onNetworkConnected()
-    Bottombar.refreshWifiIcon(self)
+    if self._simpleui_suspended then return end
+    local RUI = package.loaded["apps/reader/readerui"]
+    if RUI and RUI.instance then
+        Config.wifi_optimistic = nil
+        self:_rebuildAllNavbars()
+    else
+        Bottombar.refreshWifiIcon(self)
+    end
 end
 
 function SimpleUIPlugin:onNetworkDisconnected()
-    Bottombar.refreshWifiIcon(self)
+    if self._simpleui_suspended then return end
+    local RUI = package.loaded["apps/reader/readerui"]
+    if RUI and RUI.instance then
+        Config.wifi_optimistic = nil
+        self:_rebuildAllNavbars()
+    else
+        Bottombar.refreshWifiIcon(self)
+    end
 end
 
 function SimpleUIPlugin:onSuspend()
+    self._simpleui_suspended = true
+    -- Snapshot whether the reader was open at the moment of suspend.
+    -- We cannot rely on RUI.instance being intact by the time onResume fires
+    -- (e.g. autosuspend can race with a reader teardown on some Kobo builds),
+    -- so we capture the truth here, while the world is still settled.
+    local RUI = package.loaded["apps/reader/readerui"]
+    self._simpleui_reader_was_active = (RUI and RUI.instance) and true or false
     if self._topbar_timer then
         UIManager:unschedule(self._topbar_timer)
         self._topbar_timer = nil
@@ -176,28 +201,36 @@ function SimpleUIPlugin:onSuspend()
 end
 
 function SimpleUIPlugin:onResume()
+    self._simpleui_suspended = false
     if G_reader_settings:nilOrTrue("navbar_topbar_enabled") then
-        Topbar.scheduleRefresh(self, 0)
+        -- Small delay to let the wakeup transition finish before refreshing
+        -- the topbar. Avoids a race with HomescreenWidget:onResume() and
+        -- prevents the timer firing while the device is still mid-wakeup.
+        Topbar.scheduleRefresh(self, 0.5)
     end
-    local RUI = package.loaded["apps/reader/readerui"]
-    local reader_active = RUI and RUI.instance
+    -- Use the snapshot captured in onSuspend rather than checking RUI.instance
+    -- live. On some Kobo builds the autosuspend timer fires close to a reader
+    -- teardown, leaving RUI.instance nil even though the user was reading —
+    -- causing the homescreen to open on wakeup instead of returning to the reader.
+    local reader_active = self._simpleui_reader_was_active
+    self._simpleui_reader_was_active = nil  -- consume; next suspend will repopulate
     -- Outside the reader: invalidate stat caches and restore the Homescreen.
     if not reader_active then
         local ok_rg, RG = pcall(require, "desktop_modules/module_reading_goals")
         if ok_rg and RG and RG.invalidateCache then RG.invalidateCache() end
         local ok_rs, RS = pcall(require, "desktop_modules/module_reading_stats")
         if ok_rs and RS and RS.invalidateCache then RS.invalidateCache() end
-        -- Note: module_quote highlight pool is NOT invalidated on resume.
-        -- Highlights only change when the user reads a book; invalidating here
-        -- would cause the displayed quote to change on every wakeup/focus change.
         -- If the Homescreen is already visible, force a rebuild so the freshly
         -- invalidated stats are reflected immediately (e.g. after marking a book
         -- as read inside the reader and returning here).
+        -- Use keep_cache=true: book metadata has not changed during suspend, so
+        -- we preserve _cached_books_state and skip the expensive prefetchBooks()
+        -- IO (5-6 DocSettings.open calls).
         -- If it's not visible, showHSAfterResume will open it and onShow will
         -- run _buildContent from scratch anyway.
         local HS = package.loaded["sui_homescreen"]
         if HS and HS._instance then
-            HS.refresh(false)
+            HS.refresh(true)
         end
         -- Re-open the Homescreen on wakeup when "Start with Homescreen" is set.
         if G_reader_settings:nilOrTrue("simpleui_enabled") then
@@ -206,7 +239,63 @@ function SimpleUIPlugin:onResume()
     end
 end
 
+function SimpleUIPlugin:onCloseDocument()
+    if self._simpleui_suspended then return end
+    local HS = package.loaded["sui_homescreen"]
+    if not HS then return end
+    -- Only invalidate caches for modules that are actually enabled and visible.
+    local ok_reg, Registry = pcall(require, "desktop_modules/moduleregistry")
+    if not ok_reg then return end
+    local PFX = "navbar_homescreen_"
+    local needs_refresh = false
+    local mod_rg = Registry.get("reading_goals")
+    if mod_rg and Registry.isEnabled(mod_rg, PFX) then
+        local ok, RG = pcall(require, "desktop_modules/module_reading_goals")
+        if ok and RG and RG.invalidateCache then RG.invalidateCache(); needs_refresh = true end
+    end
+    local mod_rs = Registry.get("reading_stats")
+    if mod_rs and Registry.isEnabled(mod_rs, PFX) then
+        local ok, RS = pcall(require, "desktop_modules/module_reading_stats")
+        if ok and RS and RS.invalidateCache then RS.invalidateCache(); needs_refresh = true end
+    end
+    -- Currently Reading shows the current book's cover, title, author and
+    -- progress (percent_finished). All of these come from _cached_books_state,
+    -- which keep_cache=true preserves. When the reader closes, percent_finished
+    -- has changed — clear _cached_books_state so the next prefetchBooks() re-reads
+    -- the updated sidecar data.
+    local mod_cr = Registry.get("currently")
+    local currently_active = mod_cr and Registry.isEnabled(mod_cr, PFX)
+    if currently_active then
+        if HS._instance then HS._instance._cached_books_state = nil end
+        HS._cached_books_state = nil
+        needs_refresh = true
+    end
+    if not needs_refresh then return end
+    if HS._instance then
+        -- If Currently Reading is active we must do a full refresh so
+        -- prefetchBooks() re-reads the updated progress from the sidecar.
+        -- Otherwise keep_cache=true is enough (stats-only update).
+        HS.refresh(not currently_active)
+    else
+        -- Homescreen not visible yet — flag it for rebuild on next open.
+        HS._stats_need_refresh = true
+    end
+end
+
 function SimpleUIPlugin:onFrontlightStateChanged()
+    if self._simpleui_suspended then return end
+    if not G_reader_settings:nilOrTrue("navbar_topbar_enabled") then return end
+    Topbar.scheduleRefresh(self, 0)
+end
+
+function SimpleUIPlugin:onCharging()
+    if self._simpleui_suspended then return end
+    if not G_reader_settings:nilOrTrue("navbar_topbar_enabled") then return end
+    Topbar.scheduleRefresh(self, 0)
+end
+
+function SimpleUIPlugin:onNotCharging()
+    if self._simpleui_suspended then return end
     if not G_reader_settings:nilOrTrue("navbar_topbar_enabled") then return end
     Topbar.scheduleRefresh(self, 0)
 end
@@ -296,6 +385,7 @@ function SimpleUIPlugin:_updateFMHomeIcon() end
 local _menu_installer = nil
 
 function SimpleUIPlugin:addToMainMenu(menu_items)
+    local _ = require("gettext")
     if not _menu_installer then
         local ok, result = pcall(require, "sui_menu")
         if not ok then

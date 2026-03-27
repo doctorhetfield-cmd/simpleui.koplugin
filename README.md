@@ -23,6 +23,7 @@ The centrepiece of SimpleUI. A home screen that gives you everything at a glance
 - **Reading Goals** — visual progress tracker for your annual and daily reading goals, including physical books read
 - **Reading Stats** — compact stat cards showing today's reading time, pages, streaks, and all-time totals
 - **Quick Actions** — up to 3 customisable rows of shortcut buttons (Library, History, Wi-Fi toggle, Brightness, Stats, and more)
+- **New Books** — a row of up to 5 recently added books sorted by file date; unread books are labelled "New" and started books show their read percentage; opt-in via Arrange Modules
 - **Quote of the Day** — optional literary header, randomly picked from a curated list of 100+ quotes; can also show your own highlights
 - **Module ordering** — rearrange Home Screen modules in any order to match your workflow
 - **Per-module scaling** — resize each module independently, or lock all scales together for uniform adjustments
@@ -104,15 +105,20 @@ SimpleUI has full translation support. The UI language is detected automatically
 | Language | File | Status |
 |---|---|---|
 | English | *(built-in)* | Complete |
-| Português (Portugal) | `locale/pt_PT.po` | Complete |
-| Português (Brasil) | `locale/pt_BR.po` | Complete |
-| Español | `locale/es.po` | Complete |
-| 简体中文 (Chinese Simplified) | `locale/zh_CN.po` | Complete |
-| Русский (Russian) | `locale/ru.po` | Complete |
+| Português (Portugal) | `locale/pt_PT.po` | Complete (100%) |
+| Português (Brasil) | `locale/pt_BR.po` | Complete (100%) |
+| Français (French) | `locale/fr.po` | Partial (93.5% — 22 missing) |
+| Español | `locale/es.po` | Partial (84.4% — 53 missing) |
+| Русский (Russian) | `locale/ru.po` | Partial (84.4% — 53 missing) |
+| 简体中文 (Chinese Simplified) | `locale/zh_CN.po` | Partial (84.4% — 53 missing) |
+| Türkçe (Turkish) | `locale/tr.po` | Partial (81.7% — 62 missing) |
+| 繁體中文 (Chinese Traditional) | `locale/zh_TW.po` | Partial (81.7% — 62 missing) |
+| Română (Romanian) | `locale/ro.po` | Partial (81.7% — 62 missing) |
+| Deutsch (German) | `locale/de.po` | Partial (58.4% — 141 missing) |
 
 ### Adding a new language
 
-All 297 visible strings in the plugin are translatable. To add a new language:
+All 339 strings in the plugin are translatable. To add a new language:
 
 1. Copy `locale/simpleui.pot` to `locale/<lang>.po`, using the standard locale code for your language (examples: `de`, `fr`, `it`, `ja`)
 2. Open the file in any text editor or a dedicated PO editor such as [Poedit](https://poedit.net/)
