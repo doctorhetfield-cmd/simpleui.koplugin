@@ -1132,6 +1132,9 @@ local function _executeInPlace(action_id, plugin, fm)
 
 	if action_id == "wifi_toggle" then
 		M.doWifiToggle(plugin)
+		-- Rebuild homescreen content so the Quick Actions wifi icon updates
+		-- immediately (doWifiToggle only rebuilds the navbar bars).
+		if HS and HS.refreshImmediate then HS.refreshImmediate(true) end
 	elseif action_id == "frontlight" then
 		M.showFrontlightDialog()
 	elseif action_id == "power" then
