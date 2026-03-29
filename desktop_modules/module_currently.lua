@@ -190,7 +190,10 @@ local function fetchBookStats(md5, shared_conn, ctx)
     local ok, err = pcall(function()
         -- ps_agg accumulates per-page totals; the outer SELECT aggregates them.
         -- sum(page_dur) replaces a correlated subquery that caused a second
-        -- full scan of page_stat on every call.
+        -- full scan of page_stat_data on every call.
+        -- Uses page_stat_data directly instead of the page_stat VIEW, which
+        -- cross-joins with a numbers table for page rescaling and is
+        -- catastrophically slow (10s+ for books with a few hundred rows).
         -- Relies on idx_simpleui_book_md5 / idx_simpleui_pagestat_book indexes
         -- created by openStatsDB() for O(log n) lookup instead of full-table scan.
         local row = conn:exec(string.format([[
@@ -201,7 +204,7 @@ local function fetchBookStats(md5, shared_conn, ctx)
                 SELECT ps.page,
                        sum(ps.duration)   AS page_dur,
                        min(ps.start_time) AS first_start
-                FROM page_stat ps
+                FROM page_stat_data ps
                 WHERE ps.id_book = (SELECT id FROM b)
                 GROUP BY ps.page
             )
