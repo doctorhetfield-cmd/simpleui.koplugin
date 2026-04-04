@@ -752,6 +752,13 @@ function M.patchUIManagerShow(plugin)
 
     local INJECT_NAMES = { collections = true, history = true, coll_list = true, homescreen = true }
 
+    local Config = require("sui_config")
+    for _, act in ipairs(Config.ALL_ACTIONS) do
+        if act.is_fullscreen_view then
+            INJECT_NAMES[act.id] = true
+        end
+    end
+
     -- Resolves the live FileManager menu at call time, never capturing a stale
     -- reference. The FM is destroyed and recreated each time the reader closes,
     -- so a closure over the old FM's .menu would point at ReaderMenu and crash.
@@ -847,7 +854,7 @@ function M.patchUIManagerShow(plugin)
             and not widget._navbar_skip_inject
             and widget ~= plugin.ui
             and widget.covers_fullscreen
-            and widget.title_bar      -- truthiness check, not ~= nil
+            and (widget.title_bar or (widget.name and INJECT_NAMES[widget.name]))
             and (widget._navbar_height_reduced or (widget.name and INJECT_NAMES[widget.name]))
 
         if not should_inject then
