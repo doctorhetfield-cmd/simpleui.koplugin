@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"PO-Revision-Date: 2026-04-05 12:00+0000\n"
+"PO-Revision-Date: 2026-04-07 12:00+0000\n"
 "Language-Team: Chinese (Simplified)\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -1240,6 +1240,10 @@ msgstr "设置"
 msgid "Show Battery"
 msgstr "显示电池"
 
+#: desktop_modules/module_clock.lua:454
+msgid "Show Clock"
+msgstr "显示时钟"
+
 #: desktop_modules/module_clock.lua:378
 msgid "Show Date"
 msgstr "显示日期"
@@ -1741,3 +1745,79 @@ msgstr "Simple UI %s 有新版本！\n当前版本：%s\n\n是否立即下载并
 #: sui_updater.lua:257
 msgid "Download and install"
 msgstr "下载并安装"
+
+#: sui_menu.lua
+msgid "Return to Book Folder"
+msgstr "返回书籍所在文件夹"
+
+#: sui_menu.lua
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root."
+msgstr "启用后，完成或关闭一本书时，打开文件浏览器将自动定位到该书所在的文件夹，与 KOReader 原生行为一致。\n禁用（默认）时，SimpleUI 始终返回书库根目录。"
+
+#: sui_menu.lua
+msgid "Settings on Long Tap"
+msgstr "长按打开设置"
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "启用后，长按某个区域可打开其设置菜单。\n禁用此选项可阻止长按时弹出设置菜单。"
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the top bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "启用后，长按顶部栏可打开其设置菜单。\n禁用此选项可阻止长按时弹出设置菜单。"
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the bottom bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "启用后，长按底部栏可打开其设置菜单。\n禁用此选项可阻止长按时弹出设置菜单。"
+
+#: desktop_modules/module_tbr.lua
+msgid "Arrange To Be Read list"
+msgstr "整理待读列表"
+
+#: desktop_modules/module_tbr.lua
+msgid "Add at least 2 books to arrange."
+msgstr "请至少添加 2 本书以便排序。"
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read books"
+msgstr "待读书籍"
+
+#: desktop_modules/module_tbr.lua
+msgid "No books in To Be Read list."
+msgstr "待读列表中暂无书籍。"
+
+#: desktop_modules/module_tbr.lua
+msgid "Add to To Be Read"
+msgstr "添加到待读"
+
+#: desktop_modules/module_tbr.lua
+msgid "Remove from To Be Read"
+msgstr "从待读中移除"
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read"
+msgstr "待读"
+
+#: sui_foldercovers.lua sui_menu.lua
+msgid "Group Books by Series"
+msgstr "按系列分组书籍"
+
+#: sui_menu.lua
+msgid "Series Index"
+msgstr "系列序号"
+
+#: sui_foldercovers.lua
+msgid "Series cover"
+msgstr "系列封面"
+
+#: sui_foldercovers.lua
+msgid "Set series cover…"
+msgstr "设置系列封面…"
+
+#: sui_foldercovers.lua
+msgid "No books found in this series."
+msgstr "未在此系列中找到书籍。"
+
+#: sui_foldercovers.lua
+msgid "Scan subfolders for cover"
+msgstr "扫描子文件夹以查找封面"
