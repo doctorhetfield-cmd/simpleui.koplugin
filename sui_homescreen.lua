@@ -780,14 +780,16 @@ function HomescreenWidget:init()
         self.key_events.HSKbPress    = { { "Press" } }
     end
     if Device:hasKeys() then
-        self.key_events.HSOpenMenu   = { { "Menu"  } }
+        self.key_events.HSOpenMenu = { { "Menu"  } }
+        self.key_events.PrevPage   = { { Device.input.group.PgBack } }
+        self.key_events.NextPage   = { { Device.input.group.PgFwd } }
     end
 
     -- Menu key → open the KOReader top settings menu (same as swipe-from-top).
     function self:onHSOpenMenu()
         local FileManager = require("apps/filemanager/filemanager")
         local fm = FileManager.instance
-        if fm and fm.showFileManagerMenu then fm:showFileManagerMenu() end
+        if fm and fm.menu then fm.menu:onTapShowMenu() end
         return true
     end
 

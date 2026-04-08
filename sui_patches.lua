@@ -429,7 +429,10 @@ function M.patchFileManagerClass(plugin)
                 if action then
                     local FM2 = package.loaded["apps/filemanager/filemanager"]
                     local fm2 = FM2 and FM2.instance
-                    if fm2 then plugin:_navigate(action, fm2, t2, false) end
+                    if fm2 then
+                        local target = M._getNavbarTarget and M._getNavbarTarget(fm2) or fm2
+                        plugin:_navigate(action, target, t2, false)
+                    end
                 end
                 return true
             end
@@ -445,13 +448,13 @@ function M.patchFileManagerClass(plugin)
         -- Down at the last item enters navbar keyboard focus instead of wrapping.
         if _Device2:hasDPad() and fm_self.file_chooser then
             local fc = fm_self.file_chooser
-            if fc._wrapAroundY == nil then  -- only patch once
-                local _origWrapY = _FocusManager._wrapAroundY
+            if rawget(fc, "_wrapAroundY") == nil then  -- only patch once
+                local _origWrapY = fc._wrapAroundY
                 fc._wrapAroundY = function(self_fc, dy)
-                    if dy > 0 then
+                    if dy > 0 and self_fc.page == (self_fc.total_pages or 1) then
                         _enterNavbarKbFocus()
                     else
-                        _origWrapY(self_fc, dy)
+                        return _origWrapY(self_fc, dy)
                     end
                 end
             end
@@ -1010,6 +1013,26 @@ function M.patchUIManagerShow(plugin)
         -- Resize the return button width to match the side margin.
         local rb = widget.return_button
         if rb and rb[1] then rb[1].width = UI.SIDE_M() end
+
+        -- Override _wrapAroundY so pressing Down at the last item enters navbar keyboard focus.
+        if require("device"):hasDPad() then
+            if rawget(widget, "_wrapAroundY") == nil and type(widget._wrapAroundY) == "function" then
+                local _origWrapY = widget._wrapAroundY
+                widget._wrapAroundY = function(self_w, dy)
+                    if dy > 0 and self_w.page == (self_w.total_pages or 1) then
+                        M.enterNavbarKbFocus(function()
+                            if self_w.layout and self_w.moveFocusTo then
+                                local FocusM = require("ui/widget/focusmanager")
+                                self_w:moveFocusTo(1, #self_w.layout, FocusM.FORCED_FOCUS)
+                            end
+                        end)
+                        return true
+                    else
+                        return _origWrapY(self_w, dy)
+                    end
+                end
+            end
+        end
 
         Bottombar.resizePaginationButtons(widget, Bottombar.getPaginationIconSize())
 
