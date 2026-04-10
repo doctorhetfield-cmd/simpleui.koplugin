@@ -1895,3 +1895,168 @@ msgstr "Nie znaleziono książek w tej serii."
 #: sui_foldercovers.lua
 msgid "Scan subfolders for cover"
 msgstr "Skanuj podfoldery w poszukiwaniu okładki"
+
+#: desktop_modules/module_flow_recent.lua:55
+msgid "Flow Recent Books"
+msgstr "Ostatnie książki (Flow)"
+
+#: desktop_modules/module_recent.lua:61
+#: desktop_modules/module_recent.lua:62
+#: desktop_modules/module_flow_recent.lua:56
+#: desktop_modules/module_flow_recent.lua:93
+msgid "Cover Deck"
+msgstr "Karuzela okładek"
+
+#: desktop_modules/module_flow_recent.lua:124
+msgid "To Be Read (Deck)"
+msgstr "Do przeczytania (Deck)"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for this module."
+msgstr "Skala tego modułu."
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for the cover thumbnails only.\n"
+"100% is the default size."
+msgstr "Skala tylko dla miniatur okładek.\n"
+"100% to domyślny rozmiar."
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for title and statistics text.\n"
+"100% is the default size."
+msgstr "Skala tekstu tytułu i statystyk.\n"
+"100% to domyślny rozmiar."
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Title Position"
+msgstr "Pozycja tytułu"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Above"
+msgstr "Powyżej"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Below"
+msgstr "Poniżej"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Arrange Statistics"
+msgstr "Rozmieść statystyki"
+
+#: sui_menu.lua
+msgid "Updater module not found."
+msgstr "Nie znaleziono modułu aktualizacji."
+
+#: sui_menu.lua
+msgid "Recent"
+msgstr "Ostatnie"
+
+#: sui_menu.lua
+msgid "KOReader"
+msgstr "KOReader"
+
+#: sui_config.lua:165 sui_menu.lua:553
+msgid "Custom Text"
+msgstr "Niestandardowy tekst"
+
+#: sui_menu.lua:545 sui_menu.lua:547
+msgid "Edit Custom Text"
+msgstr "Edytuj niestandardowy tekst"
+
+#: sui_menu.lua:1953
+msgid "Folder Name Text Size"
+msgstr "Rozmiar tekstu nazwy folderu"
+
+#: sui_menu.lua:1951
+msgid "Text size"
+msgstr "Rozmiar tekstu"
+
+#: sui_menu.lua:566
+msgid "Set"
+msgstr "Ustaw"
+
+#: sui_menu.lua:556
+msgid "Text shown in the top bar.\n"
+"Maximum %d characters."
+msgstr "Tekst wyświetlany na górnym pasku.\n"
+"Maksymalnie %d znaków."
+
+#: sui_menu.lua:1954
+msgid "Scale for the folder name overlay text.\n"
+"100% is the default size."
+msgstr "Skala tekstu nakładki nazwy folderu.\n"
+"100% to domyślny rozmiar."
+
+#: sui_config.lua:1748
+msgid "Show section label"
+msgstr "Pokaż etykietę sekcji"
+
+#: sui_updater.lua:377
+msgid "Update cancelled."
+msgstr "Aktualizacja anulowana."
+
+#: sui_updater.lua:487
+msgid "Update check cancelled."
+msgstr "Sprawdzanie aktualizacji anulowane."
+
+#: sui_updater.lua:466
+msgid "Error checking for updates."
+msgstr "Błąd podczas sprawdzania aktualizacji."
+
+#: sui_updater.lua:407
+msgid "Simple UI %s is available!\n"
+"You have %s."
+msgstr "Simple UI %s jest dostępne!\n"
+"Masz wersję %s."
+
+#: sui_updater.lua:410
+msgid "\n"
+"\n"
+"Download and install now?"
+msgstr "\n"
+"\n"
+"Pobrać i zainstalować teraz?"
+
+#: sui_updater.lua:412
+msgid "What's new:"
+msgstr "Co nowego:"
+
+#: sui_updater.lua:419
+msgid "No automatic update file was found.\n"
+"\n"
+"Open the releases page on GitHub?"
+msgstr "Nie znaleziono automatycznego pliku aktualizacji.\n"
+"\n"
+"Otworzyć stronę wydań na GitHub?"
+
+#: sui_menu.lua:1772
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\n"
+"When disabled (default), SimpleUI always returns to the library root.\n"
+"This option works independently of \"Start with Home Screen\"."
+msgstr "Po włączeniu, otwieranie przeglądarki plików po zakończeniu lub zamknięciu książki powoduje przejście do folderu, w którym znajduje się książka, co odpowiada natywnemu zachowaniu KOReader.\n"
+"Po wyłączeniu (domyślnie) SimpleUI zawsze wraca do katalogu głównego biblioteki.\n"
+"Ta opcja działa niezależnie od „Zacznij od Ekranu głównego”."
+
+#: sui_updater.lua:460
+msgid "Checking for updates…"
+msgstr "Sprawdzanie aktualizacji…"
+
+#: sui_updater.lua:323
+msgid "Downloading Simple UI %s…"
+msgstr "Pobieranie Simple UI %s…"
+
+#: sui_menu.lua:1492
+msgid "Choose how many pages the homescreen has.\n"
+"Empty pages stay empty. Modules keep their position."
+msgstr "Wybierz ile stron ma ekran główny.\n"
+"Puste strony pozostają puste. Moduły zachowują swoją pozycję."
+
+#: sui_menu.lua:1549 sui_menu.lua:1569
+msgid "Page %d"
+msgstr "Strona %d"
+
+#: sui_menu.lua:1580
+msgid "Cannot place modules after Page 1 separator.\n"
+"Page 1 must always have at least 1 module."
+msgstr "Nie można umieszczać modułów po separatorze Strony 1.\n"
+"Strona 1 musi zawsze mieć co najmniej 1 moduł."
