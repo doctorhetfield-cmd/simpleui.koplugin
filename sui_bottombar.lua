@@ -868,16 +868,34 @@ end
 -- Tab tap handler
 -- ---------------------------------------------------------------------------
 
+local function _isActionOnly(action_id)
+    if _ACTION_ONLY[action_id] then return true end
+    local a = Config.ACTION_BY_ID and Config.ACTION_BY_ID[action_id]
+    if a and a.is_action_only then return true end
+    return false
+end
+
 function M.onTabTap(plugin, action_id, fm_self)
-    -- Action-only tabs: open their dialog/action without changing the active tab.
-    -- The indicator stays on whatever tab was active before the tap.
-    -- _ACTION_ONLY is the single authoritative list — same one used by
-    -- setActiveAndRefreshFM so the two sites can never drift.
-    if _ACTION_ONLY[action_id] then
+    local is_action_only = _isActionOnly(action_id)
+    local is_in_place = _ACTION_ONLY[action_id] or false
+    
+    if not is_in_place then
+        local a = Config.ACTION_BY_ID and Config.ACTION_BY_ID[action_id]
+        if a and a.is_in_place then is_in_place = true end
+    end
+
+    -- Action-only + in-place tabs: open their dialog/action without changing the active tab
+    -- and without tearing down the current view (homescreen or submenus).
+    if is_action_only and is_in_place then
         if     action_id == "power"            then M.showPowerDialog(plugin)
         elseif action_id == "wifi_toggle"      then M.doWifiToggle(plugin)
         elseif action_id == "frontlight"       then M.showFrontlightDialog()
         elseif action_id == "bookmark_browser" then M.showBookmarkBrowserSourceDialog(plugin.ui)
+        else
+            local a = Config.ACTION_BY_ID and Config.ACTION_BY_ID[action_id]
+            if a and type(a.action) == "function" then
+                a.action(plugin, fm_self)
+            end
         end
         return
     end
@@ -888,7 +906,10 @@ function M.onTabTap(plugin, action_id, fm_self)
     -- Track whether this tab was already active before the tap.
     local already_active = (plugin.active_action == action_id)
 
-    plugin.active_action = action_id
+    if not is_action_only then
+        plugin.active_action = action_id
+    end
+    
     -- Skip the eager replaceBar when the homescreen is open: navigate() will
     -- close the HS and call replaceBar+setDirty itself, so doing it here too
     -- produces a redundant buildBarWidget call and extra repaint flushes.
@@ -896,12 +917,13 @@ function M.onTabTap(plugin, action_id, fm_self)
     -- when the HS widget is shown, covering the bar update at that point.
     -- Also skip when already_active: the indicator is already correct and
     -- rebuilding the bar would allocate all widgets for an identical result.
+    -- Also skip for action_only tabs as their indicator should not be highlighted.
     local hs_open = (function()
         local HS = package.loaded["sui_homescreen"]
         return HS and HS._instance ~= nil
     end)()
     if fm_self._navbar_container and action_id ~= "homescreen" and not hs_open
-            and not already_active then
+            and not already_active and not is_action_only then
         M.replaceBar(fm_self, M.buildBarWidget(action_id, tabs), tabs)
         -- setDirty(fm_self) covers the full screen and recurses into navbar_container.
         -- The previous double-dirty (navbar_container + fm_self) queued two e-ink cycles.
@@ -923,7 +945,7 @@ local function setActiveAndRefreshFM(plugin, action_id, tabs)
     -- Never mark an action-only tab (bookmark_browser, wifi, etc.) as the
     -- active navigation tab — doing so would light up its indicator even
     -- though the user never "navigated" to it.
-    if not _ACTION_ONLY[action_id] then
+    if not _isActionOnly(action_id) then
         plugin.active_action = action_id
     end
     local fm = plugin.ui
@@ -951,6 +973,8 @@ local function _isInPlaceAction(action_id)
         -- Delegate to sui_quickactions — single source of truth for QA config.
         return _QA().isInPlaceCustomQA(action_id)
     end
+    local a = Config.ACTION_BY_ID and Config.ACTION_BY_ID[action_id]
+    if a and a.is_in_place then return true end
     return false
 end
 
@@ -1137,6 +1161,12 @@ local function _executeInPlace(action_id, plugin, fm)
     elseif action_id:match("^custom_qa_%d+$") then
         -- Delegate to sui_quickactions — single source of truth for QA execution.
         _QA().executeCustomQA(action_id, fm, showUnavailable)
+
+    else
+        local a = Config.ACTION_BY_ID and Config.ACTION_BY_ID[action_id]
+        if a and type(a.action) == "function" then
+            a.action(plugin, fm)
+        end
     end
 
     -- Restore HS to its original position and repaint to reflect any changes
@@ -1266,7 +1296,7 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
         hs_inst._navbar_closing_intentionally = nil
         -- Update the FM bar.
         if fm._navbar_container then
-            M.replaceBar(fm, M.buildBarWidget(action_id, tabs), tabs)
+            M.replaceBar(fm, M.buildBarWidget(plugin.active_action, tabs), tabs)
             UIManager:setDirty(fm, "ui")
         end
         -- For "home": navigate the FM to home_dir now that the HS is gone.
@@ -1305,7 +1335,7 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
     end
 
     if fm_self ~= fm and fm._navbar_container then
-        M.replaceBar(fm, M.buildBarWidget(action_id, tabs), tabs)
+        M.replaceBar(fm, M.buildBarWidget(plugin.active_action, tabs), tabs)
         UIManager:setDirty(fm, "ui")
     end
 
@@ -1418,6 +1448,11 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
             -- only runs when the HS is already closed (e.g. tap from the FM bar).
             -- Delegate to sui_quickactions — single source of truth for QA execution.
             _QA().executeCustomQA(action_id, fm, showUnavailable)
+        else
+            local a = Config.ACTION_BY_ID and Config.ACTION_BY_ID[action_id]
+            if a and type(a.action) == "function" then
+                a.action(plugin, fm)
+            end
         end
     end
 end

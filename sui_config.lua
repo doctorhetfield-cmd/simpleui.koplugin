@@ -124,6 +124,38 @@ for _i, id in ipairs(M.DEFAULT_TABS) do
 end
 
 -- ---------------------------------------------------------------------------
+-- User config handling (config/init.lua)
+-- ---------------------------------------------------------------------------
+local _user_config_cache = nil
+local _user_config_loaded = false
+
+function M.getUserConfig()
+    if _user_config_loaded then return _user_config_cache end
+    _user_config_loaded = true
+    
+    local lfs = require("libs/libkoreader-lfs")
+    local config_path = _plugin_dir .. "config/init.lua"
+    if lfs.attributes(config_path, "mode") == "file" then
+        local ok, res = pcall(dofile, config_path)
+        if ok and type(res) == "table" then
+            _user_config_cache = res
+            logger.info("simpleui: loaded user config from " .. config_path)
+        else
+            logger.warn("simpleui: failed to load user config from " .. config_path .. ": " .. tostring(res))
+            local UIManager = require("ui/uimanager")
+            UIManager:scheduleIn(2, function()
+                local InfoMessage = require("ui/widget/infomessage")
+                UIManager:show(InfoMessage:new{
+                    text = "Simple UI: Failed to load config/init.lua\n" .. tostring(res),
+                    timeout = 6,
+                })
+            end)
+        end
+    end
+    return _user_config_cache
+end
+
+-- ---------------------------------------------------------------------------
 -- Predefined action catalogue
 -- ---------------------------------------------------------------------------
 
@@ -140,6 +172,18 @@ M.ALL_ACTIONS = {
     { id = "stats_calendar",   label = _("Stats"),            icon = M.ICON.stats       },
     { id = "power",            label = _("Power"),            icon = M.ICON.power       },
 }
+
+-- Load user config and inject actions
+local user_config = M.getUserConfig()
+if user_config and user_config.custom_actions then
+    for _, action in ipairs(user_config.custom_actions) do
+        -- Fix relative icon paths
+        if action.icon and type(action.icon) == "string" and not action.icon:match("^/") and not action.icon:match("^nerd:") then
+            action.icon = _plugin_dir .. action.icon
+        end
+        M.ALL_ACTIONS[#M.ALL_ACTIONS + 1] = action
+    end
+end
 
 -- Fast lookup map keyed by action ID.
 M.ACTION_BY_ID = {}
@@ -270,6 +314,16 @@ end
 
 function M.loadTabConfig()
     if _tabs_cache then return _tabs_cache end
+
+    local user_cfg = M.getUserConfig()
+    if user_cfg and type(user_cfg.tabs) == "table" and #user_cfg.tabs > 0 then
+        local result = {}
+        for _, id in ipairs(user_cfg.tabs) do result[#result + 1] = id end
+        M._ensureHomePresent(result)
+        _tabs_cache = result
+        return _tabs_cache
+    end
+
     local cfg = G_reader_settings:readSetting("navbar_tabs")
     local result = {}
     local min_tabs = M.isNavpagerEnabled() and 1 or 2

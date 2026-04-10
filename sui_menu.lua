@@ -189,6 +189,20 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     local function makeTabsMenu()
         local items = {}
 
+        local user_cfg = Config.getUserConfig()
+        if user_cfg and type(user_cfg.tabs) == "table" and #user_cfg.tabs > 0 then
+            items[#items + 1] = {
+                text = "Tabs are managed by config/init.lua",
+                callback = function()
+                    UIManager:show(InfoMessage():new{
+                        text = "Your tabs are currently defined in config/init.lua.\nRemove the 'tabs' array from your config file to enable GUI editing again.",
+                        timeout = 6,
+                    })
+                end,
+            }
+            return items
+        end
+
         items[#items + 1] = {
             text           = _("Arrange tabs"),
             keep_menu_open = true,
