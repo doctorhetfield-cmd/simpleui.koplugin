@@ -111,7 +111,7 @@ M.DEFAULT_NUM_TABS       = 4
 M.MAX_TABS               = 6        -- standard mode limit
 M.MAX_TABS_NAVPAGER      = 4        -- navpager mode limit
 M.MAX_LABEL_LEN          = 20
-M.MAX_CUSTOM_QA          = 10
+M.MAX_CUSTOM_QA          = 24
 -- When the navpager is enabled the bar always shows exactly this many centre tabs.
 M.NAVPAGER_CENTER_TABS   = 4
 
@@ -149,23 +149,53 @@ for _i, a in ipairs(M.ALL_ACTIONS) do M.ACTION_BY_ID[a.id] = a end
 -- Topbar configuration
 -- ---------------------------------------------------------------------------
 
-M.TOPBAR_ITEMS = { "clock", "date", "wifi", "brightness", "battery", "disk", "ram" }
+M.TOPBAR_ITEMS = { "clock", "date", "wifi", "brightness", "battery", "disk", "ram", "custom_text" }
 
 local _topbar_item_labels = nil
 
 function M.TOPBAR_ITEM_LABEL(k)
     if not _topbar_item_labels then
         _topbar_item_labels = {
-            clock      = _("Clock"),
-            date       = _("Date"),
-            wifi       = _("WiFi"),
-            brightness = _("Brightness"),
-            battery    = _("Battery"),
-            disk       = _("Disk Usage"),
-            ram        = _("RAM Usage"),
+            clock       = _("Clock"),
+            date        = _("Date"),
+            wifi        = _("WiFi"),
+            brightness  = _("Brightness"),
+            battery     = _("Battery"),
+            disk        = _("Disk Usage"),
+            ram         = _("RAM Usage"),
+            custom_text = _("Custom Text"),
         }
     end
     return _topbar_item_labels[k] or k
+end
+
+-- Custom text item for the topbar.
+-- Stored as a plain string; empty string = item produces no output.
+local TOPBAR_CUSTOM_TEXT_MAX = 32
+
+M.TOPBAR_CUSTOM_TEXT_MAX = TOPBAR_CUSTOM_TEXT_MAX
+
+function M.getTopbarCustomText()
+    return G_reader_settings:readSetting("navbar_topbar_custom_text") or ""
+end
+
+function M.setTopbarCustomText(s)
+    if type(s) == "string" then
+        -- Enforce character limit on save (UTF-8 codepoints).
+        local count, i, out = 0, 1, {}
+        while i <= #s do
+            local byte = s:byte(i)
+            local clen = byte >= 240 and 4 or byte >= 224 and 3 or byte >= 192 and 2 or 1
+            count = count + 1
+            if count > TOPBAR_CUSTOM_TEXT_MAX then break end
+            out[#out + 1] = s:sub(i, i + clen - 1)
+            i = i + clen
+        end
+        s = table.concat(out)
+    else
+        s = ""
+    end
+    G_reader_settings:saveSetting("navbar_topbar_custom_text", s)
 end
 
 -- Returns the normalised topbar config, migrating legacy formats when needed.
@@ -359,7 +389,8 @@ end
 -- ---------------------------------------------------------------------------
 
 -- Optimistic Wi-Fi state, updated immediately on toggle.
-M.wifi_optimistic = nil
+M.wifi_optimistic    = nil
+M.wifi_broadcast_self = nil
 
 -- Hide the Wi-Fi icon when Wi-Fi is off (instead of showing the off icon).
 function M.getWifiHideWhenOff()
@@ -731,7 +762,16 @@ local function _evictOldestCover()
     end
 end
 
-local function _scaleBBToSlot(bb, target_w, target_h)
+-- stretch_limit: optional float (e.g. 0.10 = 10%).
+-- When provided, the function first tries to fit the image into the slot
+-- without any crop by scaling both axes independently (aspect-ratio distortion).
+-- If the required distortion on either axis stays within stretch_limit, the
+-- image is scaled directly to target_w × target_h — no crop, slight stretch.
+-- If the distortion would exceed the limit, the function falls back to the
+-- standard fill-and-crop path (math.max scale factor, centre crop).
+-- When stretch_limit is nil/absent, the original fill-and-crop behaviour is
+-- unchanged — all existing call sites are unaffected.
+local function _scaleBBToSlot(bb, target_w, target_h, align, stretch_limit)
     if not _RenderImage then
         local ok, ri = pcall(require, "ui/renderimage")
         if not (ok and ri) then return bb end
@@ -757,6 +797,26 @@ local function _scaleBBToSlot(bb, target_w, target_h)
         end
         return bb  -- fallback if copy fails (rare)
     end
+    -- When a stretch_limit is requested, check whether the distortion needed
+    -- to fill the slot without cropping is acceptable.
+    -- distort = how much one axis must be stretched relative to the other to
+    -- fill target_w × target_h exactly, expressed as a fraction (0.10 = 10%).
+    -- If within the limit, scale both axes directly to target — no crop.
+    -- If beyond the limit, fall through to the standard fill-and-crop path.
+    if stretch_limit then
+        local scale_w   = target_w / src_w
+        local scale_h   = target_h / src_h
+        local distort   = math.abs(scale_w / scale_h - 1)
+        if distort <= stretch_limit then
+            local ok_sc, stretched_bb = pcall(function()
+                return _RenderImage:scaleBlitBuffer(bb, target_w, target_h)
+            end)
+            if ok_sc and stretched_bb then return stretched_bb end
+            -- On error fall through to fill-and-crop below.
+        end
+    end
+
+    -- Fill-and-crop path (default, and fallback when distortion > stretch_limit).
     -- Use math.max so the image fills the slot completely (cover crop),
     -- rather than math.min which would letterbox/pillarbox with white bars.
     local scale_factor = math.max(target_w / src_w, target_h / src_h)
@@ -767,7 +827,7 @@ local function _scaleBBToSlot(bb, target_w, target_h)
     end)
     if not (ok_sc and scaled_bb) then return bb end
     if scaled_w == target_w and scaled_h == target_h then return scaled_bb end
-    -- Crop the oversized scaled bitmap to target_w × target_h from the centre.
+    -- Crop the oversized scaled bitmap to target_w × target_h.
     local ok_blit, Blitbuffer_mod = pcall(require, "ffi/blitbuffer")
     if not (ok_blit and Blitbuffer_mod) then return scaled_bb end
     local ok_slot, slot_bb = pcall(function()
@@ -775,7 +835,14 @@ local function _scaleBBToSlot(bb, target_w, target_h)
     end)
     if not (ok_slot and slot_bb) then return scaled_bb end
     -- src_x/src_y: offset into the scaled bitmap where the crop starts.
-    local src_x = math.floor((scaled_w - target_w) / 2)
+    local src_x
+    if align == "left" then
+        src_x = 0
+    elseif align == "right" then
+        src_x = scaled_w - target_w
+    else
+        src_x = math.floor((scaled_w - target_w) / 2)
+    end
     local src_y = math.floor((scaled_h - target_h) / 2)
     pcall(function()
         slot_bb:blitFrom(scaled_bb, 0, 0, src_x, src_y, target_w, target_h)
@@ -784,8 +851,8 @@ local function _scaleBBToSlot(bb, target_w, target_h)
     return slot_bb
 end
 
-function M.getCoverBB(filepath, w, h)
-    local key    = filepath .. "|" .. w .. "x" .. h
+function M.getCoverBB(filepath, w, h, align, stretch_limit)
+    local key    = filepath .. "|" .. w .. "x" .. h .. (align and ("|" .. align) or "")
     local cached = _bim_cover_cache[key]
     if cached then
         -- Update LRU access time in-place — no allocation, no list shift.
@@ -811,7 +878,7 @@ function M.getCoverBB(filepath, w, h)
         local src_w = bookinfo.cover_bb:getWidth()
         local src_h = bookinfo.cover_bb:getHeight()
         if src_w >= w and src_h >= h then
-            local bb = _scaleBBToSlot(bookinfo.cover_bb, w, h)
+            local bb = _scaleBBToSlot(bookinfo.cover_bb, w, h, align, stretch_limit)
             pcall(function() cached.bb:free() end)
             cached.bb     = bb
             cached.lowres = nil
@@ -849,7 +916,7 @@ function M.getCoverBB(filepath, w, h)
             local src_h = bookinfo.cover_bb:getHeight()
             local lowres = (src_w < w or src_h < h)
             if lowres then scheduleExtract() end
-            local bb = _scaleBBToSlot(bookinfo.cover_bb, w, h)
+            local bb = _scaleBBToSlot(bookinfo.cover_bb, w, h, align, stretch_limit)
             if _bim_cover_count >= BIM_MAX_COVERS then _evictOldestCover() end
             _bim_cover_cache[key] = { bb = bb, t = os.time(), lowres = lowres or nil, chk = os.time(), src_w = src_w, src_h = src_h }
             _bim_cover_count = _bim_cover_count + 1

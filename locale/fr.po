@@ -1314,6 +1314,10 @@ msgstr "Barre d'état"
 msgid "Streak"
 msgstr "Série"
 
+#: no streak
+msgid "no streak"
+msgstr "Pas de série"
+
 #: sui_menu.lua:971
 msgid "Sub-pages Buttons"
 msgstr "Boutons des sous-pages"
@@ -1594,3 +1598,221 @@ msgstr "%d jours"
 #: desktop_modules/module_currently.lua
 msgid "Stats layout"
 msgstr "Disposition des statistiques"
+
+
+
+#: sui_menu.lua:356
+msgid "Pagination bar set to Default.\n\nRestart now?"
+msgstr "Page de pagination réinitialisée.\n\nRedémarrer maintenant ?"
+
+#: sui_menu.lua:367
+msgid "Navpager enabled.\n\nRestart now?"
+msgstr "Navigateur activé.\n\nRedémarrer maintenant"
+
+#: sui_menu.lua:377
+msgid "Pagination bar hidden.\n\nRestart now?"
+msgstr "Page de pagination masquée.\n\nRedémarrer maintenant?"
+
+#: sui_menu.lua:387
+msgid "Dot Pager"
+msgstr "Points de navigation"
+
+#: sui_menu.lua:395
+msgid "Shows a row of dots at the bottom of the homescreen.\nThe active page dot is filled; the others are dimmed.\nAlways active when Navpager is selected."
+msgstr "Affiche une rangée de points en bas de l'écran d'accueil.\nLe point de la page active est plein ; les autres sont estompés.\nToujours actif en mode Navigateur."
+
+#: sui_menu.lua:417
+msgid "Uses the standard KOReader pagination bar on the homescreen.\nNot available when Navpager is active."
+msgstr "Utilise la barre de pagination par défaut de KOReader sur l'écran d'accueil.\nIndisponible quand le Navigateur est activé."
+
+#: sui_menu.lua:438
+msgid "Hides the pagination bar on the homescreen.\nNot available when Navpager is active."
+msgstr "Masque la barre de pagination sur l'écran d'accueil.\nIndisponible quand le Navigateur est activé."
+
+#: sui_menu.lua:1566
+msgid "Modules per Page  (%d)"
+msgstr "Modules par page  (%d)"
+
+#: sui_menu.lua:1572
+msgid "Modules per Page"
+msgstr "Modules par page"
+
+#: sui_menu.lua:1573
+msgid "Maximum number of modules shown on each page.\nSwipe left/right on the Home Screen to turn pages."
+msgstr "Nombre maximum de modules par page.\nGlissez vers la gauche/droite sur la page d'accueil pour tourner les pages."
+
+#: sui_menu.lua:1834
+msgid "Placeholder cover for bookless folders"
+msgstr "Couverture par défaut pour les dossiers sans livres"
+
+#: sui_menu.lua:1849
+msgid "  Scan subfolders for cover"
+msgstr "Chercher une couverture dans les sous-dossiers"
+
+#: sui_menu.lua
+msgid "Check for Updates"
+msgstr "Vérifier les mises à jour"
+
+#: sui_menu.lua
+msgid "About"
+msgstr "À propos"
+
+#: sui_menu.lua
+msgid "Version: %s"
+msgstr "Version: %s"
+
+#: sui_menu.lua
+msgid "Author: %s"
+msgstr "Auteur : %s"
+
+#: sui_homescreen.lua:407
+#: desktop_modules/module_quote.lua:950
+msgid "Open this file?"
+msgstr "Ouvrir ce fichier ?"
+
+#: sui_bottombar.lua:1638
+msgid "Sleep"
+msgstr "Veille"
+
+#: sui_updater.lua:157
+msgid "Downloading Simple UI "
+msgstr "Téléchargement de Simple UI"
+
+#: sui_updater.lua:163
+msgid "Download error: "
+msgstr "Erreur de téléchargement : "
+
+#: sui_updater.lua:174
+msgid "Extraction error: "
+msgstr "Erreur d'extraction :"
+
+#: sui_updater.lua:180
+msgid "Simple UI %s successfully installed.\n\nRestart KOReader to apply the update?"
+msgstr "Simple UI %s installé avec succès.\n\nRedémarrer KOReader pour appliquer la mise à jour ?"
+
+#: sui_updater.lua:183
+msgid "Restart"
+msgstr "Redémarrer"
+
+#: sui_updater.lua:184
+#: sui_updater.lua:237
+#: sui_updater.lua:258
+msgid "Cancel"
+msgstr "Annuler"
+
+#: sui_updater.lua:184
+msgid "Later"
+msgstr "Plus tard"
+
+#: sui_updater.lua:194
+msgid "Checking for updates..."
+msgstr "Vérification des mises à jour..."
+
+#: sui_updater.lua:200
+msgid "Error checking for updates: "
+msgstr "Erreur de vérification des mises à jour : "
+
+#: sui_updater.lua:216
+msgid "Could not retrieve version information."
+msgstr "Impossible de récupérer les informations de version."
+
+#: sui_updater.lua:222
+msgid "Simple UI is up to date (%s)."
+msgstr "Simple UI est à jour (%s)."
+
+#: sui_updater.lua:233
+msgid "Simple UI %s is available (you have %s).\n\nNo automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "Simple UI %s est disponible (vous avez la version %s).\n\nPas de fichier de mise à jour automatique trouvé.\n\nOuvrir la page des publications sur GitHub?"
+
+#: sui_updater.lua:236
+msgid "Open in browser"
+msgstr "Ouvrir dans le navigateur"
+
+#: sui_updater.lua:254
+msgid "Simple UI %s is available!\nCurrent version: %s\n\nDownload and install now?"
+msgstr "Simple UI %s est disponible !\nVersion actuelle : %s\n\nTélécharger et installer maintenant ?"
+
+#: sui_updater.lua:257
+msgid "Download and install"
+msgstr "Télécharger et installer"
+
+
+#: sui_menu.lua
+msgid "Return to Book Folder"
+msgstr "Retour au dossier du livre"
+
+#: sui_menu.lua
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root."
+msgstr "Quand activé, ouvrir le navigateur de fichiers après avoir terminé ou fermé un livre renvoie vers le dossier où se trouve le livre, comme le fait KOReader nativement.\nQuand désactivé (par défaut), SimpleUI retourne toujours à la racine de la bibliothèque."
+
+#: sui_menu.lua
+msgid "Settings on Long Tap"
+msgstr "Paramètres sur appui long"
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Quand activé, un appui long sur une section ouvre les paramètres concernés.\nDésactivez cette option pour empêcher l'apparition du menu des paramètres lors d'un appui long."
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the top bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Quand activé, un appui long sur la barre supérieure les paramètres concernés.\nDésactivez cette option pour empêcher l'apparition du menu des paramètres lors d'un appui long."
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the bottom bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Quand activé, un appui long sur la barre inférieure ouvre les paramètres concernés.\nDésactivez cette option pour empêcher l'apparition du menu des paramètres lors d'un appui long."
+
+#: desktop_modules/module_tbr.lua
+msgid "Arrange To Be Read list"
+msgstr "Organiser la liste À lire"
+
+#: desktop_modules/module_tbr.lua
+msgid "Add at least 2 books to arrange."
+msgstr "Ajoutez au moins 2 livres pour les organiser."
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read books"
+msgstr "Livres à lire"
+
+#: desktop_modules/module_tbr.lua
+msgid "No books in To Be Read list."
+msgstr "Aucun livre dans la liste À lire."
+
+#: desktop_modules/module_tbr.lua
+msgid "Add to To Be Read"
+msgstr "Ajouter à la liste À lire"
+
+#: desktop_modules/module_tbr.lua
+msgid "Remove from To Be Read"
+msgstr "Retirer de la liste À lire"
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read"
+msgstr "À lire"
+
+#: sui_foldercovers.lua sui_menu.lua
+msgid "Group Books by Series"
+msgstr "Grouper les livres par série"
+
+#: sui_menu.lua
+msgid "Series Index"
+msgstr "Index de la série"
+
+#: sui_foldercovers.lua
+msgid "Series cover"
+msgstr "Couverture de la série"
+
+#: sui_foldercovers.lua
+msgid "Set series cover…"
+msgstr "Définir la couverture de la série…"
+
+#: sui_foldercovers.lua
+msgid "No books found in this series."
+msgstr "Aucun livre trouvé dans cette série."
+
+#: sui_foldercovers.lua
+msgid "Scan subfolders for cover"
+msgstr "Chercher la couverture dans les sous-dossiers"
+
+#: show section label
+msgid "Show section label"
+msgstr "Afficher le titre de la section"

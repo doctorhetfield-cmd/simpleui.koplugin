@@ -78,7 +78,7 @@ local _DOT_COLOR_INACTIVE = Blitbuffer.gray(0.55)  -- precomputed, reused every 
 
 -- Modules that render cover thumbnails — used by _updatePage to set the
 -- dithering hint. Defined at file level: constant, never recreated per page-turn.
-local _COVER_MOD_IDS = { collections=true, recent=true, currently=true, new_books=true }
+local _COVER_MOD_IDS = { collections=true, recent=true, currently=true, new_books=true, coverdeck=true }
 
 -- ---------------------------------------------------------------------------
 -- DotWidget — defined once at file level to avoid per-call class allocation.
@@ -210,13 +210,25 @@ end
 -- ---------------------------------------------------------------------------
 
 -- Default and settings key for modules-per-page limit.
-local HS_MODS_PER_PAGE_KEY = "navbar_homescreen_mods_per_page"
-local HS_MODS_PER_PAGE_DEF = 3
+local HS_PAGE_BREAK_ID  = "__page_break__"
 
-local function getModsPerPage()
-    local v = G_reader_settings:readSetting(HS_MODS_PER_PAGE_KEY)
-    if type(v) == "number" and v >= 1 then return v end
-    return HS_MODS_PER_PAGE_DEF
+-- Split a flat module_order list (which may contain __page_break__ sentinels)
+-- into a list of pages, each page being a list of module ids.
+-- Empty pages are preserved as empty tables so the page count matches the user choice.
+local function splitOrderIntoPages(order)
+    local pages     = {}
+    local cur_page  = {}
+    for _, id in ipairs(order) do
+        if id == HS_PAGE_BREAK_ID then
+            pages[#pages + 1] = cur_page
+            cur_page = {}
+        else
+            cur_page[#cur_page + 1] = id
+        end
+    end
+    pages[#pages + 1] = cur_page
+    if #pages == 0 then pages[1] = {} end
+    return pages
 end
 
 -- ---------------------------------------------------------------------------
@@ -729,6 +741,52 @@ function HomescreenWidget:init()
             -- touch zone (registered in init()), which fires before ges_events.
             -- Nothing extra needed here — just handle body swipes normally.
             if (dir == "west" or dir == "east") and not _isSideEdge(ges) then
+                -- CoverDeck swipe delegation:
+                -- If the swipe originates inside the coverdeck wrapper, forward
+                -- it directly to that widget so it can paginate the carousel
+                -- without triggering a homescreen page turn.
+                --
+                -- Widget tree: cd_wrapper[1] → FrameContainer
+                --              → [1] → VerticalGroup (final_vg)
+                --                      → [N] → tappable InputContainer (has onSwipe)
+                -- The tappable is not always at index 1 in the VerticalGroup
+                -- (title may appear above it), so we search by type.
+                if ges.pos then
+                    -- Only delegate to coverdeck if it is visible on the current page.
+                    -- The wrapper pool persists across page turns, so cd_wrapper.dimen
+                    -- retains the coordinates from the coverdeck's page even when a
+                    -- different page is shown — without this guard, swipes on other
+                    -- modules at the same Y position are incorrectly captured by coverdeck.
+                    local cd_on_current_page = false
+                    do
+                        local pom = self._enabled_mods_cache and self._enabled_mods_cache.pages_of_mods
+                        local cur_mods = pom and pom[self._current_page or 1]
+                        if cur_mods then
+                            for _, m in ipairs(cur_mods) do
+                                if m.id == "coverdeck" then cd_on_current_page = true; break end
+                            end
+                        end
+                    end
+                    local cd_wrapper = cd_on_current_page and self._wrapper_pool and self._wrapper_pool["coverdeck"]
+                    if cd_wrapper and cd_wrapper.dimen
+                            and ges.pos:intersectWith(cd_wrapper.dimen) then
+                        local frame    = cd_wrapper[1]
+                        local vg       = frame and frame[1]
+                        local tappable = nil
+                        if vg then
+                            for _, child in ipairs(vg) do
+                                if type(child.onSwipe) == "function" then
+                                    tappable = child
+                                    break
+                                end
+                            end
+                        end
+                        if tappable then
+                            return tappable:onSwipe(nil, ges)
+                        end
+                    end
+                end
+
                 local cur   = self._current_page or 1
                 local total = self._total_pages  or 1
                 local new_page
@@ -781,13 +839,15 @@ function HomescreenWidget:init()
     end
     if Device:hasKeys() then
         self.key_events.HSOpenMenu   = { { "Menu"  } }
+        self.key_events.PrevPage     = { { Device.input.group.PgBwd } }
+        self.key_events.NextPage     = { { Device.input.group.PgFwd } }
     end
 
     -- Menu key → open the KOReader top settings menu (same as swipe-from-top).
     function self:onHSOpenMenu()
         local FileManager = require("apps/filemanager/filemanager")
         local fm = FileManager.instance
-        if fm and fm.showFileManagerMenu then fm:showFileManagerMenu() end
+        if fm and fm.menu then fm.menu:onTapShowMenu() end
         return true
     end
 
@@ -994,7 +1054,7 @@ function HomescreenWidget:init()
     self._kb_book_items_fp   = nil  -- flat ordered list of book filepaths
     self._db_conn            = nil   -- shared SQLite connection, opened lazily, closed in onCloseWidget
     self._cover_poll_timer   = nil
-    -- Cache of {mods, total_pages, mods_per_page} — rebuilt only when module
+    -- Cache of {mods, total_pages, pages_of_mods, …} — rebuilt only when module
     -- configuration changes (_refresh(false)), not on every page-turn swipe.
     self._enabled_mods_cache = nil
     -- Build-context cache — reused across page turns (keep_cache=true) so that
@@ -1370,14 +1430,21 @@ function HomescreenWidget:_buildCtx()
 
     local mod_c  = Registry.get("currently")
     local mod_r  = Registry.get("recent")
+    local mod_cd = Registry.get("coverdeck")
     local show_c = mod_c and Registry.isEnabled(mod_c, PFX)
-    local show_r = mod_r and Registry.isEnabled(mod_r, PFX)
+    local show_r = (mod_r and Registry.isEnabled(mod_r, PFX))
+                or (mod_cd and Registry.isEnabled(mod_cd, PFX))
 
     if not self._cached_books_state then
         local SH = _getBookShared()
         if SH then
             if show_c or show_r then
-                self._cached_books_state = SH.prefetchBooks(show_c, show_r)
+                -- coverdeck exibe até 5 slots (center + 2 side + 2 far) que podem
+                -- mapear para qualquer posição dentro de MAX_RECENT_FPS=10.
+                -- Prefetch 10 entradas para que ctx.prefetched cubra todos os slots
+                -- e getBookData() nunca caia no slow-path (DS.open síncrono) durante build().
+                local max_recent = (mod_cd and Registry.isEnabled(mod_cd, PFX)) and 10 or 5
+                self._cached_books_state = SH.prefetchBooks(show_c, show_r, max_recent)
                 if Config.cover_extraction_pending then
                     self:_scheduleCoverPoll()
                 end
@@ -1429,6 +1496,34 @@ function HomescreenWidget:_buildCtx()
         end
     end
 
+    -- Pre-compute coverdeck book stats for the current centre cover.
+    -- M.build() would otherwise run fetchBookStats() synchronously while
+    -- assembling the widget tree, blocking the UI thread.
+    -- We do it here, after the DB connection is open, using the md5 that is
+    -- already in prefetched_data (zero extra IO).  M.build() checks
+    -- ctx.coverdeck_center_stats before falling back to its own query.
+    --
+    -- We use recent_fps[1] as the best-effort centre approximation; the
+    -- coverdeck may adjust curIdx based on the saved SETTING_FP, but in the
+    -- common case (first render after closing a book) fps[1] == curIdx==1.
+    -- A mismatch is harmless: M.build() will fall back to its own query for
+    -- that one render and the result ends up in _bstats_cache for next time.
+    local coverdeck_center_stats = nil
+    if mod_cd and Registry.isEnabled(mod_cd, PFX) and self._db_conn then
+        local center_fp = bs.recent_fps and bs.recent_fps[1]
+        local pe = center_fp and bs.prefetched_data and bs.prefetched_data[center_fp]
+        local center_md5 = type(pe) == "table" and pe.partial_md5_checksum
+        if center_md5 then
+            local cd_mod = package.loaded["desktop_modules/module_coverdeck"]
+            if cd_mod and cd_mod.fetchBookStatsForCtx then
+                coverdeck_center_stats = {
+                    fp    = center_fp,
+                    stats = cd_mod.fetchBookStatsForCtx(center_md5, self._db_conn),
+                }
+            end
+        end
+    end
+
     local self_ref = self
     return {
         pfx           = PFX,
@@ -1441,7 +1536,8 @@ function HomescreenWidget:_buildCtx()
         db_conn_fatal = false,
         -- Pre-fetched stats from StatsProvider. Nil when no stats module is active.
         -- reading_stats and reading_goals read ctx.stats.* — no DB logic of their own.
-        stats         = stats_data,
+        stats                  = stats_data,
+        coverdeck_center_stats = coverdeck_center_stats,
         vspan_pool    = self._vspan_pool,
         prefetched    = bs.prefetched_data,
         current_fp    = bs.current_fp,
@@ -1561,6 +1657,12 @@ end
 -- per-page-turn closure allocation that the old inline approach caused.
 -- ---------------------------------------------------------------------------
 function HomescreenWidget:_onHoldModRelease(wrapper)
+    -- Honour the "Settings on Long Tap" toggle.
+    -- When the setting is explicitly false the hold gesture is silently consumed
+    -- (returns true to prevent propagation) without opening the menu.
+    if not G_reader_settings:nilOrTrue("navbar_homescreen_settings_on_hold") then
+        return true
+    end
     local mod      = wrapper._sui_mod   -- set on the wrapper InputContainer
     local hs       = wrapper._sui_hs    -- back-reference to HomescreenWidget
     if not mod or not hs then return true end
@@ -1639,7 +1741,12 @@ function HomescreenWidget:_makeModWrapper(mod, widget, inner_w)
         -- onHoldMod just consumes the event so hold doesn't propagate.
         -- onHoldModRelease delegates to the shared method on HomescreenWidget
         -- via the _sui_hs back-reference — zero new closures per page turn.
-        function w:onHoldMod() return true end
+        function w:onHoldMod()
+            if not G_reader_settings:nilOrTrue("navbar_homescreen_settings_on_hold") then
+                return  -- do not consume; hold_release will not fire on this wrapper
+            end
+            return true
+        end
         function w:onHoldModRelease() return self._sui_hs:_onHoldModRelease(self) end
         pool[mod.id] = w
     end
@@ -1686,37 +1793,90 @@ function HomescreenWidget:_updatePage(keep_cache, books_only)
     local body      = self._body
     if not body then return end
 
-    -- Module list cache.
-    local mods_per_page = getModsPerPage()
+    -- Module list cache — rebuilt whenever module_order changes (including page breaks).
+    local raw_order = Registry.loadOrder(PFX)
     if not self._enabled_mods_cache
-       or self._enabled_mods_cache.mods_per_page ~= mods_per_page then
-        local module_order = Registry.loadOrder(PFX)
-        local enabled_mods = {}
-        local has_book_mod = false
-        local mod_gaps     = {}   -- pre-computed gap_px per mod.id; avoids a
-                                  -- G_reader_settings read per module per page-turn
-        for _, mod_id in ipairs(module_order) do
-            local mod = Registry.get(mod_id)
-            if mod and Registry.isEnabled(mod, PFX) then
-                enabled_mods[#enabled_mods + 1] = mod
-                mod_gaps[mod_id] = Config.getModuleGapPx(mod_id, PFX, MOD_GAP)
-                if mod_id == "currently" or mod_id == "recent" then
+       or self._enabled_mods_cache.raw_order ~= raw_order then
+        -- Split raw order into pages using __page_break__ sentinels.
+        local pages_by_id = splitOrderIntoPages(raw_order)
+
+        -- Build the flat enabled-mod list and per-page mod lists in one pass.
+        local has_book_mod  = false
+        local mod_gaps      = {}
+        local pages_of_mods = {}   -- list of pages, each a list of mod objects
+
+        for _, page_ids in ipairs(pages_by_id) do
+            local page_mods = {}
+            for _, mod_id in ipairs(page_ids) do
+                local mod = Registry.get(mod_id)
+                if mod and Registry.isEnabled(mod, PFX) then
+                    page_mods[#page_mods + 1] = mod
+                    mod_gaps[mod_id] = Config.getModuleGapPx(mod_id, PFX, MOD_GAP)
+                    if mod_id == "currently" or mod_id == "recent" or mod_id == "coverdeck" then
+                        has_book_mod = true
+                    end
+                end
+            end
+            -- Always add the page, even if empty, to preserve blank pages.
+            pages_of_mods[#pages_of_mods + 1] = page_mods
+        end
+        if #pages_of_mods == 0 then pages_of_mods[1] = {} end
+
+        -- Extend to match the user-chosen number of pages (adds blank pages if needed).
+        local chosen_pages = G_reader_settings:readSetting(PFX .. "homescreen_num_pages")
+        if chosen_pages and chosen_pages > #pages_of_mods then
+            for _ = #pages_of_mods + 1, chosen_pages do
+                pages_of_mods[#pages_of_mods + 1] = {}
+            end
+        end
+
+        -- Safety net: ensure coverdeck is visible when absent from saved order.
+        do
+            local cd = Registry.get("coverdeck")
+            if cd and Registry.isEnabled(cd, PFX) then
+                local found = false
+                for _, pg in ipairs(pages_of_mods) do
+                    for _, m in ipairs(pg) do
+                        if m.id == "coverdeck" then found = true; break end
+                    end
+                    if found then break end
+                end
+                if not found then
+                    -- Insert coverdeck after "recent" or "currently" on page 1.
+                    local insert_at = #pages_of_mods[1] + 1
+                    for i, m in ipairs(pages_of_mods[1]) do
+                        if m.id == "recent"    then insert_at = i + 1; break end
+                        if m.id == "currently" then insert_at = i + 1 end
+                    end
+                    table.insert(pages_of_mods[1], insert_at, cd)
+                    mod_gaps["coverdeck"] = Config.getModuleGapPx("coverdeck", PFX, MOD_GAP)
                     has_book_mod = true
                 end
             end
         end
+
+        -- Build flat enabled_mods list (needed by existing book-context code).
+        local enabled_mods = {}
+        for _, pg in ipairs(pages_of_mods) do
+            for _, m in ipairs(pg) do
+                enabled_mods[#enabled_mods + 1] = m
+            end
+        end
+
         self._enabled_mods_cache = {
             mods          = enabled_mods,
             mod_gaps      = mod_gaps,
             has_book_mod  = has_book_mod,
-            total_pages   = math.max(1, math.ceil(#enabled_mods / mods_per_page)),
-            mods_per_page = mods_per_page,
+            total_pages   = #pages_of_mods,
+            pages_of_mods = pages_of_mods,
+            raw_order     = raw_order,
         }
     end
-    local enabled_mods = self._enabled_mods_cache.mods
-    local has_book_mod = self._enabled_mods_cache.has_book_mod
-    local total_pages  = self._enabled_mods_cache.total_pages
-    local mod_gaps     = self._enabled_mods_cache.mod_gaps
+    local enabled_mods  = self._enabled_mods_cache.mods
+    local has_book_mod  = self._enabled_mods_cache.has_book_mod
+    local total_pages   = self._enabled_mods_cache.total_pages
+    local mod_gaps      = self._enabled_mods_cache.mod_gaps
+    local pages_of_mods = self._enabled_mods_cache.pages_of_mods
 
     -- Clamp page.
     if self._current_page > total_pages then self._current_page = total_pages end
@@ -1776,13 +1936,11 @@ function HomescreenWidget:_updatePage(keep_cache, books_only)
     end
     self._kb_book_items_fp = _kb_books
 
-    local page_start = (self._current_page - 1) * mods_per_page + 1
-    local page_end   = math.min(page_start + mods_per_page - 1, #enabled_mods)
-    local first_mod  = true
+    local cur_page_mods = pages_of_mods[self._current_page] or {}
+    local first_mod     = true
     local page_has_covers = false
 
-    for i = page_start, page_end do
-        local mod = enabled_mods[i]
+    for _, mod in ipairs(cur_page_mods) do
         -- Detect cover modules in the same pass — avoids a second loop.
         if _COVER_MOD_IDS[mod.id] then page_has_covers = true end
         local ok_w, widget = pcall(mod.build, inner_w, ctx)
@@ -2199,5 +2357,7 @@ end
 function Homescreen.invalidateLabelCache()
     invalidateLabelCache()
 end
+
+Homescreen.PAGE_BREAK_ID = HS_PAGE_BREAK_ID
 
 return Homescreen

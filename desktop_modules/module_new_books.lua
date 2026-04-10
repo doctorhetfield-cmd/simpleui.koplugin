@@ -108,19 +108,42 @@ function M.build(w, ctx)
     -- Cache the scan result for the lifetime of this render cycle.
     local new_fps = ctx._new_books_fps
     if not new_fps then
-        -- Fetch one extra to compensate for excluding the current book.
-        new_fps = scanNewBooks(6)
+        -- Fetch extra entries to compensate for books that will be excluded
+        -- (current book, and books that are 100% read / marked complete).
+        new_fps = scanNewBooks(10)
         -- Exclude the currently open book, matching the behaviour of the
         -- Recent Books module which also skips it.
-        if ctx.current_fp then
-            local filtered = {}
-            for _, fp in ipairs(new_fps) do
-                if fp ~= ctx.current_fp then
+        -- Also exclude books that are 100% read or marked complete,
+        -- matching the filter applied by prefetchBooks() in module_books_shared.
+        local DS_mod = nil
+        pcall(function() DS_mod = require("docsettings") end)
+        local filtered = {}
+        for _, fp in ipairs(new_fps) do
+            if fp ~= ctx.current_fp then
+                local pct = 0
+                local is_complete = false
+                -- Try prefetched data first (no IO).
+                local pre = ctx.prefetched and ctx.prefetched[fp]
+                if pre and pre ~= false then
+                    pct = pre.percent or 0
+                    local summary = pre.summary
+                    is_complete = type(summary) == "table" and summary.status == "complete"
+                elseif DS_mod then
+                    -- Fall back to reading DocSettings directly (same as prefetchBooks).
+                    local ok, ds = pcall(DS_mod.open, DS_mod, fp)
+                    if ok and ds then
+                        pct = ds:readSetting("percent_finished") or 0
+                        local summary = ds:readSetting("summary")
+                        is_complete = type(summary) == "table" and summary.status == "complete"
+                        pcall(function() ds:close() end)
+                    end
+                end
+                if pct < 1.0 and not is_complete then
                     filtered[#filtered + 1] = fp
                 end
             end
-            new_fps = filtered
         end
+        new_fps = filtered
         if #new_fps > 5 then
             local trimmed = {}
             for i = 1, 5 do trimmed[i] = new_fps[i] end
@@ -171,6 +194,7 @@ function M.build(w, ctx)
                 bold      = true,
                 fgcolor   = CLR_TEXT_SUB,
                 width     = cw,
+                height    = D.RB_LABEL_H,
                 alignment = "center",
             },
         }

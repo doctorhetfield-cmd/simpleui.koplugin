@@ -441,9 +441,63 @@ function M.apply(fm_self)
                 local up_slot = slot_map["up_button"].slot  -- configured slot of back button
                 fm_self._simpleui_up_x = _buttonX("left", up_slot, iw, pad, gap, sw)
 
-                -- fold_up_cb is built lazily the first time is_sub is true, then
-                -- reused — avoids allocating a new closure on every folder change.
-                local fold_up_cb
+                -- _applyBackButtonState: single authoritative function for chevron
+                -- visibility and action.
+                --
+                -- Decision table:
+                --   root,  page 1   → HIDE chevron
+                --   root,  page > 1 → SHOW chevron → paginate back one page
+                --   child, page 1   → SHOW chevron → onFolderUp
+                --   child, page > 1 → SHOW chevron → paginate back one page
+                --
+                -- `page` is always passed explicitly — never read from fc_self.cur_page
+                -- because that field may not yet reflect the new value when onGotoPage fires.
+                local function _applyBackButtonState(fc_self, is_sub, page)
+                    local tb2 = fm_self.title_bar
+                    if not (tb2 and tb2.left_button) then return end
+                    local btn = tb2.left_button
+
+                    -- The ONLY time the button is hidden is if we are at Root AND on Page 1
+                    if not is_sub and page <= 1 then
+                        btn.overlap_offset = { sw + 100, 0 }
+                        btn.callback       = function() end
+                        btn.hold_callback  = function() end
+                        
+                        -- Shift neighbors to the left
+                        for _, entry in ipairs(_leftSideBtns()) do
+                            local display_slot = entry.slot > up_slot
+                                and entry.slot - 1 or entry.slot
+                            entry.btn.overlap_offset = {
+                                _buttonX("left", display_slot, iw, pad, gap, sw), 0
+                            }
+                        end
+                    else
+                        -- SHOW Chevron: Either Root Page > 1 OR any page in a Subfolder
+                        btn:setIcon(ICON_UP)
+                        btn.overlap_offset = { _buttonX("left", up_slot, iw, pad, gap, sw), 0 }
+                        
+                        -- Restore neighbor positions
+                        for _, entry in ipairs(_leftSideBtns()) do
+                            entry.btn.overlap_offset = {
+                                _buttonX("left", entry.slot, iw, pad, gap, sw), 0
+                            }
+                        end
+
+                        if page > 1 then
+                            -- Case: Deep in pages (Tap: -1 page, Hold: Page 1)
+                            btn.callback = function() fc_self:onGotoPage(page - 1) end
+                            btn.hold_callback = function() fc_self:onGotoPage(1) end
+                        else
+                            -- Case: Subfolder Page 1 (Tap: Go to parent folder)
+                            btn.callback      = function() fc_self:onFolderUp() end
+                            btn.hold_callback = function() end
+                        end
+                    end
+                    UIManager:setDirty(tb2.show_parent or fm_self, "ui", tb2.dimen)
+                end
+
+                -- genItemTable fires on folder navigation, never on page turns.
+                -- Records is_sub and applies state for page 1 (folder nav resets pagination).
                 local orig_genItemTable = fc.genItemTable
                 fc.genItemTable = function(fc_self, dirs, files, path)
                     local item_table = orig_genItemTable(fc_self, dirs, files, path)
@@ -466,45 +520,60 @@ function M.apply(fm_self)
                         is_sub = false
                     end
                     local p = (path or fc_self.path or ""):gsub("/$", "")
-                    if p == "/" then
-                        is_sub = false
-                    end
+                    if p == "/" then is_sub = false end
+                    -- Persist is_sub so onGotoPage can read it without recomputing.
                     fc_self._simpleui_has_go_up = is_sub
-                    local tb2 = fm_self.title_bar
-                    if tb2 and tb2.left_button then
-                        local btn = tb2.left_button
-                        if is_sub then
-                            -- In a subfolder: show the back button at its configured slot.
-                            btn:setIcon(ICON_UP)
-                            if not fold_up_cb then
-                                fold_up_cb = function() fc_self:onFolderUp() end
-                            end
-                            btn.callback       = fold_up_cb
-                            btn.overlap_offset = { _buttonX("left", up_slot, iw, pad, gap, sw), 0 }
-                            -- Restore all other left-side buttons to their configured slots.
-                            for _, entry in ipairs(_leftSideBtns()) do
-                                entry.btn.overlap_offset = {
-                                    _buttonX("left", entry.slot, iw, pad, gap, sw), 0
-                                }
-                            end
-                        else
-                            -- At root: hide the back button off-screen.
-                            btn.overlap_offset = { sw + 100, 0 }
-                            btn.callback       = function() end
-                            btn.hold_callback  = function() end
-                            -- Compact left-side buttons: any button whose configured slot
-                            -- is greater than up_slot shifts one slot to the left.
-                            for _, entry in ipairs(_leftSideBtns()) do
-                                local display_slot = entry.slot > up_slot
-                                    and entry.slot - 1 or entry.slot
-                                entry.btn.overlap_offset = {
-                                    _buttonX("left", display_slot, iw, pad, gap, sw), 0
-                                }
-                            end
-                        end
-                        UIManager:setDirty(tb2.show_parent or fm_self, "ui", tb2.dimen)
-                    end
+                    -- Folder nav always resets to page 1.
+                    _applyBackButtonState(fc_self, is_sub, 1)
                     return filtered
+                end
+
+                -- onGotoPage fires on every CoverBrowser page turn.
+                -- Re-entrancy guard (_simpleui_in_goto) prevents KOReader's internal
+                -- recursive onGotoPage calls (e.g. for clamping or redraw) from
+                -- overwriting the button state we set for the outer call.
+                local orig_onGotoPage = fc.onGotoPage
+                if orig_onGotoPage then
+                    fm_self._titlebar_orig_fc_onGotoPage = orig_onGotoPage
+                    fc.onGotoPage = function(fc_self, page, ...)
+                        if fc_self._simpleui_in_goto then
+                            return orig_onGotoPage(fc_self, page, ...)
+                        end
+                        fc_self._simpleui_in_goto = true
+                        
+                        local ok, result = pcall(orig_onGotoPage, fc_self, page, ...)
+                        fc_self._simpleui_in_goto = nil
+                        
+                        -- Determine if we are at "Root" based on path.
+                        -- _simpleui_has_go_up is set to true by _sgOpenGroup when
+                        -- entering a virtual series folder (whose path equals the
+                        -- real parent, not a subfolder on disk). Honour that flag
+                        -- so the back button appears even when lock_home_folder is on.
+                        local current_path = fc_self.path or ""
+                        local is_at_home_or_root = (current_path == "/" or _isLockedAtHome(current_path))
+                        
+                        -- Root/home always wins: if the path says we are home, the back
+                        -- button must be hidden regardless of any stale _simpleui_has_go_up
+                        -- flag left over from a previous subfolder visit.
+                        -- The virtual-series override only applies when we are NOT at root.
+                        local is_sub
+                        if is_at_home_or_root then
+                            is_sub = false
+                        else
+                            -- In a real subfolder, or a virtual series folder (whose path
+                            -- equals the real parent) — honour the has_go_up flag.
+                            is_sub = true
+                        end
+                        
+                        -- Synchronize the internal flag
+                        fc_self._simpleui_has_go_up = is_sub
+                        
+                        -- Apply the UI state
+                        _applyBackButtonState(fc_self, is_sub, page)
+                        
+                        if not ok then error(result) end
+                        return result
+                    end
                 end
             end
         else
@@ -637,6 +706,10 @@ function M.restore(fm_self)
         fc.genItemTable = fm_self._titlebar_orig_fc_genItemTable
     end
     fm_self._titlebar_orig_fc_genItemTable = nil
+    if fc and fm_self._titlebar_orig_fc_onGotoPage then
+        fc.onGotoPage = fm_self._titlebar_orig_fc_onGotoPage
+    end
+    fm_self._titlebar_orig_fc_onGotoPage = nil
 
     if fm_self._titlebar_orig_title_set and tb.setTitle then
         tb:setTitle("")

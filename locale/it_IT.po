@@ -1,47 +1,56 @@
-# Simple UI — KOReader plugin
-# Translation template
+# Simple UI — KOReader Plugin
+# Italian (Italy) translation
+# Copyright (C) 2026 Simple UI Contributors
+# This file is distributed under the same license as the Simple UI package.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-03-27 12:00+0000\n"
+"PO-Revision-Date: 2026-04-08 13:56+0200\n"
+"Last-Translator: Marco Fenoglio\n"
+"Language-Team: Italian (Italy)\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
-"Language: ru_RU"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: sui_menu.lua:347
+msgid "General"
+msgstr "Informazioni generali"
 
 #: sui_menu.lua:320
 msgid "    Size"
-msgstr "    Размер"
+msgstr "    Dimensione"
 
 #: desktop_modules/module_reading_goals.lua:602
 msgid "  Physical Books  (%d in %s)"
-msgstr "  Бумажные книги  (%d в %s)"
+msgstr "  Libri cartacei  (%d in %s)"
 
 #: desktop_modules/module_reading_goals.lua:595
 msgid "  Set Goal  (%d books in %s)"
-msgstr "  Задать цель  (%d кн. в %s)"
+msgstr "  Imposta obiettivo  (%d libri in %s)"
 
 #: desktop_modules/module_reading_goals.lua:617
 msgid "  Set Goal  (%d min/day)"
-msgstr "  Задать цель  (%d мин/день)"
+msgstr "  Imposta obiettivo  (%d min/giorno)"
 
 #: desktop_modules/module_reading_goals.lua:596
 msgid "  Set Goal  (%s)"
-msgstr "  Задать цель  (%s)"
+msgstr "  Imposta obiettivo  (%s)"
 
 #: desktop_modules/module_reading_goals.lua:616
 msgid "  Set Goal  (disabled)"
-msgstr "  Задать цель  (отключено)"
+msgstr "  Imposta obiettivo  (disabilitato)"
 
 #: desktop_modules/module_reading_goals.lua:429
 msgid "%d books"
-msgstr "%d книг"
+msgstr "%d libri"
 
 #: desktop_modules/module_currently.lua:336
 msgid "%d days of reading"
-msgstr "%d дней чтения"
+msgstr "%d giorni di lettura"
 
 #: desktop_modules/module_recent.lua:123
 msgid "%d%%"
@@ -51,49 +60,49 @@ msgstr "%d%%"
 #: desktop_modules/module_new_books.lua:141
 #: desktop_modules/module_recent.lua:157
 msgid "%d%% Read"
-msgstr "Прочитано %d%%"
+msgstr "%d%% Letto"
 
 #: desktop_modules/module_reading_goals.lua:428
 msgid "%d/%d books"
-msgstr "%d/%d книг"
+msgstr "%d/%d libri"
 
 #: desktop_modules/module_currently.lua:347
 #: desktop_modules/module_reading_goals.lua:445
 msgid "%s read"
-msgstr "прочитано: %s"
+msgstr "%s letti"
 
 #: desktop_modules/module_currently.lua:370
 msgid "%s remaining"
-msgstr "осталось: %s"
+msgstr "%s rimanenti"
 
 #: desktop_modules/module_currently.lua:335
 msgid "1 day of reading"
-msgstr "1 день чтения"
+msgstr "1 giorno di lettura"
 
 #: sui_menu.lua:1122
 msgid "Add at least 2 actions to arrange."
-msgstr "Добавьте минимум 2 действия для сортировки."
+msgstr "Aggiungi almeno 2 azioni da disporre."
 
 #: desktop_modules/module_reading_stats.lua:546
 msgid "Add at least 2 stats to arrange."
-msgstr "Добавьте минимум 2 элемента статистики для сортировки."
+msgstr "Aggiungi almeno 2 statistiche da disporre."
 
 #: desktop_modules/module_reading_stats.lua:67
 msgid "All time — Books"
-msgstr "За всё время — Книги"
+msgstr "Sempre — Libri"
 
 #: desktop_modules/module_reading_stats.lua:66
 msgid "All time — Time"
-msgstr "За всё время — Время"
+msgstr "Sempre — Tempo"
 
 #: desktop_modules/module_reading_goals.lua:585
 msgid "Annual Goal"
-msgstr "Цель на год"
+msgstr "Obiettivo annuale"
 
 #: sui_menu.lua:1024
 #: desktop_modules/module_reading_goals.lua:362
 msgid "Annual Reading Goal"
-msgstr "Книжная цель на год"
+msgstr "Obiettivo di lettura annuale"
 
 #: sui_config.lua:1562
 #: sui_config.lua:1643
@@ -102,144 +111,144 @@ msgstr "Книжная цель на год"
 #: sui_menu.lua:1364
 #: sui_menu.lua:1399
 msgid "Apply"
-msgstr "Применить"
+msgstr "Applica"
 
 #: desktop_modules/module_clock.lua:49
 msgid "April"
-msgstr "Апрель"
+msgstr "Aprile"
 
 #: sui_menu.lua:1120
 #: desktop_modules/module_reading_stats.lua:543
 msgid "Arrange"
-msgstr "Упорядочить"
+msgstr "Disponi"
 
 #: sui_menu.lua:1126
 msgid "Arrange %s"
-msgstr "Упорядочить %s"
+msgstr "Disponi %s"
 
 #: sui_menu.lua:840
 #: sui_menu.lua:891
 #: sui_menu.lua:906
 msgid "Arrange Buttons"
-msgstr "Упорядочить кнопки"
+msgstr "Disponi pulsanti"
 
 #: desktop_modules/module_collections.lua:535
 #: desktop_modules/module_collections.lua:548
 msgid "Arrange Collections"
-msgstr "Упорядочить коллекции"
+msgstr "Disponi collezioni"
 
 #: sui_menu.lua:483
 #: sui_menu.lua:511
 msgid "Arrange Items"
-msgstr "Упорядочить элементы"
+msgstr "Disponi elementi"
 
 #: sui_menu.lua:1280
 #: sui_menu.lua:1296
 msgid "Arrange Modules"
-msgstr "Упорядочить модули"
+msgstr "Disponi moduli"
 
 #: desktop_modules/module_reading_stats.lua:552
 msgid "Arrange Reading Stats"
-msgstr "Упорядочить статистику"
+msgstr "Disponi statistiche di lettura"
 
 #: sui_menu.lua:193
 #: sui_menu.lua:203
 msgid "Arrange tabs"
-msgstr "Упорядочить вкладки"
+msgstr "Disponi schede"
 
 #: desktop_modules/module_clock.lua:50
 msgid "August"
-msgstr "Август"
+msgstr "Agosto"
 
 #: sui_foldercovers.lua:405
 #: desktop_modules/module_collections.lua:497
 msgid "Auto (first book)"
-msgstr "Авто (первая книга)"
+msgstr "Automatico (primo libro)"
 
 #: sui_titlebar.lua:54
 msgid "Back"
-msgstr "Назад"
+msgstr "Indietro"
 
 #: desktop_modules/module_collections.lua:575
 msgid "Badge position: Bottom"
-msgstr "Позиция значка: Снизу"
+msgstr "Posizione del Badge: In Basso"
 
 #: desktop_modules/module_collections.lua:576
 msgid "Badge position: Top"
-msgstr "Позиция значка: Сверху"
+msgstr "Posizione del Badge: In Alto"
 
 #: sui_config.lua:143
 msgid "Battery"
-msgstr "Батарея"
+msgstr "Batteria"
 
 #: sui_quickactions.lua:404
 msgid "Book Info"
-msgstr "О книге"
+msgstr "Informazioni libro"
 
 #: sui_bottombar.lua:886
 msgid "Bookmark browser"
-msgstr "Браузер закладок"
+msgstr "Gestore segnalibri"
 
 #: sui_bottombar.lua:859
 msgid "Bookmark browser not available."
-msgstr "Браузер закладок недоступен."
+msgstr "Gestore segnalibri non disponibile."
 
 #: sui_config.lua:118
 msgid "Bookmarks"
-msgstr "Закладки"
+msgstr "Segnalibri"
 
 #: desktop_modules/module_reading_goals.lua:363
 msgid "Books to read in %s:"
-msgstr "Книг для прочтения в %s:"
+msgstr "Libri da leggere in %s:"
 
 #: sui_menu.lua:1545
 #: sui_menu.lua:1624
 #: sui_menu.lua:1680
 msgid "Bottom"
-msgstr "Снизу"
+msgstr "In basso"
 
 #: sui_bottombar.lua:736
 #: sui_menu.lua:618
 msgid "Bottom Bar"
-msgstr "Нижняя панель"
+msgstr "Barra inferiore"
 
 #: sui_menu.lua:644
 msgid "Bottom Bar Size"
-msgstr "Размер нижней панели"
+msgstr "Dimensione barra inferiore"
 
 #: sui_menu.lua
 msgid "A restart is required to apply the new bar size across all layouts.\n\nRestart now?"
-msgstr "Для применения нового размера панелей требуется перезапуск.\n\nПерезапустить сейчас?"
+msgstr "È necessario riavviare il sistema per applicare le nuove dimensioni della "barra a tutti i layout.\n\nRiavviare ora?"
 
 #: sui_menu.lua:626
 msgid "Bottom Bar will be %s after restart.\n\nRestart now?"
-msgstr "Нижняя панель будет %s после перезапуска.\n\nПерезапустить сейчас?"
+msgstr "La barra inferiore sarà %s dopo il riavvio.\n\nRiavvia ora?"
 
 #: sui_menu.lua:668
 #: sui_menu.lua:671
 msgid "Bottom Margin"
-msgstr "Отступ снизу"
+msgstr "Margine inferiore"
 
 #: sui_menu.lua:669
 msgid "Bottom Margin — %d%%"
-msgstr "Отступ снизу — %d%%"
+msgstr "Margine inferiore — %d%%"
 
 #: sui_homescreen.lua:701
 msgid "Top Margin  (%d%%)"
-msgstr "Отступ сверху  (%d%%)"
+msgstr "Margine Superiore  (%d%%)"
 
 #: sui_homescreen.lua:704
 msgid "Vertical space above this module.\n100% is the default spacing."
-msgstr "Пространство над этим модулем.\n100% — интервал по умолчанию."
+msgstr "Spazio verticale sopra questo modulo.\n100% è la dimensione predefinita."
 
 #: sui_config.lua:120
 #: sui_config.lua:142
 msgid "Brightness"
-msgstr "Яркость"
+msgstr "Luminosità"
 
 #: sui_menu.lua:956
 msgid "Button Size"
-msgstr "Размер кнопки"
+msgstr "Dimensione pulsanti"
 
 #: sui_bottombar.lua:911
 #: sui_bottombar.lua:1428
@@ -265,47 +274,50 @@ msgstr "Размер кнопки"
 #: desktop_modules/module_reading_goals.lua:366
 #: desktop_modules/module_reading_goals.lua:383
 #: desktop_modules/module_reading_goals.lua:401
+#: sui_updater.lua:184
+#: sui_updater.lua:237
+#: sui_updater.lua:258
 msgid "Cancel"
-msgstr "Отмена"
+msgstr "Annulla"
 
 #: desktop_modules/module_reading_stats.lua:494
 msgid "Cards"
-msgstr "Карточки"
+msgstr "Schede"
 
 #: sui_menu.lua:498
 #: sui_menu.lua:1672
 msgid "Center"
-msgstr "По центру"
+msgstr "Centro"
 
 #: sui_quickactions.lua:869
 msgid "Change Icons"
-msgstr "Изменить иконки"
+msgstr "Cambia icone"
 
 #: sui_config.lua:140
 #: desktop_modules/module_clock.lua:211
 msgid "Clock"
-msgstr "Часы"
+msgstr "Orologio"
 
 #: sui_titlebar.lua:59
 msgid "Close"
-msgstr "Закрыть"
+msgstr "Chiudi"
 
 #: sui_quickactions.lua:312
-msgid "Codepoint out of valid Unicode range (0â€“10FFFF)."
-msgstr "Код символа вне допустимого диапазона Unicode (0–10FFFF)."
+msgid "Codepoint out of valid Unicode range (0–10FFFF)."
+msgstr "Codice al di fuori dell'intervallo Unicode valido (0–10FFFF)."
 
 #: sui_quickactions.lua:702
 msgid "Collection"
-msgstr "Коллекция"
+msgstr "Collezione"
 
 #: desktop_modules/module_collections.lua:484
 #: desktop_modules/module_collections.lua:490
 msgid "Collection is empty."
-msgstr "Коллекция пуста."
+msgstr "La collezione è vuota."
 
 #: sui_quickactions.lua:1029
 msgid "Collection not available: %s"
-msgstr "Коллекция недоступна: %s"
+msgstr "Collezione non disponibile: %s"
 
 #: sui_bottombar.lua:897
 #: sui_config.lua:114
@@ -313,28 +325,28 @@ msgstr "Коллекция недоступна: %s"
 #: desktop_modules/module_collections.lua:290
 #: desktop_modules/module_collections.lua:291
 msgid "Collections"
-msgstr "Коллекции"
+msgstr "Collezioni"
 
 #: sui_bottombar.lua:1121
 msgid "Collections not available."
-msgstr "Коллекции недоступны."
+msgstr "Collezioni non disponibili."
 
 #: sui_menu.lua:960
 #: desktop_modules/module_reading_goals.lua:573
 msgid "Compact"
-msgstr "Компактный"
+msgstr "Compatto"
 
 #: sui_quickactions.lua:197
 msgid "Confirm"
-msgstr "Подтвердить"
+msgstr "Conferma"
 
 #: sui_config.lua:116
 msgid "Continue"
-msgstr "Продолжить"
+msgstr "Continua"
 
 #: desktop_modules/module_collections.lua:527
 msgid "Cover for \"%s\""
-msgstr "Обложка для \"%s\""
+msgstr "Copertina per \"%s\""
 
 #: desktop_modules/module_collections.lua:564
 #: desktop_modules/module_collections.lua:566
@@ -345,48 +357,48 @@ msgstr "Обложка для \"%s\""
 #: desktop_modules/module_recent.lua:239
 #: desktop_modules/module_recent.lua:241
 msgid "Cover size"
-msgstr "Размер обложки"
+msgstr "Dimensione copertina"
 
 #: sui_quickactions.lua:878
 msgid "Create Quick Action"
-msgstr "Создать быстрое действие"
+msgstr "Crea azione rapida"
 
 #: desktop_modules/module_currently.lua:232
 #: desktop_modules/module_currently.lua:233
 msgid "Currently Reading"
-msgstr "Сейчас читаю"
+msgstr "In lettura"
 
 #: sui_config.lua:637
 msgid "Custom"
-msgstr "Свой вариант"
+msgstr "Personalizzato"
 
 #: sui_menu.lua:933
 msgid "Custom Title Bar"
-msgstr "Свой заголовок"
+msgstr "Barra del titolo personalizzata"
 
 #: sui_menu.lua:944
 msgid "Custom Title Bar will be %s after restart.\n\nRestart now?"
-msgstr "Свой заголовок будет %s после перезапуска.\n\nПерезапустить сейчас?"
+msgstr "La barra del titolo personalizzata sarà %s dopo il riavvio.\n\nRiavvia ora?"
 
 #: desktop_modules/module_reading_goals.lua:606
 msgid "Daily Goal"
-msgstr "Цель на день"
+msgstr "Obiettivo giornaliero"
 
 #: desktop_modules/module_reading_goals.lua:398
 msgid "Daily Reading Goal"
-msgstr "Книжная цель на день"
+msgstr "Obiettivo di lettura giornaliero"
 
 #: desktop_modules/module_reading_stats.lua:65
 msgid "Daily avg — Pages"
-msgstr "В среднем за день — Страницы"
+msgstr "Media giornaliera — Pagine"
 
 #: desktop_modules/module_reading_stats.lua:64
 msgid "Daily avg — Time"
-msgstr "В среднем за день — Время"
+msgstr "Media giornaliera — Tempo"
 
 #: desktop_modules/module_clock.lua:51
 msgid "December"
-msgstr "Декабрь"
+msgstr "Dicembre"
 
 #: sui_menu.lua:297
 #: sui_menu.lua:326
@@ -396,176 +408,176 @@ msgstr "Декабрь"
 #: desktop_modules/module_quick_actions.lua:271
 #: desktop_modules/module_reading_goals.lua:565
 msgid "Default"
-msgstr "По умолчанию"
+msgstr "Predefinito"
 
 #: sui_quickactions.lua:610
 #: sui_quickactions.lua:629
 msgid "Default (Folder)"
-msgstr "По умолчанию (Папка)"
+msgstr "Predefinito (cartella)"
 
 #: sui_quickactions.lua:656
 msgid "Default (Plugin)"
-msgstr "По умолчанию (Плагин)"
+msgstr "Predefinito (plugin)"
 
 #: sui_quickactions.lua:684
 msgid "Default (System)"
-msgstr "По умолчанию (Система)"
+msgstr "Predefinito (sistema)"
 
 #: desktop_modules/module_quote.lua:976
 msgid "Default Quotes"
-msgstr "Цитаты по умолчанию"
+msgstr "Citazioni predefinite"
 
 #: sui_quickactions.lua:955
 #: sui_quickactions.lua:960
 msgid "Delete"
-msgstr "Удалить"
+msgstr "Elimina"
 
 #: sui_quickactions.lua:959
 msgid "Delete quick action \"%s\"?"
-msgstr "Удалить быстрое действие \"%s\"?"
+msgstr "Eliminare l'azione rapida \"%s\"?"
 
 #: sui_quickactions.lua:409
 msgid "Dictionary Lookup"
-msgstr "Поиск в словаре"
+msgstr "Cerca nel dizionario"
 
 #: sui_menu.lua:1025
 msgid "Digital Goal  (%s)"
-msgstr "Электронная цель  (%s)"
+msgstr "Obiettivo digitale  (%s)"
 
 #: sui_menu.lua:1025
 msgid "Digital: %d books in %s"
-msgstr "Электронные: %d кн. в %s"
+msgstr "Digitale: %d libri in %s"
 
 #: sui_menu.lua:1384
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
-msgstr "Отключите «Блок масштаба», чтобы задать свой масштаб подписей."
+msgstr "Disabilita prima \"Blocca scala\" per impostare una scala etichette personalizzata."
 
 #: sui_config.lua:1547
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
-msgstr "Отключите «Блок масштаба», чтобы задать масштаб модулей."
+msgstr "Disabilita prima \"Blocca scala\" per impostare una scala per modulo."
 
 #: sui_config.lua:144
 msgid "Disk Usage"
-msgstr "Память устройства"
+msgstr "Uso disco"
 
 #: sui_quickactions.lua:1014
 msgid "Dispatcher not available."
-msgstr "Диспетчер недоступен."
+msgstr "Dispatcher non disponibile."
 
 #: sui_quickactions.lua:945
 msgid "Edit"
-msgstr "Изменить"
+msgstr "Modifica"
 
 #: sui_quickactions.lua:511
 msgid "Edit Quick Action"
-msgstr "Изменить быстрое действие"
+msgstr "Modifica azione rapida"
 
 #: sui_menu.lua:1292
 msgid "Enable at least 2 modules to arrange."
-msgstr "Включите минимум 2 модуля для сортировки."
+msgstr "Abilita almeno 2 moduli da disporre."
 
 #: sui_quickactions.lua:271
 msgid "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\nYou can look up codes with wakamaifondue.com using the file:\n  /koreader/fonts/nerdfonts/symbols.ttf\nLeave blank and press OK to remove a Nerd Font icon."
-msgstr "Введите Unicode-код (hex) символа Nerd Fonts.\nНайти коды можно на wakamaifondue.com в файле:\n  /koreader/fonts/nerdfonts/symbols.ttf\nОставьте пустым и нажмите ОК, чтобы удалить иконку Nerd Font."
+msgstr "Inserisci il codice Unicode (esadecimale) di un simbolo dei caratteri Nerd Font.\nPuoi cercare i codici su wakamaifondue.com utilizzando il file:\n  /koreader/fonts/nerdfonts/symbols.ttf\nLascia il campo vuoto e premi OK per rimuovere un'icona dei caratteri Nerd Fonts."
 
 #: sui_menu.lua:324
 msgid "Extra Small"
-msgstr "Очень маленький"
+msgstr "Molto piccolo"
 
 #: sui_config.lua:117
 #: sui_quickactions.lua:405
 msgid "Favorites"
-msgstr "Избранное"
+msgstr "Preferiti"
 
 #: sui_bottombar.lua:1149
 msgid "Favorites not available."
-msgstr "Избранное недоступно."
+msgstr "Preferiti non disponibili."
 
 #: desktop_modules/module_clock.lua:49
 msgid "February"
-msgstr "Февраль"
+msgstr "Febbraio"
 
 #: sui_bottombar.lua:867
 msgid "Fetching bookmarks\xe2\x80\xa6"
-msgstr "Получение закладок…"
+msgstr "Recupero segnalibri\xe2\x80\xa6"
 
 #: sui_quickactions.lua:407
 msgid "File Search"
-msgstr "Поиск файлов"
+msgstr "Ricerca file"
 
 #: desktop_modules/module_quick_actions.lua:266
 #: desktop_modules/module_quick_actions.lua:280
 #: desktop_modules/module_reading_stats.lua:504
 msgid "Flat"
-msgstr "Плоский"
+msgstr "Piatto"
 
 #: sui_quickactions.lua:700
 msgid "Folder"
-msgstr "Папка"
+msgstr "Cartella"
 
 #: sui_menu.lua:1578
 msgid "Folder Covers"
-msgstr "Обложки папок"
+msgstr "Copertine cartella"
 
 #: sui_menu.lua:1640
 msgid "Folder Name"
-msgstr "Имя папки"
+msgstr "Nome cartella"
 
 #: sui_quickactions.lua:408
 msgid "Folder Shortcuts"
-msgstr "Ярлыки папок"
+msgstr "Scorciatoie cartella"
 
 #: sui_foldercovers.lua:436
 msgid "Folder cover"
-msgstr "Обложка папки"
+msgstr "Copertina cartella"
 
 #: desktop_modules/module_clock.lua:46
 msgid "Friday"
-msgstr "Пятница"
+msgstr "Venerdì"
 
 #: sui_bottombar.lua:1253
 msgid "Frontlight not available on this device."
-msgstr "Подсветка недоступна на этом устройстве."
+msgstr "Luce frontale non disponibile su questo dispositivo."
 
 #: sui_menu.lua:1358
 msgid "Global scale for all modules.\nIndividual overrides in Module Settings take precedence.\n100% is the default size."
-msgstr "Глобальный масштаб модулей.\nИндивидуальные настройки в меню модуля имеют приоритет.\n100% — размер по умолчанию."
+msgstr "Scala globale per tutti i moduli.\nLe modifiche individuali nelle impostazioni del modulo hanno priorità.\n100% è la dimensione predefinita."
 
 #: sui_menu.lua:645
 msgid "Height of the bottom navigation bar.\n100% is the default size."
-msgstr "Высота нижней панели навигации.\n100% — размер по умолчанию."
+msgstr "Altezza della barra di navigazione inferiore.\n100% è la dimensione predefinita."
 
 #: sui_menu.lua:587
 msgid "Height of the top status bar.\n100% is the default size."
-msgstr "Высота верхней статусной панели.\n100% — размер по умолчанию."
+msgstr "Altezza della barra di stato superiore.\n100% è la dimensione predefinita."
 
 #: sui_menu.lua:728
 #: sui_menu.lua:1605
 #: sui_menu.lua:1643
 msgid "Hidden"
-msgstr "Скрыто"
+msgstr "Nascosto"
 
 #: sui_menu.lua:1132
 msgid "Hide Text"
-msgstr "Скрыть текст"
+msgstr "Nascondi testo"
 
 #: sui_menu.lua:1702
 msgid "Hide selection underline"
-msgstr "Скрыть подчёркивание выделения"
+msgstr "Nascondi sottolineatura selezione"
 
 #: sui_bottombar.lua:890
 #: sui_config.lua:115
 #: sui_quickactions.lua:403
 msgid "History"
-msgstr "История"
+msgstr "Cronologia"
 
 #: sui_bottombar.lua:1125
 msgid "History not available."
-msgstr "История недоступна."
+msgstr "Cronologia non disponibile."
 
 #: sui_config.lua:113
 msgid "Home"
-msgstr "Домой"
+msgstr "Home"
 
 #: sui_menu.lua:1449
 #: sui_menu.lua:1543
@@ -573,99 +585,99 @@ msgstr "Домой"
 #: sui_patches.lua:293
 #: sui_patches.lua:306
 msgid "Home Screen"
-msgstr "Домашний экран"
+msgstr "Schermata Iniziale"
 
 #: sui_bottombar.lua:907
 msgid "Home folder"
-msgstr "Домашняя папка"
+msgstr "Cartella Principale"
 
 #: sui_bottombar.lua:909
 msgid "Home folder + subfolders"
-msgstr "Дом. папка + подпапки"
+msgstr "Cartella Principale+ sottocartelle"
 
 #: sui_homescreen.lua:446
 msgid "Homescreen"
-msgstr "Домашний экран"
+msgstr "Schermata iniziale"
 
 #: sui_bottombar.lua:1144
 msgid "Homescreen not available."
-msgstr "Домашний экран недоступен."
+msgstr "Schermata iniziale non disponibile.."
 
 #: sui_quickactions.lua:520
 #: sui_quickactions.lua:524
 msgid "Icon"
-msgstr "Иконка"
+msgstr "Icona"
 
 #: sui_menu.lua:690
 #: sui_menu.lua:693
 msgid "Icon Size"
-msgstr "Размер иконки"
+msgstr "Dimensione icona"
 
 #: sui_menu.lua:691
 msgid "Icon Size — %d%%"
-msgstr "Размер иконки — %d%%"
+msgstr "Dimensione icona — %d%%"
 
 #: sui_quickactions.lua:515
 msgid "Icon: Default"
-msgstr "Иконка: По умолчанию"
+msgstr "Icona: predefinita"
 
 #: sui_menu.lua:101
 msgid "Icons"
-msgstr "Иконки"
+msgstr "Icone"
 
 #: sui_menu.lua:102
 msgid "Icons only"
-msgstr "Только иконки"
+msgstr "Solo icone"
 
 #: sui_menu.lua:853
 msgid "Invalid arrangement.\nKeep items between the Left and Right separators."
-msgstr "Неверный порядок.\nОставьте элементы между левым и правым разделителями."
+msgstr "Disposizione non valida.\nMantieni gli elementi tra i separatori sinistro e destro."
 
 #: sui_menu.lua:525
 msgid "Invalid arrangement.\nKeep the Left, Center and Right separators in order."
-msgstr "Неверный порядок.\nСохраняйте левый, центральный и правый разделители по порядку."
+msgstr "Disposizione non valida.\nMantenere l'ordine dei separatori Sinistra, Centro e Destra."
 
 #: sui_quickactions.lua:318
-msgid "Invalid input. Please enter 1â€“6 hexadecimal digits (0â€“9, Aâ€“F)."
-msgstr "Неверный ввод. Введите 1–6 шестнадцатеричных цифр (0–9, A–F)."
+msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
+msgstr "Dati non validi. Inserire da 1 a 6 cifre esadecimali (0–9, A–F)."
 
 #: desktop_modules/module_currently.lua:671
 #: sui_menu.lua:606
 msgid "Items"
-msgstr "Элементы"
+msgstr "Elementi"
 
 #: desktop_modules/module_clock.lua:49
 msgid "January"
-msgstr "Январь"
+msgstr "Gennaio"
 
 #: desktop_modules/module_clock.lua:50
 msgid "July"
-msgstr "Июль"
+msgstr "Luglio"
 
 #: desktop_modules/module_clock.lua:50
 msgid "June"
-msgstr "Июнь"
+msgstr "Giugno"
 
 #: sui_menu.lua:1392
 msgid "Label Scale"
-msgstr "Масштаб подписей"
+msgstr "Scala etichette"
 
 #: sui_menu.lua:710
 #: sui_menu.lua:713
 msgid "Label Size"
-msgstr "Размер подписи"
+msgstr "Dimensione etichetta"
 
 #: sui_menu.lua:711
 msgid "Label Size — %d%%"
-msgstr "Размер подписи — %d%%"
+msgstr "Dimensione etichetta — %d%%"
 
 #: sui_menu.lua:1377
 msgid "Labels"
-msgstr "Подписи"
+msgstr "Etichette"
 
 #: sui_menu.lua:962
 msgid "Large"
-msgstr "Большой"
+msgstr "Grande"
 
 #: sui_menu.lua:310
 #: sui_menu.lua:340
@@ -674,241 +686,250 @@ msgstr "Большой"
 #: sui_menu.lua:627
 #: sui_menu.lua:948
 #: sui_menu.lua:1524
+#: sui_updater.lua:184
 msgid "Later"
-msgstr "Позже"
+msgstr "Più tardi"
 
 #: sui_menu.lua:492
 #: sui_menu.lua:823
 msgid "Left"
-msgstr "Слева"
+msgstr "Sinistra"
 
 #: sui_config.lua:112
 #: sui_config.lua:485
 #: sui_menu.lua:1564
 #: sui_titlebar.lua:568
 msgid "Library"
-msgstr "Библиотека"
+msgstr "Libreria"
 
 #: sui_menu.lua:966
 msgid "Library Buttons"
-msgstr "Кнопки библиотеки"
+msgstr "Pulsanti libreria"
 
 #: desktop_modules/module_reading_stats.lua:514
 msgid "List"
-msgstr "Список"
+msgstr "Elenco"
 
 #: sui_menu.lua:1338
 msgid "Lock Scale"
-msgstr "Заблокировать масштаб"
+msgstr "Blocca scala"
 
 #: desktop_modules/module_clock.lua:49
 msgid "March"
-msgstr "Март"
+msgstr "Marzo"
 
 #: sui_menu.lua:1095
 msgid "Maximum %d actions per module reached. Remove one first."
-msgstr "Достигнут максимум: %d действий на модуль. Сначала удалите одно."
+msgstr "Raggiunto il massimo di %d azioni per modulo. Rimuovine una prima."
 
 #: sui_menu.lua:1152
 msgid "Maximum %d modules active. Disable one first."
-msgstr "Достигнут максимум: %d активных модулей. Сначала отключите один."
+msgstr "Raggiunto il massimo di %d moduli attivi. Disabilitane uno prima."
 
 #: sui_quickactions.lua:883
 msgid "Maximum %d quick actions reached. Delete one first."
-msgstr "Достигнут максимум: %d быстрых действий. Сначала удалите одно."
+msgstr "Raggiunto il massimo di %d azioni rapide. Eliminane una prima."
 
 #: desktop_modules/module_reading_stats.lua:481
 msgid "Maximum %d stats per row. Remove one first."
-msgstr "Достигнут максимум: %d статистик в строке. Сначала удалите одну."
+msgstr "Massimo di %d statistiche per riga raggiunto. Rimuovine una."
 
 #: sui_menu.lua:270
 msgid "Maximum %d tabs reached. Remove one first."
-msgstr "Достигнут максимум: %d вкладок. Сначала удалите одну."
+msgstr "Numero massimo di %d schede raggiunto. Rimuovine una."
 
 #: desktop_modules/module_collections.lua:616
 msgid "Maximum 5 collections. Remove one first."
-msgstr "Максимум 5 коллекций. Сначала удалите одну."
+msgstr "Massimo 5 collezioni. Rimuovine una prima."
 
 #: desktop_modules/module_clock.lua:50
 msgid "May"
-msgstr "Май"
+msgstr "Maggio"
 
 #: sui_titlebar.lua:53
 #: sui_titlebar.lua:58
 msgid "Menu"
-msgstr "Меню"
+msgstr "Menu"
 
 #: sui_menu.lua:260
 msgid "Minimum 1 tab required in navpager mode."
-msgstr "Требуется минимум 1 вкладка в режиме листания."
+msgstr "È richiesta almeno 1 scheda in modalità navpager."
 
 #: sui_menu.lua:261
 msgid "Minimum 2 tabs required. Select another tab first."
-msgstr "Требуется минимум 2 вкладки. Сначала выберите другую вкладку."
+msgstr "Sono necessarie almeno 2 schede. Selezionane prima un'altra."
 
 #: desktop_modules/module_reading_goals.lua:399
 msgid "Minutes per day:"
-msgstr "Минут в день:"
+msgstr "Minuti al giorno:"
 
 #: sui_menu.lua:1355
 msgid "Module Scale"
-msgstr "Масштаб модулей"
+msgstr "Scala moduli"
 
 #: sui_menu.lua:1314
 msgid "Module Settings"
-msgstr "Настройки модуля"
+msgstr "Impostazioni modulo"
 
 #: sui_menu.lua:1326
 msgid "Module limit disabled. Enabling too many modules may slow down the homescreen significantly and modules may be clipped at the bottom of the page."
-msgstr "Лимит модулей отключен. Включение слишком большого числа модулей может сильно замедлить домашний экран, а модули внизу могут обрезаться."
+msgstr "Limite moduli disabilitato. Abilitare troppi moduli può rallentare significativamente la schermata iniziale e i moduli potrebbero essere tagliati nella parte inferiore."
 
 #: sui_menu.lua:1349
 msgid "Modules"
-msgstr "Модули"
+msgstr "Moduli"
 
 #: sui_menu.lua:1271
 msgid "Modules  (%d — no limit)"
-msgstr "Модули  (%d — без лимита)"
+msgstr "Moduli  (%d — nessun limite)"
+#: sui_menu.lua:1385
+msgid "Modules  (%d)"
+msgstr "Moduli  (%d)"
+
 
 #: sui_menu.lua:1275
 msgid "Modules  (%d/%d — %d left)"
-msgstr "Модули  (%d/%d — осталось %d)"
+msgstr "Moduli  (%d/%d — %d rimasti)"
 
 #: sui_menu.lua:1274
 msgid "Modules  (%d/%d — at limit)"
-msgstr "Модули  (%d/%d — лимит достигнут)"
+msgstr "Moduli  (%d/%d — al limite)"
 
 #: desktop_modules/module_clock.lua:45
 msgid "Monday"
-msgstr "Понедельник"
+msgstr "Lunedì"
 
 #: desktop_modules/module_quote.lua:996
 msgid "My Highlights"
-msgstr "Мои выделения"
+msgstr "Le mie Evidenziazioni"
 
 #: sui_quickactions.lua:609
 #: sui_quickactions.lua:628
 #: sui_quickactions.lua:655
 #: sui_quickactions.lua:683
 msgid "Name"
-msgstr "Имя"
+msgstr "Nome"
 
 #: sui_menu.lua:1547
 msgid "Navigation Bar"
-msgstr "Навигационная панель"
+msgstr "Barra di navigazione"
 
 #: sui_menu.lua:375
 msgid "Navpager"
-msgstr "Навигация кнопками"
+msgstr "Navpager"
 
 #: sui_menu.lua:397
 msgid "Navpager will be %s after restart.\n\nRestart now?"
-msgstr "Навигация кнопками будет %s после перезапуска.\n\nПерезапустить сейчас?"
+msgstr "Navpager sarà %s dopo il riavvio.\n\nRiavvia ora?"
 
 #: sui_quickactions.lua:268
 msgid "Nerd Font Icon"
-msgstr "Иконка Nerd Font"
+msgstr "Icona delle Nerd Font"
 
 #: sui_quickactions.lua:358
 msgid "Nerd Font symbol…"
-msgstr "Символ Nerd Font…"
+msgstr "Simbolo Nerd Font…"
 
 #: sui_bottombar.lua:1213
 msgid "Network manager unavailable."
-msgstr "Менеджер сети недоступен."
+msgstr "Gestore di rete non disponibile."
 
 #: desktop_modules/module_new_books.lua:139
 msgid "New"
-msgstr "Новая"
+msgstr "Nuovo"
 
 #: desktop_modules/module_new_books.lua:46
 #: desktop_modules/module_new_books.lua:47
 msgid "New Books"
-msgstr "Новые книги"
+msgstr "Nuovi libri"
 
 #: sui_quickactions.lua:511
 msgid "New Quick Action"
-msgstr "Новое быстрое действие"
+msgstr "Nuova azione rapida"
 
 #: sui_quickactions.lua:817
 msgid "New name…"
-msgstr "Новое имя…"
+msgstr "Nuovo nome…"
 
 #: sui_bottombar.lua:245
 msgid "Next"
-msgstr "Вперёд"
+msgstr "Successivo"
 
 #: sui_menu.lua:1318
 msgid "No Module Limit  ⚠ not recommended"
-msgstr "Без лимита модулей  ⚠ не рекомендуется"
+msgstr "Nessun limite moduli  ⚠ non consigliato"
 
 #: sui_bottombar.lua:1171
 msgid "No book in history."
-msgstr "В истории нет книг."
+msgstr "Nessun libro nella cronologia."
 
 #: sui_foldercovers.lua:394
 msgid "No books found in this folder."
-msgstr "В этой папке нет книг."
+msgstr "Nessun libro trovato in questa cartella."
 
 #: sui_homescreen.lua:116
 msgid "No books opened yet"
-msgstr "Пока нет открытых книг"
+msgstr "Nessun libro aperto"
 
 #: desktop_modules/module_collections.lua:586
 msgid "No collections found."
-msgstr "Коллекции не найдены."
+msgstr "Nessuna collezione trovata."
 
 #: desktop_modules/module_collections.lua:322
 msgid "No collections selected"
-msgstr "Коллекции не выбраны"
+msgstr "Nessuna collezione selezionata"
 
 #: sui_quickactions.lua:1036
 msgid "No folder, collection or plugin configured.\nGo to Simple UI \xe2\x86\x92 Settings \xe2\x86\x92 Quick Actions to set one."
-msgstr "Папка, коллекция или плагин не настроены.\nПерейдите в Simple UI → Настройки → Быстрые действия, чтобы их задать."
+msgstr "Nessuna cartella, collezione o plugin configurato.\nVai su Simple UI \\xe2\\x86\\x92 Impostazioni \\xe2\\x86\\x92 Azioni Rapide per impostarne uno."
 
 #: desktop_modules/module_quote.lua:699
 msgid "No highlights found. Open a book and highlight some passages."
-msgstr "Выделения не найдены. Откройте книгу и выделите текст."
+msgstr "Nessuna evidenziazione trovata. Apri un libro ed evidenzia alcuni passaggi."
 
 #: sui_quickactions.lua:371
 msgid "No icons found in:"
-msgstr "Иконки не найдены в:"
+msgstr "Nessuna icona trovata in:"
 
 #: sui_quickactions.lua:645
 msgid "No plugins found."
-msgstr "Плагины не найдены."
+msgstr "Nessun plugin trovato."
 
 #: desktop_modules/module_quote.lua:665
 msgid "No quotes found."
-msgstr "Цитаты не найдены."
+msgstr "Nessuna citazione trovata."
 
 #: desktop_modules/module_reading_stats.lua:367
 msgid "No stats selected"
-msgstr "Статистика не выбрана"
+msgstr "Nessuna statistica selezionata"
 
 #: sui_quickactions.lua:673
 msgid "No system actions found."
-msgstr "Системные действия не найдены."
+msgstr "Nessuna azione di sistema trovata."
 
 #: desktop_modules/module_clock.lua:51
 msgid "November"
-msgstr "Ноябрь"
+msgstr "Novembre"
 
 #: sui_menu.lua:1602
 msgid "Number of Books in Folder"
-msgstr "Число книг в папке"
+msgstr "Numero di Libri nella Cartella"
 
 #: sui_menu.lua:1634
 msgid "Number of Pages"
-msgstr "Количество страниц"
+msgstr "Numero di Pagine"
+#: sui_menu.lua:494
+msgid "Number of Pages in Title Bar Always"
+msgstr "Numero di Pagine Sempre nella Barra del Titolo"
+
 
 #: sui_quickactions.lua:286
 msgid "OK"
-msgstr "ОК"
+msgstr "OK"
 
 #: desktop_modules/module_clock.lua:51
 msgid "October"
-msgstr "Октябрь"
+msgstr "Ottobre"
 
 #: sui_menu.lua:296
 #: sui_menu.lua:356
@@ -922,7 +943,7 @@ msgstr "Октябрь"
 #: desktop_modules/module_clock.lua:378
 #: desktop_modules/module_clock.lua:386
 msgid "Off"
-msgstr "Выкл."
+msgstr "Disattivo"
 
 #: sui_menu.lua:296
 #: sui_menu.lua:356
@@ -936,170 +957,170 @@ msgstr "Выкл."
 #: desktop_modules/module_clock.lua:378
 #: desktop_modules/module_clock.lua:386
 msgid "On"
-msgstr "Вкл."
+msgstr "Attivo"
 
 #: desktop_modules/module_quote.lua:891
 msgid "Open"
-msgstr "Открыть"
+msgstr "Apri"
 
 #: sui_homescreen.lua:125
 msgid "Open a book to get started"
-msgstr "Откройте книгу, чтобы начать"
+msgstr "Apri un libro per iniziare"
 
 #: sui_menu.lua:1598
 msgid "Overlays"
-msgstr "Наложения"
+msgstr "Sovrapposizioni"
 
 #: sui_patches.lua:1125
 #: sui_patches.lua:1239
 msgid "Page %1 of %2"
-msgstr "Стр. %1 из %2"
+msgstr "Pagina %1 di %2"
 
 #: sui_menu.lua:356
 msgid "Page number in title bar"
-msgstr "Номер страницы в заголовке"
+msgstr "Numero di pagina nella barra del titolo"
 
 #: sui_menu.lua:1548
 msgid "Pagination Bar"
-msgstr "Панель нумерации страниц"
+msgstr "Barra di Paginazione"
 
 #: sui_menu.lua:339
 msgid "Pagination bar size will change after restart.\n\nRestart now?"
-msgstr "Размер панели нумерации изменится после перезапуска.\n\nПерезапустить сейчас?"
+msgstr "La dimensione della barra di paginazione cambierà dopo il riavvio.\n\nRiavvia ora?"
 
 #: sui_menu.lua:309
 msgid "Pagination bar will be %s after restart.\n\nRestart now?"
-msgstr "Панель нумерации будет %s после перезапуска.\n\nПерезапустить сейчас?"
+msgstr "La dimensione della barra di paginazione cambierà dopo il riavvio.\n\nRiavvia ora?"
 
 #: sui_titlebar.lua:57
 msgid "Path"
-msgstr "Путь"
+msgstr "Percorso"
 
 #: sui_quickactions.lua:592
 msgid "Path chooser not available."
-msgstr "Выбор пути недоступен."
+msgstr "Il selettore di percorso non è disponibile."
 
 #: desktop_modules/module_recent.lua:286
 msgid "Percentage overlay on cover"
-msgstr "Процент поверх обложки"
+msgstr "Percentuale sovrapposta sulla copertina"
 
 #: desktop_modules/module_currently.lua:524
 msgid "Percentage read"
-msgstr "Прочитано (%)"
+msgstr "Percentuale letta"
 
 #: desktop_modules/module_recent.lua:276
 msgid "Percentage text"
-msgstr "Процент (текст)"
+msgstr "Percentuale di testo"
 
 #: desktop_modules/module_reading_goals.lua:380
 msgid "Physical Books — %s"
-msgstr "Бумажные книги — %s"
+msgstr "Libri cartacei — %s"
 
 #: desktop_modules/module_reading_goals.lua:381
 msgid "Physical books read this year:"
-msgstr "Прочитано бумажных книг в этом году:"
+msgstr "Libri cartacei letti quest'anno:"
 
 #: sui_menu.lua:1031
 msgid "Physical: %d books in %s"
-msgstr "Бумажные: %d кн. в %s"
+msgstr "Cartacei: %d libri in %s"
 
 #: sui_quickactions.lua:704
 msgid "Plugin"
-msgstr "Плагин"
+msgstr "Plugin"
 
 #: sui_quickactions.lua:1021
 msgid "Plugin error: %s"
-msgstr "Ошибка плагина: %s"
+msgstr "Errore plugin: %s"
 
 #: sui_quickactions.lua:1023
 msgid "Plugin not available: %s"
-msgstr "Плагин недоступен: %s"
+msgstr "Plugin non disponibile: %s"
 
 #: sui_config.lua:122
 msgid "Power"
-msgstr "Питание"
+msgstr "Alimentazione"
 
 #: sui_bottombar.lua:245
 msgid "Prev"
-msgstr "Назад"
+msgstr "Precedente"
 
 #: desktop_modules/module_recent.lua:266
 msgid "Progress bar"
-msgstr "Индикатор прогресса"
+msgstr "Barra di progresso"
 
 #: desktop_modules/module_currently.lua:499
 msgid "Progress bar style"
-msgstr "Стиль индикатора прогресса"
+msgstr "Stile della barra di avanzamento"
 
 #: sui_menu.lua:1248
 #: sui_menu.lua:1555
 msgid "Quick Actions"
-msgstr "Быстрые действия"
+msgstr "Azioni Rapide"
 
 #: sui_menu.lua:1559
 msgid "Quick Actions  (%d/%d — %d left)"
-msgstr "Быстрые действия  (%d/%d — осталось %d)"
+msgstr "Azioni Rapide  (%d/%d — %d rimaste)"
 
 #: sui_menu.lua:1557
 msgid "Quick Actions  (%d/%d — at limit)"
-msgstr "Быстрые действия  (%d/%d — лимит достигнут)"
+msgstr "Azioni Rapide  (%d/%d — al limite)"
 
 #: sui_menu.lua:1084
 #: desktop_modules/module_quick_actions.lua:197
 msgid "Quick Actions %d"
-msgstr "Быстрые действия %d"
+msgstr "Azioni Rapide %d"
 
 #: sui_bottombar.lua:1420
 msgid "Quit"
-msgstr "Выйти"
+msgstr "Esci"
 
 #: desktop_modules/module_quote.lua:767
 msgid "Quote of the Day"
-msgstr "Цитата дня"
+msgstr "Citazione del giorno"
 
 #: desktop_modules/module_quote.lua:1018
 msgid "Quotes + My Highlights"
-msgstr "Цитаты + Мои выделения"
+msgstr "Citazioni + Le mie evidenziazioni"
 
 #: sui_config.lua:145
 msgid "RAM Usage"
-msgstr "Использование ОЗУ"
+msgstr "Uso RAM"
 
 #: desktop_modules/module_reading_goals.lua:454
 #: desktop_modules/module_reading_goals.lua:455
 msgid "Reading Goals"
-msgstr "Книжные цели"
+msgstr "Obiettivi di lettura"
 
 #: desktop_modules/module_reading_stats.lua:308
 msgid "Reading Stats"
-msgstr "Статистика чтения"
+msgstr "Statistiche di lettura"
 
 #: desktop_modules/module_recent.lua:61
 #: desktop_modules/module_recent.lua:62
 msgid "Recent Books"
-msgstr "Недавние книги"
+msgstr "Libri recenti"
 
 #: sui_quickactions.lua:815
 #: sui_quickactions.lua:873
 msgid "Rename"
-msgstr "Переименовать"
+msgstr "Rinomina"
 
 #: sui_menu.lua:378
 msgid "Replaces the pagination bar with Prev/Next arrows at the edges of the bottom bar.\nThe arrows dim when there is no previous or next page.\nWith navpager active, as few as 1 tab and at most 4 tabs can be configured."
-msgstr "Заменяет панель нумерации стрелками Назад/Вперёд по краям нижней панели.\nСтрелки гаснут, если нет предыдущей/следующей страницы.\nВ этом режиме можно настроить от 1 до 4 вкладок."
+msgstr "Sostituisce la barra di paginazione con frecce Precedente/Successivo ai bordi della barra inferiore.\nLe frecce si attenuano quando non esiste una pagina precedente o successiva.\nCon navpager attivo è possibile configurare da 1 a massimo 4 schede."
 
 #: sui_menu.lua:1420
 #: sui_quickactions.lua:824
 msgid "Reset"
-msgstr "Сброс"
+msgstr "Ripristina"
 
 #: sui_menu.lua:1419
 msgid "Reset all scales to default (100%)? This cannot be undone."
-msgstr "Сбросить все масштабы по умолчанию (100%)? Это нельзя отменить."
+msgstr "Ripristinare tutte le scale al valore predefinito (100%)? Questa operazione non può essere annullata."
 
 #: sui_menu.lua:1414
 msgid "Reset to Default Scale"
-msgstr "Сбросить масштаб по умолчанию"
+msgstr "Ripristina scala predefinita"
 
 #: sui_bottombar.lua:1412
 #: sui_menu.lua:310
@@ -1109,17 +1130,18 @@ msgstr "Сбросить масштаб по умолчанию"
 #: sui_menu.lua:627
 #: sui_menu.lua:947
 #: sui_menu.lua:1524
+#: sui_updater.lua:183
 msgid "Restart"
-msgstr "Перезапуск"
+msgstr "Riavvia"
 
 #: sui_menu.lua:504
 #: sui_menu.lua:831
 msgid "Right"
-msgstr "Справа"
+msgstr "Destra"
 
 #: desktop_modules/module_clock.lua:46
 msgid "Saturday"
-msgstr "Суббота"
+msgstr "Sabato"
 
 #: sui_quickactions.lua:567
 #: sui_quickactions.lua:835
@@ -1127,7 +1149,7 @@ msgstr "Суббота"
 #: desktop_modules/module_reading_goals.lua:383
 #: desktop_modules/module_reading_goals.lua:401
 msgid "Save"
-msgstr "Сохранить"
+msgstr "Salva"
 
 #: sui_menu.lua:1334
 #: desktop_modules/module_clock.lua:356
@@ -1149,40 +1171,40 @@ msgstr "Сохранить"
 #: desktop_modules/module_recent.lua:225
 #: desktop_modules/module_recent.lua:227
 msgid "Scale"
-msgstr "Масштаб"
+msgstr "Scala"
 
 #: desktop_modules/module_currently.lua:463
 msgid "Scale for all text elements (title, author, progress, time).\n100% is the default size."
-msgstr "Масштаб всех текстовых элементов (заголовок, автор, прогресс, время).\n100% — размер по умолчанию."
+msgstr "Scala per tutti gli elementi di testo (titolo, autore, progresso, tempo).\n100% è la dimensione predefinita."
 
 #: desktop_modules/module_quick_actions.lua:259
 msgid "Scale for the button label text.\n100% is the default size."
-msgstr "Масштаб текста на кнопке.\n100% — размер по умолчанию."
+msgstr "Scala per il testo dell'etichetta del pulsante.\n100% è la dimensione predefinita."
 
 #: desktop_modules/module_collections.lua:448
 msgid "Scale for the collection name text.\n100% is the default size."
-msgstr "Масштаб текста названия коллекции.\n100% — размер по умолчанию."
+msgstr "Scala per il testo del nome della collezione.\n100% è la dimensione predefinita."
 
 #: desktop_modules/module_collections.lua:567
 msgid "Scale for the collection thumbnails only.\nThe label text follows the module scale.\n100% is the default size."
-msgstr "Масштаб только миниатюр коллекций.\nТекст подписи зависит от масштаба модуля.\n100% — размер по умолчанию."
+msgstr "Scala solo per le miniature delle collezioni.\nIl testo dell'etichetta segue la scala del modulo.\n100% è la dimensione predefinita."
 
 #: desktop_modules/module_currently.lua:450
 msgid "Scale for the cover thumbnail only.\n100% is the default size."
-msgstr "Масштаб только миниатюры обложки.\n100% — размер по умолчанию."
+msgstr "Scala solo per la miniatura della copertina.\n100% è la dimensione predefinita."
 
 #: desktop_modules/module_new_books.lua:221
 #: desktop_modules/module_recent.lua:242
 msgid "Scale for the cover thumbnails only.\nText and progress bar follow the module scale.\n100% is the default size."
-msgstr "Масштаб только миниатюр обложек.\nТекст и прогресс зависят от масштаба модуля.\n100% — размер по умолчанию."
+msgstr "Scala solo per le miniature delle copertine.\nIl testo e la barra di progresso seguono la scala del modulo.\n100% è la dimensione predefinita."
 
 #: desktop_modules/module_new_books.lua:233
 msgid "Scale for the label text.\n100% is the default size."
-msgstr "Масштаб текста подписи.\n100% — размер по умолчанию."
+msgstr "Scala il testo dell'etichetta.\nIl 100% corrisponde alla dimensione predefinita."
 
 #: desktop_modules/module_recent.lua:256
 msgid "Scale for the percentage read text.\n100% is the default size."
-msgstr "Масштаб текста прочитанных процентов.\n100% — размер по умолчанию."
+msgstr "Scala per il testo della percentuale letta.\n100% è la dimensione predefinita."
 
 #: desktop_modules/module_clock.lua:359
 #: desktop_modules/module_collections.lua:435
@@ -1194,51 +1216,55 @@ msgstr "Масштаб текста прочитанных процентов.\n
 #: desktop_modules/module_reading_stats.lua:455
 #: desktop_modules/module_recent.lua:228
 msgid "Scale for this module.\n100% is the default size."
-msgstr "Масштаб для этого модуля.\n100% — размер по умолчанию."
+msgstr "Scala per questo modulo.\n100% è la dimensione predefinita."
 
 #: sui_menu.lua:1357
 msgid "Scales all modules and labels together.\n100% is the default size."
-msgstr "Масштабирует все модули и подписи вместе.\n100% — размер по умолчанию."
+msgstr "Scala insieme tutti i moduli e le etichette.\n100% è la dimensione predefinita."
 
 #: sui_menu.lua:1393
 msgid "Scales the section label text above each module.\n100% is the default size."
-msgstr "Масштабирует текст подписи секции над каждым модулем.\n100% — размер по умолчанию."
+msgstr "Scala il testo dell'etichetta della sezione sopra ogni modulo.\n100% è la dimensione predefinita."
 
 #: sui_titlebar.lua:55
 msgid "Search"
-msgstr "Поиск"
+msgstr "Cerca"
 
 #: desktop_modules/module_collections.lua:540
 msgid "Select at least 2 collections to arrange."
-msgstr "Выберите минимум 2 коллекции для сортировки."
+msgstr "Seleziona almeno 2 collezioni da disporre."
 
 #: desktop_modules/module_clock.lua:51
 msgid "September"
-msgstr "Сентябрь"
+msgstr "Settembre"
 
 #: sui_foldercovers.lua:455
 msgid "Set folder cover…"
-msgstr "Задать обложку папки…"
+msgstr "Imposta copertina cartella…"
 
 #: sui_menu.lua:1533
 msgid "Settings"
-msgstr "Настройки"
+msgstr "Impostazioni"
 
 #: desktop_modules/module_clock.lua:386
 msgid "Show Battery"
-msgstr "Показать батарею"
+msgstr "Mostra batteria"
+
+#: desktop_modules/module_clock.lua:454
+msgid "Show Clock"
+msgstr "Mostra l'Orologio"
 
 #: desktop_modules/module_clock.lua:378
 msgid "Show Date"
-msgstr "Показать дату"
+msgstr "Mostra data"
 
 #: sui_menu.lua:364
 msgid "Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\nNavpager enables this automatically.\nNot available when Navpager is active."
-msgstr "Показывает \"Стр. X из Y\" под заголовком при просмотре библиотеки, истории или коллекций.\nКнопочная навигация включает это автоматически.\nНедоступно, когда активна кнопочная навигация."
+msgstr "Mostra \"Pagina X di Y\" nel sottotitolo della barra del titolo durante la navigazione in libreria, cronologia o collezioni.\nNavpager lo abilita automaticamente.\nNon disponibile quando Navpager è attivo."
 
 #: desktop_modules/module_currently.lua:502
 msgid "Simple"
-msgstr "Простой"
+msgstr "Simple"
 
 #: main.lua:381
 #: main.lua:394
@@ -1249,102 +1275,102 @@ msgstr "Simple UI"
 
 #: main.lua:68
 msgid "Simple UI was updated (%s → %s).\n\nA restart is recommended to apply all changes cleanly."
-msgstr "Simple UI обновлён (%s → %s).\n\nРекомендуется перезапуск для применения всех изменений."
+msgstr "Simple UI è stato aggiornato (%s → %s).\n\nSi consiglia un riavvio per applicare correttamente tutte le modifiche."
 
 #: sui_menu.lua:1523
 msgid "Simple UI will be %s after restart.\n\nRestart now?"
-msgstr "Simple UI будет %s после перезапуска.\n\nПерезапустить сейчас?"
+msgstr "Simple UI sarà %s dopo il riavvio.\n\nRiavvia ora?"
 
 #: sui_menu.lua:580
 #: sui_menu.lua:638
 msgid "Size"
-msgstr "Размер"
+msgstr "Dimensione"
 
 #: sui_menu.lua:694
 msgid "Size of the tab icons.\n100% is the default size."
-msgstr "Размер иконок вкладок.\n100% — размер по умолчанию."
+msgstr "Dimensione delle icone delle schede.\n100% è la dimensione predefinita."
 
 #: sui_menu.lua:714
 msgid "Size of the tab label text.\n100% is the default size."
-msgstr "Размер текста подписей вкладок.\n100% — размер по умолчанию."
+msgstr "Dimensione del testo dell'etichetta delle schede.\n100% è la dimensione predefinita."
 
 #: desktop_modules/module_reading_stats.lua:534
 msgid "Size of the text inside the stat cards.\nDoes not affect card size or padding.\n100% is the default size."
-msgstr "Размер текста внутри карточек статистики.\nНе влияет на размер карточки или отступы.\n100% — размер по умолчанию."
+msgstr "Dimensione del testo all'interno delle schede statistiche.\nNon influisce sulle dimensioni della scheda né sui margini.\nIl valore predefinito è 100%."
 
 #: sui_menu.lua:325
 msgid "Small"
-msgstr "Маленький"
+msgstr "Piccolo"
 
 #: desktop_modules/module_quote.lua:970
 msgid "Source"
-msgstr "Источник"
+msgstr "Fonte"
 
 #: sui_menu.lua:672
 msgid "Space below the bottom navigation bar.\n100% is the default spacing."
-msgstr "Пространство под нижней навигационной панелью.\n100% — интервал по умолчанию."
+msgstr "Spazio sotto la barra di navigazione inferiore.\n100% è la dimensione predefinita."
 
 #: sui_patches.lua:306
 #: sui_patches.lua:308
 msgid "Start with"
-msgstr "Запускать с"
+msgstr "Avvia con"
 
 #: sui_menu.lua:1459
 msgid "Start with Home Screen"
-msgstr "Начинать с домашнего экрана"
+msgstr "Avvia con Schermata Iniziale"
 
 #: sui_bottombar.lua:956
 #: sui_bottombar.lua:1184
 msgid "Statistics plugin not available."
-msgstr "Плагин статистики недоступен."
+msgstr "Plugin per le statistiche non disponibile."
 
 #: sui_config.lua:121
 msgid "Stats"
-msgstr "Статистика"
+msgstr "Statistiche"
 
 #: sui_menu.lua:1539
 msgid "Status Bar"
-msgstr "Статусная панель"
+msgstr "Barra di stato"
 
 #: desktop_modules/module_reading_stats.lua:68
 msgid "Streak"
-msgstr "Серия"
+msgstr "Serie"
 
 #: sui_menu.lua:971
 msgid "Sub-pages Buttons"
-msgstr "Кнопки подстраниц"
+msgstr "Pulsanti sottopagine"
 
 #: desktop_modules/module_clock.lua:45
 msgid "Sunday"
-msgstr "Воскресенье"
+msgstr "Domenica"
 
 #: sui_menu.lua:417
 msgid "Swipe Indicator"
-msgstr "Индикатор свайпа"
+msgstr "Indicatore di scorrimento"
 
 #: sui_menu.lua:427
 msgid "Hide Wi-Fi icon when off"
-msgstr "Скрыть иконку Wi-Fi, если выкл."
+msgstr "Nascondi l'icona Wi-Fi quando la connessione è disattivata"
 
 #: sui_quickactions.lua:706
 msgid "System Actions"
-msgstr "Системные действия"
+msgstr "Azioni di Sistema"
 
 #: sui_quickactions.lua:1011
 msgid "System action error: %s"
-msgstr "Ошибка системного действия: %s"
+msgstr "Errore di Azione di Sistema: %s"
 
 #: sui_menu.lua:752
 msgid "Tabs  (%d/%d — %d left)"
-msgstr "Вкладки  (%d/%d — осталось %d)"
+msgstr "Schede  (%d/%d — %d rimasti)"
 
 #: sui_menu.lua:750
 msgid "Tabs  (%d/%d — at limit)"
-msgstr "Вкладки  (%d/%d — лимит достигнут)"
+msgstr "Schede  (%d/%d — al limite)"
 
 #: sui_menu.lua:101
 msgid "Text"
-msgstr "Текст"
+msgstr "Testo"
 
 #: desktop_modules/module_collections.lua:446
 #: desktop_modules/module_collections.lua:447
@@ -1359,92 +1385,92 @@ msgstr "Текст"
 #: desktop_modules/module_recent.lua:254
 #: desktop_modules/module_recent.lua:255
 msgid "Text Size"
-msgstr "Размер текста"
+msgstr "Dimensione Testo"
 
 #: desktop_modules/module_reading_stats.lua:531
 msgid "Text Size — %d%%"
-msgstr "Размер текста — %d%%"
+msgstr "Dimensione Testo — %d%%"
 
 #: sui_menu.lua:103
 msgid "Text only"
-msgstr "Только текст"
+msgstr "Solo testo"
 
 #: desktop_modules/module_clock.lua:46
 msgid "Thursday"
-msgstr "Четверг"
+msgstr "Giovedì"
 
 #: sui_titlebar.lua:56
 msgid "Title"
-msgstr "Заголовок"
+msgstr "Titolo"
 
 #: sui_menu.lua:1540
 msgid "Title Bar"
-msgstr "Панель заголовка"
+msgstr "Barra del titolo"
 
 #: desktop_modules/module_reading_goals.lua:491
 #: desktop_modules/module_reading_goals.lua:493
 #: desktop_modules/module_reading_goals.lua:515
 #: desktop_modules/module_reading_goals.lua:517
 msgid "Today"
-msgstr "Сегодня"
+msgstr "Oggi"
 
 #: desktop_modules/module_reading_stats.lua:63
 msgid "Today — Pages"
-msgstr "Сегодня — Страницы"
+msgstr "Oggi — Pagine"
 
 #: desktop_modules/module_reading_stats.lua:62
 msgid "Today — Time"
-msgstr "Сегодня — Время"
+msgstr "Oggi — Tempo"
 
 #: sui_menu.lua:1537
 #: sui_menu.lua:1616
 #: sui_menu.lua:1664
 msgid "Top"
-msgstr "Сверху"
+msgstr "In alto"
 
 #: sui_menu.lua:561
 #: sui_topbar.lua:473
 msgid "Top Bar"
-msgstr "Верхняя панель"
+msgstr "Barra superiore"
 
 #: sui_menu.lua:586
 msgid "Top Bar Size"
-msgstr "Размер верхней панели"
+msgstr "Dimensione barra superiore"
 
 #: sui_menu.lua:569
 msgid "Top Bar will be %s after restart.\n\nRestart now?"
-msgstr "Верхняя панель будет %s после перезапуска.\n\nПерезапустить сейчас?"
+msgstr "La Barra Superiore sarà %s dopo il riavvio.\n\nRiavvia ora?"
 
 #: sui_menu.lua:728
 msgid "Top separator"
-msgstr "Верхний разделитель"
+msgstr "Separatore superiore"
 
 #: sui_menu.lua:1653
 msgid "Transparent"
-msgstr "Прозрачный"
+msgstr "Trasparente"
 
 #: desktop_modules/module_clock.lua:45
 msgid "Tuesday"
-msgstr "Вторник"
+msgstr "Martedì"
 
 #: sui_menu.lua:741
 #: desktop_modules/module_quick_actions.lua:267
 #: desktop_modules/module_reading_goals.lua:563
 #: desktop_modules/module_reading_stats.lua:491
 msgid "Type"
-msgstr "Тип"
+msgstr "Tipo"
 
 #: sui_menu.lua:1692
 msgid "Uniformize Covers (2:3)"
-msgstr "Унифицировать обложки (2:3)"
+msgstr "Uniformare le copertine (2:3)"
 
 #: sui_menu.lua:728
 msgid "Visible"
-msgstr "Видимо"
+msgstr "Visibile"
 
 #: desktop_modules/module_clock.lua:45
 msgid "Wednesday"
-msgstr "Среда"
+msgstr "Mercoledì"
 
 #: sui_config.lua:119
 msgid "Wi-Fi"
@@ -1452,47 +1478,51 @@ msgstr "Wi-Fi"
 
 #: sui_bottombar.lua:1221
 msgid "Wi-Fi off"
-msgstr "Wi-Fi выкл."
+msgstr "Wi-Fi disattivato"
 
 #: sui_config.lua:141
 msgid "WiFi"
-msgstr "Wi-Fi"
+msgstr "WiFi"
 
 #: sui_bottombar.lua:1208
 msgid "WiFi not available on this device."
-msgstr "Wi-Fi недоступен на этом устройстве."
+msgstr "WiFi non disponibile su questo dispositivo."
 
 #: sui_quickactions.lua:410
 msgid "Wikipedia Lookup"
-msgstr "Поиск в Википедии"
+msgstr "Cerca su Wikipedia"
 
 #: desktop_modules/module_currently.lua:512
 msgid "With percentage"
-msgstr "С процентами"
+msgstr "Con percentuale"
 
 #: desktop_modules/module_quote.lua:701
 msgid "Your highlights"
-msgstr "Ваши выделения"
+msgstr "Le tue evidenziazioni"
 
 #: desktop_modules/module_reading_stats.lua:67
 msgid "books finished"
-msgstr "книг прочитано"
+msgstr "libri completati"
 
 #: desktop_modules/module_reading_stats.lua:64
 msgid "daily avg (7 days)"
-msgstr "в среднем за день (7 дней)"
+msgstr "media giornaliera (7 giorni)"
 
 #: desktop_modules/module_reading_stats.lua:69
 msgid "day streak"
-msgstr "день подряд"
+msgstr "giorno consecutivo"
 
 #: desktop_modules/module_reading_stats.lua:69
 msgid "days streak"
-msgstr "дней подряд"
+msgstr "giorni consecutivi"
+
+#: desktop_modules/module_reading_stats.lua:68
+msgid "no streak"
+msgstr "nessuna serie"
 
 #: sui_quickactions.lua:769
 msgid "default"
-msgstr "по умолчанию"
+msgstr "predefinito"
 
 #: sui_menu.lua:395
 #: sui_menu.lua:569
@@ -1500,23 +1530,23 @@ msgstr "по умолчанию"
 #: sui_menu.lua:945
 #: sui_menu.lua:1523
 msgid "disabled"
-msgstr "отключено"
+msgstr "disabilitato"
 
 #: sui_quickactions.lua:609
 msgid "e.g. Comics…"
-msgstr "напр. Комиксы…"
+msgstr "es. Fumetti…"
 
 #: sui_quickactions.lua:655
 msgid "e.g. Rakuyomi…"
-msgstr "напр. Rakuyomi…"
+msgstr "es. Rakuyomi…"
 
 #: sui_quickactions.lua:628
 msgid "e.g. Sci-Fi…"
-msgstr "напр. Фантастика…"
+msgstr "es. Fantascienza…"
 
 #: sui_quickactions.lua:683
 msgid "e.g. Sleep, Refresh…"
-msgstr "напр. Сон, Обновление…"
+msgstr "es. Riposo, Aggiornamento…"
 
 #: sui_menu.lua:395
 #: sui_menu.lua:569
@@ -1524,126 +1554,270 @@ msgstr "напр. Сон, Обновление…"
 #: sui_menu.lua:945
 #: sui_menu.lua:1523
 msgid "enabled"
-msgstr "включено"
+msgstr "abilitato"
 
 #: sui_quickactions.lua:270
 msgid "hex code, e.g. E001"
-msgstr "hex-код, напр. E001"
+msgstr "codice esadecimale, es. E001"
 
 #: sui_menu.lua:307
 msgid "hidden"
-msgstr "скрыто"
+msgstr "nascosto"
 
 #: sui_quickactions.lua:921
 #: sui_quickactions.lua:937
 msgid "not configured"
-msgstr "не настроено"
+msgstr "non configurato"
 
 #: desktop_modules/module_reading_stats.lua:62
 msgid "of reading today"
-msgstr "чтения сегодня"
+msgstr "di lettura oggi"
 
 #: desktop_modules/module_reading_stats.lua:66
 msgid "of reading, all time"
-msgstr "чтения за всё время"
+msgstr "di lettura totale"
 
 #: desktop_modules/module_reading_stats.lua:63
 msgid "pages read today"
-msgstr "страниц прочитано сегодня"
+msgstr "pagine lette oggi"
 
 #: desktop_modules/module_reading_stats.lua:65
 msgid "pages/day (7 days)"
-msgstr "страниц/день (7 дней)"
+msgstr "pagine/giorno (7 giorni)"
 
 #: sui_menu.lua:307
 msgid "visible"
-msgstr "видимо"
+msgstr "visibile"
 
 #: desktop_modules/module_currently.lua:271
 msgid "Author"
-msgstr "Автор"
+msgstr "Autore"
 
 #: desktop_modules/module_currently.lua:274
 msgid "Days of reading"
-msgstr "Дней чтения"
+msgstr "Giorni di lettura"
 
 #: desktop_modules/module_currently.lua:275
 msgid "Time read"
-msgstr "Время чтения"
+msgstr "Tempo di lettura"
 
 #: desktop_modules/module_currently.lua:276
 msgid "Time remaining"
-msgstr "Осталось времени"
+msgstr "Tempo rimanente"
 
 #: desktop_modules/module_currently.lua
 msgid "%s left"
-msgstr "%s осталось"
+msgstr "%s rimasto"
 
 #: desktop_modules/module_currently.lua
 msgid "1 day"
-msgstr "1 день"
+msgstr "1 giorno"
 
 #: desktop_modules/module_currently.lua
 msgid "%d days"
-msgstr "%d дней"
+msgstr "%d giorni"
 
 #: desktop_modules/module_currently.lua
 msgid "Stats layout"
-msgstr "Макет статистики"
+msgstr "Layout delle statistiche"
+
+
 
 #: sui_menu.lua:356
 msgid "Pagination bar set to Default.\n\nRestart now?"
-msgstr "Страничная панель установлена ​​по умолчанию.\n\nПерезапустить сейчас?"
+msgstr "Barra di paginazione impostata su “Predefinito”.\n\nRiavviare ora?"
 
 #: sui_menu.lua:367
 msgid "Navpager enabled.\n\nRestart now?"
-msgstr "Navpager включен.\n\nПерезапустить сейчас?"
+msgstr "Navpager abilitato.\n\nRiavviare ora?"
 
 #: sui_menu.lua:377
 msgid "Pagination bar hidden.\n\nRestart now?"
-msgstr "Страничная панель скрыта.\n\nПерезапустить сейчас?"
+msgstr "Barra di paginazione nascosta.\n\nRiavviare adesso?"
 
 #: sui_menu.lua:387
 msgid "Dot Pager"
-msgstr "Точечный маркер"
+msgstr "Puntini di navigazione"
 
 #: sui_menu.lua:395
 msgid "Shows a row of dots at the bottom of the homescreen.\nThe active page dot is filled; the others are dimmed.\nAlways active when Navpager is selected."
-msgstr "Отображать ряд точек в нижней части главного экрана.\nТочка активной страницы заполнена; остальные затемнены.\nВсегда активна, когда выбран Navpager."
+msgstr "Mostra una fila di puntini nella parte inferiore della schermata iniziale.\nIl puntino corrispondente alla pagina attiva è colorato; gli altri sono in grigio.\nÈ sempre attivo quando è selezionato Navpager."
 
 #: sui_menu.lua:417
 msgid "Uses the standard KOReader pagination bar on the homescreen.\nNot available when Navpager is active."
-msgstr "Использовать стандартную страничную панель KOReader на главном экране.\nНедоступно, когда активен Navpager."
+msgstr "Utilizza la barra di paginazione standard di KOReader nella schermata iniziale.\nNon disponibile quando Navpager è attivo."
 
 #: sui_menu.lua:438
 msgid "Hides the pagination bar on the homescreen.\nNot available when Navpager is active."
-msgstr "Скрывать страничную панель на главном экране.\nНедоступно, когда активен Navpager."
+msgstr "Nasconde la barra di paginazione nella schermata iniziale.\nNon disponibile quando Navpager è attivo."
 
 #: sui_menu.lua:1566
 msgid "Modules per Page  (%d)"
-msgstr "Модулей на странице  (%d)"
+msgstr "Moduli per Pagina  (%d)"
 
 #: sui_menu.lua:1572
 msgid "Modules per Page"
-msgstr "Модулей на странице"
+msgstr "Moduli per Pagina"
 
 #: sui_menu.lua:1573
 msgid "Maximum number of modules shown on each page.\nSwipe left/right on the Home Screen to turn pages."
-msgstr "Максимальное количество модулей еа каждой странице.\nСвайп налево/направо на домашнем экране для листания страниц."
+msgstr "Numero massimo di moduli visualizzati su ogni pagina.\nScorri verso sinistra/destra sulla Schermata Iniziale per cambiare pagina."
 
 #: sui_menu.lua:1834
 msgid "Placeholder cover for bookless folders"
-msgstr "Временная обложка для папок без книг"
+msgstr "Copertina provvisoria per cartelle senza libro"
 
 #: sui_menu.lua:1849
 msgid "  Scan subfolders for cover"
-msgstr "  Просканировать подпапки для поиска обложек"
+msgstr "  Cerca le copertine nelle sottocartelle"
+
+#: sui_menu.lua
+msgid "Check for Updates"
+msgstr "Verifica aggiornamenti"
+
+#: sui_menu.lua
+msgid "About"
+msgstr "Informazioni su"
+
+#: sui_menu.lua
+msgid "Version: %s"
+msgstr "Versione: %s"
+
+#: sui_menu.lua
+msgid "Author: %s"
+msgstr "Autore: %s"
 
 #: sui_homescreen.lua:407
 #: desktop_modules/module_quote.lua:950
 msgid "Open this file?"
-msgstr "Открыть этот файл?"
+msgstr "Vuoi aprire questo file?"
 
 #: sui_bottombar.lua:1638
 msgid "Sleep"
-msgstr "Сон"
+msgstr "Sleep"
+
+#: sui_updater.lua:157
+msgid "Downloading Simple UI "
+msgstr "Scaricando Simple UI "
+
+#: sui_updater.lua:163
+msgid "Download error: "
+msgstr "Errore di scaricamento: "
+
+#: sui_updater.lua:174
+msgid "Extraction error: "
+msgstr "Errore di estrazione: "
+
+#: sui_updater.lua:180
+msgid "Simple UI %s successfully installed.\n\nRestart KOReader to apply the update?"
+msgstr "Simple UI %s è stato installato correttamente.\n\nVuoi riavviare KOReader per applicare l'aggiornamento?"
+
+#: sui_updater.lua:194
+msgid "Checking for updates..."
+msgstr "Ricerca aggiornamenti..."
+
+#: sui_updater.lua:200
+msgid "Error checking for updates: "
+msgstr "Errore durante la verifica degli aggiornamenti: "
+
+#: sui_updater.lua:216
+msgid "Could not retrieve version information."
+msgstr "Impossibile recuperare le informazioni sulla versione."
+
+#: sui_updater.lua:222
+msgid "Simple UI is up to date (%s)."
+msgstr "Simple UI è aggiornato (%s)."
+
+#: sui_updater.lua:233
+msgid "Simple UI %s is available (you have %s).\n\nNo automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "Simple UI %s è disponibile (tu hai %s).\n\nNon è stato trovato alcun file di aggiornamento automatico.\n\nVuoi aprire la pagina delle versioni su GitHub?"
+
+#: sui_updater.lua:236
+msgid "Open in browser"
+msgstr "Apri nel browser"
+
+#: sui_updater.lua:254
+msgid "Simple UI %s is available!\nCurrent version: %s\n\nDownload and install now?"
+msgstr "Simple UI %s è disponibile!\nVersione attuale: %s\n\nScaricare e installare adesso?"
+
+#: sui_updater.lua:257
+msgid "Download and install"
+msgstr "Scarica e installa"
+
+
+#: sui_menu.lua
+msgid "Return to Book Folder"
+msgstr "Torna alla Cartella del Libro"
+
+#: sui_menu.lua
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root."
+msgstr "Se abilitata, aprendo il browser dei file al termine della lettura o alla chiusura di un libro, si passa alla cartella in cui si trova il libro, in linea con il comportamento nativo di KOReader.\nSe disabilitata (impostazione predefinita), SimpleUI torna sempre alla radice della libreria."
+
+#: sui_menu.lua
+msgid "Settings on Long Tap"
+msgstr "Impostazioni Tocco Prolungato"
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Se abilitata, premendo a lungo su una sezione si apre il relativo menu delle impostazioni.\nDisabilita questa opzione per impedire che il menu delle impostazioni appaia quando si preme a lungo."
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the top bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Se questa opzione è abilitata, premendo a lungo sulla barra superiore si apre il relativo menu delle impostazioni.\nDisabilita questa opzione per impedire che il menu delle impostazioni appaia quando si preme a lungo."
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the bottom bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Se questa opzione è abilitata, premendo a lungo sulla barra inferiore si apre il relativo menu delle impostazioni.\nDisabilita questa opzione per impedire che il menu delle impostazioni appaia quando si preme a lungo."
+
+#: desktop_modules/module_tbr.lua
+msgid "Arrange To Be Read list"
+msgstr "Organizza la lista dei libri Da Leggere"
+
+#: desktop_modules/module_tbr.lua
+msgid "Add at least 2 books to arrange."
+msgstr "Aggiungi almeno 2 libri da disporre."
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read books"
+msgstr "Libri Da Leggere"
+
+#: desktop_modules/module_tbr.lua
+msgid "No books in To Be Read list."
+msgstr "Nessun libro nella lista Da Leggere."
+
+#: desktop_modules/module_tbr.lua
+msgid "Add to To Be Read"
+msgstr "Aggiungi alla lista dei libri Da Leggere"
+
+#: desktop_modules/module_tbr.lua
+msgid "Remove from To Be Read"
+msgstr "Rimuovi dalla lista dei libri Da Leggere"
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read"
+msgstr "Da Leggere"
+
+#: sui_foldercovers.lua sui_menu.lua
+msgid "Group Books by Series"
+msgstr "Libri Raggruppati per Collana"
+
+#: sui_menu.lua
+msgid "Series Index"
+msgstr "Indice della Collana"
+
+#: sui_foldercovers.lua
+msgid "Series cover"
+msgstr "Copertina della collana"
+
+#: sui_foldercovers.lua
+msgid "Set series cover…"
+msgstr "Imposta la copertina della collana…"
+
+#: sui_foldercovers.lua
+msgid "No books found in this series."
+msgstr "Non sono stati trovati libri in questa collana."
+
+
+#: sui_foldercovers.lua
+msgid "Scan subfolders for cover"
+msgstr "Cerca le copertine nelle sottocartelle"

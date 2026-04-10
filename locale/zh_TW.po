@@ -1,1101 +1,1743 @@
-# Simple UI — KOReader Plugin
-# Chinese (Traditional) translation
-# Copyright (C) 2024 Simple UI Contributors
-# This file is distributed under the same license as the Simple UI package.
+# Simple UI — KOReader plugin
+# Traditional Chinese translation
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 21:54+0000\n"
-"PO-Revision-Date: 2026-03-24 00:00+0000\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2026-04-05 12:00+0000\n"
 "Language-Team: Chinese (Traditional)\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
-msgid "  Physical Books  (%d in %s)"
-msgstr "  實體書  (%d 本，%s)"
-
-msgid "  Set Goal  (%d books in %s)"
-msgstr "  設定目標  (%s %d 本書)"
-
-msgid "  Set Goal  (%d min/day)"
-msgstr "  設定目標  (每天 %d 分鐘)"
-
-msgid "  Set Goal  (%s)"
-msgstr "  設定目標  (%s)"
-
-msgid "  Set Goal  (disabled)"
-msgstr "  設定目標  (已停用)"
-
-msgid "%d books"
-msgstr "%d 本書"
-
-msgid "%d%% Read"
-msgstr "已讀 %d%%"
-
-msgid "%d/%d books"
-msgstr "%d/%d 本書"
-
-msgid "%s TO GO"
-msgstr "還剩 %s"
-
-msgid "%s read"
-msgstr "已讀 %s"
-
-msgid "Add at least 2 actions to arrange."
-msgstr "請至少新增 2 個操作來排序。"
-
-msgid "Add at least 2 stats to arrange."
-msgstr "請至少新增 2 個統計項來排序。"
-
-msgid "All time — Books"
-msgstr "總計 — 書籍"
-
-msgid "All time — Time"
-msgstr "總計 — 時間"
-
-msgid "Annual Goal"
-msgstr "年度目標"
-
-msgid "Annual Reading Goal"
-msgstr "年度閱讀目標"
-
-msgid "Arrange"
-msgstr "排序"
-
-msgid "Arrange %s"
-msgstr "排序 %s"
-
-msgid "Arrange Collections"
-msgstr "排序書單"
-
-msgid "Arrange Items"
-msgstr "排序項目"
-
-msgid "Arrange Modules"
-msgstr "排序模組"
-
-msgid "Arrange Reading Stats"
-msgstr "排序閱讀統計"
-
-msgid "Arrange tabs"
-msgstr "排序標籤頁"
-
-msgid "Auto (first book)"
-msgstr "自動（第一本書）"
-
-msgid "Battery"
-msgstr "電量"
-
-msgid "Book Info"
-msgstr "書籍資訊"
-
-msgid "Books to read in %s:"
-msgstr "%s 要讀的書："
-
-msgid "Bottom Bar"
-msgstr "底部欄"
-
-msgid "Bottom Bar will be %s after restart.\n\nRestart now?"
-msgstr "重啟後底部欄將變為 %s。\n\n現在重啟嗎？"
-
-msgid "Brightness"
-msgstr "亮度"
-
-msgid "Cancel"
-msgstr "取消"
-
-msgid "Clock"
-msgstr "時鐘"
-
-msgid "Collection"
-msgstr "書單"
-
-msgid "Collection is empty."
-msgstr "書單為空。"
-
-msgid "Collection not available: %s"
-msgstr "書單不可用：%s"
-
-msgid "Collections"
-msgstr "書單"
-
-msgid "Collections not available."
-msgstr "書單不可用。"
-
-msgid "Compact"
-msgstr "緊湊"
-
-msgid "Continue"
-msgstr "繼續"
-
-msgid "Create Quick Action"
-msgstr "建立快捷操作"
-
-msgid "Currently Reading"
-msgstr "正在閱讀"
-
-msgid "Custom"
-msgstr "自訂"
-
-msgid "Custom Text"
-msgstr "自訂文字"
-
-msgid "Daily Goal"
-msgstr "每日目標"
-
-msgid "Daily Reading Goal"
-msgstr "每日閱讀目標"
-
-msgid "Daily avg — Pages"
-msgstr "日平均 — 頁數"
-
-msgid "Daily avg — Time"
-msgstr "日平均 — 時間"
-
-msgid "Date"
-msgstr "日期"
-
-msgid "Default"
-msgstr "預設"
-
-msgid "Default (Folder)"
-msgstr "預設（資料夾）"
-
-msgid "Default (Plugin)"
-msgstr "預設（外掛程式）"
-
-msgid "Default (System)"
-msgstr "預設（系統）"
-
-msgid "Delete"
-msgstr "刪除"
-
-msgid "Dictionary Lookup"
-msgstr "詞典查詢"
-
-msgid "Digital Goal  (%s)"
-msgstr "數位目標  (%s)"
-
-msgid "Digital: %d books in %s"
-msgstr "數位：%s %d 本書"
-
-msgid "Disk Usage"
-msgstr "磁碟使用"
-
-msgid "Dispatcher not available."
-msgstr "調度器不可用。"
-
-msgid "Edit"
-msgstr "編輯"
-
-msgid "Edit Quick Action"
-msgstr "編輯快捷操作"
-
-msgid "Enable at least 2 modules to arrange."
-msgstr "請至少啟用 2 個模組來排序。"
-
-msgid "Extra Small"
-msgstr "特小"
-
-msgid "Favorites"
-msgstr "收藏"
-
-msgid "Favorites not available."
-msgstr "收藏不可用。"
-
-msgid "File Search"
-msgstr "檔案搜尋"
-
-msgid "Folder"
-msgstr "資料夾"
-
-msgid "Folder Shortcuts"
-msgstr "資料夾捷徑"
-
-msgid "Folder not found:\n%s"
-msgstr "資料夾未找到：\n%s"
-
-msgid "Frontlight not available on this device."
-msgstr "此裝置不支援前光燈。"
-
-msgid "Header"
-msgstr "標題列"
-
-msgid "Header Text"
-msgstr "標題文字"
-
-msgid "History"
-msgstr "歷史"
-
-msgid "History not available."
-msgstr "歷史不可用。"
-
-msgid "Home"
-msgstr "首頁"
-
-msgid "Home Screen"
-msgstr "主畫面"
-
-msgid "Homescreen"
-msgstr "主畫面"
-
-msgid "Homescreen not available."
-msgstr "主畫面不可用。"
-
-msgid "Icon"
-msgstr "圖示"
-
-msgid "Icon: Default"
-msgstr "圖示：預設"
-
-msgid "Icons"
-msgstr "圖示"
-
-msgid "Icons only"
-msgstr "僅圖示"
-
-msgid "Invalid arrangement.\nKeep items between the Left and Right separators."
-msgstr "排序無效。\n請將項目保持在左右分隔符之間。"
-
-msgid "Items"
-msgstr "項目"
-
-msgid "Large"
-msgstr "大"
-
-msgid "Later"
-msgstr "稍後"
-
-msgid "Left"
-msgstr "左"
-
-msgid "Library"
-msgstr "書庫"
-
-msgid "Maximum %d actions per module reached. Remove one first."
-msgstr "每個模組最多 %d 個操作。請先刪除一個。"
-
-msgid "Maximum %d modules active. Disable one first."
-msgstr "最多 %d 個活躍模組。請先停用一個。"
-
-msgid "Maximum %d quick actions reached. Delete one first."
-msgstr "最多 %d 個快捷操作。請先刪除一個。"
-
-msgid "Maximum %d stats per row. Remove one first."
-msgstr "每列最多 %d 個統計項。請先刪除一個。"
-
-msgid "Maximum %d tabs reached. Remove one first."
-msgstr "最多 %d 個標籤頁。請先刪除一個。"
-
-msgid "Maximum 5 collections. Remove one first."
-msgstr "最多 5 個書單。請先刪除一個。"
-
-msgid "Minimum 2 tabs required. Select another tab first."
-msgstr "至少需要 2 個標籤頁。請先選擇另一個標籤頁。"
-
-msgid "Minutes per day:"
-msgstr "每天分鐘數："
-
-msgid "Module Settings"
-msgstr "模組設定"
-
-msgid "Module limit disabled. Enabling too many modules may slow down the homescreen significantly and modules may be clipped at the bottom of the page."
-msgstr "已停用模組限制。啟用過多模組可能會顯著減慢主畫面速度，並且模組可能會被頁面底部裁剪。"
-
-msgid "Modules  (%d — no limit)"
-msgstr "模組  (%d — 無限制)"
-
-msgid "Modules  (%d/%d — %d left)"
-msgstr "模組  (%d/%d — 剩餘 %d 個)"
-
-msgid "Modules  (%d/%d — at limit)"
-msgstr "模組  (%d/%d — 已達上限)"
-
-msgid "Name"
-msgstr "名稱"
-
-msgid "Network manager unavailable."
-msgstr "網路管理員不可用。"
-
-msgid "New Quick Action"
-msgstr "新建快捷操作"
-
-msgid "No Module Limit  ⚠ not recommended"
-msgstr "無模組限制  ⚠ 不推薦"
-
-msgid "No book in history."
-msgstr "歷史中沒有書籍。"
-
-msgid "No books opened yet"
-msgstr "尚未打開任何書籍"
-
-msgid "No collections found."
-msgstr "未找到書單。"
-
-msgid "No collections selected"
-msgstr "未選擇任何書單"
-
-msgid "No folder, collection or plugin configured.\nGo to Simple UI → Settings → Quick Actions to set one."
-msgstr "未設定資料夾、書單或外掛程式。\n前往 Simple UI → 設定 → 快捷操作進行設定。"
-
-msgid "No icons found in:"
-msgstr "未在以下位置找到圖示："
-
-msgid "No plugins found."
-msgstr "未找到外掛程式。"
-
-msgid "No quotes found."
-msgstr "未找到名言。"
-
-msgid "No stats selected"
-msgstr "未選擇任何統計項"
-
-msgid "No system actions found."
-msgstr "未找到系統操作。"
-
-msgid "OK"
-msgstr "確定"
-
-msgid "Off"
-msgstr "關閉"
-
-msgid "On"
-msgstr "開啟"
-
-msgid "Open a book to get started"
-msgstr "打開一本書開始閱讀"
-
-msgid "Pagination Bar"
-msgstr "分頁欄"
-
-msgid "Pagination bar size will change after restart.\n\nRestart now?"
-msgstr "重啟後分頁欄大小將變更。\n\n現在重啟嗎？"
-
-msgid "Pagination bar will be %s after restart.\n\nRestart now?"
-msgstr "重啟後分頁欄將變為 %s。\n\n現在重啟嗎？"
-
-msgid "Path is not a folder:\n%s"
-msgstr "路徑不是資料夾：\n%s"
-
-msgid "Physical Books — %s"
-msgstr "實體書 — %s"
-
-msgid "Physical books read this year:"
-msgstr "今年閱讀的實體書："
-
-msgid "Physical: %d books in %s"
-msgstr "實體：%s %d 本書"
-
-msgid "Plugin"
-msgstr "外掛程式"
-
-msgid "Plugin error: %s"
-msgstr "外掛程式錯誤：%s"
-
-msgid "Plugin not available: %s"
-msgstr "外掛程式不可用：%s"
-
-msgid "Power"
-msgstr "電源"
-
-msgid "Quick Actions"
-msgstr "快捷操作"
-
-msgid "Quick Actions  (%d/%d — %d left)"
-msgstr "快捷操作  (%d/%d — 剩餘 %d 個)"
-
-msgid "Quick Actions  (%d/%d — at limit)"
-msgstr "快捷操作  (%d/%d — 已達上限)"
-
-msgid "Quick Actions %d"
-msgstr "快捷操作 %d"
-
-msgid "Quit"
-msgstr "退出"
-
-msgid "Quote of the Day"
-msgstr "每日名言"
-
-msgid "RAM Usage"
-msgstr "記憶體使用"
-
-msgid "Reading Goals"
-msgstr "閱讀目標"
-
-msgid "Reading Stats"
-msgstr "閱讀統計"
-
-msgid "Recent Books"
-msgstr "最近的書"
-
-msgid "Restart"
-msgstr "重新啟動"
-
-msgid "Right"
-msgstr "右"
-
-msgid "Save"
-msgstr "儲存"
-
-msgid "Select at least 2 collections to arrange."
-msgstr "請至少選擇 2 個書單來排序。"
-
-msgid "Settings"
-msgstr "設定"
-
-msgid "Show Labels"
-msgstr "顯示標籤"
-
-msgid "Simple UI"
-msgstr "Simple UI"
-
-msgid "Simple UI will be %s after restart.\n\nRestart now?"
-msgstr "重啟後 Simple UI 將變為 %s。\n\n現在重啟嗎？"
-
-msgid "Size"
-msgstr "大小"
-
-msgid "Small"
-msgstr "小"
-
-msgid "Start with"
-msgstr "從...開始"
-
-msgid "Start with Home Screen"
-msgstr "從主畫面開始"
-
-msgid "Statistics plugin not available."
-msgstr "統計外掛程式不可用。"
-
-msgid "Stats"
-msgstr "統計"
-
-msgid "Streak"
-msgstr "連續閱讀"
-
-msgid "Swipe Indicator"
-msgstr "滑動指示"
-
-msgid "System Actions"
-msgstr "系統操作"
-
-msgid "System action error: %s"
-msgstr "系統操作錯誤：%s"
-
-msgid "Tabs  (%d/%d — %d left)"
-msgstr "標籤頁  (%d/%d — 剩餘 %d 個)"
-
-msgid "Tabs  (%d/%d — at limit)"
-msgstr "標籤頁  (%d/%d — 已達上限)"
-
-msgid "Text"
-msgstr "文字"
-
-msgid "Text only"
-msgstr "僅文字"
-
-msgid "Today"
-msgstr "今天"
-
-msgid "Today — Pages"
-msgstr "今天 — 頁數"
-
-msgid "Today — Time"
-msgstr "今天 — 時間"
-
-msgid "Top Bar"
-msgstr "頂部欄"
-
-msgid "Top Bar will be %s after restart.\n\nRestart now?"
-msgstr "重啟後頂部欄將變為 %s。\n\n現在重啟嗎？"
-
-msgid "Type"
-msgstr "類型"
-
-msgid "Wi-Fi"
-msgstr "Wi-Fi"
-
-msgid "Wi-Fi off"
-msgstr "Wi-Fi 已關閉"
-
-msgid "WiFi"
-msgstr "Wi-Fi"
-
-msgid "WiFi not available on this device."
-msgstr "此裝置不支援 Wi-Fi。"
-
-msgid "Wikipedia Lookup"
-msgstr "維基百科查詢"
-
-msgid "books finished"
-msgstr "已完成的書"
-
-msgid "daily avg (7 days)"
-msgstr "日平均（7天）"
-
-msgid "day streak"
-msgstr "天連續"
-
-msgid "days streak"
-msgstr "天連續"
-
-msgid "disabled"
-msgstr "已停用"
-
-msgid "e.g. Books…"
-msgstr "例如：書籍…"
-
-msgid "e.g. My Library"
-msgstr "例如：我的書庫"
-
-msgid "e.g. Rakuyomi…"
-msgstr "例如：Rakuyomi…"
-
-msgid "e.g. Sci-Fi…"
-msgstr "例如：科幻…"
-
-msgid "e.g. Sleep, Refresh…"
-msgstr "例如：睡眠、重新整理…"
-
-msgid "enabled"
-msgstr "已啟用"
-
-msgid "hidden"
-msgstr "隱藏"
-
-msgid "not configured"
-msgstr "未設定"
-
-msgid "of reading today"
-msgstr "今天閱讀"
-
-msgid "of reading, all time"
-msgstr "總計閱讀"
-
-msgid "pages read today"
-msgstr "今天閱讀頁數"
-
-msgid "pages/day (7 days)"
-msgstr "頁/天（7天）"
-
-msgid "visible"
-msgstr "可見"
-
-msgid "Arrange Buttons"
-msgstr "排序按鈕"
-
-msgid "Back"
-msgstr "返回"
-
-msgid "Button Size"
-msgstr "按鈕大小"
-
-msgid "Close"
-msgstr "關閉"
-
-msgid "Custom Title Bar"
-msgstr "自訂標題列"
-
-msgid "Custom Title Bar will be %s after restart.\n\nRestart now?"
-msgstr "重啟後自訂標題列將變為 %s。\n\n現在重啟嗎？"
-
-msgid "Library Buttons"
-msgstr "書庫按鈕"
-
-msgid "Menu"
-msgstr "選單"
-
-msgid "More Options"
-msgstr "更多選項"
-
-msgid "Sub-pages Buttons"
-msgstr "子頁面按鈕"
-
-msgid "Title"
-msgstr "標題"
-
-msgid "Title Bar"
-msgstr "標題列"
-
-msgid "Search"
-msgstr "搜尋"
-
-msgid "Delete quick action \"%s\"?"
-msgstr "刪除快捷操作 \"%s\"？"
-
-msgid "Show Date"
-msgstr "顯示日期"
-
-msgid "Show Battery"
-msgstr "顯示電量"
-
-msgid "Cards"
-msgstr "卡片"
-
-msgid "List"
-msgstr "列表"
-
-msgid "Cover for \"%s\""
-msgstr "\"%s\" 的封面"
-
+#: sui_menu.lua:347
+msgid "General"
+msgstr "一般"
+
+#: sui_menu.lua:320
 msgid "    Size"
 msgstr "    大小"
 
-msgid "Apply"
-msgstr "套用"
-
-msgid "Bookmark browser"
-msgstr "書籤瀏覽器"
-
-msgid "Bookmark browser not available."
-msgstr "書籤瀏覽器不可用。"
-
-msgid "Bookmarks"
-msgstr "書籤"
-
-msgid "Bottom"
-msgstr "底部"
-
-msgid "Bottom Bar Size"
-msgstr "底部欄大小"
-
-msgid "Change Icons"
-msgstr "變更圖示"
-
-msgid "Cover size"
-msgstr "封面大小"
-
-msgid "Cover size  —  %d%%"
-msgstr "封面大小  —  %d%%"
-
-msgid "Fetching bookmarks…"
-msgstr "正在取得書籤…"
-
-msgid "Global scale for all modules.\nIndividual overrides in Module Settings take precedence.\n100% is the default size."
-msgstr "所有模組的全域縮放。\n模組設定中的單獨覆蓋優先。\n100% 為預設大小。"
-
-msgid "Height of the bottom navigation bar.\n100% is the default size."
-msgstr "底部導覽列的高度。\n100% 為預設大小。"
-
-msgid "Height of the top status bar.\n100% is the default size."
-msgstr "頂部狀態列的高度。\n100% 為預設大小。"
-
-msgid "Hidden"
-msgstr "隱藏"
-
-msgid "Home folder"
-msgstr "主資料夾"
-
-msgid "Home folder + subfolders"
-msgstr "主資料夾 + 子資料夾"
-
-msgid "Label Scale"
-msgstr "標籤縮放"
-
-msgid "Labels  —  %d%%"
-msgstr "標籤  —  %d%%"
-
-msgid "Minimum 1 tab required in navpager mode."
-msgstr "頁面導覽模式下至少需要 1 個標籤。"
-
-msgid "Module Scale"
-msgstr "模組縮放"
-
-msgid "Modules  —  %d%%"
-msgstr "模組  —  %d%%"
-
-msgid "Navigation Bar"
-msgstr "導覽列"
-
-msgid "Navpager"
-msgstr "頁面導覽器"
-
-msgid "Navpager will be %s after restart.\n\nRestart now?"
-msgstr "頁面導覽器將在重啟後變為 %s。\n\n立即重啟？"
-
-msgid "New name…"
-msgstr "新名稱…"
-
-msgid "Next"
-msgstr "下一頁"
-
-msgid "No highlights found. Open a book and highlight some passages."
-msgstr "未找到高亮內容。請打開一本書並高亮一些段落。"
-
-msgid "Page %1 of %2"
-msgstr "第 %1 頁，共 %2 頁"
-
-msgid "Page number in title bar"
-msgstr "標題列中的頁碼"
-
-msgid "Prev"
-msgstr "上一頁"
-
-msgid "Rename"
-msgstr "重新命名"
-
-msgid "Replaces the pagination bar with Prev/Next arrows at the edges of the bottom bar.\nThe arrows dim when there is no previous or next page.\nWith navpager active, as few as 1 tab and at most 4 tabs can be configured."
-msgstr "將分頁欄替換為底部欄兩端的上一頁/下一頁箭頭。\n當沒有上一頁或下一頁時，箭頭變暗。\n啟用頁面導覽器時，可設定 1 到 4 個標籤。"
-
-msgid "Reset"
-msgstr "重置"
-
-msgid "Reset all scales to default (100%)? This cannot be undone."
-msgstr "將所有縮放重置為預設值 (100%)？此操作無法復原。"
-
-msgid "Reset to Default Scale"
-msgstr "重置為預設縮放"
-
-msgid "Scale"
-msgstr "縮放"
-
-msgid "Scale  —  %d%%"
-msgstr "縮放  —  %d%%"
-
-msgid "Scale  —  %d%% / %d%%"
-msgstr "縮放  —  %d%% / %d%%"
-
-msgid "Scale for the collection thumbnails only.\nThe label text follows the module scale.\n100% is the default size."
-msgstr "僅用於收藏夾縮圖的縮放。\n標籤文字跟隨模組縮放。\n100% 為預設大小。"
-
-msgid "Scales all modules and labels together.\n100% is the default size."
-msgstr "同時縮放所有模組和標籤。\n100% 為預設大小。"
-
-msgid "Scales the section label text above each module.\n100% is the default size."
-msgstr "縮放每個模組上方的分區標籤文字。\n100% 為預設大小。"
-
-msgid "Simple UI was updated (%s → %s).\n\nA restart is recommended to apply all changes cleanly."
-msgstr "Simple UI 已更新（%s → %s）。\n\n建議重啟以完整套用所有變更。"
-
-msgid "Size  —  %d%%"
-msgstr "大小  —  %d%%"
-
-msgid "Status Bar"
-msgstr "狀態列"
-
-msgid "Top"
-msgstr "頂部"
-
-msgid "Top Bar Size"
-msgstr "頂部欄大小"
-
-msgid "Top separator"
-msgstr "頂部分隔符"
-
-msgid "Visible"
-msgstr "可見"
-
-msgid "Your highlights"
-msgstr "您的高亮內容"
-
-msgid "Lock Scale"
-msgstr "鎖定縮放"
-
-msgid "Disable \"Lock Scale\" first to set a per-module scale."
-msgstr "請先關閉\"鎖定縮放\"，再設定單個模組的縮放比例。"
-
-msgid "Disable \"Lock Scale\" first to set a custom label scale."
-msgstr "請先關閉\"鎖定縮放\"，再設定自訂標籤縮放比例。"
-
-msgid "Text Size"
-msgstr "文字大小"
-
-msgid "Modules"
-msgstr "模組"
-
-msgid "Labels"
-msgstr "標籤"
-
-msgid "Scale for this module.\n100% is the default size."
-msgstr "此模組的縮放比例。\n100% 為預設大小。"
-
-msgid "Scale for the collection name text.\n100% is the default size."
-msgstr "書單名稱文字的縮放比例。\n100% 為預設大小。"
-
-msgid "Scale for the cover thumbnail only.\n100% is the default size."
-msgstr "僅調整封面縮圖的縮放比例。\n100% 為預設大小。"
-
-msgid "Scale for all text elements (title, author, progress, time).\n100% is the default size."
-msgstr "所有文字元素（書名、作者、進度、時間）的縮放比例。\n100% 為預設大小。"
-
-msgid "Scale for the button label text.\n100% is the default size."
-msgstr "按鈕標籤文字的縮放比例。\n100% 為預設大小。"
-
-msgid "Scale for the cover thumbnails only.\nText and progress bar follow the module scale.\n100% is the default size."
-msgstr "僅調整封面縮圖的縮放比例。\n文字和進度列跟隨模組縮放。\n100% 為預設大小。"
-
-msgid "Scale for the percentage read text.\n100% is the default size."
-msgstr "已讀百分比文字的縮放比例。\n100% 為預設大小。"
-
-msgid "Source"
-msgstr "來源"
-
-msgid "Default Quotes"
-msgstr "預設名言"
-
-msgid "My Highlights"
-msgstr "我的批註"
-
-msgid "Quotes + My Highlights"
-msgstr "名言 + 我的批註"
-
-msgid "default"
-msgstr "預設"
-
-msgid "Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\nNavpager enables this automatically.\nNot available when Navpager is active."
-msgstr "在瀏覽書庫、歷史記錄或書單時，在標題列副標題中顯示\"第X頁/共Y頁\"。\n翻頁導覽列會自動啟用此功能。\n翻頁導覽列啟用時不可用。"
-
-msgid "Icon Size"
-msgstr "圖示大小"
-
-msgid "Icon Size — %d%%"
-msgstr "圖示大小  —  %d%%"
-
-msgid "Label Size"
-msgstr "標籤大小"
-
-msgid "Label Size — %d%%"
-msgstr "標籤大小  —  %d%%"
-
-msgid "Size of the tab icons.\n100% is the default size."
-msgstr "標籤頁圖示的大小。\n100% 為預設大小。"
-
-msgid "Size of the tab label text.\n100% is the default size."
-msgstr "標籤頁標籤文字的大小。\n100% 為預設大小。"
-
-msgid "Folder Covers"
-msgstr "資料夾封面"
-
-msgid "Folder cover"
-msgstr "資料夾封面"
-
-msgid "Set folder cover…"
-msgstr "設定資料夾封面…"
-
-msgid "No books found in this folder."
-msgstr "此資料夾中未找到書籍。"
-
-msgid "Badge"
-msgstr "徽章"
-
-msgid "Center"
-msgstr "置中"
-
-msgid "Label"
-msgstr "標籤"
-
-msgid "Show label"
-msgstr "顯示標籤"
-
-msgid "Transparent"
-msgstr "透明"
-
-msgid "Hide selection underline"
-msgstr "隱藏選取下劃線"
-
-msgid "Author"
-msgstr "作者"
-
-msgid "Progress bar"
-msgstr "進度列"
-
-msgid "Percentage read"
-msgstr "已讀百分比"
-
+#: desktop_modules/module_reading_goals.lua:602
+msgid "  Physical Books  (%d in %s)"
+msgstr "  實體書  (%d 本在 %s)"
+
+#: desktop_modules/module_reading_goals.lua:595
+msgid "  Set Goal  (%d books in %s)"
+msgstr "  設定目標  (%s 年 %d 本書)"
+
+#: desktop_modules/module_reading_goals.lua:617
+msgid "  Set Goal  (%d min/day)"
+msgstr "  設定目標  (每天 %d 分鐘)"
+
+#: desktop_modules/module_reading_goals.lua:596
+msgid "  Set Goal  (%s)"
+msgstr "  設定目標  (%s)"
+
+#: desktop_modules/module_reading_goals.lua:616
+msgid "  Set Goal  (disabled)"
+msgstr "  設定目標  (已停用)"
+
+#: desktop_modules/module_reading_goals.lua:429
+msgid "%d books"
+msgstr "%d 本書"
+
+#: desktop_modules/module_currently.lua:336
 msgid "%d days of reading"
-msgstr "%d 天閱讀"
+msgstr "閱讀 %d 天"
 
+#: desktop_modules/module_recent.lua:123
 msgid "%d%%"
 msgstr "%d%%"
 
+#: desktop_modules/module_currently.lua:309
+#: desktop_modules/module_new_books.lua:141
+#: desktop_modules/module_recent.lua:157
+msgid "%d%% Read"
+msgstr "已讀 %d%%"
+
+#: desktop_modules/module_reading_goals.lua:428
+msgid "%d/%d books"
+msgstr "%d/%d 本書"
+
+#: desktop_modules/module_currently.lua:347
+#: desktop_modules/module_reading_goals.lua:445
+msgid "%s read"
+msgstr "已讀 %s"
+
+#: desktop_modules/module_currently.lua:370
 msgid "%s remaining"
 msgstr "剩餘 %s"
 
+#: desktop_modules/module_currently.lua:335
 msgid "1 day of reading"
-msgstr "1 天閱讀"
+msgstr "閱讀 1 天"
 
+#: sui_menu.lua:1122
+msgid "Add at least 2 actions to arrange."
+msgstr "請至少新增 2 個操作以便排序。"
+
+#: desktop_modules/module_reading_stats.lua:546
+msgid "Add at least 2 stats to arrange."
+msgstr "請至少新增 2 個統計項以便排序。"
+
+#: desktop_modules/module_reading_stats.lua:67
+msgid "All time — Books"
+msgstr "總計 — 書籍"
+
+#: desktop_modules/module_reading_stats.lua:66
+msgid "All time — Time"
+msgstr "總計 — 時間"
+
+#: desktop_modules/module_reading_goals.lua:585
+msgid "Annual Goal"
+msgstr "年度目標"
+
+#: sui_menu.lua:1024
+#: desktop_modules/module_reading_goals.lua:362
+msgid "Annual Reading Goal"
+msgstr "年度閱讀目標"
+
+#: sui_config.lua:1562
+#: sui_config.lua:1643
+#: sui_menu.lua:593
+#: sui_menu.lua:651
+#: sui_menu.lua:1364
+#: sui_menu.lua:1399
+msgid "Apply"
+msgstr "套用"
+
+#: desktop_modules/module_clock.lua:49
 msgid "April"
 msgstr "四月"
 
+#: sui_menu.lua:1120
+#: desktop_modules/module_reading_stats.lua:543
+msgid "Arrange"
+msgstr "排序"
+
+#: sui_menu.lua:1126
+msgid "Arrange %s"
+msgstr "排序 %s"
+
+#: sui_menu.lua:840
+#: sui_menu.lua:891
+#: sui_menu.lua:906
+msgid "Arrange Buttons"
+msgstr "排序按鈕"
+
+#: desktop_modules/module_collections.lua:535
+#: desktop_modules/module_collections.lua:548
+msgid "Arrange Collections"
+msgstr "排序收藏夾"
+
+#: sui_menu.lua:483
+#: sui_menu.lua:511
+msgid "Arrange Items"
+msgstr "排序項目"
+
+#: sui_menu.lua:1280
+#: sui_menu.lua:1296
+msgid "Arrange Modules"
+msgstr "排序模組"
+
+#: desktop_modules/module_reading_stats.lua:552
+msgid "Arrange Reading Stats"
+msgstr "排序閱讀統計"
+
+#: sui_menu.lua:193
+#: sui_menu.lua:203
+msgid "Arrange tabs"
+msgstr "排序分頁"
+
+#: desktop_modules/module_clock.lua:50
 msgid "August"
 msgstr "八月"
 
+#: sui_foldercovers.lua:405
+#: desktop_modules/module_collections.lua:497
+msgid "Auto (first book)"
+msgstr "自動（第一本書）"
+
+#: sui_titlebar.lua:54
+msgid "Back"
+msgstr "返回"
+
+#: desktop_modules/module_collections.lua:575
 msgid "Badge position: Bottom"
 msgstr "徽章位置：底部"
 
+#: desktop_modules/module_collections.lua:576
 msgid "Badge position: Top"
 msgstr "徽章位置：頂部"
 
+#: sui_config.lua:143
+msgid "Battery"
+msgstr "電池"
+
+#: sui_quickactions.lua:404
+msgid "Book Info"
+msgstr "書籍資訊"
+
+#: sui_bottombar.lua:886
+msgid "Bookmark browser"
+msgstr "書籤瀏覽器"
+
+#: sui_bottombar.lua:859
+msgid "Bookmark browser not available."
+msgstr "書籤瀏覽器不可用。"
+
+#: sui_config.lua:118
+msgid "Bookmarks"
+msgstr "書籤"
+
+#: desktop_modules/module_reading_goals.lua:363
+msgid "Books to read in %s:"
+msgstr "%s 年需要閱讀的書籍："
+
+#: sui_menu.lua:1545
+#: sui_menu.lua:1624
+#: sui_menu.lua:1680
+msgid "Bottom"
+msgstr "底部"
+
+#: sui_bottombar.lua:736
+#: sui_menu.lua:618
+msgid "Bottom Bar"
+msgstr "底部列"
+
+#: sui_menu.lua:644
+msgid "Bottom Bar Size"
+msgstr "底部列大小"
+
+#: sui_menu.lua
+msgid "A restart is required to apply the new bar size across all layouts.\n\nRestart now?"
+msgstr "需要重新啟動以在所有佈局中套用新的列大小。\n\n是否立即重新啟動？"
+
+#: sui_menu.lua:626
+msgid "Bottom Bar will be %s after restart.\n\nRestart now?"
+msgstr "重新啟動後底部列將變為 %s。\n\n是否立即重新啟動？"
+
+#: sui_menu.lua:668
+#: sui_menu.lua:671
 msgid "Bottom Margin"
 msgstr "底部邊距"
 
+#: sui_menu.lua:669
 msgid "Bottom Margin — %d%%"
 msgstr "底部邊距 — %d%%"
 
-msgid "Codepoint out of valid Unicode range (0–10FFFF)."
-msgstr "碼點超出有效 Unicode 範圍 (0–10FFFF)。"
-
-msgid "Confirm"
-msgstr "確認"
-
-msgid "Days of reading"
-msgstr "閱讀天數"
-
-msgid "December"
-msgstr "十二月"
-
-msgid "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\nYou can look up codes with wakamaifondue.com using the file:\n  /koreader/fonts/nerdfonts/symbols.ttf\nLeave blank and press OK to remove a Nerd Font icon."
-msgstr "輸入 Nerd Fonts 符號的 Unicode 碼點（十六進制）。\n您可以使用以下檔案在 wakamaifondue.com 上查詢代碼：\n  /koreader/fonts/nerdfonts/symbols.ttf\n留空並按確定以移除 Nerd Font 圖示。"
-
-msgid "February"
-msgstr "二月"
-
-msgid "Fetching bookmarks…"
-msgstr "正在取得書籤…"
-
-msgid "Flat"
-msgstr "扁平"
-
-msgid "Folder Name"
-msgstr "資料夾名稱"
-
-msgid "Friday"
-msgstr "星期五"
-
-msgid "Hide Text"
-msgstr "隱藏文字"
-
-msgid "Invalid arrangement.\nKeep the Left, Center and Right separators in order."
-msgstr "排列無效。\n請保持左、中、右分隔符的順序。"
-
-msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
-msgstr "輸入無效。請輸入 1–6 位十六進制數字（0–9，A–F）。"
-
-msgid "January"
-msgstr "一月"
-
-msgid "July"
-msgstr "七月"
-
-msgid "June"
-msgstr "六月"
-
-msgid "March"
-msgstr "三月"
-
-msgid "May"
-msgstr "五月"
-
-msgid "Monday"
-msgstr "星期一"
-
-msgid "Nerd Font Icon"
-msgstr "Nerd Font 圖示"
-
-msgid "Nerd Font symbol…"
-msgstr "Nerd Font 符號…"
-
-msgid "New"
-msgstr "新"
-
-msgid "New Books"
-msgstr "新書"
-
-msgid "No folder, collection or plugin configured.\nGo to Simple UI → Settings → Quick Actions to set one."
-msgstr "未設定資料夾、書單或外掛程式。\n前往 Simple UI → 設定 → 快捷操作進行設定。"
-
-msgid "November"
-msgstr "十一月"
-
-msgid "Number of Books in Folder"
-msgstr "資料夾中的書籍數量"
-
-msgid "Number of Pages"
-msgstr "頁數"
-
-msgid "October"
-msgstr "十月"
-
-msgid "Open"
-msgstr "開啟"
-
-msgid "Overlays"
-msgstr "覆蓋層"
-
-msgid "Path"
-msgstr "路徑"
-
-msgid "Path chooser not available."
-msgstr "路徑選擇器不可用。"
-
-msgid "Percentage overlay on cover"
-msgstr "封面的百分比覆蓋"
-
-msgid "Percentage text"
-msgstr "百分比文字"
-
-msgid "Progress bar style"
-msgstr "進度列樣式"
-
-msgid "Saturday"
-msgstr "星期六"
-
-msgid "Scale for the label text.\n100% is the default size."
-msgstr "標籤文字的縮放比例。\n100% 為預設大小。"
-
-msgid "September"
-msgstr "九月"
-
-msgid "Simple"
-msgstr "簡單"
-
-msgid "Size of the text inside the stat cards.\nDoes not affect card size or padding.\n100% is the default size."
-msgstr "統計卡片內文字的大小。\n不影響卡片大小或內邊距。\n100% 為預設大小。"
-
-msgid "Space below the bottom navigation bar.\n100% is the default spacing."
-msgstr "底部導覽列下方的空間。\n100% 為預設間距。"
-
-msgid "Sunday"
-msgstr "星期日"
-
-msgid "Text Size — %d%%"
-msgstr "文字大小 — %d%%"
-
-msgid "Thursday"
-msgstr "星期四"
-
-msgid "Time read"
-msgstr "閱讀時間"
-
-msgid "Time remaining"
-msgstr "剩餘時間"
-
+#: sui_homescreen.lua:701
 msgid "Top Margin  (%d%%)"
 msgstr "頂部邊距  (%d%%)"
 
-msgid "Tuesday"
-msgstr "星期二"
-
-msgid "Uniformize Covers (2:3)"
-msgstr "統一封面比例 (2:3)"
-
+#: sui_homescreen.lua:704
 msgid "Vertical space above this module.\n100% is the default spacing."
 msgstr "此模組上方的垂直空間。\n100% 為預設間距。"
 
+#: sui_config.lua:120
+#: sui_config.lua:142
+msgid "Brightness"
+msgstr "亮度"
+
+#: sui_menu.lua:956
+msgid "Button Size"
+msgstr "按鈕大小"
+
+#: sui_bottombar.lua:911
+#: sui_bottombar.lua:1428
+#: sui_config.lua:1563
+#: sui_config.lua:1644
+#: sui_foldercovers.lua:431
+#: sui_menu.lua:594
+#: sui_menu.lua:652
+#: sui_menu.lua:1365
+#: sui_menu.lua:1400
+#: sui_quickactions.lua:188
+#: sui_quickactions.lua:279
+#: sui_quickactions.lua:387
+#: sui_quickactions.lua:565
+#: sui_quickactions.lua:636
+#: sui_quickactions.lua:664
+#: sui_quickactions.lua:692
+#: sui_quickactions.lua:708
+#: sui_quickactions.lua:820
+#: sui_quickactions.lua:961
+#: desktop_modules/module_collections.lua:523
+#: desktop_modules/module_quote.lua:892
+#: desktop_modules/module_reading_goals.lua:366
+#: desktop_modules/module_reading_goals.lua:383
+#: desktop_modules/module_reading_goals.lua:401
+msgid "Cancel"
+msgstr "取消"
+
+#: desktop_modules/module_reading_stats.lua:494
+msgid "Cards"
+msgstr "卡片"
+
+#: sui_menu.lua:498
+#: sui_menu.lua:1672
+msgid "Center"
+msgstr "置中"
+
+#: sui_quickactions.lua:869
+msgid "Change Icons"
+msgstr "變更圖示"
+
+#: sui_config.lua:140
+#: desktop_modules/module_clock.lua:211
+msgid "Clock"
+msgstr "時鐘"
+
+#: sui_titlebar.lua:59
+msgid "Close"
+msgstr "關閉"
+
+#: sui_quickactions.lua:312
+msgid "Codepoint out of valid Unicode range (0–10FFFF)."
+msgstr "碼點超出有效 Unicode 範圍（0–10FFFF）。"
+
+#: sui_quickactions.lua:702
+msgid "Collection"
+msgstr "收藏夾"
+
+#: desktop_modules/module_collections.lua:484
+#: desktop_modules/module_collections.lua:490
+msgid "Collection is empty."
+msgstr "收藏夾為空。"
+
+#: sui_quickactions.lua:1029
+msgid "Collection not available: %s"
+msgstr "收藏夾不可用：%s"
+
+#: sui_bottombar.lua:897
+#: sui_config.lua:114
+#: sui_quickactions.lua:406
+#: desktop_modules/module_collections.lua:290
+#: desktop_modules/module_collections.lua:291
+msgid "Collections"
+msgstr "收藏夾"
+
+#: sui_bottombar.lua:1121
+msgid "Collections not available."
+msgstr "收藏夾不可用。"
+
+#: sui_menu.lua:960
+#: desktop_modules/module_reading_goals.lua:573
+msgid "Compact"
+msgstr "精簡"
+
+#: sui_quickactions.lua:197
+msgid "Confirm"
+msgstr "確認"
+
+#: sui_config.lua:116
+msgid "Continue"
+msgstr "繼續"
+
+#: desktop_modules/module_collections.lua:527
+msgid "Cover for \"%s\""
+msgstr "\"%s\" 的封面"
+
+#: desktop_modules/module_collections.lua:564
+#: desktop_modules/module_collections.lua:566
+#: desktop_modules/module_currently.lua:447
+#: desktop_modules/module_currently.lua:449
+#: desktop_modules/module_new_books.lua:218
+#: desktop_modules/module_new_books.lua:220
+#: desktop_modules/module_recent.lua:239
+#: desktop_modules/module_recent.lua:241
+msgid "Cover size"
+msgstr "封面大小"
+
+#: sui_quickactions.lua:878
+msgid "Create Quick Action"
+msgstr "建立快捷操作"
+
+#: desktop_modules/module_currently.lua:232
+#: desktop_modules/module_currently.lua:233
+msgid "Currently Reading"
+msgstr "正在閱讀"
+
+#: sui_config.lua:637
+msgid "Custom"
+msgstr "自訂"
+
+#: sui_menu.lua:933
+msgid "Custom Title Bar"
+msgstr "自訂標題列"
+
+#: sui_menu.lua:944
+msgid "Custom Title Bar will be %s after restart.\n\nRestart now?"
+msgstr "重新啟動後自訂標題列將變為 %s。\n\n是否立即重新啟動？"
+
+#: desktop_modules/module_reading_goals.lua:606
+msgid "Daily Goal"
+msgstr "每日目標"
+
+#: desktop_modules/module_reading_goals.lua:398
+msgid "Daily Reading Goal"
+msgstr "每日閱讀目標"
+
+#: desktop_modules/module_reading_stats.lua:65
+msgid "Daily avg — Pages"
+msgstr "日均 — 頁數"
+
+#: desktop_modules/module_reading_stats.lua:64
+msgid "Daily avg — Time"
+msgstr "日均 — 時間"
+
+#: desktop_modules/module_clock.lua:51
+msgid "December"
+msgstr "十二月"
+
+#: sui_menu.lua:297
+#: sui_menu.lua:326
+#: sui_menu.lua:961
+#: sui_quickactions.lua:347
+#: desktop_modules/module_quick_actions.lua:266
+#: desktop_modules/module_quick_actions.lua:271
+#: desktop_modules/module_reading_goals.lua:565
+msgid "Default"
+msgstr "預設"
+
+#: sui_quickactions.lua:610
+#: sui_quickactions.lua:629
+msgid "Default (Folder)"
+msgstr "預設（資料夾）"
+
+#: sui_quickactions.lua:656
+msgid "Default (Plugin)"
+msgstr "預設（外掛）"
+
+#: sui_quickactions.lua:684
+msgid "Default (System)"
+msgstr "預設（系統）"
+
+#: desktop_modules/module_quote.lua:976
+msgid "Default Quotes"
+msgstr "預設名言"
+
+#: sui_quickactions.lua:955
+#: sui_quickactions.lua:960
+msgid "Delete"
+msgstr "刪除"
+
+#: sui_quickactions.lua:959
+msgid "Delete quick action \"%s\"?"
+msgstr "刪除快捷操作 \"%s\"？"
+
+#: sui_quickactions.lua:409
+msgid "Dictionary Lookup"
+msgstr "字典查詢"
+
+#: sui_menu.lua:1025
+msgid "Digital Goal  (%s)"
+msgstr "數位目標  (%s)"
+
+#: sui_menu.lua:1025
+msgid "Digital: %d books in %s"
+msgstr "數位：%s 年 %d 本書"
+
+#: sui_menu.lua:1384
+msgid "Disable \"Lock Scale\" first to set a custom label scale."
+msgstr "請先停用「鎖定比例」以設定自訂標籤比例。"
+
+#: sui_config.lua:1547
+msgid "Disable \"Lock Scale\" first to set a per-module scale."
+msgstr "請先停用「鎖定比例」以設定每個模組的比例。"
+
+#: sui_config.lua:144
+msgid "Disk Usage"
+msgstr "磁碟使用"
+
+#: sui_quickactions.lua:1014
+msgid "Dispatcher not available."
+msgstr "排程器不可用。"
+
+#: sui_quickactions.lua:945
+msgid "Edit"
+msgstr "編輯"
+
+#: sui_quickactions.lua:511
+msgid "Edit Quick Action"
+msgstr "編輯快捷操作"
+
+#: sui_menu.lua:1292
+msgid "Enable at least 2 modules to arrange."
+msgstr "請至少啟用 2 個模組以便排序。"
+
+#: sui_quickactions.lua:271
+msgid "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\nYou can look up codes with wakamaifondue.com using the file:\n  /koreader/fonts/nerdfonts/symbols.ttf\nLeave blank and press OK to remove a Nerd Font icon."
+msgstr "輸入 Nerd Fonts 符號的 Unicode 碼點（十六進位）。\n您可以使用 wakamaifondue.com 查詢代碼，使用檔案：\n  /koreader/fonts/nerdfonts/symbols.ttf\n留白並按確定可移除 Nerd Font 圖示。"
+
+#: sui_menu.lua:324
+msgid "Extra Small"
+msgstr "超小"
+
+#: sui_config.lua:117
+#: sui_quickactions.lua:405
+msgid "Favorites"
+msgstr "我的最愛"
+
+#: sui_bottombar.lua:1149
+msgid "Favorites not available."
+msgstr "我的最愛不可用。"
+
+#: desktop_modules/module_clock.lua:49
+msgid "February"
+msgstr "二月"
+
+#: sui_bottombar.lua:867
+msgid "Fetching bookmarks…"
+msgstr "正在取得書籤…"
+
+#: sui_quickactions.lua:407
+msgid "File Search"
+msgstr "檔案搜尋"
+
+#: desktop_modules/module_quick_actions.lua:266
+#: desktop_modules/module_quick_actions.lua:280
+#: desktop_modules/module_reading_stats.lua:504
+msgid "Flat"
+msgstr "扁平"
+
+#: sui_quickactions.lua:700
+msgid "Folder"
+msgstr "資料夾"
+
+#: sui_menu.lua:1578
+msgid "Folder Covers"
+msgstr "資料夾封面"
+
+#: sui_menu.lua:1640
+msgid "Folder Name"
+msgstr "資料夾名稱"
+
+#: sui_quickactions.lua:408
+msgid "Folder Shortcuts"
+msgstr "資料夾捷徑"
+
+#: sui_foldercovers.lua:436
+msgid "Folder cover"
+msgstr "資料夾封面"
+
+#: desktop_modules/module_clock.lua:46
+msgid "Friday"
+msgstr "星期五"
+
+#: sui_bottombar.lua:1253
+msgid "Frontlight not available on this device."
+msgstr "此裝置不支援前光。"
+
+#: sui_menu.lua:1358
+msgid "Global scale for all modules.\nIndividual overrides in Module Settings take precedence.\n100% is the default size."
+msgstr "所有模組的全域比例。\n模組設定中的個別覆蓋將優先。\n100% 為預設大小。"
+
+#: sui_menu.lua:645
+msgid "Height of the bottom navigation bar.\n100% is the default size."
+msgstr "底部導覽列的高度。\n100% 為預設大小。"
+
+#: sui_menu.lua:587
+msgid "Height of the top status bar.\n100% is the default size."
+msgstr "頂部狀態列的高度。\n100% 為預設大小。"
+
+#: sui_menu.lua:728
+#: sui_menu.lua:1605
+#: sui_menu.lua:1643
+msgid "Hidden"
+msgstr "隱藏"
+
+#: sui_menu.lua:1132
+msgid "Hide Text"
+msgstr "隱藏文字"
+
+#: sui_menu.lua:1702
+msgid "Hide selection underline"
+msgstr "隱藏選擇底線"
+
+#: sui_bottombar.lua:890
+#: sui_config.lua:115
+#: sui_quickactions.lua:403
+msgid "History"
+msgstr "歷史"
+
+#: sui_bottombar.lua:1125
+msgid "History not available."
+msgstr "歷史記錄不可用。"
+
+#: sui_config.lua:113
+msgid "Home"
+msgstr "首頁"
+
+#: sui_menu.lua:1449
+#: sui_menu.lua:1543
+#: sui_patches.lua:289
+#: sui_patches.lua:293
+#: sui_patches.lua:306
+msgid "Home Screen"
+msgstr "主畫面"
+
+#: sui_bottombar.lua:907
+msgid "Home folder"
+msgstr "主要資料夾"
+
+#: sui_bottombar.lua:909
+msgid "Home folder + subfolders"
+msgstr "主要資料夾 + 子資料夾"
+
+#: sui_homescreen.lua:446
+msgid "Homescreen"
+msgstr "主畫面"
+
+#: sui_bottombar.lua:1144
+msgid "Homescreen not available."
+msgstr "主畫面不可用。"
+
+#: sui_quickactions.lua:520
+#: sui_quickactions.lua:524
+msgid "Icon"
+msgstr "圖示"
+
+#: sui_menu.lua:690
+#: sui_menu.lua:693
+msgid "Icon Size"
+msgstr "圖示大小"
+
+#: sui_menu.lua:691
+msgid "Icon Size — %d%%"
+msgstr "圖示大小 — %d%%"
+
+#: sui_quickactions.lua:515
+msgid "Icon: Default"
+msgstr "圖示：預設"
+
+#: sui_menu.lua:101
+msgid "Icons"
+msgstr "圖示"
+
+#: sui_menu.lua:102
+msgid "Icons only"
+msgstr "僅圖示"
+
+#: sui_menu.lua:853
+msgid "Invalid arrangement.\nKeep items between the Left and Right separators."
+msgstr "排序無效。\n請將項目保持在左側和右側分隔符之間。"
+
+#: sui_menu.lua:525
+msgid "Invalid arrangement.\nKeep the Left, Center and Right separators in order."
+msgstr "排序無效。\n請按順序保持左側、置中、右側分隔符。"
+
+#: sui_quickactions.lua:318
+msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
+msgstr "輸入無效。請輸入 1–6 個十六進位數字（0–9、A–F）。"
+
+#: desktop_modules/module_currently.lua:671
+#: sui_menu.lua:606
+msgid "Items"
+msgstr "項目"
+
+#: desktop_modules/module_clock.lua:49
+msgid "January"
+msgstr "一月"
+
+#: desktop_modules/module_clock.lua:50
+msgid "July"
+msgstr "七月"
+
+#: desktop_modules/module_clock.lua:50
+msgid "June"
+msgstr "六月"
+
+#: sui_menu.lua:1392
+msgid "Label Scale"
+msgstr "標籤比例"
+
+#: sui_menu.lua:710
+#: sui_menu.lua:713
+msgid "Label Size"
+msgstr "標籤大小"
+
+#: sui_menu.lua:711
+msgid "Label Size — %d%%"
+msgstr "標籤大小 — %d%%"
+
+#: sui_menu.lua:1377
+msgid "Labels"
+msgstr "標籤"
+
+#: sui_menu.lua:962
+msgid "Large"
+msgstr "大"
+
+#: sui_menu.lua:310
+#: sui_menu.lua:340
+#: sui_menu.lua:398
+#: sui_menu.lua:570
+#: sui_menu.lua:627
+#: sui_menu.lua:948
+#: sui_menu.lua:1524
+msgid "Later"
+msgstr "稍後"
+
+#: sui_menu.lua:492
+#: sui_menu.lua:823
+msgid "Left"
+msgstr "左側"
+
+#: sui_config.lua:112
+#: sui_config.lua:485
+#: sui_menu.lua:1564
+#: sui_titlebar.lua:568
+msgid "Library"
+msgstr "書庫"
+
+#: sui_menu.lua:966
+msgid "Library Buttons"
+msgstr "書庫按鈕"
+
+#: desktop_modules/module_reading_stats.lua:514
+msgid "List"
+msgstr "列表"
+
+#: sui_menu.lua:1338
+msgid "Lock Scale"
+msgstr "鎖定比例"
+
+#: desktop_modules/module_clock.lua:49
+msgid "March"
+msgstr "三月"
+
+#: sui_menu.lua:1095
+msgid "Maximum %d actions per module reached. Remove one first."
+msgstr "每個模組最多 %d 個操作。請先刪除一個。"
+
+#: sui_menu.lua:1152
+msgid "Maximum %d modules active. Disable one first."
+msgstr "最多 %d 個活動模組。請先停用一個。"
+
+#: sui_quickactions.lua:883
+msgid "Maximum %d quick actions reached. Delete one first."
+msgstr "最多 %d 個快捷操作。請先刪除一個。"
+
+#: desktop_modules/module_reading_stats.lua:481
+msgid "Maximum %d stats per row. Remove one first."
+msgstr "每列最多 %d 個統計項。請先刪除一個。"
+
+#: sui_menu.lua:270
+msgid "Maximum %d tabs reached. Remove one first."
+msgstr "最多 %d 個分頁。請先刪除一個。"
+
+#: desktop_modules/module_collections.lua:616
+msgid "Maximum 5 collections. Remove one first."
+msgstr "最多 5 個收藏夾。請先刪除一個。"
+
+#: desktop_modules/module_clock.lua:50
+msgid "May"
+msgstr "五月"
+
+#: sui_titlebar.lua:53
+#: sui_titlebar.lua:58
+msgid "Menu"
+msgstr "選單"
+
+#: sui_menu.lua:260
+msgid "Minimum 1 tab required in navpager mode."
+msgstr "導覽頁模式至少需要 1 個分頁。"
+
+#: sui_menu.lua:261
+msgid "Minimum 2 tabs required. Select another tab first."
+msgstr "至少需要 2 個分頁。請先選擇另一個分頁。"
+
+#: desktop_modules/module_reading_goals.lua:399
+msgid "Minutes per day:"
+msgstr "每天分鐘數："
+
+#: sui_menu.lua:1355
+msgid "Module Scale"
+msgstr "模組比例"
+
+#: sui_menu.lua:1314
+msgid "Module Settings"
+msgstr "模組設定"
+
+#: sui_menu.lua:1326
+msgid "Module limit disabled. Enabling too many modules may slow down the homescreen significantly and modules may be clipped at the bottom of the page."
+msgstr "已停用模組限制。啟用過多模組可能會顯著減慢主畫面速度，模組可能會在頁面底部被截斷。"
+
+#: sui_menu.lua:1349
+msgid "Modules"
+msgstr "模組"
+
+#: sui_menu.lua:1271
+msgid "Modules  (%d — no limit)"
+msgstr "模組  (%d — 無限制)"
+
+#: sui_menu.lua:1385
+msgid "Modules  (%d)"
+msgstr "模組  (%d)"
+
+#: sui_menu.lua:1275
+msgid "Modules  (%d/%d — %d left)"
+msgstr "模組  (%d/%d — 剩餘 %d)"
+
+#: sui_menu.lua:1274
+msgid "Modules  (%d/%d — at limit)"
+msgstr "模組  (%d/%d — 已達限制)"
+
+#: desktop_modules/module_clock.lua:45
+msgid "Monday"
+msgstr "星期一"
+
+#: desktop_modules/module_quote.lua:996
+msgid "My Highlights"
+msgstr "我的劃線"
+
+#: sui_quickactions.lua:609
+#: sui_quickactions.lua:628
+#: sui_quickactions.lua:655
+#: sui_quickactions.lua:683
+msgid "Name"
+msgstr "名稱"
+
+#: sui_menu.lua:1547
+msgid "Navigation Bar"
+msgstr "導覽列"
+
+#: sui_menu.lua:375
+msgid "Navpager"
+msgstr "導覽頁"
+
+#: sui_menu.lua:397
+msgid "Navpager will be %s after restart.\n\nRestart now?"
+msgstr "重新啟動後導覽頁將變為 %s。\n\n是否立即重新啟動？"
+
+#: sui_quickactions.lua:268
+msgid "Nerd Font Icon"
+msgstr "Nerd Font 圖示"
+
+#: sui_quickactions.lua:358
+msgid "Nerd Font symbol…"
+msgstr "Nerd Font 符號…"
+
+#: sui_bottombar.lua:1213
+msgid "Network manager unavailable."
+msgstr "網路管理員不可用。"
+
+#: desktop_modules/module_new_books.lua:139
+msgid "New"
+msgstr "新"
+
+#: desktop_modules/module_new_books.lua:46
+#: desktop_modules/module_new_books.lua:47
+msgid "New Books"
+msgstr "新書"
+
+#: sui_quickactions.lua:511
+msgid "New Quick Action"
+msgstr "新增快捷操作"
+
+#: sui_quickactions.lua:840
+msgid "New name…"
+msgstr "新名稱…"
+
+#: sui_bottombar.lua:245
+msgid "Next"
+msgstr "下一頁"
+
+#: sui_menu.lua:1318
+msgid "No Module Limit  ⚠ not recommended"
+msgstr "無模組限制  ⚠ 不建議"
+
+#: sui_bottombar.lua:1171
+msgid "No book in history."
+msgstr "歷史記錄中沒有書籍。"
+
+#: sui_foldercovers.lua:394
+msgid "No books found in this folder."
+msgstr "在此資料夾中未找到書籍。"
+
+#: sui_homescreen.lua:116
+msgid "No books opened yet"
+msgstr "尚未開啟任何書籍"
+
+#: desktop_modules/module_collections.lua:586
+msgid "No collections found."
+msgstr "未找到收藏夾。"
+
+#: desktop_modules/module_collections.lua:322
+msgid "No collections selected"
+msgstr "未選擇收藏夾"
+
+#: sui_quickactions.lua:1036
+msgid "No folder, collection or plugin configured.\nGo to Simple UI → Settings → Quick Actions to set one."
+msgstr "未設定資料夾、收藏夾或外掛。\n請前往 Simple UI → 設定 → 快捷操作進行設定。"
+
+#: desktop_modules/module_quote.lua:699
+msgid "No highlights found. Open a book and highlight some passages."
+msgstr "未找到劃線。請開啟一本書並劃選一些段落。"
+
+#: sui_quickactions.lua:371
+msgid "No icons found in:"
+msgstr "未在以下位置找到圖示："
+
+#: sui_quickactions.lua:645
+msgid "No plugins found."
+msgstr "未找到外掛。"
+
+#: desktop_modules/module_quote.lua:665
+msgid "No quotes found."
+msgstr "未找到名言。"
+
+#: desktop_modules/module_reading_stats.lua:367
+msgid "No stats selected"
+msgstr "未選擇統計項"
+
+#: sui_quickactions.lua:673
+msgid "No system actions found."
+msgstr "未找到系統操作。"
+
+#: desktop_modules/module_clock.lua:51
+msgid "November"
+msgstr "十一月"
+
+#: sui_menu.lua:1602
+msgid "Number of Books in Folder"
+msgstr "資料夾中的書籍數量"
+
+#: sui_menu.lua:1634
+msgid "Number of Pages"
+msgstr "頁數"
+
+#: sui_menu.lua:494
+msgid "Number of Pages in Title Bar Always"
+msgstr "標題列始終顯示頁數"
+
+#: sui_quickactions.lua:286
+msgid "OK"
+msgstr "確定"
+
+#: desktop_modules/module_clock.lua:51
+msgid "October"
+msgstr "十月"
+
+#: sui_menu.lua:296
+#: sui_menu.lua:356
+#: sui_menu.lua:374
+#: sui_menu.lua:561
+#: sui_menu.lua:618
+#: sui_menu.lua:787
+#: sui_menu.lua:933
+#: sui_menu.lua:1449
+#: sui_menu.lua:1506
+#: desktop_modules/module_clock.lua:378
+#: desktop_modules/module_clock.lua:386
+msgid "Off"
+msgstr "關閉"
+
+#: sui_menu.lua:296
+#: sui_menu.lua:356
+#: sui_menu.lua:374
+#: sui_menu.lua:561
+#: sui_menu.lua:618
+#: sui_menu.lua:787
+#: sui_menu.lua:933
+#: sui_menu.lua:1449
+#: sui_menu.lua:1506
+#: desktop_modules/module_clock.lua:378
+#: desktop_modules/module_clock.lua:386
+msgid "On"
+msgstr "開啟"
+
+#: desktop_modules/module_quote.lua:891
+msgid "Open"
+msgstr "開啟"
+
+#: sui_homescreen.lua:125
+msgid "Open a book to get started"
+msgstr "開啟一本書開始閱讀"
+
+#: sui_menu.lua:1598
+msgid "Overlays"
+msgstr "覆蓋層"
+
+#: sui_patches.lua:1125
+#: sui_patches.lua:1239
+msgid "Page %1 of %2"
+msgstr "第 %1 頁 / 共 %2 頁"
+
+#: sui_menu.lua:356
+msgid "Page number in title bar"
+msgstr "標題列顯示頁碼"
+
+#: sui_menu.lua:1548
+msgid "Pagination Bar"
+msgstr "分頁列"
+
+#: sui_menu.lua:339
+msgid "Pagination bar size will change after restart.\n\nRestart now?"
+msgstr "重新啟動後分頁列大小將改變。\n\n是否立即重新啟動？"
+
+#: sui_menu.lua:309
+msgid "Pagination bar will be %s after restart.\n\nRestart now?"
+msgstr "重新啟動後分頁列將變為 %s。\n\n是否立即重新啟動？"
+
+#: sui_titlebar.lua:57
+msgid "Path"
+msgstr "路徑"
+
+#: sui_quickactions.lua:592
+msgid "Path chooser not available."
+msgstr "路徑選擇器不可用。"
+
+#: desktop_modules/module_recent.lua:286
+msgid "Percentage overlay on cover"
+msgstr "封面上的百分比覆蓋層"
+
+#: desktop_modules/module_currently.lua:524
+msgid "Percentage read"
+msgstr "已讀百分比"
+
+#: desktop_modules/module_recent.lua:276
+msgid "Percentage text"
+msgstr "百分比文字"
+
+#: desktop_modules/module_reading_goals.lua:380
+msgid "Physical Books — %s"
+msgstr "實體書 — %s"
+
+#: desktop_modules/module_reading_goals.lua:381
+msgid "Physical books read this year:"
+msgstr "今年閱讀的實體書："
+
+#: sui_menu.lua:1031
+msgid "Physical: %d books in %s"
+msgstr "實體：%s 年 %d 本書"
+
+#: sui_quickactions.lua:704
+msgid "Plugin"
+msgstr "外掛"
+
+#: sui_quickactions.lua:1021
+msgid "Plugin error: %s"
+msgstr "外掛錯誤：%s"
+
+#: sui_quickactions.lua:1023
+msgid "Plugin not available: %s"
+msgstr "外掛不可用：%s"
+
+#: sui_config.lua:122
+msgid "Power"
+msgstr "電源"
+
+#: sui_bottombar.lua:245
+msgid "Prev"
+msgstr "上一頁"
+
+#: desktop_modules/module_recent.lua:266
+msgid "Progress bar"
+msgstr "進度列"
+
+#: desktop_modules/module_currently.lua:499
+msgid "Progress bar style"
+msgstr "進度列樣式"
+
+#: sui_menu.lua:1248
+#: sui_menu.lua:1555
+msgid "Quick Actions"
+msgstr "快捷操作"
+
+#: sui_menu.lua:1559
+msgid "Quick Actions  (%d/%d — %d left)"
+msgstr "快捷操作  (%d/%d — 剩餘 %d)"
+
+#: sui_menu.lua:1557
+msgid "Quick Actions  (%d/%d — at limit)"
+msgstr "快捷操作  (%d/%d — 已達限制)"
+
+#: sui_menu.lua:1084
+#: desktop_modules/module_quick_actions.lua:197
+msgid "Quick Actions %d"
+msgstr "快捷操作 %d"
+
+#: sui_bottombar.lua:1420
+msgid "Quit"
+msgstr "離開"
+
+#: desktop_modules/module_quote.lua:767
+msgid "Quote of the Day"
+msgstr "每日名言"
+
+#: desktop_modules/module_quote.lua:1018
+msgid "Quotes + My Highlights"
+msgstr "名言 + 我的劃線"
+
+#: sui_config.lua:145
+msgid "RAM Usage"
+msgstr "記憶體使用"
+
+#: desktop_modules/module_reading_goals.lua:454
+#: desktop_modules/module_reading_goals.lua:455
+msgid "Reading Goals"
+msgstr "閱讀目標"
+
+#: desktop_modules/module_reading_stats.lua:308
+msgid "Reading Stats"
+msgstr "閱讀統計"
+
+#: desktop_modules/module_recent.lua:61
+#: desktop_modules/module_recent.lua:62
+msgid "Recent Books"
+msgstr "最近書籍"
+
+#: sui_quickactions.lua:815
+#: sui_quickactions.lua:873
+msgid "Rename"
+msgstr "重新命名"
+
+#: sui_menu.lua:378
+msgid "Replaces the pagination bar with Prev/Next arrows at the edges of the bottom bar.\nThe arrows dim when there is no previous or next page.\nWith navpager active, as few as 1 tab and at most 4 tabs can be configured."
+msgstr "用底部列邊緣的上一頁/下一頁箭頭替換分頁列。\n沒有上一頁或下一頁時箭頭會變暗。\n啟用導覽頁時，可設定最少 1 個分頁，最多 4 個分頁。"
+
+#: sui_menu.lua:1420
+#: sui_quickactions.lua:824
+msgid "Reset"
+msgstr "重設"
+
+#: sui_menu.lua:1419
+msgid "Reset all scales to default (100%)? This cannot be undone."
+msgstr "將所有比例重設為預設值（100%）？此操作無法復原。"
+
+#: sui_menu.lua:1414
+msgid "Reset to Default Scale"
+msgstr "重設為預設比例"
+
+#: sui_bottombar.lua:1412
+#: sui_menu.lua:310
+#: sui_menu.lua:340
+#: sui_menu.lua:398
+#: sui_menu.lua:570
+#: sui_menu.lua:627
+#: sui_menu.lua:947
+#: sui_menu.lua:1524
+msgid "Restart"
+msgstr "重新啟動"
+
+#: sui_menu.lua:504
+#: sui_menu.lua:831
+msgid "Right"
+msgstr "右側"
+
+#: desktop_modules/module_clock.lua:46
+msgid "Saturday"
+msgstr "星期六"
+
+#: sui_quickactions.lua:567
+#: sui_quickactions.lua:835
+#: desktop_modules/module_reading_goals.lua:366
+#: desktop_modules/module_reading_goals.lua:383
+#: desktop_modules/module_reading_goals.lua:401
+msgid "Save"
+msgstr "儲存"
+
+#: sui_menu.lua:1334
+#: desktop_modules/module_clock.lua:356
+#: desktop_modules/module_clock.lua:358
+#: desktop_modules/module_collections.lua:432
+#: desktop_modules/module_collections.lua:434
+#: desktop_modules/module_currently.lua:433
+#: desktop_modules/module_currently.lua:435
+#: desktop_modules/module_new_books.lua:204
+#: desktop_modules/module_new_books.lua:206
+#: desktop_modules/module_quick_actions.lua:245
+#: desktop_modules/module_quick_actions.lua:247
+#: desktop_modules/module_quote.lua:938
+#: desktop_modules/module_quote.lua:942
+#: desktop_modules/module_reading_goals.lua:546
+#: desktop_modules/module_reading_goals.lua:548
+#: desktop_modules/module_reading_stats.lua:452
+#: desktop_modules/module_reading_stats.lua:454
+#: desktop_modules/module_recent.lua:225
+#: desktop_modules/module_recent.lua:227
+msgid "Scale"
+msgstr "比例"
+
+#: desktop_modules/module_currently.lua:463
+msgid "Scale for all text elements (title, author, progress, time).\n100% is the default size."
+msgstr "所有文字元素的比例（標題、作者、進度、時間）。\n100% 為預設大小。"
+
+#: desktop_modules/module_quick_actions.lua:259
+msgid "Scale for the button label text.\n100% is the default size."
+msgstr "按鈕標籤文字的比例。\n100% 為預設大小。"
+
+#: desktop_modules/module_collections.lua:448
+msgid "Scale for the collection name text.\n100% is the default size."
+msgstr "收藏夾名稱文字的比例。\n100% 為預設大小。"
+
+#: desktop_modules/module_collections.lua:567
+msgid "Scale for the collection thumbnails only.\nThe label text follows the module scale.\n100% is the default size."
+msgstr "僅收藏夾縮圖的比例。\n標籤文字跟隨模組比例。\n100% 為預設大小。"
+
+#: desktop_modules/module_currently.lua:450
+msgid "Scale for the cover thumbnail only.\n100% is the default size."
+msgstr "僅封面縮圖的比例。\n100% 為預設大小。"
+
+#: desktop_modules/module_new_books.lua:221
+#: desktop_modules/module_recent.lua:242
+msgid "Scale for the cover thumbnails only.\nText and progress bar follow the module scale.\n100% is the default size."
+msgstr "僅封面縮圖的比例。\n文字和進度列跟隨模組比例。\n100% 為預設大小。"
+
+#: desktop_modules/module_new_books.lua:233
+msgid "Scale for the label text.\n100% is the default size."
+msgstr "標籤文字的比例。\n100% 為預設大小。"
+
+#: desktop_modules/module_recent.lua:256
+msgid "Scale for the percentage read text.\n100% is the default size."
+msgstr "已讀百分比文字的比例。\n100% 為預設大小。"
+
+#: desktop_modules/module_clock.lua:359
+#: desktop_modules/module_collections.lua:435
+#: desktop_modules/module_currently.lua:436
+#: desktop_modules/module_new_books.lua:207
+#: desktop_modules/module_quick_actions.lua:248
+#: desktop_modules/module_quote.lua:944
+#: desktop_modules/module_reading_goals.lua:549
+#: desktop_modules/module_reading_stats.lua:455
+#: desktop_modules/module_recent.lua:228
+msgid "Scale for this module.\n100% is the default size."
+msgstr "此模組的比例。\n100% 為預設大小。"
+
+#: sui_menu.lua:1357
+msgid "Scales all modules and labels together.\n100% is the default size."
+msgstr "同時縮放所有模組和標籤。\n100% 為預設大小。"
+
+#: sui_menu.lua:1393
+msgid "Scales the section label text above each module.\n100% is the default size."
+msgstr "縮放每個模組上方的章節標籤文字。\n100% 為預設大小。"
+
+#: sui_titlebar.lua:55
+msgid "Search"
+msgstr "搜尋"
+
+#: desktop_modules/module_collections.lua:540
+msgid "Select at least 2 collections to arrange."
+msgstr "請至少選擇 2 個收藏夾以便排序。"
+
+#: desktop_modules/module_clock.lua:51
+msgid "September"
+msgstr "九月"
+
+#: sui_foldercovers.lua:455
+msgid "Set folder cover…"
+msgstr "設定資料夾封面…"
+
+#: sui_menu.lua:1533
+msgid "Settings"
+msgstr "設定"
+
+#: desktop_modules/module_clock.lua:386
+msgid "Show Battery"
+msgstr "顯示電池"
+
+#: desktop_modules/module_clock.lua:378
+msgid "Show Date"
+msgstr "顯示日期"
+
+#: sui_menu.lua:364
+msgid "Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\nNavpager enables this automatically.\nNot available when Navpager is active."
+msgstr "瀏覽書庫、歷史或收藏夾時，在標題列副標題中顯示「第 X 頁 / 共 Y 頁」。\n導覽頁會自動啟用此功能。\n導覽頁啟用時不可用。"
+
+#: desktop_modules/module_currently.lua:502
+msgid "Simple"
+msgstr "簡潔"
+
+#: main.lua:381
+#: main.lua:394
+#: sui_menu.lua:1502
+#: sui_menu.lua:1506
+msgid "Simple UI"
+msgstr "Simple UI"
+
+#: main.lua:68
+msgid "Simple UI was updated (%s → %s).\n\nA restart is recommended to apply all changes cleanly."
+msgstr "Simple UI 已更新（%s → %s）。\n\n建議重新啟動以乾淨地套用所有變更。"
+
+#: sui_menu.lua:1523
+msgid "Simple UI will be %s after restart.\n\nRestart now?"
+msgstr "重新啟動後 Simple UI 將變為 %s。\n\n是否立即重新啟動？"
+
+#: sui_menu.lua:580
+#: sui_menu.lua:638
+msgid "Size"
+msgstr "大小"
+
+#: sui_menu.lua:694
+msgid "Size of the tab icons.\n100% is the default size."
+msgstr "分頁圖示的大小。\n100% 為預設大小。"
+
+#: sui_menu.lua:714
+msgid "Size of the tab label text.\n100% is the default size."
+msgstr "分頁標籤文字的大小。\n100% 為預設大小。"
+
+#: desktop_modules/module_reading_stats.lua:534
+msgid "Size of the text inside the stat cards.\nDoes not affect card size or padding.\n100% is the default size."
+msgstr "統計卡片內文字的大小。\n不影響卡片大小或內邊距。\n100% 為預設大小。"
+
+#: sui_menu.lua:325
+msgid "Small"
+msgstr "小"
+
+#: desktop_modules/module_quote.lua:970
+msgid "Source"
+msgstr "來源"
+
+#: sui_menu.lua:672
+msgid "Space below the bottom navigation bar.\n100% is the default spacing."
+msgstr "底部導覽列下方的空間。\n100% 為預設間距。"
+
+#: sui_patches.lua:306
+#: sui_patches.lua:308
+msgid "Start with"
+msgstr "啟動時"
+
+#: sui_menu.lua:1459
+msgid "Start with Home Screen"
+msgstr "啟動時顯示主畫面"
+
+#: sui_bottombar.lua:956
+#: sui_bottombar.lua:1184
+msgid "Statistics plugin not available."
+msgstr "統計外掛不可用。"
+
+#: sui_config.lua:121
+msgid "Stats"
+msgstr "統計"
+
+#: sui_menu.lua:1539
+msgid "Status Bar"
+msgstr "狀態列"
+
+#: desktop_modules/module_reading_stats.lua:68
+msgid "Streak"
+msgstr "連續閱讀"
+
+#: sui_menu.lua:971
+msgid "Sub-pages Buttons"
+msgstr "子頁面按鈕"
+
+#: desktop_modules/module_clock.lua:45
+msgid "Sunday"
+msgstr "星期日"
+
+#: sui_menu.lua:417
+msgid "Swipe Indicator"
+msgstr "滑動指示器"
+
+#: sui_menu.lua:427
+msgid "Hide Wi-Fi icon when off"
+msgstr "關閉時隱藏 Wi-Fi 圖示"
+
+#: sui_quickactions.lua:706
+msgid "System Actions"
+msgstr "系統操作"
+
+#: sui_quickactions.lua:1011
+msgid "System action error: %s"
+msgstr "系統操作錯誤：%s"
+
+#: sui_menu.lua:752
+msgid "Tabs  (%d/%d — %d left)"
+msgstr "分頁  (%d/%d — 剩餘 %d)"
+
+#: sui_menu.lua:750
+msgid "Tabs  (%d/%d — at limit)"
+msgstr "分頁  (%d/%d — 已達限制)"
+
+#: sui_menu.lua:101
+msgid "Text"
+msgstr "文字"
+
+#: desktop_modules/module_collections.lua:446
+#: desktop_modules/module_collections.lua:447
+#: desktop_modules/module_currently.lua:461
+#: desktop_modules/module_currently.lua:462
+#: desktop_modules/module_new_books.lua:231
+#: desktop_modules/module_new_books.lua:232
+#: desktop_modules/module_quick_actions.lua:255
+#: desktop_modules/module_quick_actions.lua:258
+#: desktop_modules/module_reading_stats.lua:530
+#: desktop_modules/module_reading_stats.lua:533
+#: desktop_modules/module_recent.lua:254
+#: desktop_modules/module_recent.lua:255
+msgid "Text Size"
+msgstr "文字大小"
+
+#: desktop_modules/module_reading_stats.lua:531
+msgid "Text Size — %d%%"
+msgstr "文字大小 — %d%%"
+
+#: sui_menu.lua:103
+msgid "Text only"
+msgstr "僅文字"
+
+#: desktop_modules/module_clock.lua:46
+msgid "Thursday"
+msgstr "星期四"
+
+#: sui_titlebar.lua:56
+msgid "Title"
+msgstr "標題"
+
+#: sui_menu.lua:1540
+msgid "Title Bar"
+msgstr "標題列"
+
+#: desktop_modules/module_reading_goals.lua:491
+#: desktop_modules/module_reading_goals.lua:493
+#: desktop_modules/module_reading_goals.lua:515
+#: desktop_modules/module_reading_goals.lua:517
+msgid "Today"
+msgstr "今天"
+
+#: desktop_modules/module_reading_stats.lua:63
+msgid "Today — Pages"
+msgstr "今天 — 頁數"
+
+#: desktop_modules/module_reading_stats.lua:62
+msgid "Today — Time"
+msgstr "今天 — 時間"
+
+#: sui_menu.lua:1537
+#: sui_menu.lua:1616
+#: sui_menu.lua:1664
+msgid "Top"
+msgstr "頂部"
+
+#: sui_menu.lua:561
+#: sui_topbar.lua:473
+msgid "Top Bar"
+msgstr "頂部列"
+
+#: sui_menu.lua:586
+msgid "Top Bar Size"
+msgstr "頂部列大小"
+
+#: sui_menu.lua:569
+msgid "Top Bar will be %s after restart.\n\nRestart now?"
+msgstr "重新啟動後頂部列將變為 %s。\n\n是否立即重新啟動？"
+
+#: sui_menu.lua:728
+msgid "Top separator"
+msgstr "頂部分隔符"
+
+#: sui_menu.lua:1653
+msgid "Transparent"
+msgstr "透明"
+
+#: desktop_modules/module_clock.lua:45
+msgid "Tuesday"
+msgstr "星期二"
+
+#: sui_menu.lua:741
+#: desktop_modules/module_quick_actions.lua:267
+#: desktop_modules/module_reading_goals.lua:563
+#: desktop_modules/module_reading_stats.lua:491
+msgid "Type"
+msgstr "類型"
+
+#: sui_menu.lua:1692
+msgid "Uniformize Covers (2:3)"
+msgstr "統一封面比例（2:3）"
+
+#: sui_menu.lua:728
+msgid "Visible"
+msgstr "可見"
+
+#: desktop_modules/module_clock.lua:45
 msgid "Wednesday"
 msgstr "星期三"
 
+#: sui_config.lua:119
+msgid "Wi-Fi"
+msgstr "Wi-Fi"
+
+#: sui_bottombar.lua:1221
+msgid "Wi-Fi off"
+msgstr "Wi-Fi 關閉"
+
+#: sui_config.lua:141
+msgid "WiFi"
+msgstr "WiFi"
+
+#: sui_bottombar.lua:1208
+msgid "WiFi not available on this device."
+msgstr "此裝置不支援 WiFi。"
+
+#: sui_quickactions.lua:410
+msgid "Wikipedia Lookup"
+msgstr "維基百科查詢"
+
+#: desktop_modules/module_currently.lua:512
 msgid "With percentage"
 msgstr "帶百分比"
 
+#: desktop_modules/module_quote.lua:701
+msgid "Your highlights"
+msgstr "您的劃線"
+
+#: desktop_modules/module_reading_stats.lua:67
+msgid "books finished"
+msgstr "已完成書籍"
+
+#: desktop_modules/module_reading_stats.lua:64
+msgid "daily avg (7 days)"
+msgstr "日均（7 天）"
+
+#: desktop_modules/module_reading_stats.lua:69
+msgid "day streak"
+msgstr "天連續閱讀"
+
+#: desktop_modules/module_reading_stats.lua:69
+msgid "days streak"
+msgstr "天連續閱讀"
+
+#: desktop_modules/module_reading_stats.lua:68
+msgid "no streak"
+msgstr "無連續閱讀"
+
+#: sui_quickactions.lua:769
+msgid "default"
+msgstr "預設"
+
+#: sui_menu.lua:395
+#: sui_menu.lua:569
+#: sui_menu.lua:626
+#: sui_menu.lua:945
+#: sui_menu.lua:1523
+msgid "disabled"
+msgstr "已停用"
+
+#: sui_quickactions.lua:609
 msgid "e.g. Comics…"
 msgstr "例如：漫畫…"
 
+#: sui_quickactions.lua:655
+msgid "e.g. Rakuyomi…"
+msgstr "例如：Rakuyomi…"
+
+#: sui_quickactions.lua:628
+msgid "e.g. Sci-Fi…"
+msgstr "例如：科幻…"
+
+#: sui_quickactions.lua:683
+msgid "e.g. Sleep, Refresh…"
+msgstr "例如：休眠、重新整理…"
+
+#: sui_menu.lua:395
+#: sui_menu.lua:569
+#: sui_menu.lua:626
+#: sui_menu.lua:945
+#: sui_menu.lua:1523
+msgid "enabled"
+msgstr "已啟用"
+
+#: sui_quickactions.lua:270
 msgid "hex code, e.g. E001"
-msgstr "十六進制代碼，例如：E001"
+msgstr "十六進位代碼，例如 E001"
+
+#: sui_menu.lua:307
+msgid "hidden"
+msgstr "隱藏"
+
+#: sui_quickactions.lua:921
+#: sui_quickactions.lua:937
+msgid "not configured"
+msgstr "未設定"
+
+#: desktop_modules/module_reading_stats.lua:62
+msgid "of reading today"
+msgstr "今天的閱讀"
+
+#: desktop_modules/module_reading_stats.lua:66
+msgid "of reading, all time"
+msgstr "總計閱讀"
+
+#: desktop_modules/module_reading_stats.lua:63
+msgid "pages read today"
+msgstr "今天閱讀的頁數"
+
+#: desktop_modules/module_reading_stats.lua:65
+msgid "pages/day (7 days)"
+msgstr "頁/天（7 天）"
+
+#: sui_menu.lua:307
+msgid "visible"
+msgstr "可見"
+
+#: desktop_modules/module_currently.lua:271
+msgid "Author"
+msgstr "作者"
+
+#: desktop_modules/module_currently.lua:274
+msgid "Days of reading"
+msgstr "閱讀天數"
+
+#: desktop_modules/module_currently.lua:275
+msgid "Time read"
+msgstr "已讀時間"
+
+#: desktop_modules/module_currently.lua:276
+msgid "Time remaining"
+msgstr "剩餘時間"
+
+#: desktop_modules/module_currently.lua
+msgid "%s left"
+msgstr "剩餘 %s"
+
+#: desktop_modules/module_currently.lua
+msgid "1 day"
+msgstr "1 天"
+
+#: desktop_modules/module_currently.lua
+msgid "%d days"
+msgstr "%d 天"
+
+#: desktop_modules/module_currently.lua
+msgid "Stats layout"
+msgstr "統計佈局"
+
+#: sui_menu.lua:356
+msgid "Pagination bar set to Default.\n\nRestart now?"
+msgstr "分頁列已設定為預設。\n\n是否立即重新啟動？"
+
+#: sui_menu.lua:367
+msgid "Navpager enabled.\n\nRestart now?"
+msgstr "導覽頁已啟用。\n\n是否立即重新啟動？"
+
+#: sui_menu.lua:377
+msgid "Pagination bar hidden.\n\nRestart now?"
+msgstr "分頁列已隱藏。\n\n是否立即重新啟動？"
+
+#: sui_menu.lua:387
+msgid "Dot Pager"
+msgstr "點分頁器"
+
+#: sui_menu.lua:395
+msgid "Shows a row of dots at the bottom of the homescreen.\nThe active page dot is filled; the others are dimmed.\nAlways active when Navpager is selected."
+msgstr "在主畫面底部顯示一行點。\n活動頁面的點是填充的；其他是暗淡的。\n選擇導覽頁時始終啟用。"
+
+#: sui_menu.lua:417
+msgid "Uses the standard KOReader pagination bar on the homescreen.\nNot available when Navpager is active."
+msgstr "在主畫面上使用標準的 KOReader 分頁列。\n導覽頁啟用時不可用。"
+
+#: sui_menu.lua:438
+msgid "Hides the pagination bar on the homescreen.\nNot available when Navpager is active."
+msgstr "在主畫面上隱藏分頁列。\n導覽頁啟用時不可用。"
+
+#: sui_menu.lua:1566
+msgid "Modules per Page  (%d)"
+msgstr "每頁模組數  (%d)"
+
+#: sui_menu.lua:1572
+msgid "Modules per Page"
+msgstr "每頁模組數"
+
+#: sui_menu.lua:1573
+msgid "Maximum number of modules shown on each page.\nSwipe left/right on the Home Screen to turn pages."
+msgstr "每頁顯示的最大模組數。\n在主畫面上左/右滑動可翻頁。"
+
+#: sui_menu.lua:1834
+msgid "Placeholder cover for bookless folders"
+msgstr "為空資料夾顯示佔位封面"
+
+#: sui_menu.lua:1849
+msgid "  Scan subfolders for cover"
+msgstr "  掃描子資料夾中的封面"
+
+#: sui_menu.lua
+msgid "Check for Updates"
+msgstr "檢查更新"
+
+#: sui_menu.lua
+msgid "About"
+msgstr "關於"
+
+#: sui_menu.lua
+msgid "Version: %s"
+msgstr "版本：%s"
+
+#: sui_menu.lua
+msgid "Author: %s"
+msgstr "作者：%s"
+
+#: sui_homescreen.lua:407
+#: desktop_modules/module_quote.lua:950
+msgid "Open this file?"
+msgstr "開啟這個檔案嗎？"
+
+#: sui_bottombar.lua:1638
+msgid "Sleep"
+msgstr "休眠"
+
+#: sui_updater.lua:157
+msgid "Downloading Simple UI "
+msgstr "正在下載 Simple UI"
+
+#: sui_updater.lua:163
+msgid "Download error: "
+msgstr "下載錯誤："
+
+#: sui_updater.lua:174
+msgid "Extraction error: "
+msgstr "擷取錯誤："
+
+#: sui_updater.lua:180
+msgid "Simple UI %s successfully installed.\n\nRestart KOReader to apply the update?"
+msgstr "Simple UI %s 已成功安裝。\n\n是否重新啟動 KOReader 以使更新生效？"
+
+#: sui_updater.lua:183
+msgid "Restart"
+msgstr "重新啟動"
+
+#: sui_updater.lua:184
+#: sui_updater.lua:237
+#: sui_updater.lua:258
+msgid "Cancel"
+msgstr "取消"
+
+#: sui_updater.lua:184
+msgid "Later"
+msgstr "稍後"
+
+#: sui_updater.lua:194
+msgid "Checking for updates…"
+msgstr "檢查更新中…"
+
+#: sui_updater.lua:200
+msgid "Error checking for updates: "
+msgstr "檢查更新時出錯："
+
+#: sui_updater.lua:216
+msgid "Could not retrieve version information."
+msgstr "無法取得版本資訊"
+
+#: sui_updater.lua:222
+msgid "Simple UI is up to date (%s)."
+msgstr "Simple UI 已是最新版本（%s）"
+
+#: sui_updater.lua:233
+msgid "Simple UI %s is available (you have %s).\n\nNo automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "Simple UI %s 可用（您當前版本為 %s）。\n\n未找到自動更新檔案。\n\n是否打開 GitHub 發布頁面？"
+
+#: sui_updater.lua:236
+msgid "Open in browser"
+msgstr "在瀏覽器中打開"
+
+#: sui_updater.lua:254
+msgid "Simple UI %s is available!\nCurrent version: %s\n\nDownload and install now?"
+msgstr "Simple UI %s 有新版本！\n當前版本：%s\n\n是否立即下載並安裝？"
+
+#: sui_updater.lua:257
+msgid "Download and install"
+msgstr "下載並安裝"

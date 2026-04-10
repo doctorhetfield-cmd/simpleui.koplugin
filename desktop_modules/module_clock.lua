@@ -83,6 +83,11 @@ local SETTING_ON      = "clock_enabled"   -- pfx .. "clock_enabled"
 local SETTING_DATE    = "clock_date"      -- pfx .. "clock_date"    (default ON)
 local SETTING_BATTERY = "clock_battery"   -- pfx .. "clock_battery" (default ON)
 
+local function isClockEnabled(pfx)
+    local v = G_reader_settings:readSetting(pfx .. SETTING_ON)
+    return v ~= false   -- default ON
+end
+
 local function isDateEnabled(pfx)
     local v = G_reader_settings:readSetting(pfx .. SETTING_DATE)
     return v ~= false   -- default ON
@@ -158,24 +163,27 @@ local function build(w, pfx, vspan_pool)
     local batt_gap      = math.max(2,  math.floor(_BASE_BATT_GAP  * scale))
     local bot_pad_extra = math.floor(_BASE_BOT_PAD_EXTRA * scale)
 
-    local show_date = isDateEnabled(pfx)
-    local show_batt = isBattEnabled(pfx)
-    local inner_w   = w - PAD * 2
+    local show_clock = isClockEnabled(pfx)
+    local show_date  = isDateEnabled(pfx)
+    local show_batt  = isBattEnabled(pfx)
+    local inner_w    = w - PAD * 2
 
     local vg = VerticalGroup:new{ align = "center" }
 
-    -- Clock — always shown.
-    vg[#vg+1] = CenterContainer:new{
-        dimen = Geom:new{ w = inner_w, h = clock_w },
-        TextWidget:new{
-            text = datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock")),
-            face = Font:getFace("smallinfofont", clock_fs),
-            bold = true,
-        },
-    }
+    -- Clock
+    if show_clock then
+        vg[#vg+1] = CenterContainer:new{
+            dimen = Geom:new{ w = inner_w, h = clock_w },
+            TextWidget:new{
+                text = datetime.secondsToHour(os.time(), G_reader_settings:isTrue("twelve_hour_clock")),
+                face = Font:getFace("smallinfofont", clock_fs),
+                bold = true,
+            },
+        }
+    end
 
     if show_date then
-        vg[#vg+1] = _vspan(date_gap, vspan_pool)
+        if #vg > 0 then vg[#vg+1] = _vspan(date_gap, vspan_pool) end
         vg[#vg+1] = CenterContainer:new{
             dimen = Geom:new{ w = inner_w, h = date_h },
             TextWidget:new{
@@ -187,7 +195,7 @@ local function build(w, pfx, vspan_pool)
     end
 
     if show_batt then
-        vg[#vg+1] = _vspan(batt_gap, vspan_pool)
+        if #vg > 0 then vg[#vg+1] = _vspan(batt_gap, vspan_pool) end
         local lvl, charging = _battInfo()
         vg[#vg+1] = CenterContainer:new{
             dimen = Geom:new{ w = inner_w, h = batt_h },
@@ -198,6 +206,8 @@ local function build(w, pfx, vspan_pool)
             },
         }
     end
+
+    if #vg == 0 then return nil end
 
     return FrameContainer:new{
         bordersize     = 0,
@@ -219,13 +229,19 @@ M.label      = nil
 M.default_on = true
 
 function M.isEnabled(pfx)
-    local v = G_reader_settings:readSetting(pfx .. SETTING_ON)
-    if v ~= nil then return v == true end
-    return true
+    return isClockEnabled(pfx) or isDateEnabled(pfx) or isBattEnabled(pfx)
 end
 
 function M.setEnabled(pfx, on)
-    G_reader_settings:saveSetting(pfx .. SETTING_ON, on)
+    if not on then
+        G_reader_settings:saveSetting(pfx .. SETTING_ON, false)
+        G_reader_settings:saveSetting(pfx .. SETTING_DATE, false)
+        G_reader_settings:saveSetting(pfx .. SETTING_BATTERY, false)
+    else
+        G_reader_settings:saveSetting(pfx .. SETTING_ON, true)
+        G_reader_settings:saveSetting(pfx .. SETTING_DATE, true)
+        G_reader_settings:saveSetting(pfx .. SETTING_BATTERY, true)
+    end
 end
 
 M.getCountLabel = nil
@@ -391,12 +407,21 @@ function M.getHeight(ctx)
     local batt_h    = math.max(7, math.floor(_BASE_BATT_H   * scale))
     local batt_gap  = math.max(2, math.floor(_BASE_BATT_GAP * scale))
 
-    local h_base      = clock_w + PAD * 2 + PAD2
+    local h_base      = PAD * 2 + PAD2
+    local show_clock  = isClockEnabled(ctx.pfx)
     local show_date   = isDateEnabled(ctx.pfx)
     local show_batt   = isBattEnabled(ctx.pfx)
+
     local h = h_base
-    if show_date then h = h + date_gap + date_h end
-    if show_batt then h = h + batt_gap + batt_h end
+    if show_clock then h = h + clock_w end
+    if show_date  then
+        h = h + date_h
+        if show_clock then h = h + date_gap end
+    end
+    if show_batt  then
+        h = h + batt_h
+        if show_clock or show_date then h = h + batt_gap end
+    end
     return h
 end
 
@@ -426,17 +451,19 @@ function M.getMenuItems(ctx_menu)
 
     return {
         {
-            text_func    = function()
-                return _lc("Show Date") .. " — " .. (isDateEnabled(pfx) and _lc("On") or _lc("Off"))
-            end,
+            text           = _lc("Show Clock"),
+            checked_func   = function() return isClockEnabled(pfx) end,
+            keep_menu_open = true,
+            callback       = function() toggle(SETTING_ON, isClockEnabled(pfx)) end,
+        },
+        {
+            text           = _lc("Show Date"),
             checked_func   = function() return isDateEnabled(pfx) end,
             keep_menu_open = true,
             callback       = function() toggle(SETTING_DATE, isDateEnabled(pfx)) end,
         },
         {
-            text_func    = function()
-                return _lc("Show Battery") .. " — " .. (isBattEnabled(pfx) and _lc("On") or _lc("Off"))
-            end,
+            text           = _lc("Show Battery"),
             checked_func   = function() return isBattEnabled(pfx) end,
             keep_menu_open = true,
             callback       = function() toggle(SETTING_BATTERY, isBattEnabled(pfx)) end,

@@ -9,6 +9,7 @@ local logger  = require("logger")
 
 local Blitbuffer      = require("ffi/blitbuffer")
 local Font            = require("ui/font")
+local CenterContainer = require("ui/widget/container/centercontainer")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
 local GestureRange    = require("ui/gesturerange")
@@ -47,9 +48,9 @@ local _CLR_BAR_BG = Blitbuffer.gray(0.15)
 local _CLR_BAR_FG = Blitbuffer.gray(0.75)
 
 -- Vertical gaps between elements (base values at 100% scale; scaled in build()).
-local _BASE_COVER_GAP  = Screen:scaleBySize(12)  -- between cover and text column
+local _BASE_COVER_GAP  = Screen:scaleBySize(16)  -- between cover and text column
 local _BASE_TITLE_GAP  = Screen:scaleBySize(4)   -- before title
-local _BASE_AUTHOR_GAP = Screen:scaleBySize(8)   -- before author
+local _BASE_AUTHOR_GAP = Screen:scaleBySize(6)   -- before author
 -- Vertical gaps around the progress bar.
 -- The bar (LineWidget) has no internal padding — it starts and ends at exact pixels.
 -- TextWidget includes ascender/descender space inside its reported height, which
@@ -297,6 +298,96 @@ M.enabled_key = "currently"
 M.default_on  = true
 
 
+-- ---------------------------------------------------------------------------
+-- _computeContentH — shared height calculation used by build() and getHeight()
+-- ---------------------------------------------------------------------------
+-- Returns the pixel height of the text column (right side), taking the cover
+-- height as a minimum.  All parameters mirror the local vars already resolved
+-- in build(); getHeight() reconstructs them independently.
+--
+-- params fields:
+--   scale, lbl_scale  — module and text scale factors
+--   D                 — dims table from SH.getDims()
+--   show              — visibility flags table (title/author/progress/percent/days/time/remain)
+--   stats_style       — "default" or "compact"
+--   bstats            — result of fetchBookStats, or nil (conservative fallback)
+--   bd                — book-data table; only .authors, .avg_time, .pages, .percent used
+local function _computeContentH(params)
+    local scale       = params.scale
+    local lbl_scale   = params.lbl_scale
+    local D           = params.D
+    local show        = params.show
+    local stats_style = params.stats_style
+    local bstats      = params.bstats
+    local bd          = params.bd or {}
+    local bar_style   = params.bar_style or getBarStyle(params.pfx)
+
+    -- Scaled dimensions (same formulas as build()).
+    local title_line_h  = math.max(8, math.floor(_BASE_TITLE_FS       * scale * lbl_scale))
+    local author_line_h = math.max(8, math.floor(_BASE_AUTHOR_FS      * scale * lbl_scale))
+    local pct_line_h    = math.max(8, math.floor(_BASE_PCT_FS         * scale * lbl_scale))
+    local stats_line_h  = math.max(7, math.floor(_BASE_STATS_FS       * scale * lbl_scale))
+    local bar_h         = math.max(1, math.floor(_BASE_BAR_H          * scale))
+    local title_gap     = math.max(1, math.floor(_BASE_TITLE_GAP      * scale))
+    local author_gap    = math.max(1, math.floor(_BASE_AUTHOR_GAP     * scale))
+    local bar_gap_b     = math.max(1, math.floor(_BASE_BAR_GAP_BEFORE * scale))
+    local bar_gap_a     = math.max(1, math.floor(_BASE_BAR_GAP_AFTER  * scale))
+    local pct_gap       = math.max(1, math.floor(_BASE_PCT_GAP        * scale))
+
+    -- Accumulate height element by element, mirroring build()'s gap_before logic.
+    -- Each entry is { gap, line_h } in render order.
+    local elems = {}
+
+    if show.title then
+        elems[#elems+1] = { title_gap, title_line_h }
+    end
+    if show.author and bd.authors and bd.authors ~= "" then
+        elems[#elems+1] = { author_gap, author_line_h }
+    end
+    if show.progress then
+        -- bar uses bar_gap_before before it and bar_gap_after after it.
+        elems[#elems+1] = { bar_gap_b, bar_h + bar_gap_a }
+    end
+    if show.percent and bar_style ~= "with_pct" then
+        elems[#elems+1] = { pct_gap, pct_line_h }
+    end
+
+    -- Stats: when bstats is nil (getHeight conservative path) assume all
+    -- active stats have data.  When bstats is real (build path) check actuals.
+    local function statsHasData(key)
+        if bstats == nil then return show[key] end
+        if key == "days"   then return show.days   and bstats.days and bstats.days > 0 end
+        if key == "time"   then return show.time   and bstats.total_secs and bstats.total_secs > 0 end
+        if key == "remain" then
+            local avg_t = (bstats.avg_time and bstats.avg_time > 0) and bstats.avg_time
+                          or bd.avg_time
+            return show.remain and avg_t and avg_t > 0
+                   and bd.pages and bd.pages > 0
+        end
+        return false
+    end
+
+    if stats_style == "compact" then
+        if statsHasData("days") or statsHasData("time") or statsHasData("remain") then
+            elems[#elems+1] = { pct_gap, stats_line_h }
+        end
+    else
+        if statsHasData("days")   then elems[#elems+1] = { pct_gap, stats_line_h } end
+        if statsHasData("time")   then elems[#elems+1] = { pct_gap, stats_line_h } end
+        if statsHasData("remain") then elems[#elems+1] = { pct_gap, stats_line_h } end
+    end
+
+    -- Sum up: first element has no leading gap (mirrors gap_before guard).
+    local h = 0
+    for i, e in ipairs(elems) do
+        if i > 1 then h = h + e[1] end  -- gap (skipped for first element)
+        h = h + e[2]                     -- line height
+    end
+
+    return math.max(D.COVER_H, h)
+end
+
+
 -- Clears the stats cache (called from main.lua:onCloseDocument before rebuild).
 function M.invalidateCache()
     _bstats_cache = {}
@@ -354,7 +445,7 @@ function M.build(w, ctx)
     -- cleared and prefetchBooks() re-reads the sidecar, so this is always fresh.
     local prefetched_entry = ctx.prefetched and ctx.prefetched[ctx.current_fp]
     local bd    = SH.getBookData(ctx.current_fp, prefetched_entry)
-    local cover = SH.getBookCover(ctx.current_fp, D.COVER_W, D.COVER_H)
+    local cover = SH.getBookCover(ctx.current_fp, D.COVER_W, D.COVER_H, nil, 0.10)
                   or SH.coverPlaceholder(bd.title, D.COVER_W, D.COVER_H)
 
     -- Text column width: full width minus both PADs, cover, and cover gap.
@@ -399,22 +490,25 @@ function M.build(w, ctx)
     for _i, elem in ipairs(elem_order) do
         if elem == "title" and show.title then
             gap_before(title_gap)
-            meta[#meta+1] = TextBoxWidget:new{
-                text      = truncateTitle(bd.title) or "?",
-                face      = face_title,
-                bold      = true,
-                width     = tw,
-                max_lines = 2,
+            meta[#meta+1] = TextWidget:new{
+                text            = bd.title or "?",
+                face            = face_title,
+                bold            = true,
+                width           = tw,
+                max_width       = tw,
+                truncation_char = "â¦",  -- "…" UTF-8
             }
             meta_has_content = true
 
         elseif elem == "author" and show.author and bd.authors and bd.authors ~= "" then
             gap_before(author_gap)
             meta[#meta+1] = TextWidget:new{
-                text    = bd.authors,
-                face    = face_author,
-                fgcolor = CLR_TEXT_SUB,
-                width   = tw,
+                text            = bd.authors,
+                face            = face_author,
+                fgcolor         = CLR_TEXT_SUB,
+                width           = tw,
+                max_width       = tw,
+                truncation_char = "â¦",  -- "…" UTF-8
             }
             meta_has_content = true
 
@@ -541,31 +635,34 @@ function M.build(w, ctx)
         end
     end
 
-    local row = HorizontalGroup:new{
-        align = "center",
+    -- Measure the real height of the text column by asking the VerticalGroup
+    -- itself — this is the only reliable way since TextWidget line heights
+    -- depend on the font metrics, not just the font size number.
+    local meta_h = meta:getSize().h
+    local content_h = math.max(D.COVER_H, meta_h)
+
+    -- Layout: cover on left, text column on right.
+    -- The cover is wrapped in a CenterContainer sized to content_h so it
+    -- stays vertically centred when the text column is taller than the cover.
+    local cover_centered = CenterContainer:new{
+        dimen = Geom:new{ w = D.COVER_W + cover_gap, h = content_h },
         FrameContainer:new{
             bordersize    = 0, padding = 0,
             padding_right = cover_gap,
             cover,
         },
+    }
+
+    local meta_centered = CenterContainer:new{
+        dimen = Geom:new{ w = tw, h = content_h },
         meta,
     }
 
-    -- Compute content_h inline using vars already resolved above — avoids a full
-    -- duplicate call to M.getHeight() which re-reads scale, thumb_scale, getDims
-    -- and all _showElem flags a second time.
-    local content_h = D.COVER_H
-    do
-        local active_stats = (show.days  and 1 or 0)
-                           + (show.time  and 1 or 0)
-                           + (show.remain and 1 or 0)
-        if active_stats > 0 then
-            local lines = stats_style == "compact" and 1 or active_stats
-            content_h = content_h
-                + math.max(1, math.floor(_BASE_PCT_GAP  * scale))
-                + math.max(7, math.floor(_BASE_STATS_FS * scale * lbl_scale)) * lines
-        end
-    end
+    local row = HorizontalGroup:new{
+        align = "top",
+        cover_centered,
+        meta_centered,
+    }
     local tappable = InputContainer:new{
         dimen    = Geom:new{ w = w, h = content_h },
         _fp      = ctx.current_fp,
@@ -612,35 +709,86 @@ end
 
 
 -- Returns the total pixel height of the module including the section label.
+-- Measures real font line heights via Font:getFace() so the estimate matches
+-- what build() actually renders.  This prevents the homescreen from
+-- under-allocating space and causing overlap with the module below.
 function M.getHeight(_ctx)
     local SH = getSH()
     if not SH then return Config.getScaledLabelH() end
-    local pfx       = _ctx and _ctx.pfx
-    local scale     = Config.getModuleScale("currently", pfx)
-    local lbl_scale = Config.getItemLabelScale("currently", pfx)
-    local D         = SH.getDims(scale, Config.getThumbScale("currently", pfx))
+    local pfx         = _ctx and _ctx.pfx
+    local scale       = Config.getModuleScale("currently", pfx)
+    local lbl_scale   = Config.getItemLabelScale("currently", pfx)
+    local D           = SH.getDims(scale, Config.getThumbScale("currently", pfx))
+    local stats_style = getStatsStyle(pfx)
+    local bar_style   = getBarStyle(pfx)
 
-    local h = D.COVER_H
+    local show = {
+        title    = _showElem(pfx, "title"),
+        author   = _showElem(pfx, "author"),
+        progress = _showElem(pfx, "progress"),
+        percent  = _showElem(pfx, "percent"),
+        days     = _showElem(pfx, "book_days"),
+        time     = _showElem(pfx, "book_time"),
+        remain   = _showElem(pfx, "book_remaining"),
+    }
 
-    -- Add height for each active stats row (gap before the block + one line per row).
-    local show_days   = _showElem(pfx, "book_days")
-    local show_time   = _showElem(pfx, "book_time")
-    local show_remain = _showElem(pfx, "book_remaining")
+    -- Measure real line heights using the same font faces as build().
+    local title_fs  = math.max(8, math.floor(_BASE_TITLE_FS  * scale * lbl_scale))
+    local author_fs = math.max(8, math.floor(_BASE_AUTHOR_FS * scale * lbl_scale))
+    local pct_fs    = math.max(8, math.floor(_BASE_PCT_FS    * scale * lbl_scale))
+    local stats_fs  = math.max(7, math.floor(_BASE_STATS_FS  * scale * lbl_scale))
+    local bar_h     = math.max(1, math.floor(_BASE_BAR_H          * scale))
+    local bar_gap_b = math.max(1, math.floor(_BASE_BAR_GAP_BEFORE * scale))
+    local bar_gap_a = math.max(1, math.floor(_BASE_BAR_GAP_AFTER  * scale))
+    local title_gap = math.max(1, math.floor(_BASE_TITLE_GAP      * scale))
+    local author_gap= math.max(1, math.floor(_BASE_AUTHOR_GAP     * scale))
+    local pct_gap   = math.max(1, math.floor(_BASE_PCT_GAP        * scale))
 
-    -- Stats are now rendered as a single horizontal row (days + time + remaining + ETA).
-    -- Reserve height for that one line whenever at least one stats element is active.
-    local active_stats = (show_days   and 1 or 0)
-                       + (show_time   and 1 or 0)
-                       + (show_remain and 1 or 0)
-    if active_stats > 0 then
-        local stats_line_h = math.max(7, math.floor(_BASE_STATS_FS * scale * lbl_scale))
-        local gap          = math.max(1, math.floor(_BASE_PCT_GAP  * scale))
-        local _stats_style = getStatsStyle(pfx)
-    local lines = _stats_style == "compact" and 1 or active_stats
-        h = h + gap + stats_line_h * lines
+    -- Ask the font engine for the real line height (includes ascender+descender).
+    local function faceH(fs)
+        local ok, face = pcall(Font.getFace, Font, "smallinfofont", fs)
+        if ok and face and face.size and face.size.height then
+            return face.size.height
+        end
+        -- fallback: font size * 1.8 approximates typical line height
+        return math.ceil(fs * 1.8)
     end
 
-    return Config.getScaledLabelH() + h
+    local title_lh  = faceH(title_fs)
+    local author_lh = faceH(author_fs)
+    local pct_lh    = faceH(pct_fs)
+    local stats_lh  = faceH(stats_fs)
+
+    -- Build the same element list as _computeContentH but with real line heights.
+    local elems = {}
+    if show.title then
+        elems[#elems+1] = { title_gap, title_lh }
+    end
+    if show.author then
+        elems[#elems+1] = { author_gap, author_lh }
+    end
+    if show.progress then
+        elems[#elems+1] = { bar_gap_b, bar_h + bar_gap_a }
+    end
+    if show.percent and bar_style ~= "with_pct" then
+        elems[#elems+1] = { pct_gap, pct_lh }
+    end
+    -- Stats: conservative — assume all active stats have data.
+    local n_stats = (show.days and 1 or 0) + (show.time and 1 or 0) + (show.remain and 1 or 0)
+    if n_stats > 0 then
+        local lines = stats_style == "compact" and 1 or n_stats
+        for _ = 1, lines do
+            elems[#elems+1] = { pct_gap, stats_lh }
+        end
+    end
+
+    local text_h = 0
+    for i, e in ipairs(elems) do
+        if i > 1 then text_h = text_h + e[1] end
+        text_h = text_h + e[2]
+    end
+
+    return Config.getScaledLabelH() + math.max(D.COVER_H, text_h)
 end
 
 

@@ -41,7 +41,9 @@ local MODULES = {
     { require_mod = "desktop_modules/module_quote"         },
     { require_mod = "desktop_modules/module_currently"     },
     { require_mod = "desktop_modules/module_recent"        },
+    { require_mod = "desktop_modules/module_coverdeck"     },
     { require_mod = "desktop_modules/module_new_books"     },
+    { require_mod = "desktop_modules/module_tbr"           },
     { require_mod = "desktop_modules/module_collections"   },
     { require_mod = "desktop_modules/module_reading_goals" },
     { require_mod = "desktop_modules/module_reading_stats" },
@@ -113,7 +115,24 @@ function Registry.loadOrder(pfx)
     local default = Registry.defaultOrder()
     local seen = {}; local result = {}
     for _, v in ipairs(saved)   do seen[v] = true; result[#result+1] = v end
-    for _, v in ipairs(default) do if not seen[v] then result[#result+1] = v end end
+    for _, v in ipairs(default) do
+        if not seen[v] then
+            if v == "coverdeck" then
+                local insert_at = nil
+                for i, id in ipairs(result) do
+                    if id == "recent" then insert_at = i + 1; break end
+                    if id == "currently" then insert_at = i + 1 end
+                end
+                if insert_at then
+                    table.insert(result, insert_at, v)
+                else
+                    result[#result+1] = v
+                end
+            else
+                result[#result+1] = v
+            end
+        end
+    end
     return result
 end
 

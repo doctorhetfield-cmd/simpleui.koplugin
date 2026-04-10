@@ -16,6 +16,7 @@ local _         = require("gettext")
 -- failure that caused the menu entry to open nothing.
 local function InfoMessage()      return require("ui/widget/infomessage")      end
 local function ConfirmBox()       return require("ui/widget/confirmbox")        end
+local function InputDialog()      return require("ui/widget/inputdialog")       end
 local function MultiInputDialog() return require("ui/widget/multiinputdialog") end
 local function PathChooser()      return require("ui/widget/pathchooser")       end
 local function SortWidget()       return require("ui/widget/sortwidget")        end
@@ -533,63 +534,71 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             separator = true,
         }
 
-        local sorted_keys = {}
-        for _i, k in ipairs(TOPBAR_ITEMS) do sorted_keys[#sorted_keys + 1] = k end
-        table.sort(sorted_keys, function(a, b) return TOPBAR_ITEM_LABEL(a):lower() < TOPBAR_ITEM_LABEL(b):lower() end)
-
-        for _i, key in ipairs(sorted_keys) do
-            local k = key
+        -- Custom Text item — toggle visibility via tap, edit text via long-press.
+        do
+            local k = "custom_text"
+            -- "Edit Custom Text" -- plain action item, opens InputDialog directly on tap.
             items[#items + 1] = {
-                text_func    = function()
-                    local side = Config.getTopbarConfigCached().side[k] or "hidden"
-                    local label = TOPBAR_ITEM_LABEL(k)
-                    if side == "left"   then return label .. "  ◂"
-                    elseif side == "center" then return label .. "  ◆"
-                    elseif side == "right"  then return label .. "  ▸"
-                    else return label end
-                end,
-                -- Uses the cached config so opening the menu doesn't rebuild
-                -- the config table once per item (#16).
-                checked_func = function()
-                    return (Config.getTopbarConfigCached().side[k] or "hidden") ~= "hidden"
+                text_func = function()
+                    local t = Config.getTopbarCustomText()
+                    if t ~= "" then
+                        return _("Edit Custom Text") .. '  "' .. t .. '"'
+                    end
+                    return _("Edit Custom Text")
                 end,
                 keep_menu_open = true,
                 callback = function()
-                    -- Reads fresh config for the mutation, then invalidates cache.
-                    local cfg = getTopbarConfig()
-                    if not cfg.order_center then cfg.order_center = {} end
-                    if (cfg.side[k] or "hidden") == "hidden" then
-                        -- Restore to the last known slot, checking all three lists.
-                        local last_side = "right"
-                        for _i, v in ipairs(cfg.order_left)   do if v == k then last_side = "left";   break end end
-                        for _i, v in ipairs(cfg.order_center) do if v == k then last_side = "center"; break end end
-                        cfg.side[k] = last_side
-                        if last_side == "left" then
-                            local found = false
-                            for _i, v in ipairs(cfg.order_left) do if v == k then found = true; break end end
-                            if not found then cfg.order_left[#cfg.order_left + 1] = k end
-                        elseif last_side == "center" then
-                            local found = false
-                            for _i, v in ipairs(cfg.order_center) do if v == k then found = true; break end end
-                            if not found then cfg.order_center[#cfg.order_center + 1] = k end
-                        else
-                            local found = false
-                            for _i, v in ipairs(cfg.order_right) do if v == k then found = true; break end end
-                            if not found then cfg.order_right[#cfg.order_right + 1] = k end
-                        end
-                    else
-                        cfg.side[k] = "hidden"
-                    end
-                    saveTopbarConfig(cfg)   -- also calls Config.invalidateTopbarConfigCache()
-                    plugin:_scheduleRebuild()
+                    local dlg
+                    dlg = InputDialog():new{
+                        title       = _("Custom Text"),
+                        input       = Config.getTopbarCustomText(),
+                        description = string.format(
+                            _("Text shown in the top bar.\nMaximum %d characters."),
+                            Config.TOPBAR_CUSTOM_TEXT_MAX),
+                        input_type  = "text",
+                        buttons     = {{
+                            {
+                                text     = _("Cancel"),
+                                id       = "close",
+                                callback = function() UIManager:close(dlg) end,
+                            },
+                            {
+                                text             = _("Set"),
+                                is_enter_default = true,
+                                callback         = function()
+                                    local text = dlg:getInputText()
+                                    Config.setTopbarCustomText(text)
+                                    UIManager:close(dlg)
+                                    -- Auto-enable when text is set and item is hidden.
+                                    if text ~= "" then
+                                        local cfg = getTopbarConfig()
+                                        if not cfg.order_center then cfg.order_center = {} end
+                                        if (cfg.side[k] or "hidden") == "hidden" then
+                                            cfg.side[k] = "right"
+                                            local found = false
+                                            for _i, v in ipairs(cfg.order_right) do if v == k then found = true; break end end
+                                            if not found then cfg.order_right[#cfg.order_right + 1] = k end
+                                            saveTopbarConfig(cfg)
+                                        end
+                                    end
+                                    plugin:_scheduleRebuild()
+                                end,
+                            },
+                        }},
+                    }
+                    UIManager:show(dlg)
+                    dlg:onShowKeyboard()
                 end,
+                separator = true,
             }
         end
+
         if #items > 0 then items[#items].separator = true end
 
         items[#items + 1] = {
             text           = _("Arrange Items"),
             keep_menu_open = true,
+            separator      = true,
             callback       = function()
                 local cfg        = getTopbarConfig()
                 if not cfg.order_center then cfg.order_center = {} end
@@ -659,8 +668,62 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 })
             end,
         }
+
+        local sorted_keys = {}
+        for _i, k in ipairs(TOPBAR_ITEMS) do sorted_keys[#sorted_keys + 1] = k end
+        table.sort(sorted_keys, function(a, b) return TOPBAR_ITEM_LABEL(a):lower() < TOPBAR_ITEM_LABEL(b):lower() end)
+
+        for _i, key in ipairs(sorted_keys) do
+            local k = key
+            items[#items + 1] = {
+                text_func    = function()
+                    local side = Config.getTopbarConfigCached().side[k] or "hidden"
+                    local label = TOPBAR_ITEM_LABEL(k)
+                    if side == "left"   then return label .. "  \xe2\x97\x82"
+                    elseif side == "center" then return label .. "  \xe2\x97\x86"
+                    elseif side == "right"  then return label .. "  \xe2\x96\xb8"
+                    else return label end
+                end,
+                -- Uses the cached config so opening the menu doesn't rebuild
+                -- the config table once per item (#16).
+                checked_func = function()
+                    return (Config.getTopbarConfigCached().side[k] or "hidden") ~= "hidden"
+                end,
+                keep_menu_open = true,
+                callback = function()
+                    -- Reads fresh config for the mutation, then invalidates cache.
+                    local cfg = getTopbarConfig()
+                    if not cfg.order_center then cfg.order_center = {} end
+                    if (cfg.side[k] or "hidden") == "hidden" then
+                        -- Restore to the last known slot, checking all three lists.
+                        local last_side = "right"
+                        for _i, v in ipairs(cfg.order_left)   do if v == k then last_side = "left";   break end end
+                        for _i, v in ipairs(cfg.order_center) do if v == k then last_side = "center"; break end end
+                        cfg.side[k] = last_side
+                        if last_side == "left" then
+                            local found = false
+                            for _i, v in ipairs(cfg.order_left) do if v == k then found = true; break end end
+                            if not found then cfg.order_left[#cfg.order_left + 1] = k end
+                        elseif last_side == "center" then
+                            local found = false
+                            for _i, v in ipairs(cfg.order_center) do if v == k then found = true; break end end
+                            if not found then cfg.order_center[#cfg.order_center + 1] = k end
+                        else
+                            local found = false
+                            for _i, v in ipairs(cfg.order_right) do if v == k then found = true; break end end
+                            if not found then cfg.order_right[#cfg.order_right + 1] = k end
+                        end
+                    else
+                        cfg.side[k] = "hidden"
+                    end
+                    saveTopbarConfig(cfg)   -- also calls Config.invalidateTopbarConfigCache()
+                    plugin:_scheduleRebuild()
+                end,
+            }
+        end
         return items
     end
+
 
     local function makeTopbarMenu()
         return {
@@ -712,6 +775,18 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 end,
             },
             { text = _("Items"), sub_item_table_func = makeTopbarItemsMenu },
+            {
+                text         = _("Settings on Long Tap"),
+                help_text    = _("When enabled, long-pressing the top bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."),
+                checked_func = function()
+                    return G_reader_settings:nilOrTrue("navbar_topbar_settings_on_hold")
+                end,
+                keep_menu_open = true,
+                callback = function()
+                    local on = G_reader_settings:nilOrTrue("navbar_topbar_settings_on_hold")
+                    G_reader_settings:saveSetting("navbar_topbar_settings_on_hold", not on)
+                end,
+            },
         }
     end
 
@@ -869,6 +944,18 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     return string.format(_("Tabs  (%d/%d — %d left)"), n, limit, remaining)
                 end,
                 sub_item_table_func = makeTabsMenu,
+            },
+            {
+                text         = _("Settings on Long Tap"),
+                help_text    = _("When enabled, long-pressing the bottom bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."),
+                checked_func = function()
+                    return G_reader_settings:nilOrTrue("navbar_bottombar_settings_on_hold")
+                end,
+                keep_menu_open = true,
+                callback = function()
+                    local on = G_reader_settings:nilOrTrue("navbar_bottombar_settings_on_hold")
+                    G_reader_settings:saveSetting("navbar_bottombar_settings_on_hold", not on)
+                end,
             },
         }
     end
@@ -1314,7 +1401,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             local _mod = mod
             return {
                 text_func = function()
-                    return _mod.name
+                    return _(_mod.name) -- FIX: Force translation evaluation at display time
                 end,
                 checked_func   = function() return Registry.isEnabled(_mod, ctx.pfx) end,
                 keep_menu_open = true,
@@ -1342,8 +1429,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                         local count_lbl = type(_mod.getCountLabel) == "function"
                             and _mod.getCountLabel(ctx.pfx)
                         return count_lbl
-                            and (_mod.name .. "  " .. count_lbl)
-                            or   _mod.name
+                            and (_(_mod.name) .. "  " .. count_lbl) -- FIX: Force translation
+                            or   _(_mod.name)                      -- FIX: Force translation
                     end
                     if _mod.id:match("^quick_actions_%d+$") then
                         qa_items[#qa_items + 1] = {
@@ -1387,36 +1474,157 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 sub_item_table_func = function()
                     local result = {
                         {
-                            text = _("Arrange Modules"), keep_menu_open = true,
+                            text = _("Number of Pages"), keep_menu_open = true,
                             callback = function()
-                                local order      = loadOrder()
-                                local sort_items = {}
-                                for _loop_, key in ipairs(order) do
-                                    local mod = Registry.get(key)
-                                    if mod and Registry.isEnabled(mod, ctx.pfx) then
-                                        sort_items[#sort_items+1] = { text = mod.name, orig_item = key }
-                                    end
+                                local T          = _
+                                local SpinWidget = require("ui/widget/spinwidget")
+                                local HS         = require("sui_homescreen")
+                                local PAGE_BREAK = HS.PAGE_BREAK_ID
+                                local order = G_reader_settings:readSetting(ctx.pfx .. "module_order") or {}
+                                local saved_breaks = 0
+                                for _i, key in ipairs(order) do
+                                    if key == PAGE_BREAK then saved_breaks = saved_breaks + 1 end
                                 end
-                                if #sort_items < 2 then
-                                    UIManager:show(InfoMessage():new{
-                                        text = _("Enable at least 2 modules to arrange."), timeout = 2 })
-                                    return
-                                end
-                                UIManager:show(SortWidget():new{
-                                    title = _("Arrange Modules"), item_table = sort_items,
-                                    covers_fullscreen = true,
-                                    callback = function()
-                                        local new_active = {}; local active_set = {}
-                                        for _loop_, item in ipairs(sort_items) do
-                                            new_active[#new_active+1] = item.orig_item
-                                            active_set[item.orig_item] = true
-                                        end
-                                        for _loop_, k in ipairs(loadOrder()) do
-                                            if not active_set[k] then new_active[#new_active+1] = k end
-                                        end
-                                        G_reader_settings:saveSetting(ctx.pfx.."module_order", new_active)
+                                local current_pages = G_reader_settings:readSetting(ctx.pfx .. "homescreen_num_pages")
+                                    or math.max(1, saved_breaks + 1)
+                                UIManager:show(SpinWidget:new{
+                                    title_text    = T("Number of Pages"),
+                                    info_text     = T("Choose how many pages the homescreen has.\nEmpty pages stay empty. Modules keep their position."),
+                                    value         = current_pages,
+                                    value_min     = 1,
+                                    value_max     = 10,
+                                    value_step    = 1,
+                                    ok_text       = T("OK"),
+                                    cancel_text   = T("Cancel"),
+                                    default_value = 1,
+                                    callback = function(spin)
+                                        G_reader_settings:saveSetting(ctx.pfx .. "homescreen_num_pages", spin.value)
                                         ctx.refresh()
                                     end,
+                                })
+                            end,
+                        },
+                        {
+                            text = _("Arrange Modules"), keep_menu_open = true,
+                            callback = function()
+                                local HS         = require("sui_homescreen")
+                                local PAGE_BREAK = HS.PAGE_BREAK_ID
+                                local T          = _
+
+                                local order       = loadOrder()
+                                local enabled_ids = {}
+                                for _i, key in ipairs(order) do
+                                    if key ~= PAGE_BREAK then
+                                        local mod = Registry.get(key)
+                                        if mod and Registry.isEnabled(mod, ctx.pfx) then
+                                            enabled_ids[#enabled_ids + 1] = key
+                                        end
+                                    end
+                                end
+
+                                if #enabled_ids < 2 then
+                                    UIManager:show(InfoMessage():new{
+                                        text = T("Enable at least 2 modules to arrange."), timeout = 2 })
+                                    return
+                                end
+
+                                local saved_breaks = 0
+                                for _i, key in ipairs(order) do
+                                    if key == PAGE_BREAK then saved_breaks = saved_breaks + 1 end
+                                end
+                                local n_pages = G_reader_settings:readSetting(ctx.pfx .. "homescreen_num_pages")
+                                    or math.max(1, saved_breaks + 1)
+                                n_pages = math.max(1, math.min(10, n_pages))
+
+                                -- Build sort_items preserving existing per-page layout.
+                                -- Modules stay where they are; extra breaks appended if more pages chosen.
+                                local function buildSortItems(n_pgs)
+                                    local items = {}
+                                    local current_breaks = 0
+                                    for _i, key in ipairs(order) do
+                                        if key == PAGE_BREAK then
+                                            if current_breaks < n_pgs - 1 then
+                                                current_breaks = current_breaks + 1
+                                                items[#items + 1] = {
+                                                    text      = "── " .. string.format(T("Page %d"), current_breaks + 1) .. " ──",
+                                                    orig_item = PAGE_BREAK,
+                                                    _is_break = true,
+                                                    dim       = true,
+                                                }
+                                            end
+                                        else
+                                            local mod = Registry.get(key)
+                                            if mod and Registry.isEnabled(mod, ctx.pfx) then
+                                                items[#items + 1] = {
+                                                    text      = T(mod.name),
+                                                    orig_item = key,
+                                                }
+                                            end
+                                        end
+                                    end
+                                    -- Append extra page separators if n_pgs > existing pages.
+                                    while current_breaks < n_pgs - 1 do
+                                        current_breaks = current_breaks + 1
+                                        items[#items + 1] = {
+                                            text      = "── " .. string.format(T("Page %d"), current_breaks + 1) .. " ──",
+                                            orig_item = PAGE_BREAK,
+                                            _is_break = true,
+                                            dim       = true,
+                                        }
+                                    end
+                                    return items
+                                end
+
+                                local function validate(items)
+                                    if items[1] and items[1]._is_break then
+                                        return false, T("Cannot place modules after Page 1 separator.\nPage 1 must always have at least 1 module.")
+                                    end
+                                    local has_mod = false
+                                    for _i, it in ipairs(items) do
+                                        if not it._is_break then has_mod = true; break end
+                                    end
+                                    if not has_mod then
+                                        return false, T("Enable at least 2 modules to arrange.")
+                                    end
+                                    return true
+                                end
+
+                                local function saveOrder(sort_items)
+                                    local ok, err = validate(sort_items)
+                                    if not ok then
+                                        UIManager:show(InfoMessage():new{ text = err, timeout = 3 })
+                                        return false
+                                    end
+                                    -- Preserve empty pages: emit PAGE_BREAK for every separator in the list.
+                                    local new_order  = {}
+                                    local active_set = {}
+                                    for _i, item in ipairs(sort_items) do
+                                        if item._is_break then
+                                            new_order[#new_order + 1] = PAGE_BREAK
+                                        else
+                                            new_order[#new_order + 1] = item.orig_item
+                                            active_set[item.orig_item] = true
+                                        end
+                                    end
+                                    -- Disabled modules go to the tail.
+                                    for _i, k in ipairs(order) do
+                                        if k ~= PAGE_BREAK and not active_set[k] then
+                                            new_order[#new_order + 1] = k
+                                        end
+                                    end
+                                    G_reader_settings:saveSetting(ctx.pfx .. "module_order", new_order)
+                                    local HS2 = package.loaded["sui_homescreen"]
+                                    if HS2 and HS2._instance then HS2._instance._current_page = 1 end
+                                    ctx.refresh()
+                                    return true
+                                end
+
+                                local sort_items = buildSortItems(n_pages)
+                                UIManager:show(SortWidget():new{
+                                    title             = T("Arrange Modules"),
+                                    item_table        = sort_items,
+                                    covers_fullscreen = true,
+                                    callback          = function() saveOrder(sort_items) end,
                                 })
                             end,
                         },
@@ -1558,36 +1766,29 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     local on = G_reader_settings:readSetting("start_with", "filemanager") == "homescreen_simpleui"
                     G_reader_settings:saveSetting("start_with", on and "filemanager" or "homescreen_simpleui")
                 end,
-                separator = true,
             },
             {
-                text_func = function()
-                    local n = G_reader_settings:readSetting("navbar_homescreen_mods_per_page") or 3
-                    return string.format(_("Modules per Page  (%d)"), n)
+                text         = _("Return to Book Folder"),
+                help_text    = _("When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root.\nThis option works independently of \"Start with Home Screen\"."),
+                checked_func = function()
+                    return G_reader_settings:isTrue("navbar_hs_return_to_book_folder")
                 end,
                 keep_menu_open = true,
                 callback = function()
-                    local SpinWidget = require("ui/widget/spinwidget")
-                    UIManager:show(SpinWidget:new{
-                        title_text    = _("Modules per Page"),
-                        info_text     = _("Maximum number of modules shown on each page.\nSwipe left/right on the Home Screen to turn pages."),
-                        value         = G_reader_settings:readSetting("navbar_homescreen_mods_per_page") or 3,
-                        value_min     = 1,
-                        value_max     = 10,
-                        value_step    = 1,
-                        ok_text       = _("Apply"),
-                        cancel_text   = _("Cancel"),
-                        default_value = 3,
-                        callback = function(spin)
-                            G_reader_settings:saveSetting("navbar_homescreen_mods_per_page", spin.value)
-                            -- Reset to page 1 when the limit changes to avoid landing
-                            -- on a now-nonexistent page.
-                            local HS = package.loaded["sui_homescreen"]
-                            if HS then HS._current_page = 1 end
-                            if HS and HS._instance then HS._instance._current_page = 1 end
-                            ctx.refresh()
-                        end,
-                    })
+                    local on = G_reader_settings:isTrue("navbar_hs_return_to_book_folder")
+                    G_reader_settings:saveSetting("navbar_hs_return_to_book_folder", not on)
+                end,
+            },
+            {
+                text         = _("Settings on Long Tap"),
+                help_text    = _("When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."),
+                checked_func = function()
+                    return G_reader_settings:nilOrTrue("navbar_homescreen_settings_on_hold")
+                end,
+                keep_menu_open = true,
+                callback = function()
+                    local on = G_reader_settings:nilOrTrue("navbar_homescreen_settings_on_hold")
+                    G_reader_settings:saveSetting("navbar_homescreen_settings_on_hold", not on)
                 end,
                 separator = true,
             },
@@ -1695,7 +1896,12 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                     local FM = package.loaded["apps/filemanager/filemanager"]
                                     local fm = FM and FM.instance
                                     if fm and fm.file_chooser then
-                                        fm.file_chooser:updateItems()
+                                        -- refreshPath rebuilds the item list from scratch and
+                                        -- passes it through switchItemTable, which is where the
+                                        -- series-grouping hook (_sgProcessItemTable) runs.
+                                        -- updateItems alone skips that hook, so grouping would
+                                        -- only appear after a manual refresh.
+                                        fm.file_chooser:refreshPath()
                                     end
                                 end
                                 return {
@@ -1716,6 +1922,16 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                             else
                                                 pcall(FC.uninstall)
                                             end
+                                            _refreshFC()
+                                        end,
+                                    },
+                                    {
+                                        text           = _("Group Books by Series"),
+                                        checked_func   = function() return FC.getSeriesGrouping() end,
+                                        keep_menu_open = true,
+                                        callback       = function()
+                                            FC.setSeriesGrouping(not FC.getSeriesGrouping())
+                                            FC.invalidateCache()
                                             _refreshFC()
                                         end,
                                     },
@@ -1760,6 +1976,12 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                                 checked_func   = function() return FC.getOverlayPages() end,
                                                 keep_menu_open = true,
                                                 callback       = function() FC.setOverlayPages(not FC.getOverlayPages()); FC.invalidateCache(); _refreshFC() end,
+                                            },
+                                            {
+                                                text           = _("Series Index"),
+                                                checked_func   = function() return FC.getOverlaySeries() end,
+                                                keep_menu_open = true,
+                                                callback       = function() FC.setOverlaySeries(not FC.getOverlaySeries()); FC.invalidateCache(); _refreshFC() end,
                                             },
                                             {
                                                 text         = _("Folder Name"),
@@ -1809,6 +2031,18 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                                         keep_menu_open = true,
                                                         callback       = function() FC.setLabelPosition("bottom"); _refreshFC() end,
                                                     },
+                                                    (function()
+                                                        local Config = require("sui_config")
+                                                        return Config.makeScaleItem({
+                                                            text_func    = function() return _("Text size") end,
+                                                            enabled_func = function() return FC.getLabelMode() ~= "hidden" end,
+                                                            title        = _("Folder Name Text Size"),
+                                                            info         = _("Scale for the folder name overlay text.\n100% is the default size."),
+                                                            get          = function() return FC.getLabelScalePct() end,
+                                                            set          = function(v) FC.setLabelScale(v) end,
+                                                            refresh      = function() FC.invalidateCache(); _refreshFC() end,
+                                                        })
+                                                    end)(),
                                                 },
                                             },
                                         },
@@ -1846,7 +2080,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                         end,
                                     },
                                     {
-                                        text           = _("  Scan subfolders for cover"),
+                                        text           = _("Scan subfolders for cover"),
                                         checked_func   = function() return FC.getRecursiveCover() end,
                                         enabled_func   = function() return FC.isEnabled() and FC.getSubfolderCover() end,
                                         keep_menu_open = true,
@@ -1857,6 +2091,47 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                         end,
                                     },
                                 }
+                            end,
+                        },
+                    }
+                end,
+            },
+            -- -----------------------------------------------------------------
+            -- About submenu
+            -- -----------------------------------------------------------------
+            {
+                text                = _("About"),
+                separator           = true,
+                sub_item_table_func = function()
+                    local _plugin_dir = (debug.getinfo(1, "S").source or ""):match("^@(.+)/[^/]+$")
+                    local ok, Meta = pcall(dofile, _plugin_dir .. "/_meta.lua")
+                    if not ok or type(Meta) ~= "table" then
+                        local rok, rmeta = pcall(require, "_meta")
+                        Meta = (rok and rmeta) or {}
+                    end
+                    return {
+                        {
+                            text           = string.format(_("Version: %s"), Meta.version or "?"),
+                            keep_menu_open = true,
+                            callback       = function() end,
+                        },
+                        {
+                            text           = string.format(_("Author: %s"), Meta.author or "?"),
+                            keep_menu_open = true,
+                            callback       = function() end,
+                        },
+                        {
+                            text      = _("Check for Updates"),
+                            callback  = function()
+                                local ok, Updater = pcall(require, "sui_updater")
+                                if not ok then
+                                    UIManager:show(InfoMessage():new{
+                                        text    = _("Updater module not found."),
+                                        timeout = 4,
+                                    })
+                                    return
+                                end
+                                Updater.checkForUpdates()
                             end,
                         },
                     }

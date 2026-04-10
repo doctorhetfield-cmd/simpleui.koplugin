@@ -365,6 +365,15 @@ function M.buildTopbarWidget()
             if not info.ram then return nil, nil end
             return "\u{EA5A}", " " .. info.ram .. "M", true
         end,
+        custom_text = function()
+            local t = Config.getTopbarCustomText()
+            if not t or t == "" then return nil, nil end
+            -- max_width caps the rendered width to half the bar so it cannot
+            -- collide with items on the opposite side. TextWidget will append
+            -- an ellipsis automatically when the text exceeds this limit.
+            local max_w = math.floor((screen_w - side_m * 2) / 2)
+            return nil, t, false, max_w
+        end,
     }
 
     local function buildSideGroup(order)
@@ -374,7 +383,7 @@ function M.buildTopbarWidget()
             if (tb_cfg.side[key] or "hidden") ~= "hidden" then
                 local builder = item_builders[key]
                 if builder then
-                    local icon, label, is_nerd = builder()
+                    local icon, label, is_nerd, max_w = builder()
                     if icon or (label and label ~= "") then
                         if not first then
                             group[#group + 1] = TextWidget:new{
@@ -390,9 +399,10 @@ function M.buildTopbarWidget()
                         end
                         if label and label ~= "" then
                             group[#group + 1] = TextWidget:new{
-                                text    = label,
-                                face    = face,
-                                fgcolor = Blitbuffer.COLOR_BLACK,
+                                text      = label,
+                                face      = face,
+                                fgcolor   = Blitbuffer.COLOR_BLACK,
+                                max_width = max_w or nil,
                             }
                         end
                         first = false
@@ -491,7 +501,10 @@ function M.registerTouchZones(plugin, fm_self)
             ges         = "hold_release",
             screen_zone = topbar_zone,
             handler = function(_ges)
-                if not plugin._makeTopbarMenu then plugin:addToMainMenu({}) end
+			if not G_reader_settings:nilOrTrue("navbar_topbar_settings_on_hold") then
+				return true
+			end
+			 if not plugin._makeTopbarMenu then plugin:addToMainMenu({}) end
                 local UI_mod    = require("sui_core")
                 local Bottombar = require("sui_bottombar")
                 -- Delegates to the shared implementation in ui.lua (#4).

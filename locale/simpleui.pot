@@ -267,6 +267,9 @@ msgstr ""
 #: desktop_modules/module_reading_goals.lua:366
 #: desktop_modules/module_reading_goals.lua:383
 #: desktop_modules/module_reading_goals.lua:401
+#: sui_updater.lua:184
+#: sui_updater.lua:237
+#: sui_updater.lua:258
 msgid "Cancel"
 msgstr ""
 
@@ -676,6 +679,7 @@ msgstr ""
 #: sui_menu.lua:627
 #: sui_menu.lua:948
 #: sui_menu.lua:1524
+#: sui_updater.lua:184
 msgid "Later"
 msgstr ""
 
@@ -774,7 +778,6 @@ msgstr ""
 #: sui_menu.lua:1385
 msgid "Modules  (%d)"
 msgstr ""
-
 
 #: sui_menu.lua:1275
 msgid "Modules  (%d/%d — %d left)"
@@ -910,7 +913,6 @@ msgstr ""
 #: sui_menu.lua:494
 msgid "Number of Pages in Title Bar Always"
 msgstr ""
-
 
 #: sui_quickactions.lua:286
 msgid "OK"
@@ -1084,9 +1086,19 @@ msgstr ""
 msgid "Reading Stats"
 msgstr ""
 
+#: desktop_modules/module_flow_recent.lua:55
+msgid "Flow Recent Books"
+msgstr ""
+
 #: desktop_modules/module_recent.lua:61
 #: desktop_modules/module_recent.lua:62
-msgid "Recent Books"
+#: desktop_modules/module_flow_recent.lua:56
+#: desktop_modules/module_flow_recent.lua:93
+msgid "Cover Deck"
+msgstr ""
+
+#: desktop_modules/module_flow_recent.lua:124
+msgid "To Be Read (Deck)"
 msgstr ""
 
 #: sui_quickactions.lua:815
@@ -1119,6 +1131,7 @@ msgstr ""
 #: sui_menu.lua:627
 #: sui_menu.lua:947
 #: sui_menu.lua:1524
+#: sui_updater.lua:183
 msgid "Restart"
 msgstr ""
 
@@ -1236,6 +1249,10 @@ msgstr ""
 
 #: desktop_modules/module_clock.lua:386
 msgid "Show Battery"
+msgstr ""
+
+#: desktop_modules/module_clock.lua:454
+msgid "Show Clock"
 msgstr ""
 
 #: desktop_modules/module_clock.lua:378
@@ -1605,8 +1622,6 @@ msgstr ""
 msgid "Stats layout"
 msgstr ""
 
-
-
 #: sui_menu.lua:356
 msgid "Pagination bar set to Default.\n\nRestart now?"
 msgstr ""
@@ -1655,6 +1670,22 @@ msgstr ""
 msgid "  Scan subfolders for cover"
 msgstr ""
 
+#: sui_menu.lua
+msgid "Check for Updates"
+msgstr ""
+
+#: sui_menu.lua
+msgid "About"
+msgstr ""
+
+#: sui_menu.lua
+msgid "Version: %s"
+msgstr ""
+
+#: sui_menu.lua
+msgid "Author: %s"
+msgstr ""
+
 #: sui_homescreen.lua:407
 #: desktop_modules/module_quote.lua:950
 msgid "Open this file?"
@@ -1662,4 +1693,277 @@ msgstr ""
 
 #: sui_bottombar.lua:1638
 msgid "Sleep"
+msgstr ""
+
+#: sui_updater.lua:157
+msgid "Downloading Simple UI "
+msgstr ""
+
+#: sui_updater.lua:163
+msgid "Download error: "
+msgstr ""
+
+#: sui_updater.lua:174
+msgid "Extraction error: "
+msgstr ""
+
+#: sui_updater.lua:180
+msgid "Simple UI %s successfully installed.\n\nRestart KOReader to apply the update?"
+msgstr ""
+
+#: sui_updater.lua:194
+msgid "Checking for updates..."
+msgstr ""
+
+#: sui_updater.lua:200
+msgid "Error checking for updates: "
+msgstr ""
+
+#: sui_updater.lua:216
+msgid "Could not retrieve version information."
+msgstr ""
+
+#: sui_updater.lua:222
+msgid "Simple UI is up to date (%s)."
+msgstr ""
+
+#: sui_updater.lua:233
+msgid "Simple UI %s is available (you have %s).\n\nNo automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr ""
+
+#: sui_updater.lua:236
+msgid "Open in browser"
+msgstr ""
+
+#: sui_updater.lua:254
+msgid "Simple UI %s is available!\nCurrent version: %s\n\nDownload and install now?"
+msgstr ""
+
+#: sui_updater.lua:257
+msgid "Download and install"
+msgstr ""
+
+#: sui_menu.lua
+msgid "Return to Book Folder"
+msgstr ""
+
+#: sui_menu.lua
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root."
+msgstr ""
+
+#: sui_menu.lua
+msgid "Settings on Long Tap"
+msgstr ""
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr ""
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the top bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr ""
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the bottom bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr ""
+
+#: desktop_modules/module_tbr.lua
+msgid "Arrange To Be Read list"
+msgstr ""
+
+#: desktop_modules/module_tbr.lua
+msgid "Add at least 2 books to arrange."
+msgstr ""
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read books"
+msgstr ""
+
+#: desktop_modules/module_tbr.lua
+msgid "No books in To Be Read list."
+msgstr ""
+
+#: desktop_modules/module_tbr.lua
+msgid "Add to To Be Read"
+msgstr ""
+
+#: desktop_modules/module_tbr.lua
+msgid "Remove from To Be Read"
+msgstr ""
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read"
+msgstr ""
+
+#: sui_foldercovers.lua sui_menu.lua
+msgid "Group Books by Series"
+msgstr ""
+
+#: sui_menu.lua
+msgid "Series Index"
+msgstr ""
+
+#: sui_foldercovers.lua
+msgid "Series cover"
+msgstr ""
+
+#: sui_foldercovers.lua
+msgid "Set series cover…"
+msgstr ""
+
+#: sui_foldercovers.lua
+msgid "No books found in this series."
+msgstr ""
+
+#: sui_foldercovers.lua
+msgid "Scan subfolders for cover"
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for this module."
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for the cover thumbnails only.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for title and statistics text.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua
+#: sui_menu.lua
+msgid "Recent Books"
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Title Position"
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Above"
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Below"
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Arrange Statistics"
+msgstr ""
+
+#: sui_menu.lua
+msgid "Updater module not found."
+msgstr ""
+
+#: sui_menu.lua
+msgid "Recent"
+msgstr ""
+
+#: sui_menu.lua
+msgid "KOReader"
+msgstr ""
+
+#: sui_config.lua:165 sui_menu.lua:553
+msgid "Custom Text"
+msgstr ""
+
+
+#: sui_menu.lua:545 sui_menu.lua:547
+msgid "Edit Custom Text"
+msgstr ""
+
+
+#: sui_menu.lua:1953
+msgid "Folder Name Text Size"
+msgstr ""
+
+
+#: sui_menu.lua:1951
+msgid "Text size"
+msgstr ""
+
+
+#: sui_menu.lua:566
+msgid "Set"
+msgstr ""
+
+
+#: sui_menu.lua:556
+msgid "Text shown in the top bar.\nMaximum %d characters."
+msgstr ""
+
+
+#: sui_menu.lua:1954
+msgid "Scale for the folder name overlay text.\n100% is the default size."
+msgstr ""
+
+
+#: sui_config.lua:1748
+msgid "Show section label"
+msgstr ""
+
+
+#: sui_updater.lua:377
+msgid "Update cancelled."
+msgstr ""
+
+
+#: sui_updater.lua:487
+msgid "Update check cancelled."
+msgstr ""
+
+
+#: sui_updater.lua:466
+msgid "Error checking for updates."
+msgstr ""
+
+
+#: sui_updater.lua:407
+msgid "Simple UI %s is available!\nYou have %s."
+msgstr ""
+
+
+#: sui_updater.lua:410
+msgid "\n\nDownload and install now?"
+msgstr ""
+
+
+#: sui_updater.lua:412
+msgid "What's new:"
+msgstr ""
+
+
+#: sui_updater.lua:419
+msgid "No automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr ""
+
+
+#: sui_menu.lua:1772
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root.\nThis option works independently of \"Start with Home Screen\"."
+msgstr ""
+
+
+#: sui_updater.lua:460
+msgid "Checking for updates…"
+msgstr ""
+
+
+#: sui_updater.lua:323
+msgid "Downloading Simple UI %s…"
+msgstr ""
+
+
+#: sui_menu.lua:1492
+msgid "Choose how many pages the homescreen has.\nEmpty pages stay empty. Modules keep their position."
+msgstr ""
+
+
+#: sui_menu.lua:1549 sui_menu.lua:1569
+msgid "Page %d"
+msgstr ""
+
+
+#: sui_menu.lua:1580
+msgid "Cannot place modules after Page 1 separator.\nPage 1 must always have at least 1 module."
 msgstr ""

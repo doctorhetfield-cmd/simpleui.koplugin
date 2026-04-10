@@ -607,9 +607,35 @@ local function _scanFMPlugins()
             local cap = "on" .. fm_key:sub(1,1):upper() .. fm_key:sub(2)
             if type(val[cap]) == "function" then method = cap end
         end
+        -- Fallback: extract the callback from addToMainMenu and wrap it as a
+        -- synthetic method (_sui_launch). This covers plugins that only expose
+        -- their entry point as an inline callback in addToMainMenu (e.g.
+        -- solitaire, audiobookshelf, killersudoku, rakuyomi).
+        if not method then
+            local probe = {}
+            local ok = pcall(function() val:addToMainMenu(probe) end)
+            if ok then
+                local entry = probe[fm_key] or probe[val.name]
+                if entry and type(entry.callback) == "function" then
+                    local cb = entry.callback
+                    val._sui_launch = function(_self) cb() end
+                    method = "_sui_launch"
+                end
+            end
+        end
         if method then
             local raw     = (val.name or fm_key):gsub("^filemanager", "")
             local display = raw:sub(1,1):upper() .. raw:sub(2)
+            -- Prefer the menu text provided by addToMainMenu when available,
+            -- as it is already localised and more descriptive than the key.
+            local probe2 = {}
+            local ok2 = pcall(function() val:addToMainMenu(probe2) end)
+            if ok2 then
+                local entry2 = probe2[fm_key] or probe2[val.name]
+                if entry2 and type(entry2.text) == "string" and entry2.text ~= "" then
+                    display = entry2.text
+                end
+            end
             results[#results + 1] = { fm_key = fm_key, fm_method = method, title = display }
         end
         ::cont::
@@ -1179,9 +1205,33 @@ function QA.executeCustomQA(action_id, fm, show_unavailable_fn)
         end
 
     elseif cfg.plugin_key and cfg.plugin_method and cfg.plugin_key ~= "" then
-        local plugin_inst = fm and fm[cfg.plugin_key]
-        if plugin_inst and type(plugin_inst[cfg.plugin_method]) == "function" then
-            local ok, err = pcall(function() plugin_inst[cfg.plugin_method](plugin_inst) end)
+        -- Always resolve the live FileManager instance so that a stale `fm`
+        -- reference (e.g. captured before a FM recreate) does not cause false
+        -- "Plugin not available" errors on the second and subsequent calls
+        -- while the homescreen is open (_executeInPlace path).
+        local live_fm = package.loaded["apps/filemanager/filemanager"]
+        live_fm = live_fm and live_fm.instance
+        local effective_fm = (live_fm and live_fm[cfg.plugin_key]) and live_fm or fm
+        local plugin_inst = effective_fm and effective_fm[cfg.plugin_key]
+
+        local method = cfg.plugin_method
+        if plugin_inst and not plugin_inst[method] and method == "_sui_launch" then
+            -- Re-probe for synthetic _sui_launch if missing from the current instance.
+            -- This happens after a restart or FM recreate for plugins that only
+            -- expose their entry point via addToMainMenu (e.g. solitaire).
+            local probe = {}
+            local ok = pcall(function() plugin_inst:addToMainMenu(probe) end)
+            if ok then
+                local entry = probe[cfg.plugin_key] or probe[plugin_inst.name]
+                if entry and type(entry.callback) == "function" then
+                    local cb = entry.callback
+                    plugin_inst._sui_launch = function(_self) cb() end
+                end
+            end
+        end
+
+        if plugin_inst and type(plugin_inst[method]) == "function" then
+            local ok, err = pcall(function() plugin_inst[method](plugin_inst) end)
             if not ok then _unavail(string.format(_("Plugin error: %s"), tostring(err))) end
         else
             _unavail(string.format(_("Plugin not available: %s"), cfg.plugin_key))

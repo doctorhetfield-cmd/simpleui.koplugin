@@ -24,7 +24,7 @@ local SH = {}
 -- These are the 100%-scale reference values; never modify them at runtime.
 -- ---------------------------------------------------------------------------
 local _BASE_COVER_W  = Screen:scaleBySize(122)
-local _BASE_COVER_H  = Screen:scaleBySize(184)
+local _BASE_COVER_H  = math.floor(Screen:scaleBySize(122) * 3 / 2)
 local _BASE_RECENT_W = Screen:scaleBySize(75)
 local _BASE_RECENT_H = Screen:scaleBySize(112)
 local _BASE_RB_GAP1    = Screen:scaleBySize(4)
@@ -176,20 +176,24 @@ end
 -- ---------------------------------------------------------------------------
 -- getBookCover
 -- ---------------------------------------------------------------------------
-function SH.getBookCover(filepath, w, h)
-    local bb = Config.getCoverBB(filepath, w, h)
+function SH.getBookCover(filepath, w, h, align, stretch_limit)
+    -- Reserve 1px on each side for the border: request a bb that is 2px smaller.
+    local inner_w = math.max(1, w - 2)
+    local inner_h = math.max(1, h - 2)
+    local bb = Config.getCoverBB(filepath, inner_w, inner_h, align, stretch_limit)
     if not bb then return nil end
     local ok, img = pcall(function()
         return require("ui/widget/imagewidget"):new{
             image            = bb,
             image_disposable = false,  -- bb is owned by the cover cache; must not be freed here
-            width            = w,
-            height           = h,
-            -- bb is already scaled to exactly w×h by getCoverBB.
+            width            = inner_w,
+            height           = inner_h,
+            -- bb is already scaled to exactly inner_w×inner_h by getCoverBB.
             scale_factor     = 1,
         }
     end)
     if not (ok and img) then return nil end
+    -- padding=0 + bordersize=1: the FrameContainer outer size is inner_w+2 × inner_h+2 = w×h.
     return FrameContainer:new{
         bordersize = 1, color = _CLR_COVER_BORDER,
         padding    = 0, margin = 0,
@@ -371,7 +375,8 @@ end
 -- NOTE: _cover_extraction_pending was removed from SH.
 -- Use Config.cover_extraction_pending (the single source of truth) instead.
 
-function SH.prefetchBooks(show_currently, show_recent)
+function SH.prefetchBooks(show_currently, show_recent, max_recent)
+    max_recent = max_recent or 5
     local state = { current_fp = nil, recent_fps = {}, prefetched_data = {} }
     if not show_currently and not show_recent then return state end
 
@@ -422,7 +427,7 @@ function SH.prefetchBooks(show_currently, show_recent)
                         end
                     end
                 end
-            elseif show_recent and #state.recent_fps < 5 then
+            elseif show_recent and #state.recent_fps < max_recent then
                 -- i==1 only reaches here when show_currently==false, so hist[1]
                 -- is correctly included in recent rather than being skipped.
                 local pct = 0
@@ -466,7 +471,7 @@ function SH.prefetchBooks(show_currently, show_recent)
             end
         end
         if not show_recent and state.current_fp then break end
-        if state.current_fp and #state.recent_fps >= 5 then break end
+        if state.current_fp and #state.recent_fps >= max_recent then break end
     end
     return state
 end

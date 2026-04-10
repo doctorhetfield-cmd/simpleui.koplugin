@@ -17,6 +17,7 @@ local HorizontalSpan  = require("ui/widget/horizontalspan")
 local LineWidget      = require("ui/widget/linewidget")
 local OverlapGroup    = require("ui/widget/overlapgroup")
 local TextWidget      = require("ui/widget/textwidget")
+local TextBoxWidget   = require("ui/widget/textboxwidget")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local Screen          = Device.screen
@@ -75,14 +76,20 @@ local function getDims(scale, thumb_scale)
     local edge_thick   = math.max(1, math.floor(_BASE_EDGE_THICK   * cs))
     local edge_margin  = math.max(1, math.floor(_BASE_EDGE_MARGIN  * cs))
     -- Label text and gaps scale only with `scale`, not thumb_scale.
-    local label_line_h = math.max(8, math.floor(_BASE_LABEL_LINE_H * scale))
     local label_gap    = math.max(1, math.floor(_BASE_LABEL_GAP    * scale))
     local stack_extra  = 2 * edge_thick + 2 * edge_margin
+    -- Font size for collection label — computed here so coll_cell_h can use the
+    -- same line-height formula as TextBoxWidget (1.3 × font_size), keeping the
+    -- reserved cell height perfectly in sync with the widget's actual height.
+    local coll_lbl_fs  = math.max(6, math.floor(_BASE_COLL_LBL_FS * scale))
+    -- TextBoxWidget internal line_height_px = math.floor(1.3 * font_size + 0.5).
+    -- We must use this exact formula for both the widget height and coll_cell_h.
+    local tbw_line_h   = math.floor(1.3 * coll_lbl_fs + 0.5)
     return {
         coll_w       = coll_w,
         coll_h       = coll_h,
         accent_h     = accent_h,
-        label_line_h = label_line_h,
+        tbw_line_h   = tbw_line_h,
         label_gap    = label_gap,
         badge_sz       = badge_sz,
         badge_margin   = badge_margin,
@@ -92,9 +99,9 @@ local function getDims(scale, thumb_scale)
         stack_extra  = stack_extra,
         stack_cell_w = coll_w + stack_extra,
         cell_h       = coll_h + accent_h,
-        coll_cell_h  = coll_h + accent_h + label_gap + label_line_h,
+        coll_cell_h  = coll_h + accent_h + label_gap + 2 * tbw_line_h,
         ph_cover_fs  = math.max(7, math.floor(_BASE_PH_COVER_FS * cs)),
-        coll_lbl_fs  = math.max(6, math.floor(_BASE_COLL_LBL_FS * scale)),
+        coll_lbl_fs  = coll_lbl_fs,
         badge_fs     = math.floor(badge_sz * (_BASE_BADGE_FS / _BASE_BADGE_SZ)),
         empty_h      = math.max(16, math.floor(_BASE_EMPTY_H    * scale)),
         empty_fs     = math.max(7,  math.floor(_BASE_EMPTY_FS   * scale)),
@@ -150,7 +157,7 @@ end
 -- Cover loading
 -- ---------------------------------------------------------------------------
 local function getBookCover(filepath, w, h)
-    local bb = Config.getCoverBB(filepath, w, h)
+    local bb = Config.getCoverBB(filepath, w, h, nil, 0.10)
     if not bb then return nil end
     local ok, img = pcall(function()
         return ImageWidget:new{
@@ -313,9 +320,56 @@ function M.build(w, ctx)
     local thumb_scale = Config.getThumbScale("collections", ctx.pfx)
     local lbl_scale   = Config.getItemLabelScale("collections", ctx.pfx)
     local d           = getDims(scale, thumb_scale)
-    -- Apply independent label text scale on top of module scale.
-    d.coll_lbl_fs = math.max(6, math.floor(d.coll_lbl_fs * lbl_scale))
-    local selected = getSelectedCollections()
+    -- Apply independent label text scale on top of module scale, then
+    -- recalculate tbw_line_h and coll_cell_h so they stay in sync with the
+    -- actual font size used by the TextBoxWidget.
+    if lbl_scale ~= 1.0 then
+        d.coll_lbl_fs = math.max(6, math.floor(d.coll_lbl_fs * lbl_scale))
+        d.tbw_line_h  = math.floor(1.3 * d.coll_lbl_fs + 0.5)
+        d.coll_cell_h = d.coll_h + d.accent_h + d.label_gap + 2 * d.tbw_line_h
+    end
+    local selected_raw = getSelectedCollections()
+    -- -----------------------------------------------------------------------
+    -- Sync with native KoReader collections (Problem 2).
+    -- Filter out any collection that no longer exists in rc.coll (renamed or
+    -- deleted). If the persisted list differs from the live one, save the
+    -- cleaned version so future loads are also correct.
+    -- -----------------------------------------------------------------------
+    local _rc_sync
+    local _ok_rc_sync, _rc_or_err_sync = pcall(require, "readcollection")
+    if _ok_rc_sync and _rc_or_err_sync then
+        _rc_sync = _rc_or_err_sync
+        if _rc_sync._read then pcall(function() _rc_sync:_read() end) end
+    end
+    local synced_raw = {}
+    if _rc_sync and _rc_sync.coll then
+        for _, n in ipairs(selected_raw) do
+            if _rc_sync.coll[n] then
+                synced_raw[#synced_raw + 1] = n
+            end
+        end
+    else
+        -- readcollection unavailable — keep list as-is
+        synced_raw = selected_raw
+    end
+    -- Persist the cleaned list if anything was removed.
+    if #synced_raw ~= #selected_raw then
+        saveSelectedCollections(synced_raw)
+    end
+    -- Hide the TBR collection when it is empty so it does not occupy a slot.
+    local selected = {}
+    do
+        local TBR = package.loaded["desktop_modules/module_tbr"]
+        for _, n in ipairs(synced_raw) do
+            if TBR and n == TBR.TBR_COLL_NAME then
+                if TBR.getTBRCount() > 0 then
+                    selected[#selected + 1] = n
+                end
+            else
+                selected[#selected + 1] = n
+            end
+        end
+    end
 
     if #selected == 0 then
         return CenterContainer:new{
@@ -354,12 +408,24 @@ function M.build(w, ctx)
         -- Label centred over the cover thumbnail only, not the full stack_cell_w
         -- (which includes the spine on the left). A leading HorizontalSpan
         -- of stack_extra pushes the label to start at the thumbnail left edge.
-        local label_w = TextWidget:new{
-            text      = coll_name,
+        local display_name = coll_name
+        do
+            local TBR = package.loaded["desktop_modules/module_tbr"]
+            if TBR and coll_name == TBR.TBR_COLL_NAME then
+                display_name = TBR.getDisplayName()
+            end
+        end
+        -- d.tbw_line_h mirrors TextBoxWidget's internal line_height_px formula
+        -- (math.floor(1.3 * font_size + 0.5)), calculated once in getDims so that
+        -- coll_cell_h and the widget height are always in sync.
+        local label_w = TextBoxWidget:new{
+            text      = display_name,
             face      = Font:getFace("cfont", d.coll_lbl_fs),
             fgcolor   = CLR_TEXT_SUB,
             width     = d.coll_w,
+            height    = d.tbw_line_h * 2,
             alignment = "center",
+            height_overflow_show_ellipsis = true,
         }
         local label_aligned = HorizontalGroup:new{
             HorizontalSpan:new{ width = d.stack_extra },
@@ -477,6 +543,23 @@ function M.getMenuItems(ctx_menu)
             for _, n in ipairs(others) do all_colls[#all_colls + 1] = n end
         end
     end
+    -- Hide the TBR collection from the selection list when it is empty.
+    do
+        local TBR = package.loaded["desktop_modules/module_tbr"]
+        if TBR then
+            local filtered = {}
+            for _, n in ipairs(all_colls) do
+                if n == TBR.TBR_COLL_NAME then
+                    if TBR.getTBRCount() > 0 then
+                        filtered[#filtered + 1] = n
+                    end
+                else
+                    filtered[#filtered + 1] = n
+                end
+            end
+            all_colls = filtered
+        end
+    end
 
     local function openCoverPicker(coll_name)
         if not ok_rc then return end
@@ -590,14 +673,21 @@ function M.getMenuItems(ctx_menu)
     else
         for _loop_, coll_name in ipairs(all_colls) do
             local _n = coll_name
+            local _display_n = (function()
+                local TBR = package.loaded["desktop_modules/module_tbr"]
+                if TBR and _n == TBR.TBR_COLL_NAME then
+                    return TBR.getDisplayName()
+                end
+                return _n
+            end)()
             items[#items + 1] = {
                 text_func = function()
                     local cur = M.getSelected()
-                    for _loop_, n in ipairs(cur) do if n == _n then return _n end end
+                    for _loop_, n in ipairs(cur) do if n == _n then return _display_n end end
                     local rem = 4 - #cur
-                    if rem <= 0 then return _n .. "  (0 left)" end
-                    if rem <= 2 then return _n .. "  (" .. rem .. " left)" end
-                    return _n
+                    if rem <= 0 then return _display_n .. "  (0 left)" end
+                    if rem <= 2 then return _display_n .. "  (" .. rem .. " left)" end
+                    return _display_n
                 end,
                 checked_func = function()
                     for _loop_, n in ipairs(M.getSelected()) do

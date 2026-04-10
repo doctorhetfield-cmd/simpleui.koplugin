@@ -4,18 +4,7 @@
 # This file is distributed under the same license as the Simple UI package.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: simpleui\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-27 12:00+0000\n"
-"PO-Revision-Date: 2026-03-27 12:00+0000\n"
-"Last-Translator: \n"
-"Language-Team: Portuguese (Brazil)\n"
-"Language: pt_BR\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+msgstr "Project-Id-Version: simpleui\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2026-03-27 12:00+0000\nPO-Revision-Date: 2026-03-27 12:00+0000\nLast-Translator: \nLanguage-Team: Portuguese (Brazil)\nLanguage: pt_BR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: sui_menu.lua:347
 msgid "General"
@@ -274,6 +263,9 @@ msgstr "Tamanho dos Botões"
 #: desktop_modules/module_reading_goals.lua:366
 #: desktop_modules/module_reading_goals.lua:383
 #: desktop_modules/module_reading_goals.lua:401
+#: sui_updater.lua:184
+#: sui_updater.lua:237
+#: sui_updater.lua:258
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -683,6 +675,7 @@ msgstr "Grande"
 #: sui_menu.lua:627
 #: sui_menu.lua:948
 #: sui_menu.lua:1524
+#: sui_updater.lua:184
 msgid "Later"
 msgstr "Depois"
 
@@ -919,7 +912,6 @@ msgstr "Número de Páginas"
 msgid "Number of Pages in Title Bar Always"
 msgstr "Número de Páginas na Barra de Título Sempre"
 
-
 #: sui_quickactions.lua:286
 msgid "OK"
 msgstr "OK"
@@ -1092,10 +1084,20 @@ msgstr "Metas de Leitura"
 msgid "Reading Stats"
 msgstr "Estatísticas de Leitura"
 
+#: desktop_modules/module_flow_recent.lua:55
+msgid "Flow Recent Books"
+msgstr "Livros Recentes (Flow)"
+
 #: desktop_modules/module_recent.lua:61
 #: desktop_modules/module_recent.lua:62
-msgid "Recent Books"
-msgstr "Livros Recentes"
+#: desktop_modules/module_flow_recent.lua:56
+#: desktop_modules/module_flow_recent.lua:93
+msgid "Cover Deck"
+msgstr "Carrossel de Capas"
+
+#: desktop_modules/module_flow_recent.lua:124
+msgid "To Be Read (Deck)"
+msgstr "To Be Read (Deck)"
 
 #: sui_quickactions.lua:815
 #: sui_quickactions.lua:873
@@ -1127,6 +1129,7 @@ msgstr "Redefinir para Escala Padrão"
 #: sui_menu.lua:627
 #: sui_menu.lua:947
 #: sui_menu.lua:1524
+#: sui_updater.lua:183
 msgid "Restart"
 msgstr "Reiniciar"
 
@@ -1245,6 +1248,10 @@ msgstr "Configurações"
 #: desktop_modules/module_clock.lua:386
 msgid "Show Battery"
 msgstr "Mostrar Bateria"
+
+#: desktop_modules/module_clock.lua:454
+msgid "Show Clock"
+msgstr "Mostrar Relógio"
 
 #: desktop_modules/module_clock.lua:378
 msgid "Show Date"
@@ -1612,8 +1619,6 @@ msgstr "%d dias"
 msgid "Stats layout"
 msgstr "Apresentação das estatísticas"
 
-
-
 #: sui_menu.lua:356
 msgid "Pagination bar set to Default.\n\nRestart now?"
 msgstr "Barra de paginação redefinida para padrão.\n\nReiniciar agora?"
@@ -1662,6 +1667,22 @@ msgstr "Capa substituta para pastas sem livros"
 msgid "  Scan subfolders for cover"
 msgstr "  Procurar capa em subpastas"
 
+#: sui_menu.lua:1869
+msgid "Check for Updates"
+msgstr "Verificar Atualizações"
+
+#: sui_menu.lua
+msgid "About"
+msgstr "Sobre"
+
+#: sui_menu.lua
+msgid "Version: %s"
+msgstr "Versão: %s"
+
+#: sui_menu.lua
+msgid "Author: %s"
+msgstr "Autor: %s"
+
 #: sui_homescreen.lua:407
 #: desktop_modules/module_quote.lua:950
 msgid "Open this file?"
@@ -1670,3 +1691,249 @@ msgstr "Abrir este arquivo?"
 #: sui_bottombar.lua:1638
 msgid "Sleep"
 msgstr "Suspender"
+
+#: sui_updater.lua:157
+msgid "Downloading Simple UI "
+msgstr "Baixando o Simple UI "
+
+#: sui_updater.lua:163
+msgid "Download error: "
+msgstr "Erro no download: "
+
+#: sui_updater.lua:174
+msgid "Extraction error: "
+msgstr "Erro na extração: "
+
+#: sui_updater.lua:180
+msgid "Simple UI %s successfully installed.\n\nRestart KOReader to apply the update?"
+msgstr "Simple UI %s instalado com sucesso.\n\nReiniciar o KOReader para aplicar a atualização?"
+
+#: sui_updater.lua:194
+msgid "Checking for updates..."
+msgstr "Verificando atualizações..."
+
+#: sui_updater.lua:200
+msgid "Error checking for updates: "
+msgstr "Erro ao verificar atualizações: "
+
+#: sui_updater.lua:216
+msgid "Could not retrieve version information."
+msgstr "Não foi possível obter informações da versão."
+
+#: sui_updater.lua:222
+msgid "Simple UI is up to date (%s)."
+msgstr "O Simple UI está atualizado (%s)."
+
+#: sui_updater.lua:233
+msgid "Simple UI %s is available (you have %s).\n\nNo automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "O Simple UI %s está disponível (você tem o %s).\n\nNenhum arquivo de atualização automática foi encontrado.\n\nAbrir a página de lançamentos no GitHub?"
+
+#: sui_updater.lua:236
+msgid "Open in browser"
+msgstr "Abrir no navegador"
+
+#: sui_updater.lua:254
+msgid "Simple UI %s is available!\nCurrent version: %s\n\nDownload and install now?"
+msgstr "O Simple UI %s está disponível!\nVersão atual: %s\n\nBaixar e instalar agora?"
+
+#: sui_updater.lua:257
+msgid "Download and install"
+msgstr "Baixar e instalar"
+
+#: sui_menu.lua
+msgid "Return to Book Folder"
+msgstr "Retornar à pasta do livro"
+
+#: sui_menu.lua
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root."
+msgstr "Quando ativado, abrir o navegador de arquivos após terminar ou fechar um livro navega para a pasta onde o livro está, replicando o comportamento nativo do KOReader.\nQuando desativado (padrão), o SimpleUI sempre retorna à raiz da biblioteca."
+
+#: sui_menu.lua
+msgid "Settings on Long Tap"
+msgstr "Configurações com toque longo"
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Quando ativado, manter pressionada uma seção abre o seu menu de configurações.\nDesative para evitar que o menu de configurações apareça com toque longo."
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the top bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Quando ativado, manter pressionada a barra superior abre o seu menu de configurações.\nDesative para evitar que o menu de configurações apareça com toque longo."
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the bottom bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Quando ativado, manter pressionada a barra inferior abre o seu menu de configurações.\nDesative para evitar que o menu de configurações apareça com toque longo."
+
+#: desktop_modules/module_tbr.lua
+msgid "Arrange To Be Read list"
+msgstr "Organizar lista Quero Ler"
+
+#: desktop_modules/module_tbr.lua
+msgid "Add at least 2 books to arrange."
+msgstr "Adicione pelo menos 2 livros para organizar."
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read books"
+msgstr "Livros Quero Ler"
+
+#: desktop_modules/module_tbr.lua
+msgid "No books in To Be Read list."
+msgstr "Nenhum livro na lista Quero Ler."
+
+#: desktop_modules/module_tbr.lua
+msgid "Add to To Be Read"
+msgstr "Adicionar à lista Quero Ler"
+
+#: desktop_modules/module_tbr.lua
+msgid "Remove from To Be Read"
+msgstr "Remover da lista Quero Ler"
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read"
+msgstr "Quero Ler"
+
+#: sui_foldercovers.lua sui_menu.lua
+msgid "Group Books by Series"
+msgstr "Agrupar Livros por Série"
+
+#: sui_menu.lua
+msgid "Series Index"
+msgstr "Índice de Série"
+
+#: sui_foldercovers.lua
+msgid "Series cover"
+msgstr "Capa da série"
+
+#: sui_foldercovers.lua
+msgid "Set series cover…"
+msgstr "Definir capa da série…"
+
+#: sui_foldercovers.lua
+msgid "No books found in this series."
+msgstr "Nenhum livro encontrado nesta série."
+
+#: sui_foldercovers.lua
+msgid "Scan subfolders for cover"
+msgstr "Pesquisar subpastas para capa"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for this module."
+msgstr "Escala para este módulo."
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for the cover thumbnails only.\n100% is the default size."
+msgstr "Escala apenas para as miniaturas das capas.\n100% é o tamanho padrão."
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for title and statistics text.\n100% is the default size."
+msgstr "Escala para o texto do título e estatísticas.\n100% é o tamanho padrão."
+
+#: desktop_modules/module_coverdeck.lua
+#: sui_menu.lua
+msgid "Recent Books"
+msgstr "Livros Recentes"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Title Position"
+msgstr "Posição do Título"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Above"
+msgstr "Acima"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Below"
+msgstr "Abaixo"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Arrange Statistics"
+msgstr "Organizar Estatísticas"
+
+#: sui_menu.lua
+msgid "Updater module not found."
+msgstr "Módulo de atualização não encontrado."
+
+#: sui_menu.lua
+msgid "Recent"
+msgstr "Recentes"
+
+#: sui_menu.lua
+msgid "KOReader"
+msgstr "KOReader"
+
+#: sui_config.lua:165 sui_menu.lua:553
+msgid "Custom Text"
+msgstr "Texto Personalizado"
+
+#: sui_menu.lua:545 sui_menu.lua:547
+msgid "Edit Custom Text"
+msgstr "Editar Texto Personalizado"
+
+#: sui_menu.lua:1953
+msgid "Folder Name Text Size"
+msgstr "Tamanho do Texto do Nome da Pasta"
+
+#: sui_menu.lua:1951
+msgid "Text size"
+msgstr "Tamanho do texto"
+
+#: sui_menu.lua:566
+msgid "Set"
+msgstr "Definir"
+
+#: sui_menu.lua:556
+msgid "Text shown in the top bar.\nMaximum %d characters."
+msgstr "Texto exibido na barra superior.\nMáximo %d caracteres."
+
+#: sui_menu.lua:1954
+msgid "Scale for the folder name overlay text.\n100% is the default size."
+msgstr "Escala para o texto sobreposto do nome da pasta.\n100% é o tamanho padrão."
+
+#: sui_config.lua:1748
+msgid "Show section label"
+msgstr "Mostrar rótulo de seção"
+
+msgid "Checking for updates…"
+msgstr "Verificando atualizações…"
+
+msgid "Update cancelled."
+msgstr "Atualização cancelada."
+
+msgid "Update check cancelled."
+msgstr "Verificação de atualizações cancelada."
+
+msgid "Downloading Simple UI %s…"
+msgstr "Baixando Simple UI %s…"
+
+msgid "Error checking for updates."
+msgstr "Erro ao verificar atualizações."
+
+msgid "Simple UI %s is available!\nYou have %s."
+msgstr "Simple UI %s está disponível!\nVocê tem a versão %s."
+
+msgid "\n\nDownload and install now?"
+msgstr "\n\nBaixar e instalar agora?"
+
+msgid "What's new:"
+msgstr "Novidades:"
+
+msgid "No automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "Nenhum arquivo de atualização automática foi encontrado.\n\nAbrir a página de lançamentos no GitHub?"
+
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root.\nThis option works independently of \"Start with Home Screen\"."
+msgstr "Quando ativado, abrir o navegador de arquivos após terminar ou fechar um livro navega para a pasta onde o livro está, correspondendo ao comportamento nativo do KOReader.\nQuando desativado (padrão), o SimpleUI sempre retorna à raiz da biblioteca.\nEsta opção funciona independentemente de \"Iniciar com Tela Inicial\"."
+
+
+#: sui_menu.lua:1492
+msgid "Choose how many pages the homescreen has.\nEmpty pages stay empty. Modules keep their position."
+msgstr "Escolha quantas páginas a tela inicial terá.\nPáginas vazias permanecem vazias. Os módulos mantêm sua posição."
+
+
+#: sui_menu.lua:1549 sui_menu.lua:1569
+msgid "Page %d"
+msgstr "Página %d"
+
+
+#: sui_menu.lua:1580
+msgid "Cannot place modules after Page 1 separator.\nPage 1 must always have at least 1 module."
+msgstr "Não é possível colocar módulos após o separador da Página 1.\nA Página 1 deve ter sempre pelo menos 1 módulo."
