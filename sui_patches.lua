@@ -1005,7 +1005,7 @@ function M.patchUIManagerShow(plugin)
 
     -- Widgets that receive navbar injection by name (in addition to those
     -- already sized to the content area via _navbar_height_reduced).
-    local INJECT_NAMES = { collections = true, history = true, coll_list = true, homescreen = true }
+    local INJECT_NAMES = { collections = true, history = true, coll_list = true, homescreen = true, opds_catalog = true, opdsplus_catalog = true }
 
     -- Resolve the live FM menu at call time so we never capture a stale reference.
     -- The FM is destroyed and recreated every time the reader opens/closes.
