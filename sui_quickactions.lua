@@ -15,6 +15,7 @@ local Screen    = Device.screen
 local lfs       = require("libs/libkoreader-lfs")
 local logger    = require("logger")
 local _         = require("gettext")
+local N_        = _.ngettext
 
 local Config    = require("sui_config")
 
@@ -1070,7 +1071,8 @@ function QA.makeMenuItems(plugin)
         callback     = function(_menu_self, suppress_refresh)
             if #Config.getCustomQAList() >= MAX_CUSTOM_QA then
                 UIManager:show(InfoMessage:new{
-                    text    = string.format(_("Maximum %d quick actions reached. Delete one first."), MAX_CUSTOM_QA),
+                    text    = string.format(N_("The maximum of %d quick action has been reached. Delete one first.",
+                              "The maximum of %d quick actions has been reached. Delete one first.", MAX_CUSTOM_QA), MAX_CUSTOM_QA),
                     timeout = 2,
                 })
                 return

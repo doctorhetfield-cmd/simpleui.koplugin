@@ -9,6 +9,7 @@ local Screen    = Device.screen
 local lfs       = require("libs/libkoreader-lfs")
 local logger    = require("logger")
 local _         = require("gettext")
+local N_        = _.ngettext
 
 -- Heavy UI widgets — lazy-loaded on first use so that require("menu") at boot
 -- does not pull them into memory before the user ever opens the settings menu.
@@ -268,7 +269,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     else
                         if #tabs >= limit then
                             UIManager:show(InfoMessage():new{
-                                text = string.format(_("Maximum %d tabs reached. Remove one first."), limit), timeout = 2,
+                                text = string.format(N_("The maximum of %d tab has been reached. Remove one first.",
+                                       "The maximum of %d tabs has been reached. Remove one first.", limit), limit), timeout = 2,
                             })
                             return
                         end
@@ -1226,13 +1228,13 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         local ButtonDialog = require("ui/widget/buttondialog")
         local dlg
         dlg = ButtonDialog:new{ title = _("Annual Reading Goal"), buttons = {
-            {{ text = goal > 0 and string.format(_("Digital: %d books in %s"), goal, os.date("%Y")) or string.format(_("Digital Goal  (%s)"), os.date("%Y")),
+            {{ text = goal > 0 and string.format(N_("Digital: %d book in %s", "Digital: %d books in %s", goal), goal, os.date("%Y")) or string.format(_("Digital Goal  (%s)"), os.date("%Y")),
                callback = function()
                    UIManager:close(dlg)
                    local ok_rg, RG = pcall(require, "readinggoals")
                    if ok_rg and RG then RG.showAnnualGoalDialog(function() refreshHomescreen() end) end
                end }},
-            {{ text = string.format(_("Physical: %d books in %s"), physical, os.date("%Y")),
+            {{ text = string.format(N_("Physical: %d book in %s", "Physical: %d books in %s", physical), physical, os.date("%Y")),
                callback = function()
                    UIManager:close(dlg)
                    local ok_rg, RG = pcall(require, "readinggoals")
@@ -1296,7 +1298,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             for _i, v in ipairs(items) do if v == id then found = true else new_items[#new_items+1] = v end end
             if not found then
                 if #items >= MAX_QA_ITEMS then
-                    UIManager:show(InfoMessage():new{ text = string.format(_("Maximum %d actions per module reached. Remove one first."), MAX_QA_ITEMS), timeout = 2 })
+                    UIManager:show(InfoMessage():new{ text = string.format(N_("The maximum of %d action per module has been reached. Remove one first.",
+                              "The maximum of %d actions per module has been reached. Remove one first.", MAX_QA_ITEMS), MAX_QA_ITEMS), timeout = 2 })
                     return
                 end
                 new_items[#new_items+1] = id
