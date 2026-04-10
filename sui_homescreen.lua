@@ -1669,7 +1669,7 @@ function HomescreenWidget:_onHoldModRelease(wrapper)
     local Topbar   = require("sui_topbar")
     local topbar_h = G_reader_settings:nilOrTrue("navbar_topbar_enabled")
                      and Topbar.TOTAL_TOP_H() or 0
-    local _tr = _
+    local _lc = _
     UI.showSettingsMenu(
         mod.name or mod.id,
         function()
@@ -1678,10 +1678,10 @@ function HomescreenWidget:_onHoldModRelease(wrapper)
             local gap_item = Config.makeGapItem({
                 text_func = function()
                     local pct = Config.getModuleGapPct(mod.id, PFX)
-                    return string.format(_tr("Top Margin  (%d%%)"), pct)
+                    return string.format(_lc("Top Margin  (%d%%)"), pct)
                 end,
                 title   = mod.name or mod.id,
-                info    = _tr("Vertical space above this module.\n100% is the default spacing."),
+                info    = _lc("Vertical space above this module.\n100% is the default spacing."),
                 get     = function() return Config.getModuleGapPct(mod.id, PFX) end,
                 set     = function(v) Config.setModuleGap(v, mod.id, PFX) end,
                 refresh = ctx_menu.refresh,

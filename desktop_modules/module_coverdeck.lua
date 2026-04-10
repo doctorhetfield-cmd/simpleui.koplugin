@@ -12,6 +12,7 @@ local TextWidget     = require("ui/widget/textwidget")
 local VerticalGroup  = require("ui/widget/verticalgroup")
 local Screen         = Device.screen
 local _              = require("gettext")
+local N_             = _.ngettext
 local logger         = require("logger")
 
 local Config       = require("sui_config")
@@ -570,9 +571,7 @@ function M.build(w, ctx)
                 text = string.format(_("%d%% Read"), math.floor((bd.percent or 0) * 100))
             elseif bstats then
                 if key == "book_days" and bstats.days and bstats.days > 0 then
-                    text = bstats.days == 1
-                        and _("1 day of reading")
-                        or  string.format(_("%d days of reading"), bstats.days)
+                    text = string.format(N_("%d day of reading", "%d days of reading", bstats.days), bstats.days)
                 elseif key == "book_time" and bstats.total_secs and bstats.total_secs > 0 then
                     text = string.format(_("%s read"), fmtTime(bstats.total_secs))
                 elseif key == "book_remaining" then
