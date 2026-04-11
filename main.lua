@@ -96,26 +96,99 @@ function SimpleUIPlugin:init()
                 if not (ok_fm and FM and FM.instance) then return end
                 local ok_tbr, TBR = pcall(require, "desktop_modules/module_tbr")
                 if not (ok_tbr and TBR) then return end
-                FM.instance:addFileDialogButtons("sui_tbr", function(file, is_file, _book_props)
+
+                -- Shared button factory: generates the TBR button for a given file.
+                -- Used by both FM's showFileDialog (library browser) and
+                -- FileSearcher's onMenuHold (search results), so both surfaces
+                -- show the same "Add to To Be Read" option on long-press.
+                local function _makeTBRRow(file, is_file, _book_props, close_refresh_fn)
                     if not is_file then return nil end
-                    -- Only show the button for files that are books
-                    -- (have a provider or have been opened before).
                     local ok_dr, DR = pcall(require, "document/documentregistry")
                     local ok_bl, BL = pcall(require, "ui/widget/booklist")
                     local is_book = (ok_dr and DR and DR:hasProvider(file))
                         or (ok_bl and BL and BL.hasBookBeenOpened(file))
                     if not is_book then return nil end
-                    -- After toggling TBR, close the dialog and refresh the file list,
-                    -- matching the same behaviour as "On Hold", "Reading", etc.
-                    -- Note: file_dialog is a property of file_chooser, not FM.instance.
+                    return { TBR.genTBRButton(file, close_refresh_fn) }
+                end
+
+                -- 1. Library browser (FileManager.showFileDialog).
+                -- After toggling TBR, close the dialog and refresh the file list,
+                -- matching the same behaviour as "On Hold", "Reading", etc.
+                -- Note: file_dialog is a property of file_chooser, not FM.instance.
+                FM.instance:addFileDialogButtons("sui_tbr", function(file, is_file, book_props)
                     local close_refresh = function()
                         local fc = FM.instance and FM.instance.file_chooser
                         local dlg = fc and fc.file_dialog
                         if dlg then UIManager:close(dlg) end
                         if fc then fc:refreshPath() end
                     end
-                    return { TBR.genTBRButton(file, close_refresh) }
+                    return _makeTBRRow(file, is_file, book_props, close_refresh)
                 end)
+
+                -- 2. Search results (FileSearcher.onMenuHold).
+                --
+                -- The problem: file_dialog_added_buttons row_funcs are called as
+                --   row_func(file, is_file, book_props)
+                -- with no reference to the dialog being built.  In the library
+                -- this is fine because close_refresh captures file_chooser by
+                -- closure.  In FileSearcher, self.file_dialog (the ButtonDialog)
+                -- is owned by booklist_menu — the `self` inside onMenuHold — and
+                -- that object is not reachable from a plain row_func closure.
+                --
+                -- Solution: monkey-patch FileSearcher.onMenuHold to wrap each
+                -- added row_func with a closure that captures `self` (booklist_menu)
+                -- and therefore can close `self.file_dialog` correctly, exactly
+                -- mirroring what close_dialog_callback does natively.
+                local ok_fs, FS = pcall(require, "apps/filemanager/filemanagerfilesearcher")
+                if ok_fs and FS and not FS._sui_onMenuHold_patched then
+                    FS._sui_onMenuHold_patched = true
+                    local orig_onMenuHold = FS.onMenuHold
+                    FS.onMenuHold = function(menu_self, item)
+                        -- Wrap every added row_func so it receives a close_cb
+                        -- that closes menu_self.file_dialog — same as the native
+                        -- close_dialog_callback defined inside orig_onMenuHold.
+                        local manager = menu_self._manager
+                        local orig_added = manager and manager.file_dialog_added_buttons
+                        local wrapped
+                        if orig_added then
+                            wrapped = { index = orig_added.index }
+                            for i, row_func in ipairs(orig_added) do
+                                wrapped[i] = function(file, is_file, book_props)
+                                    -- close_cb matches native close_dialog_callback:
+                                    -- UIManager:close(self.file_dialog) where self
+                                    -- is menu_self (the booklist_menu widget).
+                                    local close_cb = function()
+                                        UIManager:close(menu_self.file_dialog)
+                                    end
+                                    -- row_func signature: (file, is_file, book_props, close_cb)
+                                    -- _makeTBRRow uses the 4th arg as its close_refresh_fn.
+                                    return row_func(file, is_file, book_props, close_cb)
+                                end
+                            end
+                            manager.file_dialog_added_buttons = wrapped
+                        end
+                        local result = orig_onMenuHold(menu_self, item)
+                        -- Restore the original table so the next call gets
+                        -- unmodified row_funcs (not double-wrapped).
+                        if orig_added and manager then
+                            manager.file_dialog_added_buttons = orig_added
+                        end
+                        return result
+                    end
+
+                    -- Register the TBR row_func on the FileSearcher class.
+                    -- Note: row_func here accepts an optional 4th arg (close_cb)
+                    -- injected by the patched onMenuHold above.
+                    FS.file_dialog_added_buttons = FS.file_dialog_added_buttons or { index = {} }
+                    if FS.file_dialog_added_buttons.index["sui_tbr"] == nil then
+                        local row_func = function(file, is_file, book_props, close_cb)
+                            return _makeTBRRow(file, is_file, book_props, close_cb)
+                        end
+                        table.insert(FS.file_dialog_added_buttons, row_func)
+                        FS.file_dialog_added_buttons.index["sui_tbr"] =
+                            #FS.file_dialog_added_buttons
+                    end
+                end
             end)
             if G_reader_settings:nilOrTrue("navbar_topbar_enabled") then
                 Topbar.scheduleRefresh(self, 0)
@@ -177,10 +250,42 @@ function SimpleUIPlugin:onTeardown()
     if mod_tbr and type(mod_tbr.reset) == "function" then
         pcall(mod_tbr.reset)
     end
-    -- Remove o botão TBR do diálogo da Library.
+    -- Remove o botão TBR do diálogo da Library (browser) e dos resultados de pesquisa.
     local FM = package.loaded["apps/filemanager/filemanager"]
     if FM and FM.instance and FM.instance.removeFileDialogButtons then
         pcall(function() FM.instance:removeFileDialogButtons("sui_tbr") end)
+    end
+    -- Remove o botão TBR da tabela do FileSearcher e restaura o onMenuHold original.
+    local FS = package.loaded["apps/filemanager/filemanagerfilesearcher"]
+    if FS then
+        -- Restaura onMenuHold original se foi substituído.
+        if FS._sui_onMenuHold_patched and FS._sui_orig_onMenuHold then
+            FS.onMenuHold = FS._sui_orig_onMenuHold
+            FS._sui_orig_onMenuHold = nil
+            FS._sui_onMenuHold_patched = nil
+        elseif FS._sui_onMenuHold_patched then
+            -- Patch foi instalado mas orig não foi guardado separadamente
+            -- (está capturado na closure); só limpa a flag e a entrada TBR.
+            FS._sui_onMenuHold_patched = nil
+        end
+        if FS.file_dialog_added_buttons then
+            local idx = FS.file_dialog_added_buttons.index
+                and FS.file_dialog_added_buttons.index["sui_tbr"]
+            if idx then
+                pcall(function()
+                    table.remove(FS.file_dialog_added_buttons, idx)
+                    FS.file_dialog_added_buttons.index["sui_tbr"] = nil
+                    for id, i in pairs(FS.file_dialog_added_buttons.index) do
+                        if i > idx then
+                            FS.file_dialog_added_buttons.index[id] = i - 1
+                        end
+                    end
+                    if #FS.file_dialog_added_buttons == 0 then
+                        FS.file_dialog_added_buttons = nil
+                    end
+                end)
+            end
+        end
     end
     local mod_rg = package.loaded["desktop_modules/module_reading_goals"]
     if mod_rg and type(mod_rg.reset) == "function" then
