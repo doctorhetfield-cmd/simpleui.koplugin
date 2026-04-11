@@ -832,6 +832,23 @@ function M.registerTouchZones(plugin, fm_self)
                     return true
                 end
             end
+            local tabs_snap_hold = tabs_snap or Config.loadTabConfig()
+            if tabs_snap_hold then
+                local cumul = 0
+                for idx = 1, #tabs_snap_hold do
+                    local w = widths[idx] or 0
+                    local x = ges and ges.pos and ges.pos.x or -1
+                    if x >= side_m + cumul and x < side_m + cumul + w then
+                        local aid = tabs_snap_hold[idx]
+                        if aid == "opds_catalog" or aid == "opdsplus_catalog" then
+                            M.showOPDSServerPicker(aid, plugin)
+                            return true
+                        end
+                        break
+                    end
+                    cumul = cumul + w
+                end
+            end
             -- Held anywhere else on the bar → open settings menu.
 			if not G_reader_settings:nilOrTrue("navbar_bottombar_settings_on_hold") then
 				return true
@@ -862,6 +879,241 @@ function M.registerTouchZones(plugin, fm_self)
         for i = 1, #zones do zones_copy[i] = zones[i] end
         fm_inst:registerTouchZones(zones_copy)
     end
+end
+
+-- ---------------------------------------------------------------------------
+-- OPDS browser launch
+-- ---------------------------------------------------------------------------
+
+local function _launchOPDS(action_id, plugin, fm, showUnavailable)
+    local is_plus = (action_id == "opdsplus_catalog")
+    local opds_plugin = is_plus and fm.opdsplus or fm.opds
+    if not opds_plugin then
+        showUnavailable(is_plus and _("OPDS Plus plugin not available.")
+                                 or _("OPDS plugin not available."))
+        return
+    end
+
+    local server_url = Config.getOPDSServer(action_id)
+
+    local OPDSBrowser
+    if is_plus and opds_plugin._createBrowserInstance then
+        local ok, temp = pcall(function() return opds_plugin:_createBrowserInstance() end)
+        if ok and temp then
+            local mt = getmetatable(temp)
+            OPDSBrowser = mt and mt.__index
+        end
+    else
+        OPDSBrowser = package.loaded["opdsbrowser"]
+    end
+    if not OPDSBrowser then
+        showUnavailable(_("Cannot load OPDS browser."))
+        return
+    end
+
+    local Screen    = require("device").screen
+    local orig_init = OPDSBrowser.init
+
+    local browser_opts = {
+        servers       = opds_plugin.servers,
+        downloads     = opds_plugin.downloads,
+        settings      = opds_plugin.settings,
+        pending_syncs = opds_plugin.pending_syncs,
+        title         = is_plus and _("OPDS Plus catalog") or _("OPDS catalog"),
+        is_popout     = false,
+        is_borderless = true,
+        title_bar_fm_style = true,
+        _manager      = opds_plugin,
+        file_downloaded_callback = function(file)
+            if opds_plugin.showFileDownloadedDialog then
+                opds_plugin:showFileDownloadedDialog(file)
+            end
+        end,
+        close_callback = function()
+            if opds_plugin.opds_browser and opds_plugin.opds_browser.download_list then
+                opds_plugin.opds_browser.download_list.close_callback()
+            end
+            UIManager:close(opds_plugin.opds_browser)
+            opds_plugin.opds_browser = nil
+        end,
+        init = function(self)
+            -- custom_title_bar: back chevron, no close button.
+            local TitleBar = require("ui/widget/titlebar")
+            self.custom_title_bar = TitleBar:new{
+                width                    = Screen:getWidth(),
+                fullscreen               = "true",
+                align                    = "center",
+                title                    = self.title or "",
+                title_shrink_font_to_fit = true,
+                title_top_padding        = Screen:scaleBySize(6),
+                button_padding           = Screen:scaleBySize(5),
+                with_bottom_line         = false,
+                left_icon                = "chevron.left",
+                left_icon_size_ratio     = 1,
+                left_icon_tap_callback   = function()
+                    if self.paths and #self.paths > 0 then
+                        self:onReturn()
+                    end
+                end,
+                show_parent = self,
+            }
+
+            orig_init(self)
+            self._titlebar_inj_patched = true
+
+            -- Restore pagination: SimpleUI's pagination patch removes the
+            -- BottomContainer footer and suppresses updates via a
+            -- _recalculateDimen override. Remove the override and re-wrap
+            -- page_info in a BottomContainer (same as Menu.init does).
+            self.setTitleBarLeftIcon = function() end
+            self._recalculateDimen = function(s, no_recalc)
+                local content_h = require("sui_core").getContentHeight()
+                s.dimen.h = content_h
+                if s.inner_dimen then s.inner_dimen.h = content_h end
+                local fn = s._recalculateDimen
+                s._recalculateDimen = nil
+                pcall(function() s:_recalculateDimen(no_recalc) end)
+                s._recalculateDimen = fn
+            end
+            if self.page_info then
+                local content = self[1] and self[1][1]
+                if content then
+                    local BottomContainer = require("ui/widget/container/bottomcontainer")
+                    table.insert(content, BottomContainer:new{
+                        dimen = (self.inner_dimen or self.dimen):copy(),
+                        self.page_info,
+                    })
+                end
+            end
+
+            -- Prevent onReturn from calling self:init() at root level,
+            -- which would rebuild self[1] and destroy the navbar wrapper.
+            self.onReturn = function(s)
+                if not s.paths or #s.paths == 0 then return true end
+                table.remove(s.paths)
+                local path = s.paths[#s.paths]
+                if path then
+                    s.catalog_title = path.title
+                    s:updateCatalog(path.url, true)
+                else
+                    s:switchItemTable(s.title or "", s:genItemTableFromRoot())
+                end
+                return true
+            end
+
+            local orig_onCloseWidget = self.onCloseWidget
+            self.onCloseWidget = function(s)
+                opds_plugin.opds_browser = nil
+                if orig_onCloseWidget then return orig_onCloseWidget(s) end
+            end
+
+            if server_url then
+                self:switchItemTable(_("Loading…"), {})
+            end
+        end,
+    }
+    if is_plus then
+        browser_opts.show_covers = true
+    end
+
+    local ok_br, browser = pcall(OPDSBrowser.new, OPDSBrowser, browser_opts)
+    if not ok_br or not browser then
+        showUnavailable(_("Cannot load OPDS browser."))
+        return
+    end
+
+    browser.name              = action_id
+    browser.covers_fullscreen = true
+    opds_plugin.opds_browser  = browser
+    UIManager:show(browser)
+
+    -- Propagate injection-reduced height so pagination fits above the bar.
+    UIManager:scheduleIn(0, function()
+        local content_h = require("sui_core").getContentHeight()
+        browser.dimen.h = content_h
+        if browser.inner_dimen then browser.inner_dimen.h = content_h end
+        local inner = browser._navbar_inner
+        if inner then
+            if inner.dimen then inner.dimen.h = content_h end
+            if inner[1] and inner[1].dimen then
+                inner[1].dimen.h = content_h
+                for i = 1, #inner[1] do
+                    local child = inner[1][i]
+                    if child and child.dimen and child[1] == browser.page_info then
+                        child.dimen.h = content_h
+                    end
+                end
+            end
+        end
+        if browser.updateItems then browser:updateItems() end
+        UIManager:setDirty(browser, "ui")
+    end)
+
+    if server_url then
+        UIManager:scheduleIn(0.1, function()
+            for _, srv in ipairs(opds_plugin.servers or {}) do
+                if srv.url == server_url then
+                    browser.root_catalog_title    = srv.title
+                    browser.root_catalog_username = srv.username
+                    browser.root_catalog_password = srv.password
+                    browser.catalog_title         = srv.title
+                    browser:updateCatalog(srv.url)
+                    return
+                end
+            end
+            Config.saveOPDSServer(action_id, nil)
+            UIManager:show(InfoMessage():new{
+                text = _("Configured catalog not found. Showing all catalogs."),
+                timeout = 3,
+            })
+        end)
+    end
+end
+
+-- ---------------------------------------------------------------------------
+-- OPDS server picker (long-press on an OPDS tab)
+-- ---------------------------------------------------------------------------
+
+function M.showOPDSServerPicker(action_id, plugin)
+    local is_plus = (action_id == "opdsplus_catalog")
+    local fm = plugin.ui
+    local opds_plugin = is_plus and fm.opdsplus or fm.opds
+    if not opds_plugin or not opds_plugin.servers then return end
+
+    local ButtonDialog = require("ui/widget/buttondialog")
+    local current_url  = Config.getOPDSServer(action_id)
+
+    local buttons = {}
+    local all_label = _("All catalogs")
+    if not current_url then all_label = all_label .. " ✓" end
+    buttons[#buttons + 1] = {{
+        text     = all_label,
+        callback = function()
+            Config.saveOPDSServer(action_id, nil)
+            UIManager:close(plugin._opds_server_dialog)
+            plugin._opds_server_dialog = nil
+        end,
+    }}
+
+    for _, srv in ipairs(opds_plugin.servers) do
+        local url   = srv.url
+        local label = srv.title or url
+        if url == current_url then label = label .. " ✓" end
+        buttons[#buttons + 1] = {{
+            text     = label,
+            callback = function()
+                Config.saveOPDSServer(action_id, url)
+                UIManager:close(plugin._opds_server_dialog)
+                plugin._opds_server_dialog = nil
+            end,
+        }}
+    end
+
+    plugin._opds_server_dialog = ButtonDialog:new{
+        title   = _("Open catalog"),
+        buttons = buttons,
+    }
+    UIManager:show(plugin._opds_server_dialog)
 end
 
 -- ---------------------------------------------------------------------------
@@ -1410,6 +1662,9 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
 
     elseif action_id == "wifi_toggle" then
         M.doWifiToggle(plugin); return
+
+    elseif action_id == "opds_catalog" or action_id == "opdsplus_catalog" then
+        _launchOPDS(action_id, plugin, fm, showUnavailable)
 
     else
         if action_id:match("^custom_qa_%d+$") then
