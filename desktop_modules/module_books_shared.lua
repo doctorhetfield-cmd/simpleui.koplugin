@@ -6,6 +6,7 @@
 local Blitbuffer      = require("ffi/blitbuffer")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local Device          = require("device")
+local IconWidget      = require("ui/widget/iconwidget")
 local Font            = require("ui/font")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
@@ -103,6 +104,24 @@ local _CLR_COVER_BG     = Blitbuffer.gray(0.88)
 local _CLR_BAR_BG       = Blitbuffer.gray(0.15)
 local _CLR_BAR_FG       = Blitbuffer.gray(0.75)
 
+local function withRoundedCorners(cover, w, h)
+    local tl = IconWidget:new{ icon = "rounded.corner.tl", alpha = true }
+    if not tl then return cover end
+    local tr = IconWidget:new{ icon = "rounded.corner.tr", alpha = true }
+    local bl = IconWidget:new{ icon = "rounded.corner.bl", alpha = true }
+    local br = IconWidget:new{ icon = "rounded.corner.br", alpha = true }
+    local sztr = tr:getSize()
+    local szbl = bl:getSize()
+    local szbr = br:getSize()
+    tr.overlap_offset = { w - sztr.w, 0 }
+    bl.overlap_offset = { 0, h - szbl.h }
+    br.overlap_offset = { w - szbr.w, h - szbr.h }
+    return OverlapGroup:new{
+        dimen = Geom:new{ w = w, h = h },
+        cover, tl, tr, bl, br,
+    }
+end
+
 -- ---------------------------------------------------------------------------
 -- vspan pool helper
 -- ---------------------------------------------------------------------------
@@ -194,12 +213,12 @@ function SH.getBookCover(filepath, w, h, align, stretch_limit)
     end)
     if not (ok and img) then return nil end
     -- padding=0 + bordersize=1: the FrameContainer outer size is inner_w+2 × inner_h+2 = w×h.
-    return FrameContainer:new{
+    return withRoundedCorners(FrameContainer:new{
         bordersize = 1, color = _CLR_COVER_BORDER,
         padding    = 0, margin = 0,
         dimen      = Geom:new{ w = w, h = h },
         img,
-    }
+    }, w, h)
 end
 
 -- ---------------------------------------------------------------------------
