@@ -402,6 +402,7 @@ function M.getMenuItems(ctx_menu)
     local SortWidget  = ctx_menu.SortWidget
     local refresh     = ctx_menu.refresh
     local _lc         = ctx_menu._
+    local N_lc        = _lc.ngettext
     local items_key   = pfx .. "reading_stats_items"
     local MAX_RS      = M.MAX_ITEMS
 
@@ -415,7 +416,8 @@ function M.getMenuItems(ctx_menu)
         if not found then
             if #cur >= MAX_RS then
                 _UIManager:show(InfoMessage:new{
-                    text = string.format(_lc("Maximum %d stats per row. Remove one first."), MAX_RS), timeout = 2 })
+                    text = string.format(N_lc("The maximum of %d stat per row has been reached. Remove one first.",
+                           "The maximum of %d stats per row has been reached. Remove one first.", MAX_RS), MAX_RS), timeout = 2 })
                 return
             end
             new_items[#new_items+1] = id
@@ -502,8 +504,7 @@ function M.getMenuItems(ctx_menu)
             text_func = function()
                 if isSelected(_sid) then return _lbl end
                 local rem = MAX_RS - #getItems()
-                if rem <= 0 then return _lbl .. "  (0 left)" end
-                if rem <= 2 then return _lbl .. "  (" .. rem .. " left)" end
+                if rem <= 2 then return _lbl .. string.format(N_lc("  (%d left)", "  (%d left)", rem), rem) end
                 return _lbl
             end,
             checked_func   = function() return isSelected(_sid) end,

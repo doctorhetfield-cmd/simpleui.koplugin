@@ -528,6 +528,44 @@ function M.apply(fm_self)
                     return filtered
                 end
 
+                -- onFolderUp: fires when the user taps the back button to go to
+                -- the parent folder. genItemTable is not always called when KOReader
+                -- uses a cached item table, so the back button would stay visible even
+                -- after arriving at the root. We re-evaluate the state here so it
+                -- is hidden immediately without needing a page turn.
+                -- NOTE: do NOT capture fc.onFolderUp as a fixed upvalue here.
+                -- sui_foldercovers.lua may install/uninstall its own onFolderUp
+                -- patch on the FileChooser *class* at runtime (when the folder-covers
+                -- feature is toggled).  If we captured the old function at setup time
+                -- the upvalue would become stale after uninstall, causing a crash when
+                -- the captured closure tries to call _sg_orig_onFolderUp (nil).
+                -- Instead we resolve the current class method at call time.
+                local FileChooser_cls = require("ui/widget/filechooser")
+                fm_self._titlebar_orig_fc_onFolderUp = true  -- sentinel: wrapper is active
+                fc.onFolderUp = function(fc_self, ...)
+                    local current = FileChooser_cls.onFolderUp
+                    local ok, result = pcall(current, fc_self, ...)
+                    -- Re-evaluate after the navigation completes.
+                    -- If genItemTable already ran it will have set _simpleui_has_go_up
+                    -- correctly; if not (cached items), we compute it now from the
+                    -- item_table so the button state is always up to date.
+                    local is_sub = fc_self._simpleui_has_go_up
+                    if is_sub == nil then
+                        is_sub = false
+                        for _, item in ipairs(fc_self.item_table or {}) do
+                            if item.is_go_up or (item.text and item.text:find("\u{2B06}")) then
+                                is_sub = true; break
+                            end
+                        end
+                    end
+                    if _isLockedAtHome(fc_self.path) then is_sub = false end
+                    if (fc_self.path or "") == "/" then is_sub = false end
+                    fc_self._simpleui_has_go_up = is_sub
+                    _applyBackButtonState(fc_self, is_sub, 1)
+                    if not ok then error(result) end
+                    return result
+                end
+
                 -- onGotoPage fires on every CoverBrowser page turn.
                 -- Re-entrancy guard (_simpleui_in_goto) prevents KOReader's internal
                 -- recursive onGotoPage calls (e.g. for clamping or redraw) from
@@ -552,12 +590,19 @@ function M.apply(fm_self)
                         local current_path = fc_self.path or ""
                         local is_at_home_or_root = (current_path == "/" or _isLockedAtHome(current_path))
                         
+                        -- Virtual series folders keep the real parent's path, so
+                        -- _isLockedAtHome returns true even though we are one level
+                        -- "inside" a group. In that case the back button must still
+                        -- appear so the user can exit the virtual folder.
+                        local in_virtual_series = fc_self.item_table
+                            and fc_self.item_table._sg_is_series_view
+
                         -- Root/home always wins: if the path says we are home, the back
                         -- button must be hidden regardless of any stale _simpleui_has_go_up
                         -- flag left over from a previous subfolder visit.
-                        -- The virtual-series override only applies when we are NOT at root.
+                        -- Exception: virtual series folders whose parent IS the home folder.
                         local is_sub
-                        if is_at_home_or_root then
+                        if is_at_home_or_root and not in_virtual_series then
                             is_sub = false
                         else
                             -- In a real subfolder, or a virtual series folder (whose path
@@ -706,6 +751,12 @@ function M.restore(fm_self)
         fc.genItemTable = fm_self._titlebar_orig_fc_genItemTable
     end
     fm_self._titlebar_orig_fc_genItemTable = nil
+    if fc and fm_self._titlebar_orig_fc_onFolderUp then
+        -- The wrapper was installed on the fc *instance*; removing it lets the
+        -- class method (whichever is current) handle the call directly again.
+        fc.onFolderUp = nil
+    end
+    fm_self._titlebar_orig_fc_onFolderUp = nil
     if fc and fm_self._titlebar_orig_fc_onGotoPage then
         fc.onGotoPage = fm_self._titlebar_orig_fc_onGotoPage
     end

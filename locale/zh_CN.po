@@ -176,6 +176,10 @@ msgstr "徽章位置：顶部"
 msgid "Battery"
 msgstr "电池"
 
+#: desktop_modules/module_coverdeck.lua:325
+msgid "Cover Deck"
+msgstr "封面轮播"
+
 #: sui_quickactions.lua:404
 msgid "Book Info"
 msgstr "书籍信息"
@@ -363,6 +367,20 @@ msgstr "正在阅读"
 #: sui_config.lua:637
 msgid "Custom"
 msgstr "自定义"
+
+#: sui_config.lua:165
+#: sui_menu.lua:555
+msgid "Custom Text"
+msgstr "自定义文字"
+
+#: sui_menu.lua:547
+#: sui_menu.lua:549
+msgid "Edit Custom Text"
+msgstr "编辑自定义文字"
+
+#: sui_menu.lua:556
+msgid "Text shown in the top bar.\nMaximum %d characters."
+msgstr "显示在顶部栏中的文字。\n最多 %d 个字符。"
 
 #: sui_menu.lua:933
 msgid "Custom Title Bar"
@@ -1821,3 +1839,111 @@ msgstr "未在此系列中找到书籍。"
 #: sui_foldercovers.lua
 msgid "Scan subfolders for cover"
 msgstr "扫描子文件夹以查找封面"
+
+#: desktop_modules/module_coverdeck.lua:750
+msgid "Above"
+msgstr "上方"
+
+#: desktop_modules/module_coverdeck.lua:787
+msgid "Arrange Statistics"
+msgstr "排序统计项"
+
+#: desktop_modules/module_coverdeck.lua:758
+msgid "Below"
+msgstr "下方"
+
+#: sui_patches.lua:900
+msgid "Collections (%1)"
+msgstr "收藏夹（%1）"
+
+#: sui_updater.lua:323
+msgid "Downloading Simple UI %s…"
+msgstr "正在下载 Simple UI %s…"
+
+#: sui_updater.lua:466
+msgid "Error checking for updates."
+msgstr "检查更新时出错。"
+
+#: sui_menu.lua:2042
+msgid "Folder Name Text Size"
+msgstr "文件夹名称文字大小"
+
+#: sui_menu.lua:411
+msgid "KOReader"
+msgstr "KOReader"
+
+#: sui_updater.lua:419
+msgid "No automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "未找到自动更新文件。\n\n是否打开 GitHub 发布页面？"
+
+#: desktop_modules/module_coverdeck.lua:709
+msgid "Scale for the cover thumbnails only.\n100% is the default size."
+msgstr "仅缩放封面缩略图。\n100% 为默认大小。"
+
+#: sui_menu.lua:2043
+msgid "Scale for the folder name overlay text.\n100% is the default size."
+msgstr "文件夹名称叠加文字的缩放比例。\n100% 为默认大小。"
+
+#: desktop_modules/module_coverdeck.lua:701
+msgid "Scale for this module."
+msgstr "此模块的缩放比例。"
+
+#: desktop_modules/module_coverdeck.lua:717
+msgid "Scale for title and statistics text.\n100% is the default size."
+msgstr "标题和统计文字的缩放比例。\n100% 为默认大小。"
+
+#: sui_menu.lua:568
+msgid "Set"
+msgstr "设置"
+
+#: sui_config.lua:1748
+msgid "Show section label"
+msgstr "显示分区标签"
+
+#: sui_updater.lua:407
+msgid "Simple UI %s is available!\nYou have %s."
+msgstr "Simple UI %s 有新版本！\n您当前版本为 %s。"
+
+#: desktop_modules/module_coverdeck.lua:716
+msgid "Text size"
+msgstr "文字大小"
+
+#: sui_patches.lua:669
+msgid "The «To Be Read» collection cannot be renamed."
+msgstr "“待读”收藏夹无法重命名。"
+
+#: desktop_modules/module_coverdeck.lua:747
+msgid "Title Position"
+msgstr "标题位置"
+
+#: sui_patches.lua:829
+msgid "To Be Read list is full (max. 5 books)."
+msgstr "待读列表已满（最多 5 本书）。"
+
+#: sui_updater.lua:377
+msgid "Update cancelled."
+msgstr "更新已取消。"
+
+#: sui_updater.lua:487
+msgid "Update check cancelled."
+msgstr "更新检查已取消。"
+
+#: sui_menu.lua:2132
+msgid "Updater module not found."
+msgstr "未找到更新模块。"
+
+#: sui_updater.lua:412
+msgid "What's new:"
+msgstr "更新内容："
+
+#: sui_menu.lua:1775
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root.\nThis option works independently of \"Start with Home Screen\"."
+msgstr "启用后，完成或关闭一本书后打开文件浏览器时，会定位到该书所在的文件夹，与 KOReader 原生行为一致。\n禁用（默认）时，SimpleUI 始终返回书库根目录。\n此选项独立于“启动时显示主屏幕”设置。"
+
+#: sui_updater.lua:410
+msgid "\n\nDownload and install now?"
+msgstr "\n\n是否立即下载并安装？"
+
+#: desktop_modules/module_reading_goals.lua:617
+msgid "  Set Goal  (%d book in %s)"
+msgstr "  设置目标  (%d 本书，%s)"

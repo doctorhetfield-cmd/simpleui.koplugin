@@ -5,6 +5,7 @@
 local Device  = require("device")
 local Screen  = Device.screen
 local _       = require("gettext")
+local N_      = _.ngettext
 local logger  = require("logger")
 
 local Blitbuffer      = require("ffi/blitbuffer")
@@ -339,7 +340,8 @@ local function _computeContentH(params)
     local elems = {}
 
     if show.title then
-        elems[#elems+1] = { title_gap, title_line_h }
+        -- TextBoxWidget with max_lines=2: reserve up to 2 lines.
+        elems[#elems+1] = { title_gap, title_line_h * 2 }
     end
     if show.author and bd.authors and bd.authors ~= "" then
         elems[#elems+1] = { author_gap, author_line_h }
@@ -490,13 +492,12 @@ function M.build(w, ctx)
     for _i, elem in ipairs(elem_order) do
         if elem == "title" and show.title then
             gap_before(title_gap)
-            meta[#meta+1] = TextWidget:new{
-                text            = bd.title or "?",
-                face            = face_title,
-                bold            = true,
-                width           = tw,
-                max_width       = tw,
-                truncation_char = "â¦",  -- "…" UTF-8
+            meta[#meta+1] = TextBoxWidget:new{
+                text      = truncateTitle(bd.title) or "?",
+                face      = face_title,
+                bold      = true,
+                width     = tw,
+                max_lines = 2,
             }
             meta_has_content = true
 
@@ -536,9 +537,7 @@ function M.build(w, ctx)
         elseif elem == "book_days" and show.days and bstats and bstats.days > 0
                and stats_style == "default" then
             gap_before(pct_gap)
-            local days_label = bstats.days == 1
-                and _("1 day of reading")
-                or  string.format(_("%d days of reading"), bstats.days)
+            local days_label = string.format(N_("%d day of reading", "%d days of reading", bstats.days), bstats.days)
             meta[#meta+1] = TextWidget:new{
                 text    = days_label,
                 face    = face_s,
@@ -605,9 +604,7 @@ function M.build(w, ctx)
                     elseif e == "book_remaining" and show.remain and secs_left then
                         parts[#parts+1] = string.format(_("%s left"), fmtTime(secs_left))
                     elseif e == "book_days" and show.days and bstats and bstats.days > 0 then
-                        parts[#parts+1] = bstats.days == 1
-                            and _("1 day of reading")
-                            or  string.format(_("%d days of reading"), bstats.days)
+                        parts[#parts+1] = string.format(N_("%d day of reading", "%d days of reading", bstats.days), bstats.days)
                     end
                 end
 

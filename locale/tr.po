@@ -18,9 +18,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid ""
-msgstr ""
-
 msgid "    Size"
 msgstr "    Boyut"
 
@@ -223,7 +220,7 @@ msgid "Continue"
 msgstr "Devam"
 
 msgid "Cover for \"%s\""
-msgstr "\"
+msgstr "\"%s\" için kapak"
 
 msgid "Cover size"
 msgstr "Kapak boyutu"
@@ -277,7 +274,7 @@ msgid "Delete"
 msgstr "Sil"
 
 msgid "Delete quick action \"%s\"?"
-msgstr "\"
+msgstr "\"%s\" hızlı eylemi silinsin mi?"
 
 msgid "Dictionary Lookup"
 msgstr "Sözlük Araması"
@@ -289,10 +286,10 @@ msgid "Digital: %d books in %s"
 msgstr "Dijital: %s içinde %d kitap"
 
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
-msgstr "Özel etiket ölçeği ayarlamak için önce \"
+msgstr "Özel etiket ölçeği ayarlamak için önce \"Ölçeği Kilitle\"yi devre dışı bırakın."
 
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
-msgstr "Modül bazlı ölçek ayarlamak için önce \"
+msgstr "Modül bazlı ölçek ayarlamak için önce \"Ölçeği Kilitle\"yi devre dışı bırakın."
 
 msgid "Disk Usage"
 msgstr "Disk Kullanımı"
@@ -814,7 +811,7 @@ msgid "Show Date"
 msgstr "Tarihi Göster"
 
 msgid "Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\nNavpager enables this automatically.\nNot available when Navpager is active."
-msgstr "Kütüphane, geçmiş veya koleksiyonlarda gezinirken başlık çubuğu alt başlığında \"
+msgstr "Kütüphane, geçmiş veya koleksiyonlarda gezinirken başlık çubuğu alt başlığında \"Y'den X. Sayfa\" gösterir.\nNavpager bunu otomatik olarak etkinleştirir.\nNavpager etkinken kullanılamaz."
 
 msgid "Simple"
 msgstr "Basit"
@@ -1060,4 +1057,281 @@ msgstr "%d gün"
 msgid "Stats layout"
 msgstr "İstatistik düzeni"
 
+msgid "General"
+msgstr "Genel"
 
+msgid "Codepoint out of valid Unicode range (0–10FFFF)."
+msgstr "Unicode aralığı dışında karakter kodu (0–10FFFF)."
+
+msgid "Cover size"
+msgstr "Kapak boyutu"
+
+msgid "Dictionary Lookup"
+msgstr "Sözlük Araması"
+
+msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
+msgstr "Geçersiz giriş. Lütfen 1–6 arasında onaltılık basamak girin (0–9, A–F)."
+
+msgid "Modules  (%d)"
+msgstr "Modüller  (%d)"
+
+msgid "Number of Pages in Title Bar Always"
+msgstr "Başlık Çubuğunda Her Zaman Sayfa Sayısı"
+
+msgid "Flow Recent Books"
+msgstr "Akış: Son Kitaplar"
+
+msgid "Cover Deck"
+msgstr "Kapak Destesi"
+
+msgid "To Be Read (Deck)"
+msgstr "Okunacaklar (Deste)"
+
+msgid "Show Clock"
+msgstr "Saati Göster"
+
+msgid "Simple"
+msgstr "Basit"
+
+msgid "no streak"
+msgstr "seri yok"
+
+msgid "Pagination bar set to Default.\n\nRestart now?"
+msgstr "Sayfalama çubuğu Varsayılan olarak ayarlandı.\n\nŞimdi yeniden başlatılsın mı?"
+
+msgid "Navpager enabled.\n\nRestart now?"
+msgstr "Navpager etkinleştirildi.\n\nŞimdi yeniden başlatılsın mı?"
+
+msgid "Pagination bar hidden.\n\nRestart now?"
+msgstr "Sayfalama çubuğu gizlendi.\n\nŞimdi yeniden başlatılsın mı?"
+
+msgid "Dot Pager"
+msgstr "Nokta Pager"
+
+msgid "Shows a row of dots at the bottom of the homescreen.\nThe active page dot is filled; the others are dimmed.\nAlways active when Navpager is selected."
+msgstr "Ana ekranın altında bir nokta sırası gösterir.\nEtkin sayfa noktası dolu; diğerleri soluk görünür.\nNavpager seçildiğinde her zaman etkindir."
+
+msgid "Uses the standard KOReader pagination bar on the homescreen.\nNot available when Navpager is active."
+msgstr "Ana ekranda standart KOReader sayfalama çubuğunu kullanır.\nNavpager etkinken kullanılamaz."
+
+msgid "Hides the pagination bar on the homescreen.\nNot available when Navpager is active."
+msgstr "Ana ekranda sayfalama çubuğunu gizler.\nNavpager etkinken kullanılamaz."
+
+msgid "Modules per Page  (%d)"
+msgstr "Sayfa Başına Modül  (%d)"
+
+msgid "Modules per Page"
+msgstr "Sayfa Başına Modül"
+
+msgid "Maximum number of modules shown on each page.\nSwipe left/right on the Home Screen to turn pages."
+msgstr "Her sayfada gösterilen maksimum modül sayısı.\nSayfaları çevirmek için Ana Ekranda sola/sağa kaydırın."
+
+msgid "Placeholder cover for bookless folders"
+msgstr "Kitapsız klasörler için yer tutucu kapak"
+
+msgid "  Scan subfolders for cover"
+msgstr "  Kapak için alt klasörleri tara"
+
+msgid "Check for Updates"
+msgstr "Güncellemeleri Kontrol Et"
+
+msgid "About"
+msgstr "Hakkında"
+
+msgid "Version: %s"
+msgstr "Sürüm: %s"
+
+msgid "Author: %s"
+msgstr "Yazar: %s"
+
+msgid "Open this file?"
+msgstr "Bu dosya açılsın mı?"
+
+msgid "Sleep"
+msgstr "Uyku"
+
+msgid "Downloading Simple UI "
+msgstr "Simple UI indiriliyor "
+
+msgid "Download error: "
+msgstr "İndirme hatası: "
+
+msgid "Extraction error: "
+msgstr "Çıkarma hatası: "
+
+msgid "Simple UI %s successfully installed.\n\nRestart KOReader to apply the update?"
+msgstr "Simple UI %s başarıyla yüklendi.\n\nGüncelleyi uygulamak için KOReader yeniden başlatılsın mı?"
+
+msgid "Checking for updates..."
+msgstr "Güncellemeler kontrol ediliyor..."
+
+msgid "Error checking for updates: "
+msgstr "Güncellemeler kontrol edilirken hata: "
+
+msgid "Could not retrieve version information."
+msgstr "Sürüm bilgisi alınamadı."
+
+msgid "Simple UI is up to date (%s)."
+msgstr "Simple UI güncel (%s)."
+
+msgid "Simple UI %s is available (you have %s).\n\nNo automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "Simple UI %s mevcut (sizde %s var).\n\nOtomatik güncelleme dosyası bulunamadı.\n\nGitHub sürümler sayfası açılsın mı?"
+
+msgid "Open in browser"
+msgstr "Tarayıcıda aç"
+
+msgid "Simple UI %s is available!\nCurrent version: %s\n\nDownload and install now?"
+msgstr "Simple UI %s mevcut!\nMevcut sürüm: %s\n\nŞimdi indir ve yükle?"
+
+msgid "Download and install"
+msgstr "İndir ve yükle"
+
+msgid "Return to Book Folder"
+msgstr "Kitabın Klasörüne Dön"
+
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root."
+msgstr "Etkinleştirildiğinde, bir kitabı bitirdikten veya kapattıktan sonra dosya tarayıcısını açmak kitabın klasörüne gider; bu yerel KOReader davranışıyla eşleşir.\nDevre dışıyken (varsayılan), SimpleUI her zaman kütüphane köküne döner."
+
+msgid "Settings on Long Tap"
+msgstr "Uzun Dokunuşta Ayarlar"
+
+msgid "When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Etkinleştirildiğinde, bir bölüme uzun basıldığında ayar menüsü açılır.\nUzun dokunuşta ayar menüsünün açılmasını engellemek için devre dışı bırakın."
+
+msgid "When enabled, long-pressing the top bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Etkinleştirildiğinde, üst çubuğa uzun basıldığında ayar menüsü açılır.\nUzun dokunuşta ayar menüsünün açılmasını engellemek için devre dışı bırakın."
+
+msgid "When enabled, long-pressing the bottom bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Etkinleştirildiğinde, alt çubuğa uzun basıldığında ayar menüsü açılır.\nUzun dokunuşta ayar menüsünün açılmasını engellemek için devre dışı bırakın."
+
+msgid "Arrange To Be Read list"
+msgstr "Okunacaklar listesini düzenle"
+
+msgid "Add at least 2 books to arrange."
+msgstr "Düzenlemek için en az 2 kitap ekleyin."
+
+msgid "To Be Read books"
+msgstr "Okunacak Kitaplar"
+
+msgid "No books in To Be Read list."
+msgstr "Okunacaklar listesinde kitap yok."
+
+msgid "Add to To Be Read"
+msgstr "Okunacaklara Ekle"
+
+msgid "Remove from To Be Read"
+msgstr "Okunacaklardan Çıkar"
+
+msgid "To Be Read"
+msgstr "Okunacaklar"
+
+msgid "Group Books by Series"
+msgstr "Kitapları Seriye Göre Grupla"
+
+msgid "Series Index"
+msgstr "Seri İndeksi"
+
+msgid "Series cover"
+msgstr "Seri kapağı"
+
+msgid "Set series cover…"
+msgstr "Seri kapağı ayarla…"
+
+msgid "No books found in this series."
+msgstr "Bu seride kitap bulunamadı."
+
+msgid "Scan subfolders for cover"
+msgstr "Kapak için alt klasörleri tara"
+
+msgid "Scale for this module."
+msgstr "Bu modül için ölçek."
+
+msgid "Scale for the cover thumbnails only.\n100% is the default size."
+msgstr "Yalnızca kapak küçük resimleri için ölçek.\n%100 varsayılan boyuttur."
+
+msgid "Scale for title and statistics text.\n100% is the default size."
+msgstr "Başlık ve istatistik metni için ölçek.\n%100 varsayılan boyuttur."
+
+msgid "Title Position"
+msgstr "Başlık Konumu"
+
+msgid "Above"
+msgstr "Üstte"
+
+msgid "Below"
+msgstr "Altta"
+
+msgid "Arrange Statistics"
+msgstr "İstatistikleri Düzenle"
+
+msgid "Updater module not found."
+msgstr "Güncelleyici modülü bulunamadı."
+
+msgid "Recent"
+msgstr "Son"
+
+msgid "KOReader"
+msgstr "KOReader"
+
+msgid "Custom Text"
+msgstr "Özel Metin"
+
+msgid "Edit Custom Text"
+msgstr "Özel Metni Düzenle"
+
+msgid "Folder Name Text Size"
+msgstr "Klasör Adı Metin Boyutu"
+
+msgid "Text size"
+msgstr "Metin boyutu"
+
+msgid "Set"
+msgstr "Ayarla"
+
+msgid "Text shown in the top bar.\nMaximum %d characters."
+msgstr "Üst çubukta gösterilen metin.\nMaksimum %d karakter."
+
+msgid "Scale for the folder name overlay text.\n100% is the default size."
+msgstr "Klasör adı katman metni için ölçek.\n%100 varsayılan boyuttur."
+
+msgid "Show section label"
+msgstr "Bölüm etiketini göster"
+
+msgid "Update cancelled."
+msgstr "Güncelleme iptal edildi."
+
+msgid "Update check cancelled."
+msgstr "Güncelleme kontrolü iptal edildi."
+
+msgid "Error checking for updates."
+msgstr "Güncellemeler kontrol edilirken hata oluştu."
+
+msgid "Simple UI %s is available!\nYou have %s."
+msgstr "Simple UI %s mevcut!\nSizde %s var."
+
+msgid "\n\nDownload and install now?"
+msgstr "\n\nŞimdi indir ve yükle?"
+
+msgid "What's new:"
+msgstr "Yenilikler:"
+
+msgid "No automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "Otomatik güncelleme dosyası bulunamadı.\n\nGitHub sürümler sayfası açılsın mı?"
+
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root.\nThis option works independently of \"Start with Home Screen\"."
+msgstr "Etkinleştirildiğinde, bir kitabı bitirdikten veya kapattıktan sonra dosya tarayıcısını açmak kitabın klasörüne gider; bu yerel KOReader davranışıyla eşleşir.\nDevre dışıyken (varsayılan), SimpleUI her zaman kütüphane köküne döner.\nBu seçenek \"Ana Ekranla Başlat\" seçeneğinden bağımsız çalışır."
+
+msgid "Checking for updates…"
+msgstr "Güncellemeler kontrol ediliyor…"
+
+msgid "Downloading Simple UI %s…"
+msgstr "Simple UI %s indiriliyor…"
+
+msgid "Choose how many pages the homescreen has.\nEmpty pages stay empty. Modules keep their position."
+msgstr "Ana ekranın kaç sayfası olacağını seçin.\nBoş sayfalar boş kalır. Modüller konumlarını korur."
+
+msgid "Page %d"
+msgstr "Sayfa %d"
+
+msgid "Cannot place modules after Page 1 separator.\nPage 1 must always have at least 1 module."
+msgstr "Sayfa 1 ayırıcısından sonra modül yerleştirilemez.\nSayfa 1'in her zaman en az 1 modülü olmalıdır."

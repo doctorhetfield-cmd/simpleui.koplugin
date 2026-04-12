@@ -525,6 +525,7 @@ function M.getMenuItems(ctx_menu)
     local SortWidget  = ctx_menu.SortWidget
     local refresh     = ctx_menu.refresh
     local _lc         = ctx_menu._
+    local N_lc        = _lc.ngettext
 
     local ok_rc, rc  = pcall(require, "readcollection")
     local all_colls  = {}
@@ -685,8 +686,7 @@ function M.getMenuItems(ctx_menu)
                     local cur = M.getSelected()
                     for _loop_, n in ipairs(cur) do if n == _n then return _display_n end end
                     local rem = 4 - #cur
-                    if rem <= 0 then return _display_n .. "  (0 left)" end
-                    if rem <= 2 then return _display_n .. "  (" .. rem .. " left)" end
+                    if rem <= 2 then return _display_n .. string.format(N_lc("  (%d left)", "  (%d left)", rem), rem) end
                     return _display_n
                 end,
                 checked_func = function()

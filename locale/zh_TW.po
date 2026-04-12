@@ -364,6 +364,24 @@ msgstr "正在閱讀"
 msgid "Custom"
 msgstr "自訂"
 
+#: desktop_modules/module_coverdeck.lua:325
+msgid "Cover Deck"
+msgstr "封面輪播"
+
+#: sui_config.lua:165
+#: sui_menu.lua:555
+msgid "Custom Text"
+msgstr "自訂文字"
+
+#: sui_menu.lua:547
+#: sui_menu.lua:549
+msgid "Edit Custom Text"
+msgstr "編輯自訂文字"
+
+#: sui_menu.lua:556
+msgid "Text shown in the top bar.\nMaximum %d characters."
+msgstr "顯示在頂部列中的文字。\n最多 %d 個字元。"
+
 #: sui_menu.lua:933
 msgid "Custom Title Bar"
 msgstr "自訂標題列"
@@ -1741,3 +1759,188 @@ msgstr "Simple UI %s 有新版本！\n當前版本：%s\n\n是否立即下載並
 #: sui_updater.lua:257
 msgid "Download and install"
 msgstr "下載並安裝"
+
+#: desktop_modules/module_coverdeck.lua:750
+msgid "Above"
+msgstr "上方"
+
+#: desktop_modules/module_tbr.lua:113
+msgid "Add at least 2 books to arrange."
+msgstr "請至少新增 2 本書以便排序。"
+
+#: desktop_modules/module_tbr.lua:257
+msgid "Add to To Be Read"
+msgstr "加入待讀"
+
+#: desktop_modules/module_coverdeck.lua:787
+msgid "Arrange Statistics"
+msgstr "排序統計項"
+
+#: desktop_modules/module_tbr.lua:117
+msgid "Arrange To Be Read list"
+msgstr "排序待讀清單"
+
+#: desktop_modules/module_coverdeck.lua:758
+msgid "Below"
+msgstr "下方"
+
+#: sui_patches.lua:900
+msgid "Collections (%1)"
+msgstr "收藏夾（%1）"
+
+#: sui_updater.lua:323
+msgid "Downloading Simple UI %s…"
+msgstr "正在下載 Simple UI %s…"
+
+#: sui_updater.lua:466
+msgid "Error checking for updates."
+msgstr "檢查更新時出錯。"
+
+#: sui_menu.lua:2042
+msgid "Folder Name Text Size"
+msgstr "資料夾名稱文字大小"
+
+#: sui_foldercovers.lua:349
+#: sui_menu.lua:2015
+msgid "Group Books by Series"
+msgstr "按系列分組書籍"
+
+#: sui_menu.lua:411
+msgid "KOReader"
+msgstr "KOReader"
+
+#: sui_updater.lua:419
+msgid "No automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "未找到自動更新檔案。\n\n是否打開 GitHub 發布頁面？"
+
+#: sui_foldercovers.lua:368
+msgid "No books found in this series."
+msgstr "未在此系列中找到書籍。"
+
+#: desktop_modules/module_tbr.lua:246
+msgid "No books in To Be Read list."
+msgstr "待讀清單中暫無書籍。"
+
+#: desktop_modules/module_tbr.lua:265
+msgid "Remove from To Be Read"
+msgstr "從待讀中移除"
+
+#: sui_menu.lua:1774
+msgid "Return to Book Folder"
+msgstr "返回書籍所在資料夾"
+
+#: desktop_modules/module_coverdeck.lua:709
+msgid "Scale for the cover thumbnails only.\n100% is the default size."
+msgstr "僅縮放封面縮圖。\n100% 為預設大小。"
+
+#: sui_menu.lua:2043
+msgid "Scale for the folder name overlay text.\n100% is the default size."
+msgstr "資料夾名稱疊加文字的縮放比例。\n100% 為預設大小。"
+
+#: desktop_modules/module_coverdeck.lua:701
+msgid "Scale for this module."
+msgstr "此模組的縮放比例。"
+
+#: desktop_modules/module_coverdeck.lua:717
+msgid "Scale for title and statistics text.\n100% is the default size."
+msgstr "標題和統計文字的縮放比例。\n100% 為預設大小。"
+
+#: sui_foldercovers.lua:379
+msgid "Scan subfolders for cover"
+msgstr "掃描子資料夾以查找封面"
+
+#: sui_menu.lua:1687
+msgid "Series Index"
+msgstr "系列序號"
+
+#: sui_foldercovers.lua:304
+msgid "Series cover"
+msgstr "系列封面"
+
+#: sui_menu.lua:568
+msgid "Set"
+msgstr "設定"
+
+#: sui_foldercovers.lua:363
+msgid "Set series cover…"
+msgstr "設定系列封面…"
+
+#: sui_menu.lua:1787
+msgid "Settings on Long Tap"
+msgstr "長按打開設定"
+
+#: desktop_modules/module_clock.lua:454
+msgid "Show Clock"
+msgstr "顯示時鐘"
+
+#: sui_config.lua:1748
+msgid "Show section label"
+msgstr "顯示區段標籤"
+
+#: sui_updater.lua:407
+msgid "Simple UI %s is available!\nYou have %s."
+msgstr "Simple UI %s 有新版本！\n您當前版本為 %s。"
+
+#: desktop_modules/module_coverdeck.lua:716
+msgid "Text size"
+msgstr "文字大小"
+
+#: sui_patches.lua:669
+msgid "The «To Be Read» collection cannot be renamed."
+msgstr "「待讀」收藏夾無法重新命名。"
+
+#: desktop_modules/module_coverdeck.lua:747
+msgid "Title Position"
+msgstr "標題位置"
+
+#: desktop_modules/module_tbr.lua:239
+msgid "To Be Read"
+msgstr "待讀"
+
+#: desktop_modules/module_tbr.lua:227
+msgid "To Be Read books"
+msgstr "待讀書籍"
+
+#: sui_patches.lua:829
+msgid "To Be Read list is full (max. 5 books)."
+msgstr "待讀清單已滿（最多 5 本書）。"
+
+#: sui_updater.lua:377
+msgid "Update cancelled."
+msgstr "更新已取消。"
+
+#: sui_updater.lua:487
+msgid "Update check cancelled."
+msgstr "更新檢查已取消。"
+
+#: sui_menu.lua:2132
+msgid "Updater module not found."
+msgstr "未找到更新模組。"
+
+#: sui_updater.lua:412
+msgid "What's new:"
+msgstr "更新內容："
+
+#: sui_menu.lua:1787
+msgid "When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "啟用後，長按某個區域可打開其設定選單。\n停用此選項可防止長按時彈出設定選單。"
+
+#: sui_menu.lua:1798
+msgid "When enabled, long-pressing the bottom bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "啟用後，長按底部列可打開其設定選單。\n停用此選項可防止長按時彈出設定選單。"
+
+#: sui_menu.lua:1793
+msgid "When enabled, long-pressing the top bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "啟用後，長按頂部列可打開其設定選單。\n停用此選項可防止長按時彈出設定選單。"
+
+#: sui_menu.lua:1775
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root.\nThis option works independently of \"Start with Home Screen\"."
+msgstr "啟用後，完成或關閉一本書後打開檔案瀏覽器時，會定位到該書所在的資料夾，與 KOReader 原生行為一致。\n停用（預設）時，SimpleUI 始終返回書庫根目錄。\n此選項獨立於「啟動時顯示主畫面」設定。"
+
+#: sui_updater.lua:410
+msgid "\n\nDownload and install now?"
+msgstr "\n\n是否立即下載並安裝？"
+
+#: desktop_modules/module_reading_goals.lua:617
+msgid "  Set Goal  (%d book in %s)"
+msgstr "  設定目標  (%d 本書，%s)"

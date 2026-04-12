@@ -124,24 +124,21 @@ git commit -m "Fix progress bar not updating after resume"
 
 ### Extracting translatable strings
 
-If you have Python 3 available, you can regenerate `simpleui.pot` from the source files by running the following from the plugin root:
+If you have Python 3 available, you can regenerate `simpleui.pot` from the source files by running the extraction script from the plugin root:
 
 ```bash
-python3 -c "
-import re, datetime, pathlib
+python3 extract_strings.py
+```
 
-strings = set()
-pattern = re.compile(r'(?:_|_lc)\(\"([^\"]+)\"\)')
-for f in pathlib.Path('.').rglob('*.lua'):
-    strings.update(pattern.findall(f.read_text(errors='ignore')))
+This script extracts both regular strings (`_()` and `_lc()`) and plural strings (`N_()` and `N_lc()`) with proper POT file formatting including file locations.
 
-lines = []
-for s in sorted(strings):
-    lines.append(f'msgid \"{s}\"\nmsgstr \"\"\n')
+### Updating translation files
 
-pathlib.Path('locale/simpleui.pot').write_text('\n'.join(lines))
-print(f'{len(strings)} strings written to locale/simpleui.pot')
-"
+After regenerating `simpleui.pot`, update existing `.po` files to include new strings:
+
+```bash
+# Using gettext tools (if available)
+msgmerge --update locale/<lang>.po locale/simpleui.pot
 ```
 
 ### Code style

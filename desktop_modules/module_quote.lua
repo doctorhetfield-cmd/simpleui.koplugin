@@ -16,7 +16,8 @@ local Device         = require("device")
 
 local Font           = require("ui/font")
 
-local FrameContainer = require("ui/widget/container/framecontainer")
+local HorizontalGroup = require("ui/widget/horizontalgroup")
+local HorizontalSpan  = require("ui/widget/horizontalspan")
 
 local GestureRange   = require("ui/gesturerange")
 
@@ -888,25 +889,25 @@ function M.build(w, ctx)
 
     end
 
-    local frame = FrameContainer:new{
-
-        bordersize     = 0,
-
-        padding        = PAD,
-
-        padding_bottom = PAD2,
-
-        content,
-
-    }
+    -- Use a plain VerticalGroup instead of FrameContainer so the module
+    -- background is fully transparent (the homescreen background shows through).
+    -- Padding is replicated with VerticalSpan (top/bottom) and HorizontalSpan
+    -- (left/right) since VerticalGroup has no padding property of its own.
+    local pad_span  = VerticalSpan:new{ width = PAD }
+    local pad2_span = VerticalSpan:new{ width = PAD2 }
+    local hpad      = HorizontalSpan:new{ width = PAD }
+    local inner_row = HorizontalGroup:new{ hpad, content, hpad }
+    local frame = VerticalGroup:new{ align = "center", pad_span, inner_row, pad2_span }
 
     local open_fn = ctx and ctx.open_fn
 
     if hl_filepath and open_fn then
+        local Geom = require("ui/geometry")
+        local frame_size = frame:getSize()
 
         local tappable = InputContainer:new{
 
-            dimen  = frame:getSize(),
+            dimen  = Geom:new{ x = 0, y = 0, w = frame_size.w, h = frame_size.h },
 
             _fp    = hl_filepath,
 
@@ -939,28 +940,29 @@ function M.build(w, ctx)
         }
 
         function tappable:onTapQuote()
-
-            local fp    = self._fp
-            local pos0  = self._pos0
-            local page  = self._page
-            local open  = self._open
-            local BD        = require("ui/bidi")
-            local ConfirmBox = require("ui/widget/confirmbox")
-            UIManager:show(ConfirmBox:new{
-                text        = _("Open this file?") .. "\n\n" .. BD.filename(fp:match("([^/]+)$")),
-                ok_text     = _("Open"),
-                cancel_text = _("Cancel"),
-                ok_callback = function()
-                    if open then
-                        -- Pass the position so the reader jumps directly to the highlight.
-                        -- open_fn signature: open(filepath, pos0_or_nil, page_or_nil)
+            if not self._open then return true end
+            -- When "Ask before opening file" is enabled, open_fn (openBook in
+            -- sui_homescreen) already shows a ConfirmBox — skip ours to avoid
+            -- two confirmation dialogs in a row.
+            if G_reader_settings:isTrue("file_ask_to_open") then
+                self._open(self._fp, self._pos0, self._page)
+            else
+                local fp    = self._fp
+                local pos0  = self._pos0
+                local page  = self._page
+                local open  = self._open
+                local BD        = require("ui/bidi")
+                local ConfirmBox = require("ui/widget/confirmbox")
+                UIManager:show(ConfirmBox:new{
+                    text        = _("Open this file?") .. "\n\n" .. BD.filename(fp:match("([^/]+)$")),
+                    ok_text     = _("Open"),
+                    cancel_text = _("Cancel"),
+                    ok_callback = function()
                         open(fp, pos0, page)
-                    end
-                end,
-            })
-
+                    end,
+                })
+            end
             return true
-
         end
 
         return tappable

@@ -20,6 +20,7 @@ local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local Screen          = Device.screen
 local _               = require("gettext")
+local N_              = _.ngettext
 local Config          = require("sui_config")
 local QA              = require("sui_quickactions")
 
@@ -258,7 +259,8 @@ local function makeSlot(slot)
                     local InfoMessage = ctx_menu.InfoMessage or require("ui/widget/infomessage")
                     local uim = ctx_menu.UIManager or UIManager
                     uim:show(InfoMessage:new{
-                        text    = string.format(_("Maximum %d actions per module reached. Remove one first."), MAX_QA),
+                        text    = string.format(N_("The maximum of %d action per module has been reached. Remove one first.",
+                                  "The maximum of %d actions per module has been reached. Remove one first.", MAX_QA), MAX_QA),
                         timeout = 2,
                     })
                     return
@@ -314,8 +316,7 @@ local function makeSlot(slot)
                 text_func = function()
                     if isSelected(aid) then return _lbl end
                     local rem = MAX_QA - #getItems()
-                    if rem <= 0 then return _lbl .. "  (0 left)" end
-                    if rem <= 2 then return _lbl .. "  (" .. rem .. " left)" end
+                    if rem <= 2 then return _lbl .. string.format(N_("  (%d left)", "  (%d left)", rem), rem) end
                     return _lbl
                 end,
                 checked_func   = function() return isSelected(aid) end,

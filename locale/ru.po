@@ -5,39 +5,45 @@ msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
 "POT-Creation-Date: 2026-03-27 12:00+0000\n"
+"Last-Translator: in4inity <https://github.com/in4inity>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
-"Language: ru_RU"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: sui_menu.lua:347
+msgid "General"
+msgstr "Основные"
+
 #: sui_menu.lua:320
-msgid "    Size"
-msgstr "    Размер"
+msgid "    Size"
+msgstr "    Размер"
 
 #: desktop_modules/module_reading_goals.lua:602
-msgid "  Physical Books  (%d in %s)"
-msgstr "  Бумажные книги  (%d в %s)"
+msgid "  Physical Books  (%d in %s)"
+msgstr "  Бумажные книги  (%d в %s)"
 
 #: desktop_modules/module_reading_goals.lua:595
-msgid "  Set Goal  (%d books in %s)"
-msgstr "  Задать цель  (%d кн. в %s)"
+msgid "  Set Goal  (%d books in %s)"
+msgstr "  Задать цель  (%d кн. в %s)"
 
 #: desktop_modules/module_reading_goals.lua:617
-msgid "  Set Goal  (%d min/day)"
-msgstr "  Задать цель  (%d мин/день)"
+msgid "  Set Goal  (%d min/day)"
+msgstr "  Задать цель  (%d мин/день)"
 
 #: desktop_modules/module_reading_goals.lua:596
-msgid "  Set Goal  (%s)"
-msgstr "  Задать цель  (%s)"
+msgid "  Set Goal  (%s)"
+msgstr "  Задать цель  (%s)"
 
 #: desktop_modules/module_reading_goals.lua:616
-msgid "  Set Goal  (disabled)"
-msgstr "  Задать цель  (отключено)"
+msgid "  Set Goal  (disabled)"
+msgstr "  Задать цель  (отключено)"
 
 #: desktop_modules/module_reading_goals.lua:429
 msgid "%d books"
-msgstr "%d книг"
+msgstr "%d кн."
 
 #: desktop_modules/module_currently.lua:336
 msgid "%d days of reading"
@@ -55,7 +61,7 @@ msgstr "Прочитано %d%%"
 
 #: desktop_modules/module_reading_goals.lua:428
 msgid "%d/%d books"
-msgstr "%d/%d книг"
+msgstr "%d/%d кн."
 
 #: desktop_modules/module_currently.lua:347
 #: desktop_modules/module_reading_goals.lua:445
@@ -225,7 +231,7 @@ msgid "Bottom Margin — %d%%"
 msgstr "Отступ снизу — %d%%"
 
 #: sui_homescreen.lua:701
-msgid "Top Margin  (%d%%)"
+msgid "Top Margin  (%d%%)"
 msgstr "Отступ сверху  (%d%%)"
 
 #: sui_homescreen.lua:704
@@ -265,6 +271,9 @@ msgstr "Размер кнопки"
 #: desktop_modules/module_reading_goals.lua:366
 #: desktop_modules/module_reading_goals.lua:383
 #: desktop_modules/module_reading_goals.lua:401
+#: sui_updater.lua:184
+#: sui_updater.lua:237
+#: sui_updater.lua:258
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -291,7 +300,7 @@ msgid "Close"
 msgstr "Закрыть"
 
 #: sui_quickactions.lua:312
-msgid "Codepoint out of valid Unicode range (0â€“10FFFF)."
+msgid "Codepoint out of valid Unicode range (0–10FFFF)."
 msgstr "Код символа вне допустимого диапазона Unicode (0–10FFFF)."
 
 #: sui_quickactions.lua:702
@@ -429,7 +438,7 @@ msgid "Dictionary Lookup"
 msgstr "Поиск в словаре"
 
 #: sui_menu.lua:1025
-msgid "Digital Goal  (%s)"
+msgid "Digital Goal  (%s)"
 msgstr "Электронная цель  (%s)"
 
 #: sui_menu.lua:1025
@@ -465,7 +474,7 @@ msgid "Enable at least 2 modules to arrange."
 msgstr "Включите минимум 2 модуля для сортировки."
 
 #: sui_quickactions.lua:271
-msgid "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\nYou can look up codes with wakamaifondue.com using the file:\n  /koreader/fonts/nerdfonts/symbols.ttf\nLeave blank and press OK to remove a Nerd Font icon."
+msgid "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\nYou can look up codes with wakamaifondue.com using the file:\n  /koreader/fonts/nerdfonts/symbols.ttf\nLeave blank and press OK to remove a Nerd Font icon."
 msgstr "Введите Unicode-код (hex) символа Nerd Fonts.\nНайти коды можно на wakamaifondue.com в файле:\n  /koreader/fonts/nerdfonts/symbols.ttf\nОставьте пустым и нажмите ОК, чтобы удалить иконку Nerd Font."
 
 #: sui_menu.lua:324
@@ -626,7 +635,7 @@ msgid "Invalid arrangement.\nKeep the Left, Center and Right separators in order
 msgstr "Неверный порядок.\nСохраняйте левый, центральный и правый разделители по порядку."
 
 #: sui_quickactions.lua:318
-msgid "Invalid input. Please enter 1â€“6 hexadecimal digits (0â€“9, Aâ€“F)."
+msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
 msgstr "Неверный ввод. Введите 1–6 шестнадцатеричных цифр (0–9, A–F)."
 
 #: desktop_modules/module_currently.lua:671
@@ -674,6 +683,7 @@ msgstr "Большой"
 #: sui_menu.lua:627
 #: sui_menu.lua:948
 #: sui_menu.lua:1524
+#: sui_updater.lua:184
 msgid "Later"
 msgstr "Позже"
 
@@ -767,15 +777,19 @@ msgid "Modules"
 msgstr "Модули"
 
 #: sui_menu.lua:1271
-msgid "Modules  (%d — no limit)"
+msgid "Modules  (%d — no limit)"
 msgstr "Модули  (%d — без лимита)"
 
+#: sui_menu.lua:1385
+msgid "Modules  (%d)"
+msgstr "Модули  (%d)"
+
 #: sui_menu.lua:1275
-msgid "Modules  (%d/%d — %d left)"
+msgid "Modules  (%d/%d — %d left)"
 msgstr "Модули  (%d/%d — осталось %d)"
 
 #: sui_menu.lua:1274
-msgid "Modules  (%d/%d — at limit)"
+msgid "Modules  (%d/%d — at limit)"
 msgstr "Модули  (%d/%d — лимит достигнут)"
 
 #: desktop_modules/module_clock.lua:45
@@ -839,7 +853,7 @@ msgid "Next"
 msgstr "Вперёд"
 
 #: sui_menu.lua:1318
-msgid "No Module Limit  ⚠ not recommended"
+msgid "No Module Limit  ⚠ not recommended"
 msgstr "Без лимита модулей  ⚠ не рекомендуется"
 
 #: sui_bottombar.lua:1171
@@ -868,7 +882,7 @@ msgstr "Папка, коллекция или плагин не настроен
 
 #: desktop_modules/module_quote.lua:699
 msgid "No highlights found. Open a book and highlight some passages."
-msgstr "Выделения не найдены. Откройте книгу и выделите текст."
+msgstr "Цитаты не найдены. Откройте книгу и выделите текст."
 
 #: sui_quickactions.lua:371
 msgid "No icons found in:"
@@ -901,6 +915,10 @@ msgstr "Число книг в папке"
 #: sui_menu.lua:1634
 msgid "Number of Pages"
 msgstr "Количество страниц"
+
+#: sui_menu.lua:494
+msgid "Number of Pages in Title Bar Always"
+msgstr "Всегда показывать число страниц в заголовке"
 
 #: sui_quickactions.lua:286
 msgid "OK"
@@ -1037,11 +1055,11 @@ msgid "Quick Actions"
 msgstr "Быстрые действия"
 
 #: sui_menu.lua:1559
-msgid "Quick Actions  (%d/%d — %d left)"
+msgid "Quick Actions  (%d/%d — %d left)"
 msgstr "Быстрые действия  (%d/%d — осталось %d)"
 
 #: sui_menu.lua:1557
-msgid "Quick Actions  (%d/%d — at limit)"
+msgid "Quick Actions  (%d/%d — at limit)"
 msgstr "Быстрые действия  (%d/%d — лимит достигнут)"
 
 #: sui_menu.lua:1084
@@ -1059,7 +1077,7 @@ msgstr "Цитата дня"
 
 #: desktop_modules/module_quote.lua:1018
 msgid "Quotes + My Highlights"
-msgstr "Цитаты + Мои выделения"
+msgstr "Цитаты + Мои Цитаты"
 
 #: sui_config.lua:145
 msgid "RAM Usage"
@@ -1068,16 +1086,26 @@ msgstr "Использование ОЗУ"
 #: desktop_modules/module_reading_goals.lua:454
 #: desktop_modules/module_reading_goals.lua:455
 msgid "Reading Goals"
-msgstr "Книжные цели"
+msgstr "Цели чтения"
 
 #: desktop_modules/module_reading_stats.lua:308
 msgid "Reading Stats"
 msgstr "Статистика чтения"
 
+#: desktop_modules/module_flow_recent.lua:55
+msgid "Flow Recent Books"
+msgstr "Свежие книги (Flow)"
+
 #: desktop_modules/module_recent.lua:61
 #: desktop_modules/module_recent.lua:62
-msgid "Recent Books"
-msgstr "Недавние книги"
+#: desktop_modules/module_flow_recent.lua:56
+#: desktop_modules/module_flow_recent.lua:93
+msgid "Cover Deck"
+msgstr "Карусель обложек"
+
+#: desktop_modules/module_flow_recent.lua:124
+msgid "To Be Read (Deck)"
+msgstr "Буду читать (Карусель)"
 
 #: sui_quickactions.lua:815
 #: sui_quickactions.lua:873
@@ -1109,6 +1137,7 @@ msgstr "Сбросить масштаб по умолчанию"
 #: sui_menu.lua:627
 #: sui_menu.lua:947
 #: sui_menu.lua:1524
+#: sui_updater.lua:183
 msgid "Restart"
 msgstr "Перезапуск"
 
@@ -1228,6 +1257,10 @@ msgstr "Настройки"
 msgid "Show Battery"
 msgstr "Показать батарею"
 
+#: desktop_modules/module_clock.lua:454
+msgid "Show Clock"
+msgstr "Показать часы"
+
 #: desktop_modules/module_clock.lua:378
 msgid "Show Date"
 msgstr "Показать дату"
@@ -1335,11 +1368,11 @@ msgid "System action error: %s"
 msgstr "Ошибка системного действия: %s"
 
 #: sui_menu.lua:752
-msgid "Tabs  (%d/%d — %d left)"
+msgid "Tabs  (%d/%d — %d left)"
 msgstr "Вкладки  (%d/%d — осталось %d)"
 
 #: sui_menu.lua:750
-msgid "Tabs  (%d/%d — at limit)"
+msgid "Tabs  (%d/%d — at limit)"
 msgstr "Вкладки  (%d/%d — лимит достигнут)"
 
 #: sui_menu.lua:101
@@ -1472,7 +1505,7 @@ msgstr "С процентами"
 
 #: desktop_modules/module_quote.lua:701
 msgid "Your highlights"
-msgstr "Ваши выделения"
+msgstr "Ваши цитаты"
 
 #: desktop_modules/module_reading_stats.lua:67
 msgid "books finished"
@@ -1489,6 +1522,10 @@ msgstr "день подряд"
 #: desktop_modules/module_reading_stats.lua:69
 msgid "days streak"
 msgstr "дней подряд"
+
+#: desktop_modules/module_reading_stats.lua:68
+msgid "no streak"
+msgstr "нет серии"
 
 #: sui_quickactions.lua:769
 msgid "default"
@@ -1577,7 +1614,7 @@ msgstr "Осталось времени"
 
 #: desktop_modules/module_currently.lua
 msgid "%s left"
-msgstr "%s осталось"
+msgstr "осталось: %s"
 
 #: desktop_modules/module_currently.lua
 msgid "1 day"
@@ -1585,59 +1622,75 @@ msgstr "1 день"
 
 #: desktop_modules/module_currently.lua
 msgid "%d days"
-msgstr "%d дней"
+msgstr "%d дн."
 
 #: desktop_modules/module_currently.lua
 msgid "Stats layout"
-msgstr "Макет статистики"
+msgstr "Стиль статистики"
 
 #: sui_menu.lua:356
 msgid "Pagination bar set to Default.\n\nRestart now?"
-msgstr "Страничная панель установлена ​​по умолчанию.\n\nПерезапустить сейчас?"
+msgstr "Панель нумерации сброшена по умолчанию.\n\nПерезапустить сейчас?"
 
 #: sui_menu.lua:367
 msgid "Navpager enabled.\n\nRestart now?"
-msgstr "Navpager включен.\n\nПерезапустить сейчас?"
+msgstr "Навигация кнопками включена.\n\nПерезапустить сейчас?"
 
 #: sui_menu.lua:377
 msgid "Pagination bar hidden.\n\nRestart now?"
-msgstr "Страничная панель скрыта.\n\nПерезапустить сейчас?"
+msgstr "Панель нумерации скрыта.\n\nПерезапустить сейчас?"
 
 #: sui_menu.lua:387
 msgid "Dot Pager"
-msgstr "Точечный маркер"
+msgstr "Точечная навигация"
 
 #: sui_menu.lua:395
 msgid "Shows a row of dots at the bottom of the homescreen.\nThe active page dot is filled; the others are dimmed.\nAlways active when Navpager is selected."
-msgstr "Отображать ряд точек в нижней части главного экрана.\nТочка активной страницы заполнена; остальные затемнены.\nВсегда активна, когда выбран Navpager."
+msgstr "Показывает ряд точек внизу домашнего экрана.\nТочка текущей страницы закрашена, остальные затемнены.\nВсегда активно при выборе кнопочной навигации."
 
 #: sui_menu.lua:417
 msgid "Uses the standard KOReader pagination bar on the homescreen.\nNot available when Navpager is active."
-msgstr "Использовать стандартную страничную панель KOReader на главном экране.\nНедоступно, когда активен Navpager."
+msgstr "Использует стандартную панель нумерации KOReader на домашнем экране.\nНедоступно, когда активна кнопочная навигация."
 
 #: sui_menu.lua:438
 msgid "Hides the pagination bar on the homescreen.\nNot available when Navpager is active."
-msgstr "Скрывать страничную панель на главном экране.\nНедоступно, когда активен Navpager."
+msgstr "Скрывает панель нумерации на домашнем экране.\nНедоступно, когда активна кнопочная навигация."
 
 #: sui_menu.lua:1566
-msgid "Modules per Page  (%d)"
-msgstr "Модулей на странице  (%d)"
+msgid "Modules per Page  (%d)"
+msgstr "Модулей на страницу  (%d)"
 
 #: sui_menu.lua:1572
 msgid "Modules per Page"
-msgstr "Модулей на странице"
+msgstr "Модулей на страницу"
 
 #: sui_menu.lua:1573
 msgid "Maximum number of modules shown on each page.\nSwipe left/right on the Home Screen to turn pages."
-msgstr "Максимальное количество модулей еа каждой странице.\nСвайп налево/направо на домашнем экране для листания страниц."
+msgstr "Максимальное число модулей на одной странице.\nСмахните влево/вправо на домашнем экране для перелистывания."
 
 #: sui_menu.lua:1834
 msgid "Placeholder cover for bookless folders"
-msgstr "Временная обложка для папок без книг"
+msgstr "Заглушка обложки для пустых папок"
 
 #: sui_menu.lua:1849
-msgid "  Scan subfolders for cover"
-msgstr "  Просканировать подпапки для поиска обложек"
+msgid "  Scan subfolders for cover"
+msgstr "  Искать обложки в подпапках"
+
+#: sui_menu.lua
+msgid "Check for Updates"
+msgstr "Проверить обновления"
+
+#: sui_menu.lua
+msgid "About"
+msgstr "О плагине"
+
+#: sui_menu.lua
+msgid "Version: %s"
+msgstr "Версия: %s"
+
+#: sui_menu.lua
+msgid "Author: %s"
+msgstr "Автор: %s"
 
 #: sui_homescreen.lua:407
 #: desktop_modules/module_quote.lua:950
@@ -1647,3 +1700,256 @@ msgstr "Открыть этот файл?"
 #: sui_bottombar.lua:1638
 msgid "Sleep"
 msgstr "Сон"
+
+#: sui_updater.lua:157
+msgid "Downloading Simple UI "
+msgstr "Загрузка Simple UI "
+
+#: sui_updater.lua:163
+msgid "Download error: "
+msgstr "Ошибка загрузки: "
+
+#: sui_updater.lua:174
+msgid "Extraction error: "
+msgstr "Ошибка распаковки: "
+
+#: sui_updater.lua:180
+msgid "Simple UI %s successfully installed.\n\nRestart KOReader to apply the update?"
+msgstr "Simple UI %s успешно установлен.\n\nПерезапустить KOReader для применения обновления?"
+
+#: sui_updater.lua:194
+msgid "Checking for updates..."
+msgstr "Проверка обновлений..."
+
+#: sui_updater.lua:200
+msgid "Error checking for updates: "
+msgstr "Ошибка проверки обновлений: "
+
+#: sui_updater.lua:216
+msgid "Could not retrieve version information."
+msgstr "Не удалось получить информацию о версии."
+
+#: sui_updater.lua:222
+msgid "Simple UI is up to date (%s)."
+msgstr "Установлена последняя версия Simple UI (%s)."
+
+#: sui_updater.lua:233
+msgid "Simple UI %s is available (you have %s).\n\nNo automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "Доступен Simple UI %s (у вас %s).\n\nФайл для автоматического обновления не найден.\n\nОткрыть страницу релизов на GitHub?"
+
+#: sui_updater.lua:236
+msgid "Open in browser"
+msgstr "Открыть в браузере"
+
+#: sui_updater.lua:254
+msgid "Simple UI %s is available!\nCurrent version: %s\n\nDownload and install now?"
+msgstr "Доступен Simple UI %s!\nТекущая версия: %s\n\nСкачать и установить сейчас?"
+
+#: sui_updater.lua:257
+msgid "Download and install"
+msgstr "Скачать и установить"
+
+#: sui_menu.lua
+msgid "Return to Book Folder"
+msgstr "Возврат в папку книги"
+
+#: sui_menu.lua
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root."
+msgstr "Если включено, открытие диспетчера файлов после закрытия книги возвращает в её папку, как это делает KOReader по умолчанию.\nЕсли отключено (по умолчанию), SimpleUI всегда возвращает в корень библиотеки."
+
+#: sui_menu.lua
+msgid "Settings on Long Tap"
+msgstr "Настройки по долгому нажатию"
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Если включено, долгое нажатие на секцию открывает её меню настроек.\nОтключите, чтобы меню настроек не появлялось по долгому нажатию."
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the top bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Если включено, долгое нажатие на верхнюю панель открывает её меню настроек.\nОтключите, чтобы меню настроек не появлялось по долгому нажатию."
+
+#: sui_menu.lua
+msgid "When enabled, long-pressing the bottom bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr "Если включено, долгое нажатие на нижнюю панель открывает её меню настроек.\nОтключите, чтобы меню настроек не появлялось по долгому нажатию."
+
+#: desktop_modules/module_tbr.lua
+msgid "Arrange To Be Read list"
+msgstr "Упорядочить список «Буду читать»"
+
+#: desktop_modules/module_tbr.lua
+msgid "Add at least 2 books to arrange."
+msgstr "Добавьте минимум 2 книги для сортировки."
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read books"
+msgstr "Книги «Буду читать»"
+
+#: desktop_modules/module_tbr.lua
+msgid "No books in To Be Read list."
+msgstr "В списке «Буду читать» нет книг."
+
+#: desktop_modules/module_tbr.lua
+msgid "Add to To Be Read"
+msgstr "Добавить в «Буду читать»"
+
+#: desktop_modules/module_tbr.lua
+msgid "Remove from To Be Read"
+msgstr "Удалить из «Буду читать»"
+
+#: desktop_modules/module_tbr.lua
+msgid "To Be Read"
+msgstr "Буду читать"
+
+#: sui_foldercovers.lua sui_menu.lua
+msgid "Group Books by Series"
+msgstr "Группировать по сериям"
+
+#: sui_menu.lua
+msgid "Series Index"
+msgstr "Номер в серии"
+
+#: sui_foldercovers.lua
+msgid "Series cover"
+msgstr "Обложка серии"
+
+#: sui_foldercovers.lua
+msgid "Set series cover…"
+msgstr "Задать обложку серии…"
+
+#: sui_foldercovers.lua
+msgid "No books found in this series."
+msgstr "В этой серии нет книг."
+
+#: sui_foldercovers.lua
+msgid "Scan subfolders for cover"
+msgstr "Искать обложки в подпапках"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for this module."
+msgstr "Масштаб для этого модуля."
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for the cover thumbnails only.\n100% is the default size."
+msgstr "Масштаб только миниатюр обложек.\n100% — размер по умолчанию."
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Scale for title and statistics text.\n100% is the default size."
+msgstr "Масштаб текста заголовка и статистики.\n100% — размер по умолчанию."
+
+#: desktop_modules/module_coverdeck.lua
+#: sui_menu.lua
+msgid "Recent Books"
+msgstr "Недавние книги"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Title Position"
+msgstr "Позиция заголовка"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Above"
+msgstr "Сверху"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Below"
+msgstr "Снизу"
+
+#: desktop_modules/module_coverdeck.lua
+msgid "Arrange Statistics"
+msgstr "Упорядочить статистику"
+
+#: sui_menu.lua
+msgid "Updater module not found."
+msgstr "Модуль обновления не найден."
+
+#: sui_menu.lua
+msgid "Recent"
+msgstr "Недавние"
+
+#: sui_menu.lua
+msgid "KOReader"
+msgstr "KOReader"
+
+#: sui_config.lua:165 sui_menu.lua:553
+msgid "Custom Text"
+msgstr "Свой текст"
+
+#: sui_menu.lua:545 sui_menu.lua:547
+msgid "Edit Custom Text"
+msgstr "Редактировать свой текст"
+
+#: sui_menu.lua:1953
+msgid "Folder Name Text Size"
+msgstr "Размер текста имени папки"
+
+#: sui_menu.lua:1951
+msgid "Text size"
+msgstr "Размер текста"
+
+#: sui_menu.lua:566
+msgid "Set"
+msgstr "Задать"
+
+#: sui_menu.lua:556
+msgid "Text shown in the top bar.\nMaximum %d characters."
+msgstr "Текст на верхней панели.\nМаксимум %d символов."
+
+#: sui_menu.lua:1954
+msgid "Scale for the folder name overlay text.\n100% is the default size."
+msgstr "Масштаб текста поверх имени папки.\n100% — размер по умолчанию."
+
+#: sui_config.lua:1748
+msgid "Show section label"
+msgstr "Показывать подпись секции"
+
+#: sui_updater.lua:377
+msgid "Update cancelled."
+msgstr "Обновление отменено."
+
+#: sui_updater.lua:487
+msgid "Update check cancelled."
+msgstr "Проверка обновлений отменена."
+
+#: sui_updater.lua:466
+msgid "Error checking for updates."
+msgstr "Ошибка проверки обновлений."
+
+#: sui_updater.lua:407
+msgid "Simple UI %s is available!\nYou have %s."
+msgstr "Доступен Simple UI %s!\nУ вас установлена версия %s."
+
+#: sui_updater.lua:410
+msgid "\n\nDownload and install now?"
+msgstr "\n\nСкачать и установить сейчас?"
+
+#: sui_updater.lua:412
+msgid "What's new:"
+msgstr "Что нового:"
+
+#: sui_updater.lua:419
+msgid "No automatic update file was found.\n\nOpen the releases page on GitHub?"
+msgstr "Файл автоматического обновления не найден.\n\nОткрыть страницу релизов на GitHub?"
+
+#: sui_menu.lua:1772
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root.\nThis option works independently of \"Start with Home Screen\"."
+msgstr "Если включено, открытие диспетчера файлов после закрытия книги возвращает в её папку, как это делает KOReader по умолчанию.\nЕсли отключено (по умолчанию), SimpleUI всегда возвращает в корень библиотеки.\nРаботает независимо от настройки «Начинать с домашнего экрана»."
+
+#: sui_updater.lua:460
+msgid "Checking for updates…"
+msgstr "Проверка обновлений…"
+
+#: sui_updater.lua:323
+msgid "Downloading Simple UI %s…"
+msgstr "Загрузка Simple UI %s…"
+
+#: sui_menu.lua:1492
+msgid "Choose how many pages the homescreen has.\nEmpty pages stay empty. Modules keep their position."
+msgstr "Выберите количество страниц домашнего экрана.\nПустые страницы остаются пустыми. Модули сохраняют свою позицию."
+
+#: sui_menu.lua:1549 sui_menu.lua:1569
+msgid "Page %d"
+msgstr "Страница %d"
+
+#: sui_menu.lua:1580
+msgid "Cannot place modules after Page 1 separator.\nPage 1 must always have at least 1 module."
+msgstr "Нельзя размещать модули за разделителем Страницы 1.\nНа Странице 1 всегда должен быть минимум 1 модуль."
