@@ -86,6 +86,7 @@ M.ICON = {
     custom         = _P .. "custom.svg",
     custom_dir     = _P .. "custom",             -- directory, no trailing slash
     plugin         = _P .. "plugin.svg",
+    discover       = _P .. "discover.svg",
 
     -- Navpager arrow icons (KOReader built-ins)
     nav_prev       = _KO .. "chevron.left.svg",
@@ -123,6 +124,16 @@ for _i, id in ipairs(M.DEFAULT_TABS) do
     if id ~= "home" then M.NON_HOME_DEFAULTS[#M.NON_HOME_DEFAULTS + 1] = id end
 end
 
+function M.isOPDSAvailable()
+    local FM = package.loaded["apps/filemanager/filemanager"]
+    return FM and FM.instance and FM.instance.opds ~= nil
+end
+
+function M.isOPDSPlusAvailable()
+    local FM = package.loaded["apps/filemanager/filemanager"]
+    return FM and FM.instance and FM.instance.opdsplus ~= nil
+end
+
 -- ---------------------------------------------------------------------------
 -- Predefined action catalogue
 -- ---------------------------------------------------------------------------
@@ -140,6 +151,9 @@ M.ALL_ACTIONS = {
     { id = "stats_calendar",   label = _("Stats"),            icon = M.ICON.stats       },
     { id = "power",            label = _("Power"),            icon = M.ICON.power       },
 }
+
+M.ALL_ACTIONS[#M.ALL_ACTIONS + 1] = { id = "opds_catalog",     label = _("Discover"), icon = M.ICON.discover }
+M.ALL_ACTIONS[#M.ALL_ACTIONS + 1] = { id = "opdsplus_catalog", label = _("Discover"), icon = M.ICON.discover }
 
 -- Fast lookup map keyed by action ID.
 M.ACTION_BY_ID = {}
@@ -397,6 +411,15 @@ function M.getWifiHideWhenOff()
 end
 function M.setWifiHideWhenOff(v)
     G_reader_settings:saveSetting("navbar_topbar_wifi_hide_when_off", v)
+end
+
+function M.getOPDSServer(action_id)
+    return G_reader_settings:readSetting("navbar_" .. action_id .. "_server")
+end
+
+function M.saveOPDSServer(action_id, url)
+    G_reader_settings:saveSetting("navbar_" .. action_id .. "_server", url)
+    G_reader_settings:flush()
 end
 
 function M.homeLabel()

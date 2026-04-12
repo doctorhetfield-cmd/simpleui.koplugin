@@ -78,6 +78,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- Currently only "frontlight" is hardware-gated; all other ids are always shown.
     local function actionAvailable(id)
         if id == "frontlight" then return hasFrontlight() end
+        if id == "opds_catalog" then return Config.isOPDSAvailable() end
+        if id == "opdsplus_catalog" then return Config.isOPDSPlusAvailable() end
         return true
     end
 
@@ -185,6 +187,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         if not id then return "?" end
         if id:match("^custom_qa_%d+$") then return getCustomQAConfig(id).label end
         if id == "home" then return _homeLabel() end
+        if id == "opds_catalog" then return _("OPDS") end
+        if id == "opdsplus_catalog" then return _("OPDS Plus") end
         return (ACTION_BY_ID[id] and ACTION_BY_ID[id].label) or id
     end
 
@@ -274,6 +278,12 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                             return
                         end
                         tabs[#tabs + 1] = _aid
+                        if _aid == "opds_catalog" or _aid == "opdsplus_catalog" then
+                            UIManager:scheduleIn(0.5, function()
+                                local Bottombar = require("sui_bottombar")
+                                Bottombar.showOPDSServerPicker(_aid, plugin)
+                            end)
+                        end
                     end
                     _ensureHomePresent(tabs)
                     saveTabConfig(tabs)
