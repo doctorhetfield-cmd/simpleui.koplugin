@@ -2084,9 +2084,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                                         keep_menu_open = true,
                                                         callback       = function() FC.setBadgePosition("bottom"); _refreshFC() end,
                                                     },
-                                                },
-                                            },
-                                                {
+                                                    {
                                                         text           = _("Style"),
                                                         enabled_func   = function() return not FC.getBadgeHidden() end,
                                                         sub_item_table = {
@@ -2127,6 +2125,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                                             },
                                                         },
                                                     },
+                                                },
+                                            },
                                             {
                                                 text           = _("Number of Pages"),
                                                 checked_func   = function() return FC.getOverlayPages() end,
