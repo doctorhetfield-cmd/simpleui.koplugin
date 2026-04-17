@@ -2127,8 +2127,6 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                                             },
                                                         },
                                                     },
-                                                 },
-                                             },
                                             {
                                                 text           = _("Number of Pages"),
                                                 checked_func   = function() return FC.getOverlayPages() end,
