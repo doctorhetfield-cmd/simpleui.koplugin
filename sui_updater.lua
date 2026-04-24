@@ -17,7 +17,7 @@ local UIManager   = require("ui/uimanager")
 local InfoMessage = require("ui/widget/infomessage")
 local ConfirmBox  = require("ui/widget/confirmbox")
 local logger      = require("logger")
-local _           = require("gettext")
+local _ = require("sui_i18n").translate
 
 -- ---------------------------------------------------------------------------
 -- Configuração — ajusta ao teu repositório

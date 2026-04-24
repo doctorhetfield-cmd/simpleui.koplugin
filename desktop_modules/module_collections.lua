@@ -23,7 +23,7 @@ local VerticalSpan    = require("ui/widget/verticalspan")
 local Screen          = Device.screen
 local logger          = require("logger")
 local lfs             = require("libs/libkoreader-lfs")
-local _               = require("gettext")
+local _ = require("sui_i18n").translate
 local Config          = require("sui_config")
 
 local UI           = require("sui_core")

@@ -16,7 +16,7 @@ local TextWidget      = require("ui/widget/textwidget")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local Screen          = Device.screen
 local lfs             = require("libs/libkoreader-lfs")
-local _               = require("gettext")
+local _ = require("sui_i18n").translate
 
 local logger = require("logger")
 local _SH = nil

@@ -40,7 +40,7 @@ local lfs     = require("libs/libkoreader-lfs")
 local util    = require("util")
 local ffiUtil = require("ffi/util")
 local logger  = require("logger")
-local _       = require("gettext")
+local _ = require("sui_i18n").translate
 
 -- ---------------------------------------------------------------------------
 -- Virtual path constants

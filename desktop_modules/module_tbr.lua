@@ -29,7 +29,7 @@ local InputContainer  = require("ui/widget/container/inputcontainer")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local UIManager       = require("ui/uimanager")
 local lfs             = require("libs/libkoreader-lfs")
-local _               = require("gettext")
+local _ = require("sui_i18n").translate
 
 local logger = require("logger")
 local _SH    = nil

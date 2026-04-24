@@ -37,7 +37,7 @@ local VerticalSpan   = require("ui/widget/verticalspan")
 
 local Screen         = Device.screen
 
-local _              = require("gettext")
+local _ = require("sui_i18n").translate
 
 local logger         = require("logger")
 

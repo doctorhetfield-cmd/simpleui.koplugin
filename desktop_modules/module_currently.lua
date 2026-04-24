@@ -4,8 +4,8 @@
 -- External dependencies
 local Device  = require("device")
 local Screen  = Device.screen
-local _       = require("gettext")
-local N_      = _.ngettext
+local _ = require("sui_i18n").translate
+local N_ = require("sui_i18n").ngettext
 local logger  = require("logger")
 
 local Blitbuffer      = require("ffi/blitbuffer")

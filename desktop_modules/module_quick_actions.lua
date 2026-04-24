@@ -19,8 +19,8 @@ local TextWidget      = require("ui/widget/textwidget")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local Screen          = Device.screen
-local _               = require("gettext")
-local N_              = _.ngettext
+local _ = require("sui_i18n").translate
+local N_ = require("sui_i18n").ngettext
 local Config          = require("sui_config")
 local QA              = require("sui_quickactions")
 

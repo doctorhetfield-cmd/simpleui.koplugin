@@ -27,7 +27,7 @@
 --   simpleui_fc_series_grouping  — group books by series into virtual folders (default false)
 --   simpleui_fc_item_cache       — 2 000-entry item cache (default true)
 
-local _ = require("gettext")
+local _ = require("sui_i18n").translate
 local lfs = require("libs/libkoreader-lfs")
 local logger = require("logger")
 

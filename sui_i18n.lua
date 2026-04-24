@@ -1,19 +1,31 @@
--- i18n.lua — Simple UI
+-- sui_i18n.lua — Simple UI
 -- Translation loader.
 --
--- COMO FUNCIONA
--- O KOReader usa require("gettext") em todos os módulos, capturando a função
--- como variável local no topo de cada ficheiro. Substituir _G["_"] depois
--- disso não tem efeito nessas variáveis locais já capturadas.
+-- DESIGN (v2 — isolated proxy, no global monkey-patch)
+-- =====================================================
+-- The previous approach replaced package.loaded["gettext"] with a wrapper
+-- table that only had __index (read delegation) but no __newindex.  This
+-- caused a silent state-mutation bug: when another plugin (e.g. zlibrary)
+-- temporarily wrote to a gettext field to load its own .po files, the write
+-- landed on the wrapper and never reached the native module.  The native
+-- gettext then failed to find its translations entirely.
 --
--- A solução correcta é substituir package.loaded["gettext"] com um wrapper
--- ANTES de qualquer outro módulo do plugin ser carregado. Assim, todos os
--- require("gettext") subsequentes recebem o wrapper automaticamente.
+-- The fix is straightforward: do NOT touch the global module cache at all.
+-- Instead, export a self-contained translate() / ngettext() pair that each
+-- simpleui module uses directly as its local `_` / `N_`.
 --
--- install() deve ser a PRIMEIRA chamada em main.lua, antes de qualquer require().
+-- Public API:
+--   local I18n = require("sui_i18n")
+--   local _    = I18n.translate    -- replaces: local _ = require("gettext")
+--   local N_   = I18n.ngettext     -- replaces: local N_ = _.ngettext
+--   I18n.getLang()                 -- still works
+--   I18n.reset()                   -- clears cached translations
+--
+-- Strings not found in simpleui's .po files fall through to the native
+-- gettext, so KOReader's own UI strings continue to work correctly.
 --
 -- HOW TO ADD A LANGUAGE
---   1. Copy locale/simpleui.pot → locale/<lang>.po  (e.g. locale/de.po)
+--   1. Copy locale/simpleui.pot -> locale/<lang>.po  (e.g. locale/de.po)
 --   2. Fill in the msgstr values.
 --   3. Done — no code changes needed.
 
@@ -65,20 +77,20 @@ local function parsePluralExpression(expr)
             return s
         end
 
-        local cond = s:sub(1, q - 1)
+        local cond   = s:sub(1, q - 1)
         local truthy = s:sub(q + 1, colon - 1)
-        local falsy = s:sub(colon + 1)
+        local falsy  = s:sub(colon + 1)
         return "(" .. translateTernary(cond) .. " and (" .. translateTernary(truthy) .. ") or (" .. translateTernary(falsy) .. "))"
     end
 
-    expr = expr:gsub("!=", "~=")
-    expr = expr:gsub("&&", " and ")
+    expr = expr:gsub("!=",   "~=")
+    expr = expr:gsub("&&",   " and ")
     expr = expr:gsub("%|%|", " or ")
     expr = expr:gsub("!%s*", "not ")
     expr = translateTernary(expr)
 
     local loadfunc = loadstring or load
-    local fn, err = loadfunc("return function(n) return " .. expr .. " end")
+    local fn, _err = loadfunc("return function(n) return " .. expr .. " end")
     if not fn then return nil end
 
     local ok, pluralFn = pcall(fn)
@@ -90,18 +102,14 @@ local function parsePO(path)
     local f = io.open(path, "r")
     if not f then return nil end
 
-    local map = {}
+    local map        = {}
     local pluralizer = nil
-    local entry = {
-        msgid = nil,
-        msgid_plural = nil,
-        msgstrs = {},
-    }
+    local entry      = { msgid = nil, msgid_plural = nil, msgstrs = {} }
     local current_field = nil
 
     local function flush()
         if not entry.msgid then
-            entry = { msgid = nil, msgid_plural = nil, msgstrs = {} }
+            entry         = { msgid = nil, msgid_plural = nil, msgstrs = {} }
             current_field = nil
             return
         end
@@ -119,22 +127,16 @@ local function parsePO(path)
             if entry.msgid_plural then
                 local trans = {}
                 for idx, str in pairs(entry.msgstrs) do
-                    if str and str ~= "" then
-                        trans[idx] = str
-                    end
+                    if str and str ~= "" then trans[idx] = str end
                 end
-                if next(trans) then
-                    map[entry.msgid] = trans
-                end
+                if next(trans) then map[entry.msgid] = trans end
             else
                 local str = entry.msgstrs[0]
-                if str and str ~= "" then
-                    map[entry.msgid] = str
-                end
+                if str and str ~= "" then map[entry.msgid] = str end
             end
         end
 
-        entry = { msgid = nil, msgid_plural = nil, msgstrs = {} }
+        entry         = { msgid = nil, msgid_plural = nil, msgstrs = {} }
         current_field = nil
     end
 
@@ -193,11 +195,15 @@ local function detectLang()
 end
 
 -- ---------------------------------------------------------------------------
--- Load translation table
+-- Load translation table (lazy, cached)
 -- ---------------------------------------------------------------------------
 local _translations = nil
+local _loaded       = false
 
 local function loadTranslations()
+    if _loaded then return _translations end
+    _loaded = true
+
     local lang = detectLang()
     if lang == "en" or lang:match("^en_") then return nil end
 
@@ -211,124 +217,82 @@ local function loadTranslations()
         end
     end
 
-    return try(lang) or (function()
+    _translations = try(lang) or (function()
         local prefix = lang:match("^([a-zA-Z]+)")
         if prefix and prefix ~= lang then return try(prefix) end
     end)()
+
+    return _translations
 end
 
 -- ---------------------------------------------------------------------------
--- install() — substitui package.loaded["gettext"] com um wrapper.
--- Deve ser chamado ANTES de qualquer require() dos módulos do plugin.
+-- Core translation functions.
+--
+-- Each simpleui module does:
+--   local _  = require("sui_i18n").translate
+--   local N_ = require("sui_i18n").ngettext
+--
+-- Strings absent from simpleui's catalogue fall through to the native
+-- KOReader gettext without writing to or wrapping package.loaded["gettext"].
 -- ---------------------------------------------------------------------------
-local _installed = false
 
-local function install()
-    if _installed then return end
-
-    _translations = loadTranslations()
-    if not _translations then return end  -- língua não suportada ou inglês
-
-    local orig_gettext = package.loaded["gettext"]
-    if not orig_gettext then
-        -- gettext ainda não foi carregado — carregar agora para poder fazer wrap
-        local ok, gt = pcall(require, "gettext")
-        if not ok or not gt then
-            logger.warn("simpleui i18n: cannot load gettext, translations disabled")
-            return
-        end
-        orig_gettext = gt
-    end
-
-    -- Criar wrapper que intercepta strings do plugin
-    -- e delega tudo o resto para o gettext original do KOReader.
-    local function translate(msgid)
-        if not _translations then return nil end
-        local entry = _translations.entries[msgid]
+local function translate(msgid)
+    local t = loadTranslations()
+    if t then
+        local entry = t.entries[msgid]
         if type(entry) == "string" then
             return entry
         elseif type(entry) == "table" then
-            return entry[0] or entry[1]
+            return entry[0] or entry[1] or msgid
         end
-        return nil
     end
+    -- Read-only access to native gettext — no writes, no state mutation.
+    local ok, gt = pcall(require, "gettext")
+    if ok and gt then return gt(msgid) end
+    return msgid
+end
 
-    local function ngettext(msgid, msgid_plural, n)
-        if _translations then
-            local entry = _translations.entries[msgid]
-            if type(entry) == "table" then
-                local idx = 0
-                if _translations.plural then
-                    idx = _translations.plural(n) or 0
-                else
-                    idx = (n == 1) and 0 or 1
-                end
-                local translated = entry[idx]
-                if translated then return translated end
-            elseif type(entry) == "string" and n == 1 then
-                return entry
+local function ngettext(msgid, msgid_plural, n)
+    local t = loadTranslations()
+    if t then
+        local entry = t.entries[msgid]
+        if type(entry) == "table" then
+            local idx = 0
+            if t.plural then
+                idx = t.plural(n) or 0
+            else
+                idx = (n == 1) and 0 or 1
             end
+            local translated = entry[idx]
+            if translated then return translated end
+        elseif type(entry) == "string" and n == 1 then
+            return entry
         end
-
-        if type(orig_gettext) == "table" and type(orig_gettext.ngettext) == "function" then
-            return orig_gettext.ngettext(msgid, msgid_plural, n)
+    end
+    -- Fall through to native gettext.
+    local ok, gt = pcall(require, "gettext")
+    if ok and gt then
+        if type(gt) == "table" and type(gt.ngettext) == "function" then
+            return gt.ngettext(msgid, msgid_plural, n)
         end
-
         local fallback = (n == 1) and msgid or msgid_plural
-        return orig_gettext(fallback)
+        return gt(fallback)
     end
-
-    local wrapper
-    local mt = getmetatable(orig_gettext)
-    if mt and mt.__call then
-        -- gettext é uma tabela com __call — criar wrapper com o mesmo metamétodo
-        wrapper = setmetatable({ ngettext = ngettext }, {
-            __call = function(_, msgid)
-                local t = translate(msgid)
-                if t then return t end
-                return orig_gettext(msgid)
-            end,
-            __index = orig_gettext,  -- preservar outros métodos (bindTextDomain, etc.)
-        })
-    elseif type(orig_gettext) == "function" then
-        -- gettext é uma função directa
-        wrapper = setmetatable({ ngettext = ngettext }, {
-            __call = function(_, msgid)
-                local t = translate(msgid)
-                if t then return t end
-                return orig_gettext(msgid)
-            end,
-        })
-
-        for k, v in pairs(orig_gettext) do
-            wrapper[k] = v
-        end
-    else
-        logger.warn("simpleui i18n: unexpected gettext type: " .. type(orig_gettext))
-        return
-    end
-
-    package.loaded["gettext"] = wrapper
-    _installed = true
-    logger.info("simpleui i18n: installed wrapper for language: " .. detectLang())
+    return (n == 1) and msgid or msgid_plural
 end
 
 -- ---------------------------------------------------------------------------
--- uninstall() — restaura o gettext original ao fazer teardown do plugin.
+-- reset() — clears cached translations (e.g. after a language change).
 -- ---------------------------------------------------------------------------
-local function uninstall()
-    if not _installed then return end
-    -- Recarregar o gettext original a partir do sistema de ficheiros
-    -- (limpar da cache e deixar o próximo require() recarregar normalmente)
-    package.loaded["gettext"] = nil
-    pcall(require, "gettext")  -- recarrega e repõe em package.loaded
-    _installed    = false
+local function reset()
     _translations = nil
-    logger.info("simpleui i18n: uninstalled")
+    _loaded       = false
+    logger.info("simpleui i18n: translation cache cleared")
 end
 
 return {
-    install   = install,
-    uninstall = uninstall,
+    translate = translate,
+    ngettext  = ngettext,
     getLang   = detectLang,
+    reset     = reset,
 }

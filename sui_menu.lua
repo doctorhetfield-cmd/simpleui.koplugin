@@ -8,8 +8,8 @@ local Device    = require("device")
 local Screen    = Device.screen
 local lfs       = require("libs/libkoreader-lfs")
 local logger    = require("logger")
-local _         = require("gettext")
-local N_        = _.ngettext
+local _ = require("sui_i18n").translate
+local N_ = require("sui_i18n").ngettext
 
 -- Heavy UI widgets — lazy-loaded on first use so that require("menu") at boot
 -- does not pull them into memory before the user ever opens the settings menu.

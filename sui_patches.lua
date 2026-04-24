@@ -6,7 +6,7 @@ local UIManager    = require("ui/uimanager")
 local Device       = require("device")
 local Screen       = Device.screen
 local logger       = require("logger")
-local _            = require("gettext")
+local _ = require("sui_i18n").translate
 local FocusManager = require("ui/widget/focusmanager")
 
 local Config    = require("sui_config")

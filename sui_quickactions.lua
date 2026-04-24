@@ -14,8 +14,8 @@ local Device    = require("device")
 local Screen    = Device.screen
 local lfs       = require("libs/libkoreader-lfs")
 local logger    = require("logger")
-local _         = require("gettext")
-local N_        = _.ngettext
+local _ = require("sui_i18n").translate
+local N_ = require("sui_i18n").ngettext
 
 local Config    = require("sui_config")
 

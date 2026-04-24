@@ -18,7 +18,7 @@ local InfoMessage     = require("ui/widget/infomessage")
 local Device          = require("device")
 local Screen          = Device.screen
 local logger          = require("logger")
-local _               = require("gettext")
+local _ = require("sui_i18n").translate
 
 local Config = require("sui_config")
 

@@ -20,7 +20,7 @@
 --   right_button: padding_left=2*icon_size(72),   padding_right=button_padding(8)
 --   We zero ALL paddings before placing, so overlap_offset[1] = icon left edge.
 
-local _ = require("gettext")
+local _ = require("sui_i18n").translate
 local Config = require("sui_config")
 
 -- Lua 5.1 compatibility: unpack is a global; table.unpack was added in 5.2 / LuaJIT compat.

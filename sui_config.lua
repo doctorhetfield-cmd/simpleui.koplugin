@@ -4,7 +4,7 @@
 
 local G_reader_settings = G_reader_settings
 local logger            = require("logger")
-local _                 = require("gettext")
+local _ = require("sui_i18n").translate
 
 -- ---------------------------------------------------------------------------
 -- Public constants

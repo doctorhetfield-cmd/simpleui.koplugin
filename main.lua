@@ -5,19 +5,17 @@ local WidgetContainer = require("ui/widget/container/widgetcontainer")
 local UIManager       = require("ui/uimanager")
 local logger          = require("logger")
 
--- i18n MUST be installed before any other plugin module is require()'d.
--- All modules capture local _ = require("gettext") at load time — if we
--- replace package.loaded["gettext"] here, every subsequent require("gettext")
--- in this plugin receives our wrapper automatically.
+-- Each simpleui module captures its own local translation proxy from sui_i18n.
+-- The native package.loaded["gettext"] is never wrapped or replaced, which
+-- prevents state-mutation conflicts with other plugins (e.g. zlibrary).
 local I18n = require("sui_i18n")
-I18n.install()
+local _    = I18n.translate
 
 local Config    = require("sui_config")
 local UI        = require("sui_core")
 local Bottombar = require("sui_bottombar")
 local Topbar    = require("sui_topbar")
 local Patches   = require("sui_patches")
-local _ = require("gettext")
 
 local SimpleUIPlugin = WidgetContainer:new{
     name = "simpleui",
@@ -62,7 +60,7 @@ function SimpleUIPlugin:init()
                     "— restart recommended")
                 UIManager:scheduleIn(1, function()
                     local InfoMessage = require("ui/widget/infomessage")
-                    local _t = require("gettext")
+                    local _t = require("sui_i18n").translate
                     UIManager:show(InfoMessage:new{
                         text = string.format(
                             _t("Simple UI was updated (%s → %s).\n\nA restart is recommended to apply all changes cleanly."),
@@ -674,7 +672,7 @@ function SimpleUIPlugin:_updateFMHomeIcon() end
 local _menu_installer = nil
 
 function SimpleUIPlugin:addToMainMenu(menu_items)
-    local _ = require("gettext")
+    local _ = require("sui_i18n").translate
     if not _menu_installer then
         local ok, result = pcall(require, "sui_menu")
         if not ok then

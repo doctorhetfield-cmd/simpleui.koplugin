@@ -11,8 +11,8 @@ local OverlapGroup   = require("ui/widget/overlapgroup")
 local TextWidget     = require("ui/widget/textwidget")
 local VerticalGroup  = require("ui/widget/verticalgroup")
 local Screen         = Device.screen
-local _              = require("gettext")
-local N_             = _.ngettext
+local _ = require("sui_i18n").translate
+local N_ = require("sui_i18n").ngettext
 local logger         = require("logger")
 
 local Config       = require("sui_config")

@@ -11,7 +11,7 @@ local ffiUtil          = require("ffi/util")
 local filemanagerutil  = require("apps/filemanager/filemanagerutil")
 local lfs              = require("libs/libkoreader-lfs")
 local util             = require("util")
-local _                = require("gettext")
+local _ = require("sui_i18n").translate
 local T                = ffiUtil.template
 
 local M = {}
