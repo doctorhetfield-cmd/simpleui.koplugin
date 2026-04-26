@@ -2,7 +2,9 @@
 -- Módulo: Collections.
 -- Substitui collectionswidget.lua — contém todo o código de widget.
 
+local AlphaContainer  = require("ui/widget/container/alphacontainer")
 local Blitbuffer      = require("ffi/blitbuffer")
+local BottomContainer = require("ui/widget/container/bottomcontainer")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local Device          = require("device")
 local Font            = require("ui/font")
@@ -16,8 +18,10 @@ local InputContainer  = require("ui/widget/container/inputcontainer")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local LineWidget      = require("ui/widget/linewidget")
 local OverlapGroup    = require("ui/widget/overlapgroup")
+local RightContainer  = require("ui/widget/container/rightcontainer")
 local TextWidget      = require("ui/widget/textwidget")
 local TextBoxWidget   = require("ui/widget/textboxwidget")
+local TopContainer    = require("ui/widget/container/topcontainer")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local Screen          = Device.screen
@@ -55,6 +59,8 @@ local EDGE_H2    = 0.94   -- outer line height fraction
 
 local _CLR_COVER_BORDER = Blitbuffer.COLOR_BLACK
 local _CLR_COVER_BG     = Blitbuffer.gray(0.88)
+
+local _LABEL_ALPHA = 0.75
 
 local LABEL_H = UI.LABEL_H  -- kept for any external callers; getHeight() uses getScaledLabelH()
 
@@ -114,12 +120,20 @@ end
 local SETTINGS_KEY       = "navbar_collections_list"
 local COVER_OVERRIDE_KEY = "navbar_collections_covers"
 local BADGE_POSITION_KEY = "navbar_collections_badge_position"
+local BADGE_STYLE_KEY    = "navbar_collections_badge_style"
 
 local function getBadgePosition()
     return G_reader_settings:readSetting(BADGE_POSITION_KEY) or "top"
 end
 local function saveBadgePosition(v)
     G_reader_settings:saveSetting(BADGE_POSITION_KEY, v)
+end
+
+local function getBadgeStyle()
+    return G_reader_settings:readSetting(BADGE_STYLE_KEY) or "current"
+end
+local function saveBadgeStyle(v)
+    G_reader_settings:saveSetting(BADGE_STYLE_KEY, v)
 end
 
 local function getSelectedCollections()
@@ -169,6 +183,205 @@ local function getBookCover(filepath, w, h)
         }
     end)
     return ok and img or nil
+end
+
+-- ---------------------------------------------------------------------------
+-- Badge helpers
+-- ---------------------------------------------------------------------------
+
+-- Shared anchor: wraps a built badge widget into a right-aligned top/bottom
+-- container, mirroring the pattern in sui_foldercovers.lua.
+local function _anchorBadge(widget, widget_h, cover_dimen, gap)
+    local inner = RightContainer:new{
+        dimen = Geom:new{ w = cover_dimen.w, h = widget_h },
+        FrameContainer:new{
+            padding = 0, padding_right = gap, bordersize = 0,
+            widget,
+        },
+    }
+    if getBadgePosition() == "bottom" then
+        return BottomContainer:new{
+            dimen = cover_dimen, padding_bottom = gap,
+            inner, overlap_align = "center",
+        }
+    else
+        return TopContainer:new{
+            dimen = cover_dimen, padding_top = gap,
+            inner, overlap_align = "center",
+        }
+    end
+end
+
+local _BADGE_STYLES = {}
+
+-- "current" — solid black circle, white text (original style)
+_BADGE_STYLES["current"] = function(count, cover_dimen, d)
+    local badge = FrameContainer:new{
+        bordersize = 0,
+        background = Blitbuffer.COLOR_BLACK,
+        radius     = math.floor(d.badge_sz / 2),
+        padding    = 0,
+        dimen      = Geom:new{ w = d.badge_sz, h = d.badge_sz },
+        CenterContainer:new{
+            dimen = Geom:new{ w = d.badge_sz, h = d.badge_sz },
+            TextWidget:new{
+                text    = tostring(math.min(count, 99)),
+                face    = Font:getFace("cfont", d.badge_fs),
+                fgcolor = Blitbuffer.COLOR_WHITE,
+                bold    = true,
+            },
+        },
+    }
+    local inner = RightContainer:new{
+        dimen = Geom:new{ w = cover_dimen.w, h = d.badge_sz + d.badge_margin_t },
+        FrameContainer:new{
+            padding = 0, padding_right = d.badge_margin, bordersize = 0,
+            badge,
+        },
+    }
+    if getBadgePosition() == "bottom" then
+        return BottomContainer:new{
+            dimen = cover_dimen, padding_bottom = d.badge_margin_t,
+            inner, overlap_align = "center",
+        }
+    else
+        return TopContainer:new{
+            dimen = cover_dimen, padding_top = d.badge_margin_t,
+            inner, overlap_align = "center",
+        }
+    end
+end
+
+-- "v1" — double border, padded sizing, black text on white
+_BADGE_STYLES["v1"] = function(count, cover_dimen, d)
+    local ratio        = d.badge_sz / _BASE_BADGE_SZ
+    local b_size       = math.max(1, math.floor(1 * ratio))
+    local inner_radius = math.max(1, math.floor(2 * ratio))
+    local outer_radius = math.max(2, math.floor(4 * ratio))
+    local text_widget = TextWidget:new{
+        text    = tostring(math.min(count, 99)),
+        face    = Font:getFace("cfont", d.badge_fs),
+        fgcolor = Blitbuffer.COLOR_BLACK,
+        bold    = true,
+    }
+    local inner_box = FrameContainer:new{
+        padding = b_size, bordersize = b_size,
+        color = Blitbuffer.COLOR_BLACK, background = Blitbuffer.COLOR_WHITE,
+        radius = inner_radius, text_widget,
+    }
+    local outer_box = FrameContainer:new{
+        padding = b_size, bordersize = b_size,
+        color = Blitbuffer.COLOR_BLACK, background = Blitbuffer.COLOR_WHITE,
+        radius = outer_radius, inner_box,
+    }
+    return _anchorBadge(outer_box, d.badge_sz, cover_dimen, d.badge_margin)
+end
+
+-- "v2" — slim double rounded border with 1px drop-shadow
+_BADGE_STYLES["v2"] = function(count, cover_dimen, d)
+    local ratio        = d.badge_sz / _BASE_BADGE_SZ
+    local b_size       = math.max(1, math.floor(1 * ratio))
+    local shadow_thick = math.max(1, math.floor(1 * ratio))
+    local inner_radius = math.max(1, math.floor(2 * ratio))
+    local outer_radius = math.max(2, math.floor(4 * ratio))
+    local text_widget = TextWidget:new{
+        text    = tostring(math.min(count, 99)),
+        face    = Font:getFace("cfont", d.badge_fs),
+        fgcolor = Blitbuffer.COLOR_BLACK,
+        bold    = true,
+    }
+    local inner_box = FrameContainer:new{
+        padding_top = 0, padding_bottom = 0,
+        padding_left = b_size, padding_right = b_size,
+        bordersize = b_size,
+        color = Blitbuffer.COLOR_BLACK, background = Blitbuffer.COLOR_WHITE,
+        radius = inner_radius, text_widget,
+    }
+    local outer_box = FrameContainer:new{
+        padding_top = 0, padding_bottom = 0,
+        padding_left = b_size, padding_right = b_size,
+        bordersize = b_size,
+        color = Blitbuffer.COLOR_BLACK, background = Blitbuffer.COLOR_WHITE,
+        radius = outer_radius, inner_box,
+    }
+    local shadow_frame = FrameContainer:new{
+        padding = 0, padding_bottom = shadow_thick, padding_right = shadow_thick,
+        bordersize = 0, background = Blitbuffer.COLOR_BLACK,
+        radius = outer_radius, outer_box,
+    }
+    local final_h = shadow_frame:getSize().h
+    return _anchorBadge(shadow_frame, final_h, cover_dimen, d.badge_margin)
+end
+
+-- "v3" — double border, transparent background
+_BADGE_STYLES["v3"] = function(count, cover_dimen, d)
+    local ratio        = d.badge_sz / _BASE_BADGE_SZ
+    local b_size       = math.max(1, math.floor(1 * ratio))
+    local inner_radius = math.max(1, math.floor(2 * ratio))
+    local outer_radius = math.max(2, math.floor(4 * ratio))
+    local text_widget = TextWidget:new{
+        text    = tostring(math.min(count, 99)),
+        face    = Font:getFace("cfont", d.badge_fs),
+        fgcolor = Blitbuffer.COLOR_BLACK,
+        bold    = true,
+    }
+    local inner_box = FrameContainer:new{
+        padding = 0, bordersize = b_size,
+        color = Blitbuffer.COLOR_BLACK, background = Blitbuffer.COLOR_WHITE,
+        radius = inner_radius, text_widget,
+    }
+    local outer_box = FrameContainer:new{
+        padding = 0, bordersize = b_size,
+        color = Blitbuffer.COLOR_BLACK, background = Blitbuffer.COLOR_WHITE,
+        radius = outer_radius, inner_box,
+    }
+    local transparent_badge = AlphaContainer:new{ alpha = _LABEL_ALPHA, outer_box }
+    local final_h = transparent_badge:getSize().h
+    return _anchorBadge(transparent_badge, final_h, cover_dimen, d.badge_margin)
+end
+
+-- "v4" — double border, text-fitted width
+_BADGE_STYLES["v4"] = function(count, cover_dimen, d)
+    local ratio        = d.badge_sz / _BASE_BADGE_SZ
+    local b_size       = math.max(1, math.floor(1 * ratio))
+    local v_pad        = math.max(1, math.floor(1 * ratio))
+    local inner_radius = math.max(1, math.floor(2 * ratio))
+    local outer_radius = math.max(2, math.floor(4 * ratio))
+    local text_widget = TextWidget:new{
+        text    = tostring(math.min(count, 99)),
+        face    = Font:getFace("cfont", d.badge_fs),
+        fgcolor = Blitbuffer.COLOR_BLACK,
+        bold    = true,
+    }
+    local text_sz  = text_widget:getSize()
+    local h_pad    = v_pad
+    local inner_w  = text_sz.w + 2 * h_pad
+    local inner_h  = text_sz.h + 2 * v_pad
+    local line_gap = math.max(1, math.floor(1 * ratio))
+    local outer_w  = inner_w + 2 * (b_size + line_gap)
+    local outer_h  = inner_h + 2 * (b_size + line_gap)
+    local total_h  = outer_h + 2 * b_size
+    local inner_box = FrameContainer:new{
+        padding = 0, bordersize = b_size,
+        color = Blitbuffer.COLOR_BLACK, background = Blitbuffer.COLOR_WHITE,
+        radius = inner_radius,
+        dimen = Geom:new{ w = inner_w, h = inner_h },
+        CenterContainer:new{ dimen = Geom:new{ w = inner_w, h = inner_h }, text_widget },
+    }
+    local outer_box = FrameContainer:new{
+        padding = 0, bordersize = b_size,
+        color = Blitbuffer.COLOR_BLACK, background = Blitbuffer.COLOR_WHITE,
+        radius = outer_radius,
+        dimen = Geom:new{ w = outer_w, h = outer_h },
+        CenterContainer:new{ dimen = Geom:new{ w = outer_w, h = outer_h }, inner_box },
+    }
+    local transparent_badge = AlphaContainer:new{ alpha = _LABEL_ALPHA, outer_box }
+    return _anchorBadge(transparent_badge, total_h, cover_dimen, d.badge_margin)
+end
+
+local function _buildBadge(count, cover_dimen, d)
+    local fn = _BADGE_STYLES[getBadgeStyle()] or _BADGE_STYLES["current"]
+    return fn(count, cover_dimen, d)
 end
 
 -- ---------------------------------------------------------------------------
@@ -242,32 +455,11 @@ local function buildCoverCell(files, cover_override, coll_name, count, d)
 
     local base = VerticalGroup:new{ align = "left", stack, accent }
 
-    local badge_inner = CenterContainer:new{
-        dimen = Geom:new{ w = d.badge_sz, h = d.badge_sz },
-        TextWidget:new{
-            text    = tostring(math.min(count, 99)),
-            face    = Font:getFace("cfont", d.badge_fs),
-            fgcolor = Blitbuffer.COLOR_WHITE,
-            bold    = true,
-        },
-    }
-    local badge = FrameContainer:new{
-        bordersize = 0,
-        background = Blitbuffer.COLOR_BLACK,
-        radius     = math.floor(d.badge_sz / 2),
-        padding    = 0,
-        dimen      = Geom:new{ w = d.badge_sz, h = d.badge_sz },
-        badge_inner,
-    }
-    badge.overlap_offset = {
-        d.stack_extra + d.coll_w - d.badge_sz - d.badge_margin,
-        getBadgePosition() == "bottom"
-            and (d.coll_h + d.accent_h - d.badge_sz - d.badge_margin_t)
-            or  d.badge_margin_t,
-    }
+    local cover_dimen = Geom:new{ w = d.stack_cell_w, h = d.cell_h }
+    local badge = _buildBadge(count, cover_dimen, d)
 
     return OverlapGroup:new{
-        dimen = Geom:new{ w = d.stack_cell_w, h = d.cell_h },
+        dimen = cover_dimen,
         base, badge,
     }
 end
@@ -616,6 +808,15 @@ function M.getMenuItems(ctx_menu)
         _UIManager:show(ctx_menu._cover_picker)
     end
 
+    local _BADGE_STYLE_CYCLE = { "current", "v1", "v2", "v3", "v4" }
+    local _BADGE_STYLE_LABELS = {
+        current = _lc("Badge style: Default"),
+        v1      = _lc("Badge style: Double border"),
+        v2      = _lc("Badge style: Shadow"),
+        v3      = _lc("Badge style: Transparent"),
+        v4      = _lc("Badge style: Fitted"),
+    }
+
     local items = {}
     items[#items + 1] = Config.makeLabelToggleItem("collections", _("Collections"), refresh, _lc)
     items[#items + 1] = {
@@ -665,6 +866,21 @@ function M.getMenuItems(ctx_menu)
         keep_menu_open = true,
         callback = function()
             saveBadgePosition(getBadgePosition() == "bottom" and "top" or "bottom")
+            refresh()
+        end,
+    }
+    items[#items + 1] = {
+        text_func = function()
+            return _BADGE_STYLE_LABELS[getBadgeStyle()] or _lc("Badge style: Default")
+        end,
+        keep_menu_open = true,
+        callback = function()
+            local cur = getBadgeStyle()
+            local idx = 1
+            for i, s in ipairs(_BADGE_STYLE_CYCLE) do
+                if s == cur then idx = i; break end
+            end
+            saveBadgeStyle(_BADGE_STYLE_CYCLE[(idx % #_BADGE_STYLE_CYCLE) + 1])
             refresh()
         end,
     }
