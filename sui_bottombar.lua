@@ -1362,9 +1362,13 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
             showUnavailable(_("Homescreen not available."))
         end
 
-    elseif action_id == "favorites" then
-        if fm.collections then fm.collections:onShowColl()
-        else showUnavailable(_("Favorites not available.")) end
+	elseif action_id == "random_document" then
+    	local fm = plugin.ui
+    	if fm then
+        	fm:openRandomFile(fm.file_chooser and fm.file_chooser.path or "/", false)
+    	else
+        	showUnavailable(_("File Manager not available."))
+    	end
 
     elseif action_id == "bookmark_browser" then
         -- Show the source-selection ButtonDialog floating on top of whatever
