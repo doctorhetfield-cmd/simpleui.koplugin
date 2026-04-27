@@ -145,6 +145,7 @@ M.ALL_ACTIONS = {
       browsemeta_mode = "author" },
     { id = "browse_series",    label = _("Series"),           icon = M.ICON.series,
       browsemeta_mode = "series" },
+    { id = "random_document", label = _("Random Document"), icon = M.ICON.library },
 }
 
 -- Fast lookup map keyed by action ID.
