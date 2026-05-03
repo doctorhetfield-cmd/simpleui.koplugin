@@ -1,4 +1,4 @@
--- Reading Goals module: annual and daily progress bars with tap-to-set dialogs.
+-- Reading Goals module: annual, monthly and daily progress bars with tap-to-set dialogs.
 -- Supports two layouts: Default (bar + detail on separate lines) and Compact (single inline row).
 
 local Blitbuffer      = require("ffi/blitbuffer")
@@ -70,18 +70,22 @@ local function _compactDims(scale)
 end
 
 local function _getYearStr() return os.date("%Y") end
+local function _getMonthStr() return os.date("%b") end
 
 -- Settings keys
 local SHOW_ANNUAL = "navbar_reading_goals_show_annual"
+local SHOW_MONTHLY = "navbar_reading_goals_show_monthly"
 local SHOW_DAILY  = "navbar_reading_goals_show_daily"
 local LAYOUT_KEY  = "navbar_reading_goals_layout"  -- "default" | "compact"
 
 local function isCompact()    return G_reader_settings:readSetting(LAYOUT_KEY) == "compact" end
 local function showAnnual()   return G_reader_settings:readSetting(SHOW_ANNUAL) ~= false end
+local function showMonthly()  return G_reader_settings:readSetting(SHOW_MONTHLY) ~= false end
 local function showDaily()    return G_reader_settings:readSetting(SHOW_DAILY)  ~= false end
 
 local function getAnnualGoal()     return G_reader_settings:readSetting("navbar_reading_goal") or 0 end
 local function getAnnualPhysical() return G_reader_settings:readSetting("navbar_reading_goal_physical") or 0 end
+local function getMonthlyGoalSecs() return G_reader_settings:readSetting("navbar_monthly_reading_goal_secs") or 0 end
 local function getDailyGoalSecs()  return G_reader_settings:readSetting("navbar_daily_reading_goal_secs") or 0 end
 
 -- Formats seconds as "Xh Ym" / "Xh" / "Ym"
@@ -97,9 +101,9 @@ end
 
 -- Stats cache and per-module fetch logic have been moved to
 -- desktop_modules/module_stats_provider.lua (SP). The provider runs one
--- consolidated DB query covering today, 7-day avg, year total, and all-time
--- total, plus a single sidecar scan for books_year + books_total together.
--- build() reads ctx.stats.* — no DB or cache logic here.
+-- consolidated DB query covering today, 7-day avg, month total, year total, 
+-- and all-time total, plus a single sidecar scan for books_year + books_total 
+-- together. build() reads ctx.stats.* — no DB or cache logic here.
 
 -- _lbl_w_cache is kept here because it depends on font size, not on stats data.
 -- Declared before _invalidateLblCache so the upvalue is properly in scope.
@@ -380,6 +384,24 @@ local function showAnnualPhysicalDialog(on_confirm)
     })
 end
 
+-- Dialog: set the monthly reading goal in hours
+local function showMonthlySettingsDialog(on_confirm)
+    local SpinWidget  = require("ui/widget/spinwidget")
+    local cur_hours = math.floor(getDailyGoalSecs() / 3600)
+    UIManager:show(SpinWidget:new{
+        title_text  = _("Monthly Reading Goal"),
+        info_text   = _("Hours per month:"),
+        value       = cur_hours, value_min = 0, value_max = 350, value_step = 1,
+        ok_text     = _("Save"), cancel_text = _("Cancel"),
+        callback    = function(spin)
+            G_reader_settings:saveSetting("navbar_monthly_reading_goal_secs",
+                math.floor(spin.value) * 3600)
+            _refreshHS()
+            if on_confirm then on_confirm() end
+        end,
+    })
+end
+
 -- Dialog: set the daily reading goal in minutes
 local function showDailySettingsDialog(on_confirm)
     local SpinWidget  = require("ui/widget/spinwidget")
@@ -419,6 +441,23 @@ local function _annualData(books_read)
     return pct, pct_str, detail
 end
 
+-- Returns pct, pct_str, detail for the monthly goal row
+local function _monthlyData(month_secs)
+    local m_goal_secs = getMonthlyGoalSecs()
+    local pct, pct_str
+    if m_goal_secs > 0 then
+        pct     = month_secs / m_goal_secs
+        pct_str = string.format("%d%%", math.floor(pct * 100))
+    else
+        pct     = 1.0
+        pct_str = ""
+    end
+    local detail = (goal_secs <= 0)
+        and string.format(_("%s read"), formatDuration(month_secs))
+        or  string.format("%s/%s", formatDuration(month_secs), formatDuration(m_goal_secs))
+    return pct, pct_str, detail
+end
+
 -- Returns pct, pct_str, detail for the daily goal row
 local function _dailyData(today_secs)
     local goal_secs = getDailyGoalSecs()
@@ -447,6 +486,7 @@ M.default_on  = true
 
 M.showAnnualGoalDialog     = showAnnualGoalDialog
 M.showAnnualPhysicalDialog = showAnnualPhysicalDialog
+M.showMonthlySettingsDialog = showMonthlySettingsDialog
 M.showDailySettingsDialog  = showDailySettingsDialog
 
 -- Delegate cache invalidation to StatsProvider (shared with reading_stats).
@@ -468,14 +508,16 @@ end
 function M.build(w, ctx)
     Config.applyLabelToggle(M, _("Reading Goals"))
     local show_ann = showAnnual()
+    local show_mon = showMonthly()
     local show_day = showDaily()
-    if not show_ann and not show_day then return nil end
+    if not show_ann and not show_mon and not show_day then return nil end
 
     local inner_w = w - PAD * 2
     -- Stats pre-fetched by StatsProvider and passed via ctx.stats.
     local sp         = ctx.stats or {}
     local books_read = sp.books_year  or 0
     local year_secs  = sp.year_secs   or 0
+    local month_secs = sp.month_secs  or 0
     local today_secs = sp.today_secs  or 0
     if sp.db_conn_fatal and ctx then ctx.db_conn_fatal = true end
     local rows    = VerticalGroup:new{ align = "left" }
@@ -485,17 +527,21 @@ function M.build(w, ctx)
         -- Compute compact dims using Config.getModuleScale so the landscape
         -- override in sui_homescreen (scale *= 0.65) is automatically honoured.
         local cd = _compactDims(Config.getModuleScale("reading_goals", ctx.pfx))
-        -- Capture year string once — avoids repeated os.date calls.
+        -- Capture year and month string once — avoids repeated os.date calls.
         local year_str = _getYearStr()
+        local month_str = _getMonthStr()
         -- Pre-compute data for both rows so we can measure pct_w across both
         -- and use the same column width, preventing overlap when pct >= 100%.
         local ann_pct, ann_pct_str, ann_detail
+        local mon_pct, mon_pct_str, mon_detail
         local day_pct, day_pct_str, day_detail
         if show_ann then ann_pct, ann_pct_str, ann_detail = _annualData(books_read) end
+        if show_mon then mon_pct, mon_pct_str, mon_detail = _monthlyData(month_secs) end
         if show_day then day_pct, day_pct_str, day_detail = _dailyData(today_secs) end
         -- Measure pct column width from both rows so they share the same width.
         local pct_strs = {}
         if show_ann and ann_pct_str ~= "" then pct_strs[#pct_strs+1] = ann_pct_str end
+        if show_mon and mon_pct_str ~= "" then pct_strs[#pct_strs+1] = day_pct_str end
         if show_day and day_pct_str ~= "" then pct_strs[#pct_strs+1] = day_pct_str end
         local pct_w = _measureLblW(pct_strs, cd.face_row, Screen:scaleBySize(28))
         if show_ann then
@@ -504,7 +550,15 @@ function M.build(w, ctx)
                 inner_w, lbl_w, pct_w, year_str, ann_pct, ann_pct_str, ann_detail,
                 function() showAnnualGoalDialog() end, cd)
         end
-        if show_ann and show_day then
+                if show_ann and show_mon then
+            rows[#rows+1] = VerticalSpan:new{ width = cd.row_gap }
+        end
+        if show_mon then
+            local lbl_w = _measureLblW({ month_str }, cd.face_row, cd.lbl_w)
+            rows[#rows+1] = buildCompactGoalRow(
+                inner_w, lbl_w, pct_w, month_str, ann_pct, ann_pct_str, ann_detail,
+                function() showMonthlySettingsDialog() end, cd)
+        if (show_ann or show_mon) and show_day then
             rows[#rows+1] = VerticalSpan:new{ width = cd.row_gap }
         end
         if show_day then
@@ -516,8 +570,9 @@ function M.build(w, ctx)
     else
         local scale    = Config.getModuleScale("reading_goals", ctx.pfx)
         local d        = _scaledDims(scale)
-        -- Capture year string once — avoids repeated os.date calls.
+        -- Capture year and month string once — avoids repeated os.date calls.
         local year_str = _getYearStr()
+        local month_str = _getMonthStr()
         if show_ann then
             local pct, pct_str, detail = _annualData(books_read)
             -- Measure the label width and store directly in d (single shared table).
@@ -528,7 +583,19 @@ function M.build(w, ctx)
                 inner_w, year_str, pct, pct_str, detail,
                 function() showAnnualGoalDialog() end, d)
         end
-        if show_ann and show_day then
+        if show_ann and show_mon then
+            rows[#rows+1] = VerticalSpan:new{ width = d.row_gap }
+        end
+        if show_mon then
+            local pct, pct_str, detail = _monthlyData(month_secs)
+            local day_lbl_w = _measureLblW({ month_str }, d.face_row, d.lbl_w)
+            d.lbl_w = day_lbl_w
+            rows[#rows+1] = buildGoalRow(
+                inner_w, month_str, pct, pct_str, detail,
+                function() showMonthlySettingsDialog() end, d)
+        end
+        
+        if (show_ann or show_mon) and show_day then
             rows[#rows+1] = VerticalSpan:new{ width = d.row_gap }
         end
         if show_day then
@@ -550,7 +617,7 @@ end
 
 -- Returns the pixel height of the module including the section label
 function M.getHeight(_ctx)
-    local n = (showAnnual() and 1 or 0) + (showDaily() and 1 or 0)
+    local n = (showAnnual() and 1 or 0) + (showMonthly() and 1 or 0) + (showDaily() and 1 or 0)
     if n == 0 then return 0 end
     local label_h = require("sui_config").getScaledLabelH()
     if isCompact() then
@@ -627,6 +694,21 @@ function M.getMenuItems(ctx_menu)
           end,
           keep_menu_open = true,
           callback = function() showAnnualPhysicalDialog(refresh) end },
+        { text         = _lc("Monthly Goal"),
+          checked_func = function() return showMonthly() end,
+          keep_menu_open = true,
+          callback = function()
+              G_reader_settings:saveSetting(SHOW_MONTHLY, not showMonthly())
+              refresh()
+          end },
+        { text_func = function()
+              local secs = getMonthlyGoalSecs()
+              local m    = math.floor(secs / 3600)
+              if secs <= 0 then return _lc("  Set Goal  (disabled)")
+              else              return string.format(_lc("  Set Goal  (%d hr/month)"), m) end
+          end,
+          keep_menu_open = true,
+          callback = function() showDailySettingsDialog(refresh) end },
         { text         = _lc("Daily Goal"),
           checked_func = function() return showDaily() end,
           keep_menu_open = true,
