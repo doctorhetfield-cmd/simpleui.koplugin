@@ -17,6 +17,7 @@
 -- DB roundtrips per cold-cache call: 2
 --   Query 1 — one pass over page_stat_data:
 --     • today_secs, today_pages   (start_time >= start_today)
+--     • week_secs, week_pages     (7-day window, grouped by date)
 --     • avg_secs, avg_pages       (7-day window, grouped by date)
 --     • month_secs, month_pages   (start_time >= month_start)
 --     • year_secs                 (start_time >= year_start)
@@ -91,6 +92,8 @@ local function fetchTimeSeries(conn, start_today, week_start, month_start, year_
     local r = {
         today_secs  = 0,
         today_pages = 0,
+        week_secs   = 0,
+        week_pages  = 0,
         avg_secs    = 0,
         avg_pages   = 0,
         month_secs  = 0,
@@ -151,10 +154,10 @@ local function fetchTimeSeries(conn, start_today, week_start, month_start, year_
         if rw and rw[1] and rw[1][1] then
             r.today_secs  = rownum(rw[1][1])
             r.today_pages = rownum(rw[2] and rw[2][1])
-            local week_tt = rownum(rw[3] and rw[3][1])
-            local week_pg = rownum(rw[4] and rw[4][1])
-            r.avg_secs  = math.floor(week_tt / 7)
-            r.avg_pages = math.floor(week_pg / 7)
+            r.week_secs = rownum(rw[3] and rw[3][1])
+            r.week_pages = rownum(rw[4] and rw[4][1])
+            r.avg_secs  = math.floor(r.week_secs / 7)
+            r.avg_pages = math.floor(r.week_pages / 7)
             r.month_secs = rownum(rw[5] and rw[5][1])
             r.month_pages = rownum(rw[6] and rw[6][1])
             r.year_secs  = rownum(rw[7] and rw[7][1])
@@ -362,10 +365,12 @@ function SP.get(db_conn, year_str)
     local result = {
         today_secs    = 0,
         today_pages   = 0,
+        week_secs     = 0,
+        week_pages    = 0,
         avg_secs      = 0,
         avg_pages     = 0,
         month_secs    = 0,
-        month_pages     = 0,
+        month_pages   = 0,
         year_secs     = 0,
         total_secs    = 0,
         streak        = 0,
@@ -380,6 +385,8 @@ function SP.get(db_conn, year_str)
                                            today_str, week_date, month_date, year_date)
         result.today_secs  = ts.today_secs
         result.today_pages = ts.today_pages
+        result.week_secs   = ts.week_secs
+        result.week_pages  = ts.week_pages
         result.avg_secs    = ts.avg_secs
         result.avg_pages   = ts.avg_pages
         result.month_secs  = ts.month_secs

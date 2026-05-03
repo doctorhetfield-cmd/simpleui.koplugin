@@ -60,18 +60,21 @@ end
 local STAT_MAP = {
     today_time  = { display_label = _("Today — Time"),      value = function(s) return fmtTime(s.today_secs) end,   label = _("of reading today") },
     today_pages = { display_label = _("Today — Pages"),     value = function(s) return tostring(s.today_pages) end, label = _("pages read today") },
+    week_time   = { display_label = _("This Week — Time"),  value = function(s) return fmtTime(s.week_secs) end,    label = _("of reading this week)") },
+    week_pages  = { display_label = _("This Week — Pages"), value = function(s) return tostring(s.week_pages) end,  label = _("pages this week)") },
     avg_time    = { display_label = _("Daily avg — Time"),  value = function(s) return fmtTime(s.avg_secs) end,     label = _("daily avg (7 days)") },
     avg_pages   = { display_label = _("Daily avg — Pages"), value = function(s) return tostring(s.avg_pages) end,   label = _("pages/day (7 days)") },
-    month_time  = { display_label = _("This month — Time"), value = function(s) return fmtTime(s.month_secs) end,   label = _("of reading, this month") },
+    month_time  = { display_label = _("This month — Time"), value = function(s) return fmtTime(s.month_secs) end,   label = _("of reading this month") },
     month_pages = { display_label = _("This month — Pages"),value = function(s) return tostring(s.month_pages) end, label = _("pages read this month") },
-    year_time   = { display_label = _("This year — Time"),  value = function(s) return fmtTime(s.month_secs) end,   label = _("of reading, this year") },
-    total_time  = { display_label = _("All time — Time"),   value = function(s) return fmtTime(s.total_secs) end,   label = _("of reading, all time") },
+    year_time   = { display_label = _("This year — Time"),  value = function(s) return fmtTime(s.month_secs) end,   label = _("of reading this year") },
+    total_time  = { display_label = _("All time — Time"),   value = function(s) return fmtTime(s.total_secs) end,   label = _("of reading all time") },
     total_books = { display_label = _("All time — Books"),  value = function(s) return tostring(s.total_books) end, label = _("books finished") },
     streak      = { display_label = _("Streak"),            value = function(s) return s.streak > 0 and tostring(s.streak) or "—" end,
                     label_fn = function(s) return s.streak == 1 and _("day streak") or (s.streak == 0 and _("no streak") or _("days streak")) end },
 }
 
-local STAT_POOL = { "today_time","today_pages","avg_time","avg_pages","month_time","month_pages","year_time","total_time","total_books","streak" }
+local STAT_POOL = { "today_time","today_pages","week_time","week_pages","avg_time","avg_pages","month_time","month_pages","year_time",
+                    "total_time","total_books","streak" }
 
 -- Pre-sort the pool alphabetically by display label — done once at module load,
 -- not on every menu open.
@@ -301,6 +304,8 @@ function M.build(w, ctx)
     local stats = {
         today_secs  = sp.today_secs  or 0,
         today_pages = sp.today_pages or 0,
+        week_secs   = sp.week_secs   or 0,
+        week_pages  = sp.week_pages  or 0,
         avg_secs    = sp.avg_secs    or 0,
         avg_pages   = sp.avg_pages   or 0,
         month_secs  = sp.month_secs  or 0,
