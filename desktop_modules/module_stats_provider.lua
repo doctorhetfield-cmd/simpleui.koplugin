@@ -18,6 +18,7 @@
 --   Query 1 — one pass over page_stat_data:
 --     • today_secs, today_pages   (start_time >= start_today)
 --     • avg_secs, avg_pages       (7-day window, grouped by date)
+--     • month_secs                (start_time >= month_start)
 --     • year_secs                 (start_time >= year_start)
 --     • total_secs                (full table)
 --   Query 2 — streak recursive CTE (structurally different; must be separate)
@@ -77,16 +78,18 @@ end
 -- by the WHERE clause; the VIEW adds an extra indirection layer that prevents
 -- the planner from pushing the predicate down to the base table.
 --
--- today_str, week_date, year_date are ISO-8601 strings pre-computed by SP.get
+-- today_str, week_date, month_date, year_date are ISO-8601 strings pre-computed by SP.get
 -- from its single os.date("*t") call — zero os.date calls happen inside here.
 -- ---------------------------------------------------------------------------
-local function fetchTimeSeries(conn, start_today, week_start, year_start,
-                               today_str, week_date, year_date)
+local function fetchTimeSeries(conn, start_today, week_start, month_start, year_start,
+                               today_str, week_date, month_date, year_date)
     local r = {
         today_secs  = 0,
         today_pages = 0,
         avg_secs    = 0,
         avg_pages   = 0,
+        month_secs  = 0,
+        month_pages = 0,
         year_secs   = 0,
         total_secs  = 0,
     }
@@ -125,7 +128,9 @@ local function fetchTimeSeries(conn, start_today, week_start, year_start,
                 -- 7-day window: d >= week_date
                 sum(CASE WHEN d >= '%s' THEN sd ELSE 0 END),
                 sum(CASE WHEN d >= '%s' THEN pg ELSE 0 END),
-                count(CASE WHEN d >= '%s' THEN 1  ELSE NULL END),
+                -- month: d >= month_date
+                sum(CASE WHEN d >= '%s' THEN sd ELSE 0 END),
+                sum(CASE WHEN d >= '%s' THEN pg ELSE 0 END),
                 -- year: d >= year_date
                 sum(CASE WHEN d >= '%s' THEN sd ELSE 0 END),
                 -- total: all rows in day_buckets (no filter needed)
@@ -133,7 +138,8 @@ local function fetchTimeSeries(conn, start_today, week_start, year_start,
             FROM day_buckets;
         ]], window_start,
             today_str, today_str,
-            week_date,  week_date, week_date,
+            week_date,  week_date,
+            month_date, month_date,
             year_date)
 
         local rw = conn:exec(sql)
@@ -142,13 +148,12 @@ local function fetchTimeSeries(conn, start_today, week_start, year_start,
             r.today_pages = rownum(rw[2] and rw[2][1])
             local week_tt = rownum(rw[3] and rw[3][1])
             local week_pg = rownum(rw[4] and rw[4][1])
-            local nd      = rownum(rw[5] and rw[5][1])
-            if nd > 0 then
-                r.avg_secs  = math.floor(week_tt / nd)
-                r.avg_pages = math.floor(week_pg / nd)
-            end
-            r.year_secs  = rownum(rw[6] and rw[6][1])
-            r.total_secs = rownum(rw[7] and rw[7][1])
+            r.avg_secs  = math.floor(week_tt / 7)
+            r.avg_pages = math.floor(week_pg / 7)
+            r.month_secs = rownum(rw[5] and rw[5][1])
+            r.month_pages = rownum(rw[6] and rw[6][1])
+            r.year_secs  = rownum(rw[7] and rw[7][1])
+            r.total_secs = rownum(rw[8] and rw[8][1])
         end
     end)
     if not ok then
@@ -334,6 +339,8 @@ function SP.get(db_conn, year_str)
     -- Compute timestamps once — shared by all sub-queries.
     local start_today = os.time() - (t.hour * 3600 + t.min * 60 + t.sec)
     local week_start  = start_today - 6 * 86400
+    local month_start = os.time{ year = t.year, t.month, day = 1,
+                                  hour = 0,     min  = 0,  sec = 0 }
     local year_start  = os.time{ year = t.year, month = 1, day = 1,
                                   hour = 0,     min  = 0,  sec = 0 }
 
@@ -341,8 +348,10 @@ function SP.get(db_conn, year_str)
     -- os.date per-string) and share them across fetchTimeSeries and the sidecar
     -- scan — avoids 3 redundant os.date calls inside fetchTimeSeries.
     local t_week = os.date("*t", week_start)
+    local t_month = os.date("*t", month_start)
     local t_year = os.date("*t", year_start)
     local week_date = string.format("%04d-%02d-%02d", t_week.year, t_week.month, t_week.day)
+    local month_date = string.format("%04d-%02d-%02d", t_month.year, t_month.month, t_month.day)
     local year_date = string.format("%04d-%02d-%02d", t_year.year, t_year.month, t_year.day)
 
     local result = {
@@ -350,6 +359,8 @@ function SP.get(db_conn, year_str)
         today_pages   = 0,
         avg_secs      = 0,
         avg_pages     = 0,
+        month_secs    = 0,
+        month_pages     = 0,
         year_secs     = 0,
         total_secs    = 0,
         streak        = 0,
@@ -360,12 +371,14 @@ function SP.get(db_conn, year_str)
 
     -- ── DB queries ────────────────────────────────────────────────────────
     if db_conn then
-        local ts, ts_err = fetchTimeSeries(db_conn, start_today, week_start, year_start,
-                                           today_str, week_date, year_date)
+        local ts, ts_err = fetchTimeSeries(db_conn, start_today, week_start, month_start, year_start,
+                                           today_str, week_date, month_date, year_date)
         result.today_secs  = ts.today_secs
         result.today_pages = ts.today_pages
         result.avg_secs    = ts.avg_secs
         result.avg_pages   = ts.avg_pages
+        result.month_secs  = ts.month_secs
+        result.month_pages = ts.month_pages
         result.year_secs   = ts.year_secs
         result.total_secs  = ts.total_secs
         if ts_err and Config.isFatalDbError(ts_err) then
