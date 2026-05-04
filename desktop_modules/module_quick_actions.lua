@@ -105,6 +105,7 @@ local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d, flat)
         -- unknown IDs (neither a live custom QA nor a known built-in) are silently dropped
     end
     if #valid_ids == 0 then return _placeholder() end
+    local n        = #valid_ids
     local inner_w  = w - PAD * 2
     local lbl_h    = show_labels and d.lbl_h or 0
     local lbl_sp   = show_labels and d.lbl_sp or 0
