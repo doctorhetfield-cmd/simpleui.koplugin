@@ -1526,8 +1526,8 @@ function HomescreenWidget:_buildCtx()
                 scale       = Config.getModuleScale("coverdeck", PFX),
                 thumb_scale = Config.getThumbScale("coverdeck", PFX),
                 lbl_scale   = Config.getItemLabelScale("coverdeck", PFX),
-                source      = G_reader_settings:readSetting(PFX .. "coverdeck_source") or "recent",
-                title_pos   = G_reader_settings:readSetting(PFX .. "coverdeck_title_position") or "below",
+                source      = G_reader_settings:readSetting(PFX .. "flow_recent_source") or "recent",
+                title_pos   = G_reader_settings:readSetting(PFX .. "coverdeck_title_pos") or "below",
                 show_finished = G_reader_settings:readSetting(PFX .. "coverdeck_show_finished") == true,
                 show = {
                     title    = G_reader_settings:nilOrTrue(PFX .. "flow_show_title"),
@@ -1650,6 +1650,35 @@ function HomescreenWidget:_buildCtx()
         end
     end
 
+    -- Pre-compute Currently Reading book stats before the widget tree is built.
+    -- module_currently.build() would otherwise run fetchBookStats() on the hot
+    -- paint path; doing it here moves the DB query off the critical path.
+    -- The md5 is already in prefetched_data (zero extra IO).
+    -- module_currently.build() checks ctx.currently_book_stats before falling
+    -- back to its own query — same pattern as coverdeck_center_stats above.
+    local currently_book_stats = nil
+    if mod_c and Registry.isEnabled(mod_c, PFX) and self._db_conn and bs.current_fp then
+        local c_cfg = cfg and cfg.currently
+        local needs_bstats = (c_cfg and (c_cfg.show.days or c_cfg.show.time or c_cfg.show.remain))
+            or (not c_cfg and (
+                G_reader_settings:nilOrTrue(PFX .. "currently_show_book_days") or
+                G_reader_settings:nilOrTrue(PFX .. "currently_show_book_time") or
+                G_reader_settings:nilOrTrue(PFX .. "currently_show_book_remaining")))
+        if needs_bstats then
+            local pe_c = bs.prefetched_data and bs.prefetched_data[bs.current_fp]
+            local c_md5 = type(pe_c) == "table" and pe_c.partial_md5_checksum
+            if c_md5 then
+                local mc_mod = package.loaded["desktop_modules/module_currently"]
+                if mc_mod and mc_mod.fetchBookStatsForCtx then
+                    currently_book_stats = {
+                        fp    = bs.current_fp,
+                        stats = mc_mod.fetchBookStatsForCtx(c_md5, self._db_conn),
+                    }
+                end
+            end
+        end
+    end
+
     local self_ref = self
     return {
         pfx           = PFX,
@@ -1664,6 +1693,7 @@ function HomescreenWidget:_buildCtx()
         -- reading_stats and reading_goals read ctx.stats.* — no DB logic of their own.
         stats                  = stats_data,
         coverdeck_center_stats = coverdeck_center_stats,
+        currently_book_stats   = currently_book_stats,
         vspan_pool    = self._vspan_pool,
         prefetched    = bs.prefetched_data,
         current_fp    = bs.current_fp,
@@ -1889,23 +1919,32 @@ end
 -- footer in-place. Called on every page turn (keep_cache=true) and on full
 -- refreshes (keep_cache=false). Zero widget allocation for page turns.
 -- ---------------------------------------------------------------------------
--- _updatePage(keep_cache, books_only)
+-- _updatePage(keep_cache, books_only, stats_only)
 --   keep_cache  = true  → page-turn: nothing is cleared, ctx reused as-is.
 --   books_only  = true  → only book data changed; clear _cached_books_state so
 --                         _buildCtx() calls prefetchBooks() for fresh data, but
 --                         preserve _ctx_cache structure and _enabled_mods_cache
 --                         to skip the Registry lookups and module-list scan.
-function HomescreenWidget:_updatePage(keep_cache, books_only)
+--   stats_only  = true  → only SP stats changed (no book data change); clear
+--                         _ctx_cache so _buildCtx() re-calls SP.get() for fresh
+--                         stats, but keep _cached_books_state (no sidecar I/O
+--                         needed) and _enabled_mods_cache (module set unchanged).
+function HomescreenWidget:_updatePage(keep_cache, books_only, stats_only)
     if not keep_cache then
-        self._cached_books_state = nil
-        if not books_only then
-            -- Full invalidation: module config or layout changed.
-            self._enabled_mods_cache = nil
-            self._ctx_cache          = nil
+        if stats_only then
+            -- Stats changed but no book data change: discard the ctx so
+            -- _buildCtx() runs SP.get() afresh, but keep the book cache to
+            -- avoid redundant prefetchBooks() / sidecar I/O.
+            self._ctx_cache = nil
+        else
+            self._cached_books_state = nil
+            if not books_only then
+                -- Full invalidation: module config or layout changed.
+                self._enabled_mods_cache = nil
+                self._ctx_cache          = nil
+            end
         end
-        -- books_only: _cached_books_state is cleared above so _buildCtx()
-        -- will call prefetchBooks() for fresh sidecar data. _ctx_cache and
-        -- _enabled_mods_cache are kept — module set hasn’t changed.
+        -- _enabled_mods_cache are kept
     end
 
     -- _buildCtx() calls Registry.get/isEnabled and may prefetch books.
@@ -2386,6 +2425,30 @@ function HomescreenWidget:_updatePage(keep_cache, books_only)
             ClockMod.scheduleRefresh(self)
         end
     end
+
+    -- ── Overflow warning ─────────────────────────────────────────────────────
+    -- After the page body is built, sum the heights of all children in the
+    -- VerticalGroup and warn if they exceed the available screen area.
+    -- Uses getSize() on already-constructed widgets — no getHeight() calls.
+    if not is_landscape then
+        local total_body_h = 0
+        for i = 1, #body do
+            local ok, sz = pcall(function() return body[i]:getSize() end)
+            if ok and sz then total_body_h = total_body_h + sz.h end
+        end
+        local avail_h = self._layout_content_h or Screen:getHeight()
+        if total_body_h > avail_h then
+            local self_ref = self
+            UIManager:scheduleIn(0.5, function()
+                if Homescreen._instance ~= self_ref then return end
+                UIManager:show(require("ui/widget/infomessage"):new{
+                    text    = _("Modules exceed the visible area.\nMove some to another page or adjust the scale."),
+                    timeout = 4,
+                })
+            end)
+        end
+    end
+    -- ─────────────────────────────────────────────────────────────────────────
 end
 
 -- ---------------------------------------------------------------------------
@@ -2399,7 +2462,7 @@ end
 --                         Registry lookups and module-list scan are not repeated.
 --                         Only _cached_books_state is cleared, forcing a fresh
 --                         prefetchBooks() on the next _buildCtx() call.
-function HomescreenWidget:_refresh(keep_cache, books_only)
+function HomescreenWidget:_refresh(keep_cache, books_only, stats_only)
     if keep_cache and self._body then
         -- Page turn: body already exists — mutate in-place immediately.
         -- No debounce needed: same pattern as Menu:onGotoPage → updateItems.
@@ -2412,19 +2475,26 @@ function HomescreenWidget:_refresh(keep_cache, books_only)
         return
     end
     -- Config/data change: invalidate caches and debounce to coalesce bursts.
-    self._cached_books_state = nil
-    -- books_only: preserve the module-list and ctx structure caches — only
-    -- the book data (sidecar / prefetchBooks) has changed, not the set of
-    -- enabled modules or their configuration.
-    if not books_only then
-        self._enabled_mods_cache = nil
-        self._ctx_cache          = nil
-        -- Full invalidation: settings may have changed. Clear the cfg bundle so
-        -- _buildCtx() re-reads all settings on the next render.
-        -- Also clear the cross-instance cache so a tab-switch after a settings
-        -- change does not restore the pre-change bundle.
-        self._cfg_cache       = nil
-        Homescreen._cfg_cache = nil
+    if stats_only then
+        -- Only SP stats changed: clear _ctx_cache so _buildCtx() re-runs
+        -- SP.get() with fresh data. _cached_books_state is unchanged — no
+        -- sidecar I/O is needed because book data has not changed.
+        self._ctx_cache = nil
+    else
+        self._cached_books_state = nil
+        -- books_only: preserve the module-list and ctx structure caches — only
+        -- the book data (sidecar / prefetchBooks) has changed, not the set of
+        -- enabled modules or their configuration.
+        if not books_only then
+            self._enabled_mods_cache = nil
+            self._ctx_cache          = nil
+            -- Full invalidation: settings may have changed. Clear the cfg bundle so
+            -- _buildCtx() re-reads all settings on the next render.
+            -- Also clear the cross-instance cache so a tab-switch after a settings
+            -- change does not restore the pre-change bundle.
+            self._cfg_cache       = nil
+            Homescreen._cfg_cache = nil
+        end
     end
     if self._refresh_scheduled then return end
     self._refresh_scheduled = true
@@ -2434,19 +2504,20 @@ function HomescreenWidget:_refresh(keep_cache, books_only)
     -- fixed wall-clock delay. This guarantees that:
     --   (a) any pending UIManager operations from the current tick (FM init,
     --       first setDirty) are enqueued before our _updatePage runs, so we
-    --       don’t race with the FM’s first paint;
+    --       don't race with the FM's first paint;
     --   (b) rapid back-to-back _refresh(false) calls still coalesce — only
     --       the first scheduleIn(0) is registered; subsequent calls return
     --       early on the _refresh_scheduled guard above.
-    -- Capture books_only in the closure so _updatePage receives it even
-    -- though the debounce fires asynchronously in the next event-loop tick.
+    -- Capture flags in the closure so _updatePage receives them even though
+    -- the debounce fires asynchronously in the next event-loop tick.
     local _books_only = books_only
+    local _stats_only = stats_only
     UIManager:scheduleIn(0, function()
         if self._pending_refresh_token ~= token then return end
         if Homescreen._instance ~= self then return end
         self._refresh_scheduled = false
         if not self._navbar_container then return end
-        self:_updatePage(false, _books_only)
+        self:_updatePage(false, _books_only, _stats_only)
         UIManager:setDirty(self, "ui")
     end)
 end
@@ -2771,9 +2842,9 @@ function Homescreen.show(on_qa_tap, on_goal_tap)
     UIManager:show(w)
 end
 
-function Homescreen.refresh(keep_cache, books_only)
+function Homescreen.refresh(keep_cache, books_only, stats_only)
     if Homescreen._instance then
-        Homescreen._instance:_refresh(keep_cache, books_only)
+        Homescreen._instance:_refresh(keep_cache, books_only, stats_only)
     end
 end
 

@@ -52,6 +52,13 @@ local _BASE_BOT_PAD = Screen:scaleBySize(18)
 -- at call time. This means the landscape override in sui_homescreen
 -- (Config.getModuleScale *= 0.65) is automatically honoured, just like the
 -- default layout.
+-- Canonical percentage formatter: rounds correctly via C runtime.
+-- Mirrors SH.pctStr from module_books_shared; duplicated here to avoid
+-- loading that module just for formatting.
+local function _pctStr(pct)
+    return string.format("%.0f%%", (pct or 0) * 100)
+end
+
 local function _compactDims(scale)
     scale = scale or 1.0
     local row_fs = math.max(7, math.floor(_BASE_ROW_FS * scale))
@@ -427,7 +434,7 @@ local function _annualData(books_read)
     local pct, pct_str
     if goal > 0 then
         pct     = read / goal
-        pct_str = string.format("%d%%", math.floor(pct * 100))
+        pct_str = _pctStr(pct)
     else
         pct     = 1.0
         pct_str = ""
@@ -464,7 +471,7 @@ local function _dailyData(today_secs)
     local pct, pct_str
     if goal_secs > 0 then
         pct     = today_secs / goal_secs
-        pct_str = string.format("%d%%", math.floor(pct * 100))
+        pct_str = _pctStr(pct)
     else
         pct     = 1.0
         pct_str = ""

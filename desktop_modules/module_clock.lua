@@ -72,16 +72,39 @@ local _BASE_DATE_GAP      = Screen:scaleBySize(19)
 local _BASE_DATE_FS       = Screen:scaleBySize(11)
 local _BASE_BATT_FS       = Screen:scaleBySize(10)
 local _BASE_BATT_H        = Screen:scaleBySize(15)
-local _BASE_BATT_GAP      = Screen:scaleBySize(6)
+local _BASE_BATT_GAP      = Screen:scaleBySize(19)
 local _BASE_BOT_PAD_EXTRA = Screen:scaleBySize(4)
 
 -- ---------------------------------------------------------------------------
 -- Settings keys
 -- ---------------------------------------------------------------------------
 
-local SETTING_ON      = "clock_enabled"   -- pfx .. "clock_enabled"
-local SETTING_DATE    = "clock_date"      -- pfx .. "clock_date"    (default ON)
-local SETTING_BATTERY = "clock_battery"   -- pfx .. "clock_battery" (default ON)
+local SETTING_ON        = "clock_enabled"    -- pfx .. "clock_enabled"
+local SETTING_DATE      = "clock_date"       -- pfx .. "clock_date"      (default ON)
+local SETTING_BATTERY   = "clock_battery"    -- pfx .. "clock_battery"   (default ON)
+local SETTING_DATE_GAP  = "clock_date_gap"   -- pfx .. "clock_date_gap"  (integer %, default 100)
+local SETTING_BATT_GAP  = "clock_batt_gap"   -- pfx .. "clock_batt_gap"  (integer %, default 100)
+
+local ELEM_GAP_MIN  = 0
+local ELEM_GAP_MAX  = 300
+local ELEM_GAP_STEP = 10
+local ELEM_GAP_DEF  = 100
+
+local function _clampElemGap(n)
+    return math.max(ELEM_GAP_MIN, math.min(ELEM_GAP_MAX, math.floor(n)))
+end
+
+local function getDateGapPct(pfx)
+    local v = G_reader_settings:readSetting(pfx .. SETTING_DATE_GAP)
+    local n = tonumber(v)
+    return n and _clampElemGap(n) or ELEM_GAP_DEF
+end
+
+local function getBattGapPct(pfx)
+    local v = G_reader_settings:readSetting(pfx .. SETTING_BATT_GAP)
+    local n = tonumber(v)
+    return n and _clampElemGap(n) or ELEM_GAP_DEF
+end
 
 local function isClockEnabled(pfx)
     local v = G_reader_settings:readSetting(pfx .. SETTING_ON)
@@ -156,11 +179,12 @@ local function build(w, pfx, vspan_pool)
     local clock_w       = math.floor(_BASE_CLOCK_W       * scale)
     local clock_fs      = math.max(10, math.floor(_BASE_CLOCK_FS  * scale))
     local date_h        = math.max(8,  math.floor(_BASE_DATE_H    * scale))
-    local date_gap      = math.max(2,  math.floor(_BASE_DATE_GAP  * scale))
+    local date_gap      = math.max(0,  math.floor(_BASE_DATE_GAP  * scale * getDateGapPct(pfx) / 100))
+    local batt_gap      = math.max(0,  math.floor(_BASE_BATT_GAP  * scale * getBattGapPct(pfx) / 100))
     local date_fs       = math.max(8,  math.floor(_BASE_DATE_FS   * scale))
     local batt_fs       = math.max(7,  math.floor(_BASE_BATT_FS   * scale))
     local batt_h        = math.max(7,  math.floor(_BASE_BATT_H    * scale))
-    local batt_gap      = math.max(2,  math.floor(_BASE_BATT_GAP  * scale))
+
     local bot_pad_extra = math.floor(_BASE_BOT_PAD_EXTRA * scale)
 
     local show_clock = isClockEnabled(pfx)
@@ -286,7 +310,7 @@ local function _tick()
     --   in the current tick before either flag was set.
     local FM = package.loaded["apps/filemanager/filemanager"]
     local plugin = FM and FM.instance and FM.instance._simpleui_plugin
-    if hs._suspended or (plugin and plugin._simpleui_suspended) then
+    if hs._suspended or (plugin and plugin._simpleui_suspended) or Device.screen_saver_mode then
         return
     end
 
@@ -345,7 +369,7 @@ local function _tick()
             else
                 body[idx] = new_widget
             end
-            UIManager:setDirty(hs._navbar_container, "ui")
+            UIManager:setDirty(hs, "ui")
             swapped = true
         end
     end
@@ -360,7 +384,7 @@ local function _tick()
         if idx ~= nil and hs._navbar_container then
             local ok = pcall(function()
                 hs:_updatePage(true)
-                UIManager:setDirty(hs._navbar_container, "ui")
+                UIManager:setDirty(hs, "ui")
             end)
             if not ok then _hs_widget = nil; return end
         end
@@ -436,9 +460,10 @@ function M.getHeight(ctx)
     local scale     = Config.getModuleScale("clock", ctx.pfx)
     local clock_w   = math.floor(_BASE_CLOCK_W   * scale)
     local date_h    = math.max(8, math.floor(_BASE_DATE_H   * scale))
-    local date_gap  = math.max(2, math.floor(_BASE_DATE_GAP * scale))
+    local date_gap  = math.max(0, math.floor(_BASE_DATE_GAP * scale * getDateGapPct(ctx.pfx) / 100))
+    local batt_gap  = math.max(0, math.floor(_BASE_BATT_GAP * scale * getBattGapPct(ctx.pfx) / 100))
     local batt_h    = math.max(7, math.floor(_BASE_BATT_H   * scale))
-    local batt_gap  = math.max(2, math.floor(_BASE_BATT_GAP * scale))
+
 
     local h_base      = PAD * 2 + PAD2
     local show_clock  = isClockEnabled(ctx.pfx)
@@ -502,6 +527,66 @@ function M.getMenuItems(ctx_menu)
             callback       = function() toggle(SETTING_BATTERY, isBattEnabled(pfx)) end,
         },
         _makeScaleItem(ctx_menu),
+        {
+            text_func      = function()
+                local pct = getDateGapPct(pfx)
+                return pct == ELEM_GAP_DEF
+                    and _lc("Date Spacing")
+                    or  string.format("%s (%d%%)", _lc("Date Spacing"), pct)
+            end,
+            enabled_func   = function() return isDateEnabled(pfx) end,
+            keep_menu_open = true,
+            callback       = function()
+                local SpinWidget = require("ui/widget/spinwidget")
+                local UIManager_ = require("ui/uimanager")
+                UIManager_:show(SpinWidget:new{
+                    title_text    = _lc("Date Spacing"),
+                    info_text     = _lc("Vertical space between the clock and the date.\n100% is the default spacing."),
+                    value         = getDateGapPct(pfx),
+                    value_min     = ELEM_GAP_MIN,
+                    value_max     = ELEM_GAP_MAX,
+                    value_step    = ELEM_GAP_STEP,
+                    unit          = "%",
+                    ok_text       = _lc("Apply"),
+                    cancel_text   = _lc("Cancel"),
+                    default_value = ELEM_GAP_DEF,
+                    callback      = function(spin)
+                        G_reader_settings:saveSetting(pfx .. SETTING_DATE_GAP, _clampElemGap(spin.value))
+                        refresh()
+                    end,
+                })
+            end,
+        },
+        {
+            text_func      = function()
+                local pct = getBattGapPct(pfx)
+                return pct == ELEM_GAP_DEF
+                    and _lc("Battery Spacing")
+                    or  string.format("%s (%d%%)", _lc("Battery Spacing"), pct)
+            end,
+            enabled_func   = function() return isBattEnabled(pfx) end,
+            keep_menu_open = true,
+            callback       = function()
+                local SpinWidget = require("ui/widget/spinwidget")
+                local UIManager_ = require("ui/uimanager")
+                UIManager_:show(SpinWidget:new{
+                    title_text    = _lc("Battery Spacing"),
+                    info_text     = _lc("Vertical space between the date (or clock) and the battery.\n100% is the default spacing."),
+                    value         = getBattGapPct(pfx),
+                    value_min     = ELEM_GAP_MIN,
+                    value_max     = ELEM_GAP_MAX,
+                    value_step    = ELEM_GAP_STEP,
+                    unit          = "%",
+                    ok_text       = _lc("Apply"),
+                    cancel_text   = _lc("Cancel"),
+                    default_value = ELEM_GAP_DEF,
+                    callback      = function(spin)
+                        G_reader_settings:saveSetting(pfx .. SETTING_BATT_GAP, _clampElemGap(spin.value))
+                        refresh()
+                    end,
+                })
+            end,
+        },
     }
 end
 

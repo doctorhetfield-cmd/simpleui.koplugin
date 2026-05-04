@@ -66,7 +66,7 @@ M.id          = "recent"
 M.name        = _("Recent Books")
 M.label       = _("Recent Books")
 M.enabled_key = "recent"
-M.default_on  = true
+M.default_on  = false
 
 -- Called by teardown (via _PLUGIN_MODULES flush) to drop the cached reference
 -- to module_books_shared so a hot update picks up fresh code on next load.
@@ -115,7 +115,7 @@ function M.build(w, ctx)
         -- Build cover layer: plain or with percentage badge overlaid.
         local cover_widget
         if use_overlay then
-            local pct_int = math.floor((bd.percent or 0) * 100)
+            local pct_int = math.floor((bd.percent or 0) * 100 + 0.5)
             local badge_d = badge_r * 2
             local badge = FrameContainer:new{
                 bordersize  = 0,
@@ -160,7 +160,7 @@ function M.build(w, ctx)
         if draw_text then
             cell[#cell+1] = SH.vspan(draw_progress and D.RB_GAP2 or D.RB_GAP1, ctx.vspan_pool)
             cell[#cell+1] = TextWidget:new{
-                text      = string.format(_("%d%% Read"), (bd.percent or 0) * 100),
+                text      = string.format(_("%d%% Read"), math.floor((bd.percent or 0) * 100 + 0.5)),
                 face      = pct_face,
                 bold      = true,
                 fgcolor   = CLR_TEXT_SUB,

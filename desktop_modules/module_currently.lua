@@ -111,7 +111,7 @@ local function buildProgressBarWithPct(w, pct, bar_h, scale, lbl_scale, face_inl
     local GAP     = math.max(2,  math.floor(_BASE_BAR_PCT_GAP * scale))
     local bar_w   = math.max(10, w - GAP - PCT_W)
     local fw      = math.max(0, math.floor(bar_w * math.min(pct, 1.0)))
-    local pct_str = string.format("%d%%", math.floor((pct or 0) * 100))
+    local pct_str = string.format("%.0f%%", (pct or 0) * 100)
     -- face_inline is pre-resolved by build(); fallback for direct calls.
     local _face   = face_inline or Font:getFace("smallinfofont", math.max(7, math.floor(_BASE_INLINEPCT_FS * scale * lbl_scale)))
 
@@ -400,6 +400,13 @@ function M.invalidateCache()
     _bstats_cache = {}
 end
 
+-- Exposed for pre-computation in _buildCtx (sui_homescreen.lua).
+-- Mirrors module_coverdeck.fetchBookStatsForCtx.
+-- Returns the stats table or nil; does NOT set ctx.db_conn_fatal (no ctx here).
+function M.fetchBookStatsForCtx(md5, db_conn)
+    return fetchBookStats(md5, db_conn, nil)
+end
+
 
 -- Builds the module widget: cover on the left, text column on the right.
 -- Elements in the text column are rendered in user-configured order.
@@ -470,7 +477,15 @@ function M.build(w, ctx)
     local bstats
     if show.days or show.time or show.remain then
         local book_md5 = prefetched_entry and prefetched_entry.partial_md5_checksum
-        bstats = fetchBookStats(book_md5, ctx.db_conn, ctx)
+        -- Fast path: use stats pre-computed by _buildCtx() (zero extra DB query).
+        -- Falls back to a live query when _buildCtx didn't pre-compute them
+        -- (e.g. direct call outside the homescreen, or ctx.currently_book_stats absent).
+        local pre = ctx.currently_book_stats
+        if pre and pre.fp == ctx.current_fp then
+            bstats = pre.stats
+        else
+            bstats = fetchBookStats(book_md5, ctx.db_conn, ctx)
+        end
     end
 
     -- Pre-resolve the inline-pct font face once for buildProgressBarWithPct.
@@ -531,7 +546,7 @@ function M.build(w, ctx)
         elseif elem == "percent" and show.percent and bar_style ~= "with_pct" then
             gap_before(pct_gap)
             meta[#meta+1] = TextWidget:new{
-                text    = string.format(_("%d%% Read"), math.floor((bd.percent or 0) * 100)),
+                text    = string.format(_("%d%% Read"), math.floor((bd.percent or 0) * 100 + 0.5)),
                 face    = face_pct,
                 bold    = true,
                 fgcolor = _CLR_DARK,

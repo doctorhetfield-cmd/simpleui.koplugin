@@ -179,7 +179,7 @@ function M.build(w, ctx)
         if (bd.percent or 0) < 0.01 then
             label_text = _("New")
         else
-            label_text = string.format(_("%d%% Read"), (bd.percent or 0) * 100)
+            label_text = string.format(_("%d%% Read"), math.floor((bd.percent or 0) * 100 + 0.5))
         end
 
         local cell = VerticalGroup:new{

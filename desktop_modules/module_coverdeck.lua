@@ -310,7 +310,7 @@ M.id          = "coverdeck"
 M.name        = _("Cover Deck")
 M.label       = nil
 M.enabled_key = "coverdeck"
-M.default_on  = true
+M.default_on  = false
 
 function M.reset()
     _SH                 = nil
@@ -573,7 +573,7 @@ function M.build(w, ctx)
         if _showElem(pfx, key) then
             local text
             if key == "percent" then
-                text = string.format(_("%d%% Read"), math.floor((bd.percent or 0) * 100))
+                text = string.format(_("%d%% Read"), math.floor((bd.percent or 0) * 100 + 0.5))
             elseif bstats then
                 if key == "book_days" and bstats.days and bstats.days > 0 then
                     text = string.format(N_("%d day of reading", "%d days of reading", bstats.days), bstats.days)

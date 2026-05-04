@@ -156,6 +156,20 @@ function SH.vspan(px, pool)
 end
 
 -- ---------------------------------------------------------------------------
+-- pctStr — canonical percentage formatter for book-progress values.
+--
+-- Uses string.format("%.0f", …) which delegates rounding to the C runtime
+-- (round-half-away-from-zero on all platforms KOReader targets).  This is
+-- correct for progress values such as 0.995 → "100%", 0.994 → "99%".
+--
+-- Always use this instead of math.floor(pct * 100) to avoid truncation bugs
+-- (e.g. 0.569 stored as 0.5689999… truncates to 56 instead of rounding to 57).
+-- ---------------------------------------------------------------------------
+function SH.pctStr(pct)
+    return string.format("%.0f%%", (pct or 0) * 100)
+end
+
+-- ---------------------------------------------------------------------------
 -- progressBar
 -- ---------------------------------------------------------------------------
 function SH.progressBar(w, pct, bh)

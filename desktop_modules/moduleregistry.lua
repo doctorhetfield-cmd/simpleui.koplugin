@@ -48,6 +48,7 @@ local MODULES = {
     { require_mod = "desktop_modules/module_reading_goals" },
     { require_mod = "desktop_modules/module_reading_stats" },
     { require_mod = "desktop_modules/module_quick_actions" },
+    { require_mod = "desktop_modules/module_action_list"   },
 }
 
 local _loaded        = nil

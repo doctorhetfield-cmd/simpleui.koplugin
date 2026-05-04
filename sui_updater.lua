@@ -329,11 +329,29 @@ end
 -- ---------------------------------------------------------------------------
 
 local function _tmpZipPath()
+    -- Candidate paths in preference order.
+    -- Each is probed with "wb" (binary write) — the same mode used by the
+    -- actual download — so a successful probe guarantees the download will
+    -- also succeed.  Using "w" (text) for the probe masked failures on some
+    -- devices where text-mode open succeeded but binary-mode open did not.
+    local candidates = {}
+
     local ok, DS = pcall(require, "datastorage")
-    if ok and DS then return DS:getSettingsDir() .. "/simpleui_update.zip" end
-    local probe = "/tmp/.simpleui_probe"
-    local fh = io.open(probe, "w")
-    if fh then fh:close(); os.remove(probe); return "/tmp/simpleui_update.zip" end
+    if ok and DS then
+        local dir = DS:getSettingsDir()
+        if dir then candidates[#candidates + 1] = dir .. "/simpleui_update.zip" end
+    end
+    candidates[#candidates + 1] = "/tmp/simpleui_update.zip"
+    candidates[#candidates + 1] = _plugin_dir .. "/simpleui_update.zip"
+
+    for _, path in ipairs(candidates) do
+        local fh = io.open(path, "wb")
+        if fh then fh:close(); os.remove(path); return path end
+    end
+
+    -- Last-resort fallback: return the plugin dir path even without a
+    -- successful probe (the download will fail with a clear error if it
+    -- really is not writable, rather than returning nil here).
     return _plugin_dir .. "/simpleui_update.zip"
 end
 

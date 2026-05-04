@@ -1940,6 +1940,18 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 end,
             },
             {
+                text         = _("Show Closing Notice"),
+                help_text    = _("When enabled, a brief notice appears on screen when closing a book and returning to the Home Screen.\nIt disappears automatically and does not slow down the Home Screen loading."),
+                checked_func = function()
+                    return G_reader_settings:nilOrTrue("simpleui_hs_closing_notice")
+                end,
+                keep_menu_open = true,
+                callback = function()
+                    local on = G_reader_settings:nilOrTrue("simpleui_hs_closing_notice")
+                    G_reader_settings:saveSetting("simpleui_hs_closing_notice", not on)
+                end,
+            },
+            {
                 text         = _("Settings on Long Tap"),
                 help_text    = _("When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."),
                 checked_func = function()

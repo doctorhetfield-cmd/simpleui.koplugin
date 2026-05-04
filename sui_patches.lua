@@ -43,6 +43,7 @@ local _hs_boot_done = false
 -- Makes UIManager.show defer the FM paint until the homescreen is on top,
 -- eliminating the visible flash between reader and homescreen.
 local _hs_pending_after_reader = false
+local _hs_pending_prev_action   = nil   -- real previous tab before active_action was set to "homescreen"
 
 -- Cached value of the "start_with" setting. Updated whenever the user changes
 -- the setting so UIManager.show / close avoid repeated settings reads.
@@ -447,6 +448,11 @@ function M.patchFileManagerClass(plugin)
                 end
             end
             if not this._navbar_container then return end
+            -- Skip the bar rebuild when navigate() set _navbar_tab_nav_in_progress:
+            -- navigate() will call replaceBar immediately after this returns, so
+            -- rebuilding here produces a redundant buildBarWidget + setDirty that
+            -- slows down every injected-widget → FM tab transition.
+            if this._navbar_tab_nav_in_progress then return end
             local t = Config.loadTabConfig()
             plugin:_registerTouchZones(this)
             Bottombar.replaceBar(this, Bottombar.buildBarWidget(plugin.active_action, t), t)
@@ -1227,15 +1233,19 @@ function M.patchUIManagerShow(plugin)
             end)()
             if HS and not HS._instance then
                 if not plugin._goalTapCallback then plugin:addToMainMenu({}) end
-                local tabs        = Config.loadTabConfig()
-                local prev_action = plugin.active_action
-                Bottombar.setActiveAndRefreshFM(plugin, "homescreen", tabs)
+                -- active_action was already set to "homescreen" in UIManager.close
+                -- (when _hs_pending_after_reader was flagged), so no replaceBar or setDirty
+                -- needed here — the FM is covered by the HS and its paint is never visible.
+                -- Use the stashed pre-change value so _navbar_prev_action records the real
+                -- tab that was active before the reader was opened (e.g. "home"), not
+                -- "homescreen" which active_action was changed to.
+                local prev_action = _hs_pending_prev_action or plugin.active_action
+                _hs_pending_prev_action = nil
                 HS.show(
                     function(aid) plugin:_navigate(aid, plugin.ui, Config.loadTabConfig(), false) end,
                     plugin._goalTapCallback
                 )
-                -- Fix _navbar_prev_action: setActiveAndRefreshFM already set it
-                -- to "homescreen"; overwrite with the real previous tab so
+                -- Fix _navbar_prev_action: overwrite with the real previous tab so
                 -- Back closes to the correct tab.
                 local hs_inst = HS._instance
                 if hs_inst then hs_inst._navbar_prev_action = prev_action end
@@ -1296,7 +1306,15 @@ function M.patchUIManagerShow(plugin)
         elseif widget.name == "history" and tabs_set["history"] then
             effective_action = Bottombar.setActiveAndRefreshFM(plugin, "history", tabs)
         elseif widget.name == "homescreen" and tabs_set["homescreen"] then
-            effective_action = Bottombar.setActiveAndRefreshFM(plugin, "homescreen", tabs)
+            -- Skip the FM bar rebuild + setDirty when active_action is already
+            -- "homescreen" (e.g. set in UIManager.close before the reader closed).
+            -- setupLayout already built the correct bar; rebuilding it here and
+            -- calling setDirty(FM) is redundant since the FM is covered by the HS.
+            if plugin.active_action ~= "homescreen" then
+                effective_action = Bottombar.setActiveAndRefreshFM(plugin, "homescreen", tabs)
+            else
+                effective_action = "homescreen"
+            end
         elseif widget.name == "coll_list"
                or (widget.name == "collections" and not Config.isFavoritesWidget(widget)) then
             if tabs_set["collections"] then
@@ -1422,7 +1440,11 @@ function M.patchUIManagerShow(plugin)
             M.setFMPathBase("", plugin.ui)
         end
 
-        UIManager:setDirty(widget[1], "ui")
+        -- For the homescreen, onShow will call setDirty(self) covering the full
+        -- screen immediately after orig_show returns — skip the redundant partial dirty.
+        if widget.name ~= "homescreen" then
+            UIManager:setDirty(widget[1], "ui")
+        end
 
         -- Schedule a navpager arrow update for the next event-loop tick.
         -- Snapshot has_prev/has_next now to avoid races with a second
@@ -1649,6 +1671,18 @@ function M.patchUIManagerClose(plugin)
                         local return_to_folder = G_reader_settings:isTrue("navbar_hs_return_to_book_folder")
                         if not return_to_folder then
                             _hs_pending_after_reader = true
+                            -- Stash the real previous tab so the _hs_pending handler can
+                            -- set it on hs_inst._navbar_prev_action correctly, even after
+                            -- active_action is changed to "homescreen" below.
+                            _hs_pending_prev_action = plugin.active_action
+                            -- Pre-set active_action so that when UIManager.show(HS) runs
+                            -- the inject-path guard sees "homescreen" and skips the redundant
+                            -- setActiveAndRefreshFM + setDirty(FM) — the FM is covered by HS
+                            -- and its bar will be corrected by _restoreTabInFM when HS closes.
+                            local _ao2 = { bookmark_browser=true, wifi_toggle=true, frontlight=true, power=true }
+                            if not _ao2[plugin.active_action] then
+                                plugin.active_action = "homescreen"
+                            end
                             -- Lazy refresh: the user is looking at the HS, not the FM
                             -- file list. Deferring refreshPath() until the HS closes
                             -- eliminates I/O contention with the HS widget build and
@@ -2158,6 +2192,205 @@ function M.uninstallButtonBoundsDebug(plugin)
     end
 end
 
+-- ---------------------------------------------------------------------------
+-- Reader-close helpers for gesture actions
+-- ---------------------------------------------------------------------------
+
+-- Close the reader and open the Homescreen afterwards, exactly as if
+-- "Start with Homescreen" were active, regardless of the actual setting.
+-- Safe to call when the reader is NOT open (no-op in that case).
+function M.closeReaderToHomescreen(plugin)
+    local RUI = package.loaded["apps/reader/readerui"]
+    if not (RUI and RUI.instance) then return end
+    local readerui = RUI.instance
+
+    local file = readerui.document and readerui.document.file
+
+    if isStartWithHS() then
+        -- "Start with Homescreen" is already active: the patched UIManager.close
+        -- will set _hs_pending_after_reader and all related flags automatically
+        -- when it sees the ReaderUI widget closing. Nothing to pre-set here.
+        readerui:onClose()
+        readerui:showFileManager(file)
+    else
+        -- "Start with Homescreen" is NOT active: the UIManager.close and
+        -- UIManager.show patches both gate on isStartWithHS(), so they will
+        -- never open the HS for us. We must do it ourselves after the FM appears.
+        -- Set lazy_refresh so the FM file-list scan is deferred until the HS
+        -- closes, matching the native path's I/O optimisation.
+        local fm_pre = liveFM()
+        if fm_pre then fm_pre._sui_lazy_refresh_path = true end
+
+        -- Stash the current tab so the HS Back button returns to the right place.
+        local prev_action = plugin.active_action
+
+        readerui:onClose()
+        readerui:showFileManager(file)
+
+        -- After the FM is on the stack, open the HS on top — replicating
+        -- _doShowHS() which is a private local inside patchUIManagerClose.
+        UIManager:scheduleIn(0, function()
+            if UIManager._exit_code ~= nil then return end
+            local RUI2 = package.loaded["apps/reader/readerui"]
+            if RUI2 and RUI2.instance then return end
+            local HS = liveHS() or (function()
+                local ok, m = pcall(require, "sui_homescreen"); return ok and m
+            end)()
+            if not HS or HS._instance then return end
+            local fm_ref = liveFM()
+            -- Abort if another fullscreen widget is already on top of the FM.
+            if fm_ref then
+                for _, entry in ipairs(UI.getWindowStack()) do
+                    local w = entry.widget
+                    if w and w ~= fm_ref and w.covers_fullscreen then return end
+                end
+            end
+            -- Close any orphaned non-fullscreen popups before showing the HS.
+            local to_close = {}
+            for _, entry in ipairs(UI.getWindowStack()) do
+                local w = entry.widget
+                if w and w ~= fm_ref and not w.covers_fullscreen then
+                    to_close[#to_close + 1] = w
+                end
+            end
+            for _, w in ipairs(to_close) do UIManager:close(w) end
+
+            local tabs = Config.loadTabConfig()
+            Bottombar.setActiveAndRefreshFM(plugin, "homescreen", tabs)
+            if not plugin._goalTapCallback then plugin:addToMainMenu({}) end
+            HS.show(
+                function(aid) plugin:_navigate(aid, plugin.ui, Config.loadTabConfig(), false) end,
+                plugin._goalTapCallback
+            )
+            local hs_inst = HS._instance
+            if hs_inst then hs_inst._navbar_prev_action = prev_action end
+        end)
+    end
+end
+
+-- Close the reader and return to the Library (FM at home_dir) with no
+-- Homescreen appearing on top — equivalent to the user closing the reader
+-- when "return to book folder" / "Start with Homescreen" are both off.
+-- Safe to call when the reader is NOT open (no-op in that case).
+function M.closeReaderToLibrary(plugin)
+    local RUI = package.loaded["apps/reader/readerui"]
+    if not (RUI and RUI.instance) then return end
+    local readerui = RUI.instance
+
+    -- _navbar_closing_intentionally on the widget makes the patched
+    -- UIManager.close skip the entire HS re-open block (see the guard at the
+    -- top of that block). This is the same flag used by tab-navigation to
+    -- suppress the HS when closing overlays intentionally.
+    readerui._navbar_closing_intentionally = true
+
+    local file = readerui.document and readerui.document.file
+    readerui:onClose()
+    -- onClose() calls UIManager:close(self.dialog) which runs synchronously,
+    -- so the flag has already been consumed. No need to clear it.
+    readerui:showFileManager(file)
+
+    -- After the FM appears, navigate to home_dir and rebuild the navbar.
+    UIManager:scheduleIn(0, function()
+        local fm_ref = liveFM()
+        if not fm_ref then return end
+        local home = G_reader_settings:readSetting("home_dir")
+        local lfs  = require("libs/libkoreader-lfs")
+        if not home or lfs.attributes(home, "mode") ~= "directory" then
+            home = require("device").home_dir
+        end
+        if home and fm_ref.file_chooser then
+            fm_ref._navbar_suppress_path_change = true
+            fm_ref.file_chooser:changeToPath(home)
+            fm_ref._navbar_suppress_path_change = nil
+            if fm_ref.updateTitleBarPath then
+                pcall(function() fm_ref:updateTitleBarPath(home, true) end)
+            end
+        elseif fm_ref.file_chooser then
+            fm_ref.file_chooser:refreshPath()
+        end
+        local tabs = Config.loadTabConfig()
+        plugin.active_action = "home"
+        Bottombar.replaceBar(fm_ref, Bottombar.buildBarWidget("home", tabs), tabs)
+        UIManager:setDirty(fm_ref, "ui")
+    end)
+end
+
+-- Patch ReaderMenu.exitOrRestart so the "Closing book…" InfoMessage is shown
+-- immediately — before onTapCloseMenu() closes the menu — rather than only
+-- after the menu has already been dismissed and repainted.
+--
+-- The patch fires only when the closing-notice setting is active and we are
+-- actually returning to the SimpleUI homescreen (same guards as onCloseDocument).
+-- A flag (_closing_notice_shown) is set on the plugin so onCloseDocument skips
+-- the duplicate UIManager:show + forceRePaint that would otherwise fire later.
+function M.patchReaderMenuExit(plugin)
+    local ReaderMenu = package.loaded["apps/reader/modules/readermenu"]
+    if not ReaderMenu then
+        -- ReaderMenu is not loaded yet; it will be required when a book is
+        -- opened.  Wrap require so we patch it the moment it is first loaded.
+        local orig_req = _G.require
+        plugin._orig_require_for_readermenu = orig_req
+        _G.require = function(modname, ...)
+            local result = orig_req(modname, ...)
+            if modname == "apps/reader/modules/readermenu"
+                    and not result._simpleui_exit_patched then
+                M._wrapReaderMenuExitOrRestart(plugin, result)
+            end
+            return result
+        end
+        return
+    end
+    if not ReaderMenu._simpleui_exit_patched then
+        M._wrapReaderMenuExitOrRestart(plugin, ReaderMenu)
+    end
+end
+
+function M._wrapReaderMenuExitOrRestart(plugin, ReaderMenu)
+    local orig_exit = ReaderMenu.exitOrRestart
+    plugin._orig_readermenu_exit = orig_exit
+
+    ReaderMenu.exitOrRestart = function(rm_self, callback, force)
+        -- Show the "Closing book…" notice now, while the menu is still visible.
+        -- The original exitOrRestart calls onTapCloseMenu() first (which closes
+        -- the menu and triggers a repaint), then defers onClose() to nextTick —
+        -- so the notice only appeared after the menu was already gone.
+        --
+        -- We skip onTapCloseMenu() entirely: it is redundant because onClose()
+        -- already fires CloseReaderMenu + CloseConfigMenu internally (readerui.lua).
+        -- Removing it means one fewer UIManager:close + repaint on the hot path.
+        --
+        -- The notice appears on top of the open menu; the menu is then torn down
+        -- as part of the normal onClose() sequence.
+        if G_reader_settings:nilOrTrue("simpleui_hs_closing_notice") then
+            local return_to_folder = G_reader_settings:isTrue("navbar_hs_return_to_book_folder")
+            local start_with_hs    = G_reader_settings:readSetting("start_with", "filemanager") == "homescreen_simpleui"
+            if start_with_hs and not return_to_folder then
+                local ok_im, InfoMessage = pcall(require, "ui/widget/infomessage")
+                if ok_im and InfoMessage then
+                    UIManager:show(InfoMessage:new{
+                        text    = _("Closing book…"),
+                        timeout = 0.0,
+                    })
+                    -- forceRePaint paints the notice onto the screen synchronously,
+                    -- while the menu is still in the widget stack behind it.
+                    -- Without this the InfoMessage is queued but never rendered
+                    -- before onClose() tears down the entire ReaderUI.
+                    UIManager:forceRePaint()
+                    -- Mark as shown so onCloseDocument skips the duplicate paint.
+                    plugin._closing_notice_shown = true
+                end
+            end
+        end
+        -- Skip onTapCloseMenu(); go straight to onClose() via nextTick.
+        UIManager:nextTick(function()
+            rm_self.ui:onClose()
+            if callback then callback() end
+        end)
+    end
+
+    ReaderMenu._simpleui_exit_patched = true
+end
+
 function M.installAll(plugin)
     M.patchFileManagerClass(plugin)
     M.patchStartWithMenu()
@@ -2169,6 +2402,7 @@ function M.installAll(plugin)
     M.patchMenuInitForPagination(plugin)
     M.patchMenuForNavpager(plugin)
     M.patchBookInfoNavigation(plugin)
+    M.patchReaderMenuExit(plugin)
     -- Install button-bounds overlay when the debug setting is on at startup.
     if G_reader_settings:isTrue("simpleui_debug_button_bounds") then
         M.installButtonBoundsDebug(plugin)
@@ -2331,9 +2565,26 @@ function M.teardownAll(plugin)
 
     M.uninstallButtonBoundsDebug(plugin)
 
+    -- Restore ReaderMenu.exitOrRestart patch.
+    local ReaderMenu = package.loaded["apps/reader/modules/readermenu"]
+    if ReaderMenu and ReaderMenu._simpleui_exit_patched then
+        if plugin._orig_readermenu_exit then
+            ReaderMenu.exitOrRestart         = plugin._orig_readermenu_exit
+            plugin._orig_readermenu_exit     = nil
+        end
+        ReaderMenu._simpleui_exit_patched = nil
+    end
+    -- Restore deferred require hook if ReaderMenu was never loaded.
+    if plugin._orig_require_for_readermenu then
+        _G.require                             = plugin._orig_require_for_readermenu
+        plugin._orig_require_for_readermenu    = nil
+    end
+    plugin._closing_notice_shown = nil
+
     -- Reset module-level state so a re-enable cycle starts clean.
     _hs_boot_done             = false
     _hs_pending_after_reader  = false
+    _hs_pending_prev_action   = nil
     _start_with_hs            = nil
     _navpager_rebuild_pending = false
 

@@ -27,6 +27,9 @@ local QA              = require("sui_quickactions")
 local UI  = require("sui_core")
 local PAD = UI.PAD
 local LABEL_H = UI.LABEL_H
+local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
+
+local _BASE_PH_FS = Screen:scaleBySize(11)
 
 local _CLR_BAR_FG  = Blitbuffer.gray(0.75)
 local _CLR_FLAT_BG = Blitbuffer.gray(0.08)
@@ -76,7 +79,20 @@ end
 -- Core widget builder (shared by all slots)
 -- ---------------------------------------------------------------------------
 local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d, flat)
-    if not action_ids or #action_ids == 0 then return nil end
+    local ph_fs = math.max(8, math.floor(_BASE_PH_FS * (d.frame_sz / (_BASE_ICON_SZ + _BASE_FRAME_PAD * 2))))
+    local function _placeholder()
+        return CenterContainer:new{
+            dimen = Geom:new{ w = w, h = d.frame_sz },
+            TextWidget:new{
+                text    = _("No actions configured"),
+                face    = Font:getFace("smallinfofont", ph_fs),
+                fgcolor = CLR_TEXT_SUB,
+                width   = w - PAD * 2,
+            },
+        }
+    end
+
+    if not action_ids or #action_ids == 0 then return _placeholder() end
 
     local valid_ids = {}
     local cqa_valid = getCustomQAValid()
@@ -88,9 +104,7 @@ local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d, flat)
         end
         -- unknown IDs (neither a live custom QA nor a known built-in) are silently dropped
     end
-    if #valid_ids == 0 then return nil end
-
-    local n        = math.min(#valid_ids, 6)
+    if #valid_ids == 0 then return _placeholder() end
     local inner_w  = w - PAD * 2
     local lbl_h    = show_labels and d.lbl_h or 0
     local lbl_sp   = show_labels and d.lbl_sp or 0

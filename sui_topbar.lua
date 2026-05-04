@@ -530,7 +530,12 @@ local function shouldRefreshTopbar(plugin)
     if RUI and RUI.instance then return false end
     -- Do not run while the device is suspended — the timer may fire during
     -- the suspend transition on some devices (Kobo) before the scheduler pauses.
+    -- Also guard against screen_saver_mode, which is set before broadcastEvent("Suspend")
+    -- fires on Kindle (framework mode) and closes the race window where the timer
+    -- is already dequeued but _simpleui_suspended has not yet been set.
     if plugin and plugin._simpleui_suspended then return false end
+    local Device = require("device")
+    if Device.screen_saver_mode then return false end
     return true
 end
 
@@ -555,13 +560,14 @@ end
 
 function M.refresh(plugin)
     if not shouldRefreshTopbar(plugin) then return end
-    -- shouldRefreshTopbar already checks _simpleui_suspended, but there is a
-    -- narrow race on Kobo: the UIManager may have already dequeued this timer
-    -- for execution in the current event-loop tick *before* onSuspend ran and
-    -- set _simpleui_suspended = true. shouldRefreshTopbar therefore passed with
+    -- shouldRefreshTopbar already checks _simpleui_suspended and screen_saver_mode,
+    -- but there is a narrow race on Kobo: the UIManager may have already dequeued
+    -- this timer for execution in the current event-loop tick *before* onSuspend ran
+    -- and set _simpleui_suspended = true. shouldRefreshTopbar therefore passed with
     -- the flag still false. Re-check immediately after, before doing any work,
     -- so we never build a widget or call setDirty during the suspend transition.
-    if plugin and plugin._simpleui_suspended then return end
+    local Device = require("device")
+    if (plugin and plugin._simpleui_suspended) or Device.screen_saver_mode then return end
     local UI    = require("sui_core")
     local stack = UI.getWindowStack()  -- read once
     -- Each widget gets its own topbar instance. Sharing a single object across
@@ -572,7 +578,7 @@ function M.refresh(plugin)
     -- Re-check suspended state after buildTopbarWidget() — the device may have
     -- suspended during that call. If so, discard the widget and do not setDirty
     -- or reschedule: onResume will restart the chain cleanly.
-    if plugin and plugin._simpleui_suspended then return end
+    if (plugin and plugin._simpleui_suspended) or Device.screen_saver_mode then return end
     local seen = {}
     local function refreshWidget(w)
         if not w or not w._navbar_container or seen[w] then return end

@@ -710,6 +710,10 @@ function M.reset()
     _BookInfoManager             = nil
     _topbar_cfg_menu_cache       = nil
     _ReadCollection              = nil
+    -- Invalidate the max-extraction-size cache so it is recomputed on the
+    -- next session (in case screen DPI changes, e.g. after a KOReader update).
+    _max_extract_w               = nil
+    _max_extract_h               = nil
     -- QA key cache is now managed in sui_quickactions.lua
     _QA_lazy().clearQAKeyCache()
     -- Release all cached cover bitmaps (OPT-D)
@@ -770,6 +774,51 @@ local _bim_cover_count = 0
 
 -- Cached require — resolved once, reused for every cover scale operation.
 local _RenderImage = nil
+
+-- ---------------------------------------------------------------------------
+-- _getMaxExtractSize — returns the largest cover dimensions that any
+-- homescreen module could ever request, across all user-configurable scales.
+--
+-- Problem: getCoverBB calls extractInBackground with cover_specs={w,h} equal
+-- to the dimensions needed by the *current* module at the *current* scale.
+-- If the user later increases the scale, or if a different module (e.g.
+-- coverdeck) needs a larger bitmap than what CoverBrowser stored for the
+-- file-browser grid, BookInfoManager considers the stored cover "lowres" and
+-- re-extracts it. This creates a ping-pong: SimpleUI re-extracts at its size,
+-- CoverBrowser re-extracts at its size, on every view switch.
+--
+-- Fix: always pass the theoretical maximum size to extractInBackground so the
+-- stored bitmap is never "lowres" from any module's point of view.
+-- getCoverBB still scales DOWN to the exact requested (w, h) before returning
+-- to the caller — that logic is unchanged.
+--
+-- The largest module is coverdeck, whose centre cover uses scaleBySize(140).
+-- Module scale and thumb scale are each clamped to 200% (SCALE_MAX), but in
+-- practice users rarely run both at maximum simultaneously. We cap the
+-- combined multiplier at 2.0× (one slider at 200%, the other at 100%) to
+-- keep the stored bitmap reasonable; getCoverBB will re-extract on demand
+-- if the user genuinely exceeds this — a rare edge case vs. the common one.
+--
+-- Computed once per session (lazy) and invalidated by M.reset().
+-- ---------------------------------------------------------------------------
+local _max_extract_w = nil
+local _max_extract_h = nil
+
+local function _getMaxExtractSize()
+    if _max_extract_w then return _max_extract_w, _max_extract_h end
+    local ok, dev = pcall(require, "device")
+    if not (ok and dev and dev.screen) then
+        -- Device not yet available — return a safe large default.
+        -- 600×900 covers any 6" e-reader at 300 dpi with 2× scale applied.
+        return 600, 900
+    end
+    -- coverdeck centre cover base = scaleBySize(140).
+    -- Capped combined scale = module_max(200%) × 1 = 2.0.
+    local max_combined = 2.0
+    _max_extract_w = math.floor(dev.screen:scaleBySize(140) * max_combined)
+    _max_extract_h = math.floor(_max_extract_w * 3 / 2)
+    return _max_extract_w, _max_extract_h
+end
 
 local function _evictOldestCover()
     local oldest_key = nil
@@ -927,10 +976,16 @@ function M.getCoverBB(filepath, w, h, align, stretch_limit)
         if (M._cover_extract_next_ok or 0) > now then return end
         M._cover_extract_next_ok = now + 1
         M._cover_extract_pending[filepath] = now
+        -- Extract at the maximum size any homescreen module could ever need,
+        -- rather than the current caller's (w, h). This prevents the ping-pong
+        -- recache cycle where CoverBrowser and the homescreen repeatedly
+        -- re-extract the same cover at different sizes. getCoverBB still scales
+        -- the returned bitmap down to exactly (w, h) before handing it back.
+        local ext_w, ext_h = _getMaxExtractSize()
         pcall(function()
             bim:extractInBackground({{
                 filepath    = filepath,
-                cover_specs = { max_cover_w = w, max_cover_h = h },
+                cover_specs = { max_cover_w = ext_w, max_cover_h = ext_h },
             }})
         end)
     end
@@ -940,7 +995,14 @@ function M.getCoverBB(filepath, w, h, align, stretch_limit)
         if bookinfo.has_cover and bookinfo.cover_bb then
             local src_w = bookinfo.cover_bb:getWidth()
             local src_h = bookinfo.cover_bb:getHeight()
-            local lowres = (src_w < w or src_h < h)
+            -- Compare against the max extraction size, not just the current
+            -- caller's (w, h). If the stored bitmap already satisfies the
+            -- current request but is smaller than the max, re-extract once so
+            -- future callers (e.g. coverdeck at a larger scale) won't trigger
+            -- another extraction cycle. If it already meets the max, it is
+            -- stable and will never be "lowres" for any module.
+            local max_w, max_h = _getMaxExtractSize()
+            local lowres = (src_w < max_w or src_h < max_h)
             if lowres then scheduleExtract() end
             local bb = _scaleBBToSlot(bookinfo.cover_bb, w, h, align, stretch_limit)
             if _bim_cover_count >= BIM_MAX_COVERS then _evictOldestCover() end

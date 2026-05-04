@@ -48,7 +48,6 @@ local SK = {
     overlay_pages   = "simpleui_fc_overlay_pages",
     overlay_series  = "simpleui_fc_overlay_series",
     series_grouping = "simpleui_fc_series_grouping",
-    item_cache      = "simpleui_fc_item_cache",
     subfolder_cover = "simpleui_fc_subfolder_cover",
     recursive_cover = "simpleui_fc_recursive_cover",
     label_scale     = "simpleui_fc_label_scale",
@@ -114,10 +113,6 @@ function M.setOverlaySeries(v) _setFlag(SK.overlay_series, v)                   
 -- Virtual series folders in the mosaic (default off).
 function M.getSeriesGrouping()  return G_reader_settings:isTrue(SK.series_grouping)                end
 function M.setSeriesGrouping(v) _setFlag(SK.series_grouping, v)                                    end
-
--- 2000-entry two-generation item cache for FileChooser:getListItem() (default on).
-function M.getItemCache()  return G_reader_settings:readSetting(SK.item_cache) ~= false            end
-function M.setItemCache(v) _setFlag(SK.item_cache, v)                                              end
 
 -- Placeholder cover for folders with no direct ebooks (default off).
 function M.getSubfolderCover()  return G_reader_settings:isTrue(SK.subfolder_cover)                end
@@ -579,113 +574,113 @@ local function _uninstallFileDialogButton()
 end
 
 -- ---------------------------------------------------------------------------
--- Item cache — two-generation cache for FileChooser:getListItem().
+-- Item-table cache — single-entry cache for FileChooser:genItemTableFromPath.
 --
--- Strategy: two fixed-size buckets (_cache_a and _cache_b), each capped at
--- _CACHE_MAX entries. New entries always go into _cache_a. When _cache_a is
--- full, it is promoted to _cache_b (discarding the old _cache_b) and a fresh
--- _cache_a is started. A lookup checks _cache_a first, then _cache_b.
+-- Strategy: cache the complete sorted item table for the current directory.
+-- The cache key encodes path + directory mtime + all settings that affect
+-- the list (collate, filter, show_hidden). On a cache hit the entire
+-- lfs.dir scan, sort, and per-item getListItem() calls are skipped.
 --
--- This avoids the flush-everything problem of a single-bucket cache: the
--- working set stays hot in _cache_a while _cache_b acts as a fallback for
--- items that did not fit in the current generation. Effective capacity is
--- 2 * _CACHE_MAX entries with a smooth eviction pattern.
+-- A single lfs.attributes() call per navigation is the only overhead.
+-- Memory cost: one table reference — the same object FileChooser already
+-- holds, not a copy.
+--
+-- Invalidation:
+--   • Directory changed   → automatic (mtime or path differ in the key).
+--   • Closing a book      → _itc_invalidate() in refreshPath.
+--   • Status/prop change  → _itc_invalidate() via setBookInfoCacheProperty.
+--   • access-time collate → cache disabled (mtime never reflects reads).
+--   • _dummy calls        → bypassed (used by cover-collection helpers).
 -- ---------------------------------------------------------------------------
 
-local _CACHE_MAX    = 1000
-local _cache_a      = {}
-local _cache_b      = {}
-local _cache_a_count = 0
-local _orig_getListItem = FileChooser.getListItem
-
-local function _cacheGet(key)
-    return _cache_a[key] or _cache_b[key]
-end
-
-local function _cacheSet(key, value)
-    if _cache_a_count >= _CACHE_MAX then
-        _cache_b      = _cache_a
-        _cache_a      = {}
-        _cache_a_count = 0
-    end
-    _cache_a[key]  = value
-    _cache_a_count = _cache_a_count + 1
-end
+-- Single cache entry: {key=string, t=item_table} or nil.
+local _itc = nil
 
 local _orig_setBookInfoCacheProperty = nil
+local _orig_genItemTableFromPath     = nil
+
+local function _itc_invalidate()
+    _itc = nil
+end
+
+local function _itc_key(path, fc)
+    local mtime      = lfs.attributes(path, "modification") or 0
+    local filter_raw = fc.show_filter and fc.show_filter.status
+    local filter_str
+    if type(filter_raw) == "table" then
+        local parts = {}
+        for k, v in pairs(filter_raw) do
+            if v then parts[#parts + 1] = tostring(k) end
+        end
+        table.sort(parts)
+        filter_str = table.concat(parts, "\1")
+    else
+        filter_str = tostring(filter_raw or "")
+    end
+    return path .. "\0" .. mtime .. "\0"
+        .. (G_reader_settings:readSetting("collate") or "strcoll") .. "\0"
+        .. tostring(G_reader_settings:isTrue("collate_mixed"))     .. "\0"
+        .. tostring(G_reader_settings:isTrue("reverse_collate"))   .. "\0"
+        .. tostring(fc.show_hidden or false) .. "\0"
+        .. filter_str
+end
 
 local function _installItemCache()
     if FileChooser._simpleui_fc_cache_patched then return end
     FileChooser._simpleui_fc_cache_patched = true
 
-    -- Patch BookList.setBookInfoCacheProperty so that any status/property change
-    -- (e.g. marking a book read in the FM) immediately evicts that file's entry
-    -- from our item cache. Without this, the cached item carries stale sort_percent/
-    -- percent_finished values and the book stays in the wrong position after a
-    -- status change until the next full cache flush.
+    -- Invalidate on any book status/property change (e.g. marking read).
+    -- The sort position depends on percent_finished, so stale items would
+    -- appear in the wrong place until the next directory change.
     local ok_bl, BookList = pcall(require, "ui/widget/booklist")
     if ok_bl and BookList and BookList.setBookInfoCacheProperty then
         _orig_setBookInfoCacheProperty = BookList.setBookInfoCacheProperty
         BookList.setBookInfoCacheProperty = function(file, prop_name, prop_value)
-            -- Evict all cache entries for this file before delegating.
-            -- The key encodes fullpath as the third NUL-separated field, so a
-            -- substring search is sufficient and exact.
-            if file then
-                local needle = "\0" .. file .. "\0"
-                local removed = 0
-                for k in pairs(_cache_a) do
-                    if k:find(needle, 1, true) then
-                        _cache_a[k] = nil
-                        removed = removed + 1
-                    end
-                end
-                _cache_a_count = math.max(0, _cache_a_count - removed)
-                for k in pairs(_cache_b) do
-                    if k:find(needle, 1, true) then _cache_b[k] = nil end
-                end
-            end
+            _itc_invalidate()
             return _orig_setBookInfoCacheProperty(file, prop_name, prop_value)
         end
     end
 
-    FileChooser.getListItem = function(fc, dirpath, f, fullpath, attributes, collate)
-        if not M.getItemCache() then
-            return _orig_getListItem(fc, dirpath, f, fullpath, attributes, collate)
+    _orig_genItemTableFromPath = FileChooser.genItemTableFromPath
+
+    FileChooser.genItemTableFromPath = function(fc, path)
+        -- Bypass for non-FM instances (PathChooser, dialogs) and for
+        -- _dummy=true calls used by cover-collection helpers.
+        if fc._dummy or fc.name ~= "filemanager" then
+            return _orig_genItemTableFromPath(fc, path)
         end
 
-        -- Build a cache key that captures everything that affects the item shape.
-        local filter_raw = fc.show_filter and fc.show_filter.status or ""
-        local filter
-        if type(filter_raw) == "table" then
-            local parts = {}
-            for k, v in pairs(filter_raw) do
-                if v then parts[#parts + 1] = tostring(k) end
-            end
-            table.sort(parts)
-            filter = table.concat(parts, "\1")
+        -- access-time collate: directory mtime doesn't change when books are
+        -- read, so the key would never change. Disable the cache for this mode.
+        if (G_reader_settings:readSetting("collate") or "strcoll") == "access" then
+            _itc = nil
+            return _orig_genItemTableFromPath(fc, path)
+        end
+
+        local key = _itc_key(path, fc)
+        if _itc and _itc.key == key then
+            return _itc.t
+        end
+
+        local result = _orig_genItemTableFromPath(fc, path)
+
+        -- Do not cache virtual series-grouping views: their synthetic path
+        -- has no reliable mtime, so stale data would never be evicted.
+        if not (result and result._sg_is_series_view) then
+            _itc = { key = key, t = result }
         else
-            filter = tostring(filter_raw)
+            _itc = nil
         end
-        local collate_id = (collate and (collate.id or collate.text)) or ""
 
-        local key = tostring(dirpath) .. "\0" .. tostring(f) .. "\0"
-                 .. tostring(fullpath) .. "\0" .. filter .. "\0"
-                 .. tostring(collate_id)
-
-        local cached = _cacheGet(key)
-        if cached then return cached end
-
-        local item = _orig_getListItem(fc, dirpath, f, fullpath, attributes, collate)
-        _cacheSet(key, item)
-        return item
+        return result
     end
 end
 
 local function _uninstallItemCache()
     if not FileChooser._simpleui_fc_cache_patched then return end
-    FileChooser.getListItem = _orig_getListItem
+    FileChooser.genItemTableFromPath  = _orig_genItemTableFromPath
+    _orig_genItemTableFromPath        = nil
     FileChooser._simpleui_fc_cache_patched = nil
-    -- Restore BookList patch if we installed it.
     if _orig_setBookInfoCacheProperty then
         local ok_bl, BookList = pcall(require, "ui/widget/booklist")
         if ok_bl and BookList then
@@ -693,15 +688,11 @@ local function _uninstallItemCache()
         end
         _orig_setBookInfoCacheProperty = nil
     end
-    _cache_a = {}
-    _cache_b = {}
-    _cache_a_count = 0
+    _itc = nil
 end
 
 function M.invalidateCache()
-    _cache_a = {}
-    _cache_b = {}
-    _cache_a_count = 0
+    _itc = nil
 end
 
 -- ---------------------------------------------------------------------------
@@ -1004,32 +995,10 @@ local function _installSeriesGrouping()
     -- After refreshPath (e.g. closing a book) re-enter the virtual folder
     -- if one was active.
     FileChooser.refreshPath = function(fc)
-        -- Selective item-cache invalidation: only discard the entry for the
-        -- book that was just closed. The cache key encodes fullpath as the
-        -- third NUL-separated field, so a needle search is exact.
-        -- G_reader_settings["lastfile"] is written by readhistory:addItem()
-        -- when the book opens, so it is always the path of the closed book.
-        -- Fall back to a full flush when the path is unavailable.
-        local last_book = G_reader_settings:readSetting("lastfile")
-        if last_book then
-            local needle = "\0" .. last_book .. "\0"
-            local removed = 0
-            for k in pairs(_cache_a) do
-                if k:find(needle, 1, true) then
-                    _cache_a[k] = nil
-                    removed = removed + 1
-                end
-            end
-            _cache_a_count = math.max(0, _cache_a_count - removed)
-            for k in pairs(_cache_b) do
-                if k:find(needle, 1, true) then _cache_b[k] = nil end
-            end
-        else
-            -- Unknown what changed — full flush (safe fallback).
-            _cache_a       = {}
-            _cache_b       = {}
-            _cache_a_count = 0
-        end
+        -- The item table is stale after closing a book (percent_finished,
+        -- bold state, sort position may have changed). Drop the cache so
+        -- the next genItemTableFromPath rebuilds cleanly.
+        _itc_invalidate()
 
         -- Only flush disk-level cover caches when the library was actually
         -- visited (files may have been added/removed). Preserving them on a
@@ -1346,21 +1315,25 @@ function M.install()
                     fgcolor = Blitbuffer.COLOR_BLACK,
                 }
                 local tsz    = ptw:getSize()
-                local rect_w = tsz.w + _BADGE_PAD_H * 2
-                local rect_h = tsz.h + _BADGE_PAD_V * 2
+                local border = Size.border.thin
+                -- inner = text + padding; buf includes border on all four sides
+                local inner_w = tsz.w + _BADGE_PAD_H * 2
+                local inner_h = tsz.h + _BADGE_PAD_V * 2
+                local buf_w   = inner_w + border * 2
+                local buf_h   = inner_h + border * 2
                 local bw = FrameContainer:new{
-                    dimen      = Geom:new{ w = rect_w, h = rect_h },
-                    bordersize = Size.border.thin,
+                    dimen      = Geom:new{ w = buf_w, h = buf_h },
+                    bordersize = border,
                     color      = Blitbuffer.COLOR_DARK_GRAY,
                     background = Blitbuffer.COLOR_WHITE,
                     radius     = _BADGE_CORNER,
                     padding    = 0,
                     CenterContainer:new{
-                        dimen = Geom:new{ w = rect_w, h = rect_h },
+                        dimen = Geom:new{ w = inner_w, h = inner_h },
                         ptw,
                     },
                 }
-                local ok_buf, buf = pcall(Blitbuffer.new, rect_w, rect_h, Blitbuffer.TYPE_BB8A)
+                local ok_buf, buf = pcall(Blitbuffer.new, buf_w, buf_h, Blitbuffer.TYPE_BB8A)
                 if ok_buf and buf then
                     buf:fill(Blitbuffer.COLOR_WHITE)
                     bw:paintTo(buf, 0, 0)
@@ -1377,21 +1350,24 @@ function M.install()
                     fgcolor = Blitbuffer.COLOR_BLACK,
                 }
                 local tsz    = stw:getSize()
-                local rect_w = tsz.w + _BADGE_PAD_H * 2
-                local rect_h = tsz.h + _BADGE_PAD_V * 2
+                local border = Size.border.thin
+                local inner_w = tsz.w + _BADGE_PAD_H * 2
+                local inner_h = tsz.h + _BADGE_PAD_V * 2
+                local buf_w   = inner_w + border * 2
+                local buf_h   = inner_h + border * 2
                 local bw = FrameContainer:new{
-                    dimen      = Geom:new{ w = rect_w, h = rect_h },
-                    bordersize = Size.border.thin,
+                    dimen      = Geom:new{ w = buf_w, h = buf_h },
+                    bordersize = border,
                     color      = Blitbuffer.COLOR_DARK_GRAY,
                     background = Blitbuffer.COLOR_WHITE,
                     radius     = _BADGE_CORNER,
                     padding    = 0,
                     CenterContainer:new{
-                        dimen = Geom:new{ w = rect_w, h = rect_h },
+                        dimen = Geom:new{ w = inner_w, h = inner_h },
                         stw,
                     },
                 }
-                local ok_buf, buf = pcall(Blitbuffer.new, rect_w, rect_h, Blitbuffer.TYPE_BB8A)
+                local ok_buf, buf = pcall(Blitbuffer.new, buf_w, buf_h, Blitbuffer.TYPE_BB8A)
                 if ok_buf and buf then
                     buf:fill(Blitbuffer.COLOR_WHITE)
                     bw:paintTo(buf, 0, 0)
@@ -1855,21 +1831,24 @@ function M.install()
                         fgcolor = Blitbuffer.COLOR_BLACK,
                     }
                     local tsz    = stw:getSize()
-                    local rect_w = tsz.w + _BADGE_PAD_H * 2
-                    local rect_h = tsz.h + _BADGE_PAD_V * 2
+                    local border  = Size.border.thin
+                    local inner_w = tsz.w + _BADGE_PAD_H * 2
+                    local inner_h = tsz.h + _BADGE_PAD_V * 2
+                    local buf_w   = inner_w + border * 2
+                    local buf_h   = inner_h + border * 2
                     local bw = FrameContainer:new{
-                        dimen      = Geom:new{ w = rect_w, h = rect_h },
-                        bordersize = Size.border.thin,
+                        dimen      = Geom:new{ w = buf_w, h = buf_h },
+                        bordersize = border,
                         color      = Blitbuffer.COLOR_DARK_GRAY,
                         background = Blitbuffer.COLOR_WHITE,
                         radius     = _BADGE_CORNER,
                         padding    = 0,
                         CenterContainer:new{
-                            dimen = Geom:new{ w = rect_w, h = rect_h },
+                            dimen = Geom:new{ w = inner_w, h = inner_h },
                             stw,
                         },
                     }
-                    local ok_buf, buf = pcall(Blitbuffer.new, rect_w, rect_h, Blitbuffer.TYPE_BB8A)
+                    local ok_buf, buf = pcall(Blitbuffer.new, buf_w, buf_h, Blitbuffer.TYPE_BB8A)
                     if ok_buf and buf then
                         buf:fill(Blitbuffer.COLOR_WHITE)
                         bw:paintTo(buf, 0, 0)

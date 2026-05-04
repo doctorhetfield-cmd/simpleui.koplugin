@@ -3,7 +3,9 @@
 
 local WidgetContainer = require("ui/widget/container/widgetcontainer")
 local UIManager       = require("ui/uimanager")
+local InfoMessage     = require("ui/widget/infomessage")
 local logger          = require("logger")
+local Dispatcher      = require("dispatcher")
 
 -- Each simpleui module captures its own local translation proxy from sui_i18n.
 -- The native package.loaded["gettext"] is never wrapped or replaced, which
@@ -81,6 +83,29 @@ function SimpleUIPlugin:init()
         -- something invalid, so the common no-op case costs only a few reads.
         Config.sanitizeQASlots()
         self.ui.menu:registerToMainMenu(self)
+
+        -- Register gesture-assignable actions via Dispatcher.
+        -- After this, KOReader's gesture/keyboard settings will list these
+        -- actions so the user can bind any gesture to them.
+        Dispatcher:init()
+        Dispatcher:registerAction("simpleui_go_homescreen", {
+            category = "none",
+            event    = "SimpleUIGoHomescreen",
+            title    = _("Simple UI: Go to Homescreen"),
+            general  = true,
+        })
+        Dispatcher:registerAction("simpleui_go_library", {
+            category = "none",
+            event    = "SimpleUIGoLibrary",
+            title    = _("Simple UI: Go to Library"),
+            general  = true,
+        })
+        Dispatcher:registerAction("simpleui_toggle_home_library", {
+            category = "none",
+            event    = "SimpleUIToggleHomeLibrary",
+            title    = _("Simple UI: Toggle Homescreen / Library"),
+            general  = true,
+        })
 
         -- -------------------------------------------------------------------
         -- Icon registration: register the settings tab icon into KOReader's
@@ -406,6 +431,65 @@ local _PLUGIN_MODULES = {
     "desktop_modules/quotes",
 }
 
+-- ---------------------------------------------------------------------------
+-- Dispatcher gesture handlers
+-- ---------------------------------------------------------------------------
+
+-- Called when the user triggers the "Go to Homescreen" gesture.
+-- When inside the Reader: closes the reader and opens the Homescreen using
+-- the exact same path as the native "Start with Homescreen" setting
+-- (sui_patches._hs_pending_after_reader), regardless of whether that
+-- setting is actually enabled.
+-- When outside the Reader: equivalent to tapping the Homescreen tab.
+function SimpleUIPlugin:onSimpleUIGoHomescreen()
+    local RUI = package.loaded["apps/reader/readerui"]
+    if RUI and RUI.instance then
+        Patches.closeReaderToHomescreen(self)
+        return true
+    end
+    local tabs = Config.loadTabConfig()
+    self:_navigate("homescreen", self.ui, tabs, false)
+    return true
+end
+
+-- Called when the user triggers the "Go to Library" gesture.
+-- When inside the Reader: closes the reader and returns to the Library
+-- (home_dir) without showing the Homescreen, as if "return to book folder"
+-- were disabled — the FM file browser becomes the top widget.
+-- When outside the Reader: equivalent to tapping the Library tab.
+function SimpleUIPlugin:onSimpleUIGoLibrary()
+    local RUI = package.loaded["apps/reader/readerui"]
+    if RUI and RUI.instance then
+        Patches.closeReaderToLibrary(self)
+        return true
+    end
+    local tabs = Config.loadTabConfig()
+    self:_navigate("home", self.ui, tabs, false)
+    return true
+end
+
+-- Called when the user triggers the "Toggle Homescreen / Library" gesture.
+-- If the Homescreen is currently open: navigates to the library (home_dir).
+-- If inside the Reader: closes the reader and opens the Homescreen (same
+-- path as GoHomescreen above).
+-- Otherwise (library or any other view): opens the Homescreen.
+function SimpleUIPlugin:onSimpleUIToggleHomeLibrary()
+    local HS = package.loaded["sui_homescreen"]
+    local hs_open = HS and HS._instance ~= nil
+    local tabs = Config.loadTabConfig()
+    if hs_open then
+        self:_navigate("home", self.ui, tabs, false)
+        return true
+    end
+    local RUI = package.loaded["apps/reader/readerui"]
+    if RUI and RUI.instance then
+        Patches.closeReaderToHomescreen(self)
+        return true
+    end
+    self:_navigate("homescreen", self.ui, tabs, false)
+    return true
+end
+
 function SimpleUIPlugin:onTeardown()
     if self._topbar_timer then
         UIManager:unschedule(self._topbar_timer)
@@ -615,6 +699,33 @@ function SimpleUIPlugin:onCloseDocument()
     local HS = package.loaded["sui_homescreen"]
     if not HS then return end
 
+    -- Show a brief "closing book" notice when returning to the homescreen.
+    -- Mirrors the "Opening file" InfoMessage used by ReaderUI, but smaller
+    -- (no filename) and disappears on the next repaint — it does not block
+    -- the homescreen load in any way.
+    -- NOTE: patchReaderMenuExit (sui_patches) shows this notice earlier, while
+    -- the reader menu is still open, so the user sees it immediately on tap.
+    -- When that path fires it sets _closing_notice_shown; we skip the duplicate
+    -- show+forceRePaint here to avoid a redundant e-ink refresh on the hot path.
+    if G_reader_settings:nilOrTrue("simpleui_hs_closing_notice") then
+        local return_to_folder = G_reader_settings:isTrue("navbar_hs_return_to_book_folder")
+        local start_with_hs    = G_reader_settings:readSetting("start_with", "filemanager") == "homescreen_simpleui"
+        -- Only show when we are actually going back to the SimpleUI homescreen.
+        if start_with_hs and not return_to_folder then
+            if self._closing_notice_shown then
+                -- Already shown before the menu closed; just clear the flag.
+                self._closing_notice_shown = nil
+            else
+                -- Fallback: menu patch did not fire (e.g. gesture/direct close).
+                UIManager:show(InfoMessage:new{
+                    text    = _("Closing book…"),
+                    timeout = 0.0,
+                })
+                UIManager:forceRePaint()
+            end
+        end
+    end
+
     -- Fast-path: if the HS is not visible and is already flagged for rebuild,
     -- there is nothing further to do — the next Homescreen.show() will rebuild
     -- from scratch. Avoids loading the Registry and all module pcalls.
@@ -684,20 +795,32 @@ function SimpleUIPlugin:onCloseDocument()
     -- progress. Uses surgical invalidation to avoid re-opening every sidecar.
     local mod_cr = Registry.get("currently")
     currently_active = mod_cr and Registry.isEnabled(mod_cr, PFX) or false
+    -- Also check coverdeck here so we know whether its full discard will
+    -- supersede the surgical currently-reading invalidation below.
+    local mod_cd = Registry.get("coverdeck")
+    local coverdeck_active = mod_cd and Registry.isEnabled(mod_cd, PFX) or false
     if currently_active then
-        local function _partial_invalidate(bs)
-            if not bs then return end
-            -- Drop the entry for the closed book so prefetchBooks() re-reads it.
-            if bs.prefetched_data and closed_fp then
-                bs.prefetched_data[closed_fp] = nil
+        -- Surgical invalidation: drop only the closed book's entry so
+        -- prefetchBooks() re-reads exactly one sidecar, cache-hitting the rest.
+        -- Skipped when coverdeck is also active — its block below will discard
+        -- _cached_books_state entirely, making the partial work redundant.
+        if not coverdeck_active then
+            local function _partial_invalidate(bs)
+                if not bs then return end
+                -- Drop the entry for the closed book so prefetchBooks() re-reads it.
+                if bs.prefetched_data and closed_fp then
+                    bs.prefetched_data[closed_fp] = nil
+                end
+                -- current_fp will be re-resolved by the next prefetchBooks() call.
+                -- Setting it to nil ensures Currently Reading does not paint
+                -- stale progress data before the refresh completes.
+                bs.current_fp = nil
             end
-            -- current_fp will be re-resolved by the next prefetchBooks() call.
-            -- Setting it to nil here ensures Currently Reading does not paint
-            -- stale progress data before the refresh completes.
-            bs.current_fp = nil
+            if HS._instance then
+                _partial_invalidate(HS._instance._cached_books_state)
+                _partial_invalidate(HS._cached_books_state)
+            end
         end
-        _partial_invalidate(HS._instance and HS._instance._cached_books_state)
-        _partial_invalidate(HS._cached_books_state)
         -- When the homescreen is not visible (HS._instance == nil), the partially
         -- invalidated HS._cached_books_state (with current_fp=nil) would be passed
         -- to the next HomescreenWidget:new{} in Homescreen.show(). Because the
@@ -716,14 +839,20 @@ function SimpleUIPlugin:onCloseDocument()
     -- Cover Deck: invalidate book list and stats cache so the carousel
     -- reflects the updated reading history immediately on return to the HS.
     -- This is independent of Currently Reading — coverdeck may be active alone.
-    local mod_cd = Registry.get("coverdeck")
-    local coverdeck_active = mod_cd and Registry.isEnabled(mod_cd, PFX) or false
     if coverdeck_active then
         -- Surgically evict only the closed book's stats from the cache.
         -- All other carousel entries are unaffected.
         local MCD = package.loaded["desktop_modules/module_coverdeck"]
-        if MCD and MCD.invalidateCacheForMd5 then
-            MCD.invalidateCacheForMd5(closed_md5)
+        if MCD then
+            if closed_md5 and MCD.invalidateCacheForMd5 then
+                -- Fast path: only evict the one book that changed.
+                MCD.invalidateCacheForMd5(closed_md5)
+            elseif MCD.invalidateCache then
+                -- Fallback: md5 was not in prefetched_data (book outside the
+                -- top-5 window, or _cached_books_state was already nil).
+                -- Full flush is safe — fetchBookStats re-populates on demand.
+                MCD.invalidateCache()
+            end
         end
         -- Invalidate _cached_books_state so prefetchBooks() re-reads the
         -- updated history order (closed book moves to position 1 = new centre).
@@ -741,21 +870,27 @@ function SimpleUIPlugin:onCloseDocument()
 
     if not needs_refresh then return end
 
-    -- Invalidate the sidecar mtime-cache entry for the closed book so the
-    -- next prefetchBooks() re-reads its updated sidecar (percent_finished, stats).
-    -- All other entries remain valid — they have not changed.
-    local SH = package.loaded["desktop_modules/module_books_shared"]
-    if SH and SH.invalidateSidecarCache then
-        SH.invalidateSidecarCache(closed_fp)  -- nil flushes all; fp invalidates only that entry
+    local book_mod_active = currently_active or coverdeck_active
+
+    -- Invalidate the sidecar mtime-cache entry for the closed book only when
+    -- a book module is active — prefetchBooks() will re-read it on next render.
+    -- Stats-only path never calls prefetchBooks, so no sidecar work is needed.
+    -- Guard: only invalidate surgically when closed_fp is known; a nil fp would
+    -- flush the entire cache, discarding valid entries for all other books.
+    if book_mod_active and closed_fp then
+        local SH = package.loaded["desktop_modules/module_books_shared"]
+        if SH and SH.invalidateSidecarCache then
+            SH.invalidateSidecarCache(closed_fp)
+        end
     end
 
     if HS._instance then
-        -- If Currently Reading is active: full refresh (keep_cache=false) so
-        -- prefetchBooks() re-reads the updated progress from the sidecar, but
-        -- pass books_only=true so _ctx_cache and _enabled_mods_cache are kept —
-        -- the set of enabled modules has not changed, only the book data has.
-        -- Stats-only (not currently_active): keep_cache=true skips even _buildCtx.
-        HS.refresh(not currently_active, true)
+        -- Determine what changed and use the narrowest refresh that covers it:
+        --   books_only  → book module(s) active; prefetchBooks() must re-run.
+        --   stats_only  → only stats modules active; SP.get() must re-run but
+        --                  no sidecar I/O is needed (_cached_books_state kept).
+        -- keep_cache is always false — we never want to reuse a stale _ctx_cache.
+        HS.refresh(false, book_mod_active, not book_mod_active)
     else
         -- Homescreen not visible yet — flag it for rebuild on next open.
         HS._stats_need_refresh = true

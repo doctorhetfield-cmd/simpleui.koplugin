@@ -298,7 +298,7 @@ M.id          = "collections"
 M.name        = _("Collections")
 M.label       = _("Collections")
 M.enabled_key = "collections"
-M.default_on  = true
+M.default_on  = false
 
 function M.setEnabled(pfx, on)
     G_reader_settings:saveSetting(pfx .. "collections", on)

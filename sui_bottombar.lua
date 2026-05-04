@@ -896,12 +896,16 @@ function M.onTabTap(plugin, action_id, fm_self)
     -- when the HS widget is shown, covering the bar update at that point.
     -- Also skip when already_active: the indicator is already correct and
     -- rebuilding the bar would allocate all widgets for an identical result.
+    -- Also skip when fm_self is an injected widget (Collections, History, etc.):
+    -- navigate() will close it and then call replaceBar on the real FM, so
+    -- painting the bar on the about-to-close widget is wasted work.
     local hs_open = (function()
         local HS = package.loaded["sui_homescreen"]
         return HS and HS._instance ~= nil
     end)()
+    local injected_open = fm_self ~= plugin.ui and fm_self._navbar_injected
     if fm_self._navbar_container and action_id ~= "homescreen" and not hs_open
-            and not already_active then
+            and not already_active and not injected_open then
         M.replaceBar(fm_self, M.buildBarWidget(action_id, tabs), tabs)
         -- setDirty(fm_self) covers the full screen and recurses into navbar_container.
         -- The previous double-dirty (navbar_container + fm_self) queued two e-ink cycles.
@@ -1231,9 +1235,11 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
             -- the tab again scrolls back to the top. Suppress onPathChanged in
             -- both cases (re-tap and cross-tab) because the bar was already
             -- rebuilt by onTabTap.
+            -- No refreshPath here: the item_table is already correct in memory
+            -- and nothing changed while the overlay was open, so a filesystem
+            -- scan would be redundant.
             target_fm._navbar_suppress_path_change = true
             pcall(function() fc:onGotoPage(1) end)
-            pcall(function() fc:refreshPath() end)
             target_fm._navbar_suppress_path_change = nil
         else
             target_fm._navbar_suppress_path_change = true
@@ -1289,6 +1295,12 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
     -- Close any open sub-window before navigating (non-HS case).
     if fm_self ~= fm then
         fm_self._navbar_closing_intentionally = true
+        -- Tell the FM's onCloseAllMenus handler that this close is driven by a
+        -- tab-navigation: it must skip its own replaceBar/setDirty because
+        -- navigate() will rebuild the bar immediately afterwards.
+        -- Without this flag, onCloseAllMenus fires a redundant buildBarWidget +
+        -- setDirty, causing a double (sometimes triple) bar rebuild per tap.
+        fm._navbar_tab_nav_in_progress = true
         -- Suppress the widget's close_callback for the duration of the
         -- programmatic close. KOReader's booklist/coll_list menus carry a
         -- close_callback that calls UIManager:close(self) again — executing it
@@ -1302,6 +1314,7 @@ function M.navigate(plugin, action_id, fm_self, tabs, force)
         end)
         fm_self.close_callback = saved_cb
         fm_self._navbar_closing_intentionally = nil
+        fm._navbar_tab_nav_in_progress = nil
     end
 
     if fm_self ~= fm and fm._navbar_container then
