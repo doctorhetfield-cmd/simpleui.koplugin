@@ -4,1766 +4,2201 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-04-14 21:00\n"
+"POT-Creation-Date: 2026-05-04 19:08\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: desktop_modules/module_reading_goals.lua:626
+#: desktop_modules/module_reading_goals.lua:701
 msgid "  Physical Books  (%d in %s)"
 msgstr ""
-#: desktop_modules/module_reading_goals.lua:641
+
+#: desktop_modules/module_reading_goals.lua:716
+msgid "  Set Goal  (%d hr/month)"
+msgstr ""
+
+#: desktop_modules/module_reading_goals.lua:731
 msgid "  Set Goal  (%d min/day)"
 msgstr ""
-#: desktop_modules/module_reading_goals.lua:620
+
+#: desktop_modules/module_reading_goals.lua:695
 msgid "  Set Goal  (%s)"
 msgstr ""
-#: desktop_modules/module_reading_goals.lua:640
+
+#: desktop_modules/module_reading_goals.lua:715
+#: desktop_modules/module_reading_goals.lua:730
 msgid "  Set Goal  (disabled)"
 msgstr ""
-#: desktop_modules/module_recent.lua:125
+
+#: desktop_modules/module_tbr.lua:358
+#: desktop_modules/module_recent.lua:129
 msgid "%d%%"
 msgstr ""
-#: desktop_modules/module_currently.lua:529
+
+#: desktop_modules/module_currently.lua:549
 #: desktop_modules/module_new_books.lua:182
-#: desktop_modules/module_coverdeck.lua:571
-#: desktop_modules/module_recent.lua:159
+#: desktop_modules/module_tbr.lua:388
+#: desktop_modules/module_coverdeck.lua:576
+#: desktop_modules/module_recent.lua:163
 msgid "%d%% Read"
 msgstr ""
-#: desktop_modules/module_currently.lua:605
+
+#: desktop_modules/module_currently.lua:625
 msgid "%s left"
 msgstr ""
-#: desktop_modules/module_currently.lua:553
-#: desktop_modules/module_currently.lua:603
-#: desktop_modules/module_reading_goals.lua:434
-#: desktop_modules/module_coverdeck.lua:576
+
+#: desktop_modules/module_currently.lua:573
+#: desktop_modules/module_currently.lua:623
+#: desktop_modules/module_coverdeck.lua:581
+#: desktop_modules/module_reading_goals.lua:463
+#: desktop_modules/module_reading_goals.lua:480
 msgid "%s read"
 msgstr ""
-#: desktop_modules/module_currently.lua:572
-#: desktop_modules/module_coverdeck.lua:582
+
+#: desktop_modules/module_currently.lua:592
+#: desktop_modules/module_coverdeck.lua:587
 msgid "%s remaining"
 msgstr ""
-#: sui_menu.lua:849
-msgid ""
-"A restart is required to apply the new bar size across all layouts.\n"
-"\n"
-"Restart now?"
+
+#: sui_menu.lua:934
+msgid "A restart is required to apply the new bar size across all layouts.\n\nRestart now?"
 msgstr ""
-#: sui_menu.lua:2221
+
+#: sui_menu.lua:2342
 msgid "About"
 msgstr ""
-#: desktop_modules/module_coverdeck.lua:750
+
+#: desktop_modules/module_coverdeck.lua:755
 msgid "Above"
 msgstr ""
-#: sui_menu.lua:1323
-#: desktop_modules/module_quick_actions.lua:293
+
+#: desktop_modules/module_action_list.lua:307
+msgid "Action List"
+msgstr ""
+
+#: sui_menu.lua:1408
+#: desktop_modules/module_action_list.lua:456
+#: desktop_modules/module_quick_actions.lua:308
 msgid "Add at least 2 actions to arrange."
 msgstr ""
-#: desktop_modules/module_tbr.lua:409
+
+#: desktop_modules/module_tbr.lua:568
 msgid "Add at least 2 books to arrange."
 msgstr ""
-#: desktop_modules/module_reading_stats.lua:485
+
+#: desktop_modules/module_reading_stats.lua:496
 msgid "Add at least 2 stats to arrange."
 msgstr ""
-#: desktop_modules/module_tbr.lua:265
+
+#: desktop_modules/module_tbr.lua:290
 msgid "Add to To Be Read"
 msgstr ""
-#: desktop_modules/module_reading_stats.lua:66
+
+#: desktop_modules/module_action_list.lua:382
+msgid "Alignment"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:71
 msgid "All time — Books"
 msgstr ""
-#: desktop_modules/module_reading_stats.lua:65
+
+#: desktop_modules/module_reading_stats.lua:70
 msgid "All time — Time"
 msgstr ""
-#: desktop_modules/module_reading_goals.lua:609
+
+#: desktop_modules/module_reading_goals.lua:684
 msgid "Annual Goal"
 msgstr ""
-#: sui_menu.lua:1233
-#: desktop_modules/module_reading_goals.lua:354
+
+#: sui_menu.lua:1318
+#: desktop_modules/module_reading_goals.lua:365
 msgid "Annual Reading Goal"
 msgstr ""
-#: sui_config.lua:1653
-#: sui_config.lua:1734
-#: sui_menu.lua:769
-#: sui_menu.lua:839
-#: sui_menu.lua:1740
-#: sui_menu.lua:1775
+
+#: sui_config.lua:1715
+#: sui_config.lua:1796
+#: sui_menu.lua:854
+#: sui_menu.lua:924
+#: sui_menu.lua:1826
+#: sui_menu.lua:1861
+#: desktop_modules/module_clock.lua:550
+#: desktop_modules/module_clock.lua:580
 msgid "Apply"
 msgstr ""
+
 #: desktop_modules/module_clock.lua:54
 msgid "April"
 msgstr ""
-#: desktop_modules/module_reading_stats.lua:482
+
+#: desktop_modules/module_reading_stats.lua:493
 msgid "Arrange"
 msgstr ""
-#: sui_menu.lua:1327
-#: desktop_modules/module_quick_actions.lua:305
+
+#: sui_menu.lua:1412
+#: desktop_modules/module_action_list.lua:468
+#: desktop_modules/module_quick_actions.lua:320
 msgid "Arrange %s"
 msgstr ""
-#: sui_menu.lua:1049
-#: sui_menu.lua:1100
-#: sui_menu.lua:1115
+
+#: sui_menu.lua:1134
+#: sui_menu.lua:1185
+#: sui_menu.lua:1200
 msgid "Arrange Buttons"
 msgstr ""
+
 #: desktop_modules/module_collections.lua:622
 #: desktop_modules/module_collections.lua:635
 msgid "Arrange Collections"
 msgstr ""
-#: sui_menu.lua:604
-#: sui_menu.lua:633
-#: sui_menu.lua:1317
-#: desktop_modules/module_currently.lua:863
-#: desktop_modules/module_currently.lua:887
-#: desktop_modules/module_quick_actions.lua:284
+
+#: sui_menu.lua:689
+#: sui_menu.lua:718
+#: sui_menu.lua:1402
+#: desktop_modules/module_currently.lua:883
+#: desktop_modules/module_currently.lua:907
+#: desktop_modules/module_action_list.lua:447
+#: desktop_modules/module_quick_actions.lua:299
 msgid "Arrange Items"
 msgstr ""
-#: sui_menu.lua:1582
+
+#: sui_menu.lua:1668
+#: sui_menu.lua:1784
 msgid "Arrange Modules"
 msgstr ""
-#: desktop_modules/module_reading_stats.lua:491
+
+#: desktop_modules/module_reading_stats.lua:502
 msgid "Arrange Reading Stats"
 msgstr ""
-#: desktop_modules/module_coverdeck.lua:774
-#: desktop_modules/module_coverdeck.lua:787
+
+#: desktop_modules/module_coverdeck.lua:779
+#: desktop_modules/module_coverdeck.lua:792
 msgid "Arrange Statistics"
 msgstr ""
-#: desktop_modules/module_tbr.lua:402
-#: desktop_modules/module_tbr.lua:421
+
+#: desktop_modules/module_tbr.lua:561
+#: desktop_modules/module_tbr.lua:580
 msgid "Arrange To Be Read list"
 msgstr ""
-#: sui_menu.lua:199
-#: sui_menu.lua:209
+
+#: sui_menu.lua:284
+#: sui_menu.lua:294
 msgid "Arrange tabs"
 msgstr ""
+
 #: desktop_modules/module_clock.lua:55
 msgid "August"
 msgstr ""
+
 #: desktop_modules/module_currently.lua:266
 msgid "Author"
 msgstr ""
-#: sui_menu.lua:2237
+
+#: sui_menu.lua:2358
 msgid "Author: %s"
 msgstr ""
+
 #: sui_config.lua:144
-#: sui_browsemeta.lua:57
+#: sui_browsemeta.lua:66
 msgid "Authors"
 msgstr ""
-#: sui_browsemeta.lua:742
-#: sui_foldercovers.lua:555
-#: sui_foldercovers.lua:620
+
+#: sui_browsemeta.lua:785
+#: sui_foldercovers.lua:423
+#: sui_foldercovers.lua:479
 #: desktop_modules/module_collections.lua:583
 msgid "Auto (first book)"
 msgstr ""
+
 #: sui_titlebar.lua:55
 msgid "Back"
 msgstr ""
+
 #: desktop_modules/module_collections.lua:662
 msgid "Badge position: Bottom"
 msgstr ""
+
 #: desktop_modules/module_collections.lua:663
 msgid "Badge position: Top"
 msgstr ""
+
 #: sui_config.lua:168
 msgid "Battery"
 msgstr ""
-#: desktop_modules/module_coverdeck.lua:758
+
+#: desktop_modules/module_clock.lua:564
+#: desktop_modules/module_clock.lua:565
+#: desktop_modules/module_clock.lua:573
+msgid "Battery Spacing"
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua:763
 msgid "Below"
 msgstr ""
-#: sui_quickactions.lua:619
+
+#: sui_quickactions.lua:550
 msgid "Book Info"
 msgstr ""
-#: sui_bottombar.lua:1029
+
+#: sui_bottombar.lua:1039
 msgid "Bookmark browser"
 msgstr ""
-#: sui_bottombar.lua:961
+
+#: sui_bottombar.lua:971
 msgid "Bookmark browser not available."
 msgstr ""
+
 #: sui_config.lua:139
 msgid "Bookmarks"
 msgstr ""
-#: desktop_modules/module_reading_goals.lua:355
+
+#: desktop_modules/module_reading_goals.lua:366
 msgid "Books to read in %s:"
 msgstr ""
-#: sui_menu.lua:1945
-#: sui_menu.lua:2080
-#: sui_menu.lua:2142
+
+#: sui_menu.lua:2062
+#: sui_menu.lua:2204
+#: sui_menu.lua:2266
 msgid "Bottom"
 msgstr ""
-#: sui_menu.lua:806
-#: sui_bottombar.lua:837
+
+#: sui_menu.lua:891
+#: sui_bottombar.lua:843
 msgid "Bottom Bar"
 msgstr ""
-#: sui_menu.lua:832
+
+#: sui_menu.lua:917
 msgid "Bottom Bar Size"
 msgstr ""
-#: sui_menu.lua:814
-msgid ""
-"Bottom Bar will be %s after restart.\n"
-"\n"
-"Restart now?"
+
+#: sui_menu.lua:899
+msgid "Bottom Bar will be %s after restart.\n\nRestart now?"
 msgstr ""
-#: sui_menu.lua:865
-#: sui_menu.lua:868
+
+#: sui_menu.lua:950
+#: sui_menu.lua:953
 msgid "Bottom Margin"
 msgstr ""
-#: sui_menu.lua:866
+
+#: sui_menu.lua:951
 msgid "Bottom Margin — %d%%"
 msgstr ""
+
 #: sui_config.lua:141
 #: sui_config.lua:167
 msgid "Brightness"
 msgstr ""
+
 #: sui_titlebar.lua:57
 msgid "Browse"
 msgstr ""
-#: sui_browsemeta.lua:421
+
+#: sui_browsemeta.lua:430
 msgid "Browse by"
 msgstr ""
-#: sui_menu.lua:1983
+
+#: sui_menu.lua:2100
 msgid "Browse by Author / Series"
 msgstr ""
-#: sui_bottombar.lua:1412
+
+#: sui_bottombar.lua:1431
 msgid "Browse by Authors/Series not available."
 msgstr ""
+
 #: sui_titlebar.lua:817
 msgid "Browse library"
 msgstr ""
-#: sui_menu.lua:1165
+
+#: sui_menu.lua:1250
 msgid "Button Size"
 msgstr ""
+
 #: sui_titlebar.lua:835
 msgid "By author"
 msgstr ""
+
 #: sui_titlebar.lua:848
 msgid "By series"
 msgstr ""
-#: sui_quickactions.lua:408
-#: sui_quickactions.lua:494
-#: sui_quickactions.lua:602
-#: sui_quickactions.lua:806
-#: sui_quickactions.lua:877
-#: sui_quickactions.lua:905
-#: sui_quickactions.lua:933
-#: sui_quickactions.lua:949
-#: sui_quickactions.lua:1061
-#: sui_quickactions.lua:1203
-#: sui_config.lua:1654
-#: sui_config.lua:1735
-#: sui_browsemeta.lua:774
-#: sui_menu.lua:566
-#: sui_menu.lua:770
-#: sui_menu.lua:840
-#: sui_menu.lua:1741
-#: sui_menu.lua:1776
-#: sui_bottombar.lua:1054
-#: sui_bottombar.lua:1765
-#: sui_updater.lua:421
-#: sui_updater.lua:438
-#: sui_foldercovers.lua:584
-#: sui_foldercovers.lua:651
+
+#: sui_config.lua:1716
+#: sui_config.lua:1797
+#: sui_browsemeta.lua:817
 #: sui_titlebar.lua:861
+#: sui_quickactions.lua:398
+#: sui_quickactions.lua:425
+#: sui_quickactions.lua:533
+#: sui_quickactions.lua:737
+#: sui_quickactions.lua:808
+#: sui_quickactions.lua:836
+#: sui_quickactions.lua:864
+#: sui_quickactions.lua:880
+#: sui_quickactions.lua:992
+#: sui_quickactions.lua:1134
+#: sui_menu.lua:651
+#: sui_menu.lua:855
+#: sui_menu.lua:925
+#: sui_menu.lua:1589
+#: sui_menu.lua:1827
+#: sui_menu.lua:1862
+#: sui_foldercovers.lua:451
+#: sui_foldercovers.lua:507
+#: sui_bottombar.lua:1064
+#: sui_bottombar.lua:1784
+#: sui_updater.lua:482
+#: sui_updater.lua:499
+#: desktop_modules/module_reading_goals.lua:369
+#: desktop_modules/module_reading_goals.lua:385
+#: desktop_modules/module_reading_goals.lua:402
+#: desktop_modules/module_reading_goals.lua:420
+#: desktop_modules/module_clock.lua:551
+#: desktop_modules/module_clock.lua:581
+#: desktop_modules/module_quote.lua:1121
 #: desktop_modules/module_collections.lua:609
-#: desktop_modules/module_reading_goals.lua:358
-#: desktop_modules/module_reading_goals.lua:374
-#: desktop_modules/module_reading_goals.lua:391
-#: desktop_modules/module_quote.lua:1115
 msgid "Cancel"
 msgstr ""
-#: desktop_modules/module_reading_stats.lua:433
+
+#: sui_menu.lua:1740
+msgid "Cannot place modules after Page 1 separator.\nPage 1 must always have at least 1 module."
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:444
 msgid "Cards"
 msgstr ""
-#: sui_menu.lua:620
-#: sui_menu.lua:2134
+
+#: sui_menu.lua:705
+#: sui_menu.lua:2258
+#: desktop_modules/module_action_list.lua:78
+#: desktop_modules/module_action_list.lua:393
 msgid "Center"
 msgstr ""
-#: sui_quickactions.lua:1110
+
+#: sui_quickactions.lua:1041
 msgid "Change Icons"
 msgstr ""
-#: sui_menu.lua:2242
+
+#: sui_menu.lua:2363
 msgid "Check for Updates"
 msgstr ""
-#: sui_updater.lua:460
+
+#: sui_updater.lua:606
 msgid "Checking for updates…"
 msgstr ""
+
+#: sui_menu.lua:1583
+msgid "Choose how many pages the homescreen has.\nEmpty pages stay empty. Modules keep their position."
+msgstr ""
+
 #: sui_config.lua:165
-#: desktop_modules/module_clock.lua:227
+#: desktop_modules/module_clock.lua:251
 msgid "Clock"
 msgstr ""
+
 #: sui_titlebar.lua:60
 msgid "Close"
 msgstr ""
-#: sui_quickactions.lua:527
+
+#: main.lua:721
+#: sui_patches.lua:2400
+msgid "Closing book…"
+msgstr ""
+
+#: sui_quickactions.lua:458
 msgid "Codepoint out of valid Unicode range (0–10FFFF)."
 msgstr ""
-#: sui_quickactions.lua:943
+
+#: sui_quickactions.lua:874
 msgid "Collection"
 msgstr ""
+
 #: desktop_modules/module_collections.lua:570
 #: desktop_modules/module_collections.lua:576
 msgid "Collection is empty."
 msgstr ""
-#: sui_quickactions.lua:1295
+
+#: sui_quickactions.lua:1226
 msgid "Collection not available: %s"
 msgstr ""
-#: sui_quickactions.lua:621
+
 #: sui_config.lua:135
-#: sui_bottombar.lua:1040
+#: sui_quickactions.lua:552
+#: sui_bottombar.lua:1050
 #: desktop_modules/module_collections.lua:298
 #: desktop_modules/module_collections.lua:299
 #: desktop_modules/module_collections.lua:318
 #: desktop_modules/module_collections.lua:620
 msgid "Collections"
 msgstr ""
-#: sui_patches.lua:1062
+
+#: sui_patches.lua:1107
 msgid "Collections (%1)"
 msgstr ""
-#: sui_bottombar.lua:1317
+
+#: sui_bottombar.lua:1336
 msgid "Collections not available."
 msgstr ""
-#: sui_menu.lua:1169
-#: desktop_modules/module_currently.lua:964
-#: desktop_modules/module_reading_goals.lua:596
+
+#: sui_menu.lua:1254
+#: desktop_modules/module_currently.lua:984
+#: desktop_modules/module_reading_goals.lua:671
 msgid "Compact"
 msgstr ""
-#: sui_quickactions.lua:417
+
+#: sui_quickactions.lua:397
 msgid "Confirm"
 msgstr ""
+
 #: sui_config.lua:137
 msgid "Continue"
 msgstr ""
-#: desktop_modules/module_coverdeck.lua:325
+
+#: desktop_modules/module_coverdeck.lua:310
 msgid "Cover Deck"
 msgstr ""
+
 #: desktop_modules/module_collections.lua:613
 msgid "Cover for \"%s\""
 msgstr ""
-#: desktop_modules/module_collections.lua:651
-#: desktop_modules/module_collections.lua:653
-#: desktop_modules/module_currently.lua:811
-#: desktop_modules/module_currently.lua:813
+
+#: desktop_modules/module_currently.lua:831
+#: desktop_modules/module_currently.lua:833
 #: desktop_modules/module_new_books.lua:260
 #: desktop_modules/module_new_books.lua:262
-#: desktop_modules/module_coverdeck.lua:707
-#: desktop_modules/module_coverdeck.lua:708
-#: desktop_modules/module_recent.lua:256
-#: desktop_modules/module_recent.lua:258
+#: desktop_modules/module_tbr.lua:521
+#: desktop_modules/module_tbr.lua:523
+#: desktop_modules/module_coverdeck.lua:712
+#: desktop_modules/module_coverdeck.lua:713
+#: desktop_modules/module_recent.lua:260
+#: desktop_modules/module_recent.lua:262
+#: desktop_modules/module_collections.lua:651
+#: desktop_modules/module_collections.lua:653
 msgid "Cover size"
 msgstr ""
-#: sui_quickactions.lua:1119
+
+#: sui_quickactions.lua:1050
 msgid "Create Quick Action"
 msgstr ""
-#: sui_config.lua:1762
-#: desktop_modules/module_currently.lua:296
-#: desktop_modules/module_currently.lua:297
-#: desktop_modules/module_currently.lua:402
-#: desktop_modules/module_currently.lua:981
+
+#: sui_config.lua:1824
+#: desktop_modules/module_currently.lua:301
+#: desktop_modules/module_currently.lua:302
+#: desktop_modules/module_currently.lua:414
+#: desktop_modules/module_currently.lua:1001
 msgid "Currently Reading"
 msgstr ""
+
 #: sui_config.lua:561
 msgid "Custom"
 msgstr ""
-#: desktop_modules/module_quote.lua:1262
+
+#: desktop_modules/module_quote.lua:1268
 msgid "Custom File"
 msgstr ""
+
 #: sui_config.lua:171
-#: sui_menu.lua:558
+#: sui_menu.lua:643
 msgid "Custom Text"
 msgstr ""
-#: sui_menu.lua:1142
+
+#: sui_menu.lua:1227
 msgid "Custom Title Bar"
 msgstr ""
-#: sui_menu.lua:1153
-msgid ""
-"Custom Title Bar will be %s after restart.\n"
-"\n"
-"Restart now?"
+
+#: sui_menu.lua:1238
+msgid "Custom Title Bar will be %s after restart.\n\nRestart now?"
 msgstr ""
-#: desktop_modules/module_reading_goals.lua:630
+
+#: desktop_modules/module_reading_goals.lua:720
 msgid "Daily Goal"
 msgstr ""
-#: desktop_modules/module_reading_goals.lua:388
+
+#: desktop_modules/module_reading_goals.lua:417
 msgid "Daily Reading Goal"
 msgstr ""
-#: desktop_modules/module_reading_stats.lua:64
+
+#: desktop_modules/module_reading_stats.lua:66
 msgid "Daily avg — Pages"
 msgstr ""
-#: desktop_modules/module_reading_stats.lua:63
+
+#: desktop_modules/module_reading_stats.lua:65
 msgid "Daily avg — Time"
 msgstr ""
+
+#: desktop_modules/module_clock.lua:534
+#: desktop_modules/module_clock.lua:535
+#: desktop_modules/module_clock.lua:543
+msgid "Date Spacing"
+msgstr ""
+
 #: desktop_modules/module_currently.lua:269
-#: desktop_modules/module_coverdeck.lua:76
+#: desktop_modules/module_coverdeck.lua:75
 msgid "Days of reading"
 msgstr ""
+
 #: desktop_modules/module_clock.lua:56
 msgid "December"
 msgstr ""
-#: sui_quickactions.lua:562
-#: sui_menu.lua:356
-#: sui_menu.lua:485
-#: sui_menu.lua:1170
+
 #: sui_titlebar.lua:821
-#: desktop_modules/module_currently.lua:954
-#: desktop_modules/module_reading_goals.lua:588
-#: desktop_modules/module_quick_actions.lua:406
-#: desktop_modules/module_quick_actions.lua:411
+#: sui_quickactions.lua:493
+#: sui_menu.lua:441
+#: sui_menu.lua:570
+#: sui_menu.lua:1255
+#: desktop_modules/module_currently.lua:974
+#: desktop_modules/module_reading_goals.lua:663
+#: desktop_modules/module_quick_actions.lua:421
+#: desktop_modules/module_quick_actions.lua:426
 msgid "Default"
 msgstr ""
-#: sui_quickactions.lua:851
-#: sui_quickactions.lua:870
+
+#: sui_quickactions.lua:782
+#: sui_quickactions.lua:801
 msgid "Default (Folder)"
 msgstr ""
-#: sui_quickactions.lua:897
+
+#: sui_quickactions.lua:828
 msgid "Default (Plugin)"
 msgstr ""
-#: sui_quickactions.lua:925
+
+#: sui_quickactions.lua:856
 msgid "Default (System)"
 msgstr ""
-#: desktop_modules/module_quote.lua:1198
+
+#: desktop_modules/module_quote.lua:1204
 msgid "Default Quotes"
 msgstr ""
-#: sui_quickactions.lua:1197
-#: sui_quickactions.lua:1202
+
+#: sui_quickactions.lua:1128
+#: sui_quickactions.lua:1133
 msgid "Delete"
 msgstr ""
-#: sui_quickactions.lua:1201
+
+#: sui_quickactions.lua:1132
 msgid "Delete quick action \"%s\"?"
 msgstr ""
-#: sui_quickactions.lua:624
+
+#: sui_quickactions.lua:555
 msgid "Dictionary Lookup"
 msgstr ""
-#: sui_menu.lua:1234
+
+#: sui_menu.lua:1319
 msgid "Digital Goal  (%s)"
 msgstr ""
-#: sui_menu.lua:1760
+
+#: sui_menu.lua:1846
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
 msgstr ""
-#: sui_config.lua:1638
+
+#: sui_config.lua:1700
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
 msgstr ""
+
 #: sui_config.lua:169
 msgid "Disk Usage"
 msgstr ""
-#: sui_quickactions.lua:1256
+
+#: sui_quickactions.lua:1187
 msgid "Dispatcher not available."
 msgstr ""
-#: sui_menu.lua:393
+
+#: sui_menu.lua:478
 msgid "Dot Pager"
 msgstr ""
-#: sui_updater.lua:437
+
+#: sui_updater.lua:498
 msgid "Download and install"
 msgstr ""
-#: sui_updater.lua:348
+
+#: sui_updater.lua:497
+msgid "Download and install now?"
+msgstr ""
+
+#: sui_updater.lua:419
 msgid "Download error: "
 msgstr ""
-#: sui_updater.lua:323
+
+#: sui_updater.lua:393
 msgid "Downloading Simple UI %s…"
 msgstr ""
-#: sui_quickactions.lua:1187
+
+#: sui_quickactions.lua:1118
 msgid "Edit"
 msgstr ""
-#: sui_menu.lua:550
-#: sui_menu.lua:552
+
+#: sui_menu.lua:635
+#: sui_menu.lua:637
 msgid "Edit Custom Text"
 msgstr ""
-#: sui_quickactions.lua:752
+
+#: sui_quickactions.lua:683
 msgid "Edit Quick Action"
 msgstr ""
-#: sui_bottombar.lua:1416
+
+#: sui_bottombar.lua:1435
 msgid "Enable 'Browse by Author / Series' in the library menu first."
 msgstr ""
-#: sui_quickactions.lua:422
-msgid ""
-"Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\n"
-"You can look up codes with wakamaifondue.com using the file:\n"
-"  /koreader/fonts/nerdfonts/symbols.ttf\n"
-"Leave blank and press OK to remove a Nerd Font icon."
+
+#: sui_menu.lua:1687
+#: sui_menu.lua:1747
+msgid "Enable at least 2 modules to arrange."
 msgstr ""
-#: sui_updater.lua:466
+
+#: sui_quickactions.lua:422
+msgid "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\nYou can look up codes with wakamaifondue.com using the file:\n  /koreader/fonts/nerdfonts/symbols.ttf\nLeave blank and press OK to remove a Nerd Font icon."
+msgstr ""
+
+#: sui_updater.lua:611
 msgid "Error checking for updates."
 msgstr ""
-#: sui_updater.lua:471
+
+#: sui_updater.lua:616
 msgid "Error checking for updates: "
 msgstr ""
-#: sui_menu.lua:461
+
+#: sui_menu.lua:546
 msgid "Extra Small"
 msgstr ""
-#: sui_updater.lua:350
+
+#: sui_updater.lua:420
 msgid "Extraction error: "
 msgstr ""
-#: sui_quickactions.lua:620
+
 #: sui_config.lua:138
+#: sui_quickactions.lua:551
 msgid "Favorites"
 msgstr ""
-#: sui_bottombar.lua:1367
+
+#: sui_bottombar.lua:1386
 msgid "Favorites not available."
 msgstr ""
+
 #: desktop_modules/module_clock.lua:54
 msgid "February"
 msgstr ""
-#: sui_bottombar.lua:983
-msgid "Fetching bookmarks\\xe2\\x80\\xa6"
+
+#: sui_bottombar.lua:993
+msgid "Fetching bookmarks\xe2\x80\xa6"
 msgstr ""
-#: sui_quickactions.lua:622
+
+#: sui_quickactions.lua:553
 msgid "File Search"
 msgstr ""
-#: desktop_modules/module_reading_stats.lua:443
-#: desktop_modules/module_quick_actions.lua:406
-#: desktop_modules/module_quick_actions.lua:420
+
+#: desktop_modules/module_reading_stats.lua:454
+#: desktop_modules/module_quick_actions.lua:421
+#: desktop_modules/module_quick_actions.lua:435
 msgid "Flat"
 msgstr ""
-#: sui_quickactions.lua:941
+
+#: sui_quickactions.lua:872
 msgid "Folder"
 msgstr ""
-#: sui_menu.lua:2023
+
+#: sui_menu.lua:2147
 msgid "Folder Covers"
 msgstr ""
-#: sui_menu.lua:2102
+
+#: sui_menu.lua:2226
 msgid "Folder Name"
 msgstr ""
-#: sui_menu.lua:2154
+
+#: sui_menu.lua:2278
 msgid "Folder Name Text Size"
 msgstr ""
-#: sui_quickactions.lua:623
+
+#: sui_quickactions.lua:554
 msgid "Folder Shortcuts"
 msgstr ""
-#: sui_foldercovers.lua:656
+
+#: sui_foldercovers.lua:511
 msgid "Folder cover"
 msgstr ""
+
 #: desktop_modules/module_clock.lua:51
 msgid "Friday"
 msgstr ""
-#: sui_bottombar.lua:1527
+
+#: sui_bottombar.lua:1546
 msgid "Frontlight not available on this device."
 msgstr ""
-#: sui_menu.lua:353
+
+#: sui_menu.lua:438
 msgid "General"
 msgstr ""
-#: sui_menu.lua:1734
-msgid ""
-"Global scale for all modules.\n"
-"Individual overrides in Module Settings take precedence.\n"
-"100% is the default size."
+
+#: sui_menu.lua:1820
+msgid "Global scale for all modules.\nIndividual overrides in Module Settings take precedence.\n100% is the default size."
 msgstr ""
-#: sui_menu.lua:2043
+
+#: sui_menu.lua:2167
 msgid "Group Books by Series"
 msgstr ""
-#: sui_menu.lua:833
-msgid ""
-"Height of the bottom navigation bar.\n"
-"100% is the default size."
+
+#: sui_menu.lua:918
+msgid "Height of the bottom navigation bar.\n100% is the default size."
 msgstr ""
-#: sui_menu.lua:763
-msgid ""
-"Height of the top status bar.\n"
-"100% is the default size."
+
+#: sui_menu.lua:848
+msgid "Height of the top status bar.\n100% is the default size."
 msgstr ""
-#: sui_menu.lua:377
-#: sui_menu.lua:436
-#: sui_menu.lua:925
-#: sui_menu.lua:2061
-#: sui_menu.lua:2105
+
+#: sui_menu.lua:462
+#: sui_menu.lua:521
+#: sui_menu.lua:1010
+#: sui_menu.lua:2185
+#: sui_menu.lua:2229
 msgid "Hidden"
 msgstr ""
-#: sui_menu.lua:1350
-#: desktop_modules/module_quick_actions.lua:334
+
+#: desktop_modules/module_action_list.lua:370
+msgid "Hide Icon"
+msgstr ""
+
+#: sui_menu.lua:1435
+#: desktop_modules/module_quick_actions.lua:349
 msgid "Hide Text"
 msgstr ""
-#: sui_menu.lua:532
+
+#: sui_menu.lua:617
 msgid "Hide Wi-Fi icon when off"
 msgstr ""
-#: sui_menu.lua:2176
+
+#: sui_menu.lua:2300
 msgid "Hide selection underline"
 msgstr ""
-#: sui_menu.lua:444
-msgid ""
-"Hides the pagination bar on the homescreen.\n"
-"Not available when Navpager is active."
+
+#: sui_menu.lua:529
+msgid "Hides the pagination bar on the homescreen.\nNot available when Navpager is active."
 msgstr ""
-#: sui_quickactions.lua:618
+
 #: sui_config.lua:136
-#: sui_bottombar.lua:1033
+#: sui_quickactions.lua:549
+#: sui_bottombar.lua:1043
 msgid "History"
 msgstr ""
-#: sui_bottombar.lua:1321
+
+#: sui_bottombar.lua:1340
 msgid "History not available."
 msgstr ""
+
 #: sui_config.lua:134
 msgid "Home"
 msgstr ""
-#: sui_patches.lua:659
-#: sui_patches.lua:682
-#: sui_menu.lua:390
-#: sui_menu.lua:1825
-#: sui_menu.lua:1943
+
+#: sui_patches.lua:700
+#: sui_patches.lua:727
+#: sui_menu.lua:475
+#: sui_menu.lua:1911
+#: sui_menu.lua:2060
 msgid "Home Screen"
 msgstr ""
-#: sui_bottombar.lua:1050
+
+#: sui_bottombar.lua:1060
 msgid "Home folder"
 msgstr ""
-#: sui_bottombar.lua:1052
+
+#: sui_bottombar.lua:1062
 msgid "Home folder + subfolders"
 msgstr ""
-#: sui_homescreen.lua:1080
+
+#: sui_homescreen.lua:1081
 msgid "Homescreen"
 msgstr ""
-#: sui_bottombar.lua:1362
+
+#: sui_bottombar.lua:1381
 msgid "Homescreen not available."
 msgstr ""
-#: sui_quickactions.lua:761
-#: sui_quickactions.lua:765
+
+#: desktop_modules/module_reading_goals.lua:400
+msgid "Hours per month:"
+msgstr ""
+
+#: sui_quickactions.lua:692
+#: sui_quickactions.lua:696
 msgid "Icon"
 msgstr ""
-#: sui_menu.lua:887
-#: sui_menu.lua:890
+
+#: sui_menu.lua:972
+#: sui_menu.lua:975
 msgid "Icon Size"
 msgstr ""
-#: sui_menu.lua:888
+
+#: sui_menu.lua:973
 msgid "Icon Size — %d%%"
 msgstr ""
-#: sui_quickactions.lua:756
+
+#: sui_quickactions.lua:687
 msgid "Icon: Default"
 msgstr ""
-#: sui_menu.lua:107
+
+#: sui_menu.lua:192
 msgid "Icons"
 msgstr ""
-#: sui_menu.lua:108
+
+#: sui_menu.lua:193
 msgid "Icons only"
 msgstr ""
-#: sui_menu.lua:1062
-msgid ""
-"Invalid arrangement.\n"
-"Keep items between the Left and Right separators."
+
+#: sui_menu.lua:1147
+msgid "Invalid arrangement.\nKeep items between the Left and Right separators."
 msgstr ""
-#: sui_menu.lua:647
-msgid ""
-"Invalid arrangement.\n"
-"Keep the Left, Center and Right separators in order."
+
+#: sui_menu.lua:732
+msgid "Invalid arrangement.\nKeep the Left, Center and Right separators in order."
 msgstr ""
-#: sui_quickactions.lua:533
+
+#: sui_quickactions.lua:464
 msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
 msgstr ""
-#: sui_menu.lua:782
-#: sui_menu.lua:1360
-#: desktop_modules/module_currently.lua:983
-#: desktop_modules/module_coverdeck.lua:769
-#: desktop_modules/module_quick_actions.lua:344
+
+#: sui_menu.lua:867
+#: sui_menu.lua:1445
+#: desktop_modules/module_currently.lua:1003
+#: desktop_modules/module_action_list.lua:501
+#: desktop_modules/module_coverdeck.lua:774
+#: desktop_modules/module_quick_actions.lua:359
 msgid "Items"
 msgstr ""
+
 #: desktop_modules/module_clock.lua:54
 msgid "January"
 msgstr ""
+
 #: desktop_modules/module_clock.lua:55
 msgid "July"
 msgstr ""
+
 #: desktop_modules/module_clock.lua:55
 msgid "June"
 msgstr ""
-#: sui_menu.lua:414
+
+#: sui_menu.lua:499
 msgid "KOReader"
 msgstr ""
-#: sui_menu.lua:1768
+
+#: sui_menu.lua:1854
 msgid "Label Scale"
 msgstr ""
-#: sui_menu.lua:907
-#: sui_menu.lua:910
+
+#: sui_menu.lua:992
+#: sui_menu.lua:995
 msgid "Label Size"
 msgstr ""
-#: sui_menu.lua:908
+
+#: sui_menu.lua:993
 msgid "Label Size — %d%%"
 msgstr ""
-#: sui_menu.lua:1753
+
+#: sui_menu.lua:1839
 msgid "Labels"
 msgstr ""
-#: sui_menu.lua:1171
+
+#: sui_menu.lua:1256
 msgid "Large"
 msgstr ""
-#: sui_menu.lua:341
-#: sui_menu.lua:746
-#: sui_menu.lua:815
-#: sui_menu.lua:851
-#: sui_menu.lua:1157
-#: sui_menu.lua:1924
-#: sui_updater.lua:361
+
+#: sui_menu.lua:426
+#: sui_menu.lua:831
+#: sui_menu.lua:900
+#: sui_menu.lua:936
+#: sui_menu.lua:1242
+#: sui_menu.lua:2022
+#: sui_menu.lua:2050
+#: sui_updater.lua:431
 msgid "Later"
 msgstr ""
-#: sui_menu.lua:614
-#: sui_menu.lua:1032
+
+#: sui_menu.lua:699
+#: sui_menu.lua:1117
+#: desktop_modules/module_action_list.lua:76
+#: desktop_modules/module_action_list.lua:387
 msgid "Left"
 msgstr ""
+
 #: sui_config.lua:133
 #: sui_config.lua:409
-#: sui_menu.lua:1964
 #: sui_titlebar.lua:967
+#: sui_menu.lua:2081
 msgid "Library"
 msgstr ""
-#: sui_menu.lua:1175
+
+#: sui_menu.lua:1260
 msgid "Library Buttons"
 msgstr ""
-#: desktop_modules/module_reading_stats.lua:453
+
+#: desktop_modules/module_reading_stats.lua:464
 msgid "List"
 msgstr ""
-#: sui_menu.lua:1714
+
+#: sui_menu.lua:1800
 msgid "Lock Scale"
 msgstr ""
+
 #: desktop_modules/module_clock.lua:54
 msgid "March"
 msgstr ""
+
 #: desktop_modules/module_collections.lua:709
 msgid "Maximum 5 collections. Remove one first."
 msgstr ""
+
 #: desktop_modules/module_clock.lua:55
 msgid "May"
 msgstr ""
+
 #: sui_titlebar.lua:54
 #: sui_titlebar.lua:59
 msgid "Menu"
 msgstr ""
-#: sui_menu.lua:265
+
+#: sui_menu.lua:350
 msgid "Minimum 1 tab required in navpager mode."
 msgstr ""
-#: sui_menu.lua:266
+
+#: sui_menu.lua:351
 msgid "Minimum 2 tabs required. Select another tab first."
 msgstr ""
-#: desktop_modules/module_reading_goals.lua:389
+
+#: desktop_modules/module_reading_goals.lua:418
 msgid "Minutes per day:"
 msgstr ""
-#: sui_menu.lua:1731
+
+#: sui_menu.lua:1817
 msgid "Module Scale"
 msgstr ""
-#: sui_menu.lua:1706
+
+#: sui_menu.lua:1792
 msgid "Module Settings"
 msgstr ""
-#: sui_menu.lua:1725
+
+#: sui_menu.lua:1811
 msgid "Modules"
 msgstr ""
-#: sui_menu.lua:1477
+
+#: sui_menu.lua:1563
 msgid "Modules  (%d)"
 msgstr ""
+
+#: sui_homescreen.lua:2445
+msgid "Modules exceed the visible area.\nMove some to another page or adjust the scale."
+msgstr ""
+
 #: desktop_modules/module_clock.lua:50
 msgid "Monday"
 msgstr ""
-#: desktop_modules/module_quote.lua:1218
+
+#: desktop_modules/module_reading_goals.lua:705
+msgid "Monthly Goal"
+msgstr ""
+
+#: desktop_modules/module_reading_goals.lua:399
+msgid "Monthly Reading Goal"
+msgstr ""
+
+#: desktop_modules/module_quote.lua:1224
 msgid "My Highlights"
 msgstr ""
-#: sui_quickactions.lua:850
-#: sui_quickactions.lua:869
-#: sui_quickactions.lua:896
-#: sui_quickactions.lua:924
+
+#: sui_quickactions.lua:781
+#: sui_quickactions.lua:800
+#: sui_quickactions.lua:827
+#: sui_quickactions.lua:855
 msgid "Name"
 msgstr ""
-#: sui_menu.lua:1947
+
+#: sui_menu.lua:2064
 msgid "Navigation Bar"
 msgstr ""
-#: sui_menu.lua:366
+
+#: sui_menu.lua:451
 msgid "Navpager"
 msgstr ""
-#: sui_menu.lua:373
-msgid ""
-"Navpager enabled.\n"
-"\n"
-"Restart now?"
+
+#: sui_menu.lua:458
+msgid "Navpager enabled.\n\nRestart now?"
 msgstr ""
+
 #: sui_quickactions.lua:419
 msgid "Nerd Font Icon"
 msgstr ""
-#: sui_quickactions.lua:573
+
+#: sui_quickactions.lua:504
 msgid "Nerd Font symbol…"
 msgstr ""
-#: sui_bottombar.lua:1454
+
+#: sui_bottombar.lua:1473
 msgid "Network manager unavailable."
 msgstr ""
+
 #: desktop_modules/module_new_books.lua:180
 msgid "New"
 msgstr ""
+
 #: desktop_modules/module_new_books.lua:46
 #: desktop_modules/module_new_books.lua:47
 #: desktop_modules/module_new_books.lua:107
 #: desktop_modules/module_new_books.lua:280
 msgid "New Books"
 msgstr ""
-#: sui_quickactions.lua:752
+
+#: sui_quickactions.lua:683
 msgid "New Quick Action"
 msgstr ""
-#: sui_quickactions.lua:1058
+
+#: sui_quickactions.lua:989
 msgid "New name…"
 msgstr ""
-#: sui_bottombar.lua:288
+
+#: sui_bottombar.lua:295
 msgid "Next"
 msgstr ""
-#: desktop_modules/module_quote.lua:1275
+
+#: desktop_modules/module_quote.lua:1281
 msgid "No .lua files found in custom_quotes/"
 msgstr ""
-#: sui_updater.lua:419
-msgid ""
-"No automatic update file was found.\n"
-"\n"
-"Open the releases page on GitHub?"
-msgstr ""
-#: sui_bottombar.lua:1389
-msgid "No book in history."
-msgstr ""
-#: sui_foldercovers.lua:609
-msgid "No books found in this folder."
-msgstr ""
-#: sui_foldercovers.lua:544
-msgid "No books found in this series."
-msgstr ""
-#: sui_browsemeta.lua:731
-msgid "No books found."
-msgstr ""
-#: desktop_modules/module_tbr.lua:455
-msgid "No books in To Be Read list."
-msgstr ""
-#: sui_homescreen.lua:190
-msgid "No books opened yet"
-msgstr ""
-#: desktop_modules/module_collections.lua:673
-msgid "No collections found."
-msgstr ""
-#: desktop_modules/module_collections.lua:378
-msgid "No collections selected"
-msgstr ""
-#: desktop_modules/module_quote.lua:831
-msgid "No custom quotes found. Add a .lua file to the plugin\\'s desktop_modules/custom_quotes/ folder and select it in Settings."
-msgstr ""
-#: sui_quickactions.lua:1302
-msgid ""
-"No folder, collection or plugin configured.\n"
-"Go to Simple UI \\xe2\\x86\\x92 Settings \\xe2\\x86\\x92 Quick Actions to set one."
-msgstr ""
-#: desktop_modules/module_quote.lua:895
-msgid "No highlights found. Open a book and highlight some passages."
-msgstr ""
-#: sui_quickactions.lua:586
-msgid "No icons found in:"
-msgstr ""
-#: sui_quickactions.lua:886
-msgid "No plugins found."
-msgstr ""
-#: desktop_modules/module_quote.lua:861
-msgid "No quotes found."
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:286
-msgid "No stats selected"
-msgstr ""
-#: sui_quickactions.lua:914
-msgid "No system actions found."
-msgstr ""
-#: desktop_modules/module_clock.lua:56
-msgid "November"
-msgstr ""
-#: sui_menu.lua:2058
-msgid "Number of Books in Folder"
-msgstr ""
-#: sui_menu.lua:1482
-#: sui_menu.lua:2090
-msgid "Number of Pages"
-msgstr ""
-#: sui_menu.lua:500
-msgid "Number of Pages in Title Bar Always"
-msgstr ""
-#: sui_quickactions.lua:501
-msgid "OK"
-msgstr ""
-#: desktop_modules/module_clock.lua:56
-msgid "October"
-msgstr ""
-#: sui_menu.lua:737
-#: sui_menu.lua:806
-#: sui_menu.lua:996
-#: sui_menu.lua:1142
-#: sui_menu.lua:1825
-#: sui_menu.lua:1906
-msgid "Off"
-msgstr ""
-#: sui_menu.lua:737
-#: sui_menu.lua:806
-#: sui_menu.lua:996
-#: sui_menu.lua:1142
-#: sui_menu.lua:1825
-#: sui_menu.lua:1906
-msgid "On"
-msgstr ""
-#: sui_homescreen.lua:420
-#: desktop_modules/module_quote.lua:1114
-msgid "Open"
-msgstr ""
-#: sui_homescreen.lua:199
-msgid "Open a book to get started"
-msgstr ""
-#: sui_updater.lua:420
-msgid "Open in browser"
-msgstr ""
-#: sui_homescreen.lua:419
-#: desktop_modules/module_quote.lua:1113
-msgid "Open this file?"
-msgstr ""
-#: sui_menu.lua:2054
-msgid "Overlays"
-msgstr ""
-#: sui_patches.lua:1404
-#: sui_patches.lua:1759
-#: sui_homescreen.lua:1673
-msgid "Page %1 of %2"
-msgstr ""
-#: sui_menu.lua:1948
-msgid "Pagination Bar"
-msgstr ""
-#: sui_menu.lua:383
-msgid ""
-"Pagination bar hidden.\n"
-"\n"
-"Restart now?"
-msgstr ""
-#: sui_menu.lua:362
-msgid ""
-"Pagination bar set to Default.\n"
-"\n"
-"Restart now?"
-msgstr ""
-#: sui_menu.lua:469
-#: sui_menu.lua:481
-#: sui_menu.lua:493
-msgid ""
-"Pagination bar size will change after restart.\n"
-"\n"
-"Restart now?"
-msgstr ""
-#: sui_quickactions.lua:833
-msgid "Path chooser not available."
-msgstr ""
-#: desktop_modules/module_recent.lua:304
-msgid "Percentage overlay on cover"
-msgstr ""
-#: desktop_modules/module_currently.lua:268
-#: desktop_modules/module_currently.lua:911
-#: desktop_modules/module_coverdeck.lua:75
-msgid "Percentage read"
-msgstr ""
-#: desktop_modules/module_recent.lua:294
-msgid "Percentage text"
-msgstr ""
-#: desktop_modules/module_reading_goals.lua:371
-msgid "Physical Books — %s"
-msgstr ""
-#: desktop_modules/module_reading_goals.lua:372
-msgid "Physical books read this year:"
-msgstr ""
-#: desktop_modules/module_quote.lua:1300
-msgid "Place .lua files in the plugin's desktop_modules/custom_quotes/ folder"
-msgstr ""
-#: sui_menu.lua:2183
-msgid "Placeholder cover for bookless folders"
-msgstr ""
-#: sui_quickactions.lua:945
-msgid "Plugin"
-msgstr ""
-#: sui_quickactions.lua:1287
-msgid "Plugin error: %s"
-msgstr ""
-#: sui_quickactions.lua:1289
-msgid "Plugin not available: %s"
-msgstr ""
-#: sui_config.lua:143
-msgid "Power"
-msgstr ""
-#: sui_bottombar.lua:288
-msgid "Prev"
-msgstr ""
-#: desktop_modules/module_currently.lua:267
-#: desktop_modules/module_recent.lua:284
-msgid "Progress bar"
-msgstr ""
-#: desktop_modules/module_currently.lua:923
-msgid "Progress bar style"
-msgstr ""
-#: sui_menu.lua:1455
-#: sui_menu.lua:1955
-msgid "Quick Actions"
-msgstr ""
-#: sui_menu.lua:1959
-msgid "Quick Actions  (%d/%d — %d left)"
-msgstr ""
-#: sui_menu.lua:1957
-msgid "Quick Actions  (%d/%d — at limit)"
-msgstr ""
-#: sui_menu.lua:1293
-#: desktop_modules/module_quick_actions.lua:199
-#: desktop_modules/module_quick_actions.lua:249
-msgid "Quick Actions %d"
-msgstr ""
-#: sui_bottombar.lua:1756
-msgid "Quit"
-msgstr ""
-#: desktop_modules/module_quote.lua:971
-msgid "Quote of the Day"
-msgstr ""
-#: desktop_modules/module_quote.lua:1240
-msgid "Quotes + My Highlights"
-msgstr ""
-#: sui_config.lua:170
-msgid "RAM Usage"
-msgstr ""
-#: desktop_modules/module_reading_goals.lua:443
-#: desktop_modules/module_reading_goals.lua:444
-#: desktop_modules/module_reading_goals.lua:469
-#: desktop_modules/module_reading_goals.lua:608
-msgid "Reading Goals"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:218
-msgid "Reading Stats"
-msgstr ""
-#: desktop_modules/module_coverdeck.lua:728
-#: desktop_modules/module_recent.lua:62
-#: desktop_modules/module_recent.lua:63
-#: desktop_modules/module_recent.lua:72
-#: desktop_modules/module_recent.lua:281
-msgid "Recent Books"
-msgstr ""
-#: desktop_modules/module_tbr.lua:265
-msgid "Remove from To Be Read"
-msgstr ""
-#: sui_quickactions.lua:1056
-#: sui_quickactions.lua:1114
-msgid "Rename"
-msgstr ""
-#: sui_menu.lua:369
-msgid ""
-"Replaces the pagination bar with Prev/Next arrows at the edges of the bottom bar.\n"
-"The arrows dim when there is no previous or next page.\n"
-"With navpager active, as few as 1 tab and at most 4 tabs can be configured."
-msgstr ""
-#: sui_quickactions.lua:1065
-#: sui_menu.lua:1796
-msgid "Reset"
-msgstr ""
-#: sui_menu.lua:1795
-msgid "Reset all scales to default (100%)? This cannot be undone."
-msgstr ""
-#: sui_menu.lua:1790
-msgid "Reset to Default Scale"
-msgstr ""
-#: sui_menu.lua:341
-#: sui_menu.lua:746
-#: sui_menu.lua:815
-#: sui_menu.lua:850
-#: sui_menu.lua:1156
-#: sui_menu.lua:1924
-#: sui_bottombar.lua:1735
-#: sui_updater.lua:360
-msgid "Restart"
-msgstr ""
-#: sui_menu.lua:1845
-msgid "Return to Book Folder"
-msgstr ""
-#: sui_menu.lua:626
-#: sui_menu.lua:1040
-msgid "Right"
-msgstr ""
-#: desktop_modules/module_clock.lua:51
-msgid "Saturday"
-msgstr ""
-#: sui_quickactions.lua:808
-#: sui_quickactions.lua:1076
-#: desktop_modules/module_reading_goals.lua:358
-#: desktop_modules/module_reading_goals.lua:374
-#: desktop_modules/module_reading_goals.lua:391
-msgid "Save"
-msgstr ""
-#: sui_menu.lua:1710
-#: desktop_modules/module_reading_stats.lua:389
-#: desktop_modules/module_reading_stats.lua:391
-#: desktop_modules/module_collections.lua:500
-#: desktop_modules/module_collections.lua:502
-#: desktop_modules/module_currently.lua:797
-#: desktop_modules/module_currently.lua:799
-#: desktop_modules/module_new_books.lua:246
-#: desktop_modules/module_new_books.lua:248
-#: desktop_modules/module_reading_goals.lua:568
-#: desktop_modules/module_reading_goals.lua:570
-#: desktop_modules/module_clock.lua:461
-#: desktop_modules/module_clock.lua:463
-#: desktop_modules/module_tbr.lua:362
-#: desktop_modules/module_tbr.lua:364
-#: desktop_modules/module_quote.lua:1160
-#: desktop_modules/module_quote.lua:1164
-#: desktop_modules/module_coverdeck.lua:698
-#: desktop_modules/module_coverdeck.lua:700
-#: desktop_modules/module_quick_actions.lua:385
-#: desktop_modules/module_quick_actions.lua:387
-#: desktop_modules/module_recent.lua:242
-#: desktop_modules/module_recent.lua:244
-msgid "Scale"
-msgstr ""
-#: desktop_modules/module_currently.lua:827
-msgid ""
-"Scale for all text elements (title, author, progress, time).\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_quick_actions.lua:399
-msgid ""
-"Scale for the button label text.\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_collections.lua:516
-msgid ""
-"Scale for the collection name text.\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_collections.lua:654
-msgid ""
-"Scale for the collection thumbnails only.\n"
-"The label text follows the module scale.\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_currently.lua:814
-msgid ""
-"Scale for the cover thumbnail only.\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_coverdeck.lua:709
-msgid ""
-"Scale for the cover thumbnails only.\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_new_books.lua:263
-#: desktop_modules/module_recent.lua:259
-msgid ""
-"Scale for the cover thumbnails only.\n"
-"Text and progress bar follow the module scale.\n"
-"100% is the default size."
-msgstr ""
-#: sui_menu.lua:2155
-msgid ""
-"Scale for the folder name overlay text.\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_new_books.lua:275
-msgid ""
-"Scale for the label text.\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_recent.lua:273
-msgid ""
-"Scale for the percentage read text.\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_coverdeck.lua:701
-msgid "Scale for this module."
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:392
-#: desktop_modules/module_collections.lua:503
-#: desktop_modules/module_currently.lua:800
-#: desktop_modules/module_new_books.lua:249
-#: desktop_modules/module_reading_goals.lua:571
-#: desktop_modules/module_clock.lua:464
-#: desktop_modules/module_tbr.lua:365
-#: desktop_modules/module_quote.lua:1166
-#: desktop_modules/module_quick_actions.lua:388
-#: desktop_modules/module_recent.lua:245
-msgid ""
-"Scale for this module.\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_coverdeck.lua:717
-msgid ""
-"Scale for title and statistics text.\n"
-"100% is the default size."
-msgstr ""
-#: sui_menu.lua:1733
-msgid ""
-"Scales all modules and labels together.\n"
-"100% is the default size."
-msgstr ""
-#: sui_menu.lua:1769
-msgid ""
-"Scales the section label text above each module.\n"
-"100% is the default size."
-msgstr ""
-#: sui_menu.lua:2198
-msgid "Scan subfolders for cover"
-msgstr ""
-#: sui_titlebar.lua:56
-msgid "Search"
-msgstr ""
-#: desktop_modules/module_collections.lua:627
-msgid "Select at least 2 collections to arrange."
-msgstr ""
-#: desktop_modules/module_clock.lua:56
-msgid "September"
-msgstr ""
-#: sui_config.lua:146
-#: sui_browsemeta.lua:58
-msgid "Series"
-msgstr ""
-#: sui_menu.lua:2096
-msgid "Series Index"
-msgstr ""
-#: sui_foldercovers.lua:589
-msgid "Series cover"
-msgstr ""
-#: sui_menu.lua:571
-msgid "Set"
-msgstr ""
-#: sui_foldercovers.lua:693
-msgid "Set folder cover…"
-msgstr ""
-#: sui_foldercovers.lua:689
-msgid "Set series cover…"
-msgstr ""
-#: sui_foldercovers.lua:691
-msgid "Set virtual folder cover…"
-msgstr ""
-#: sui_menu.lua:1933
-msgid "Settings"
-msgstr ""
-#: sui_menu.lua:784
-#: sui_menu.lua:954
-#: sui_menu.lua:1857
-msgid "Settings on Long Tap"
-msgstr ""
-#: sui_menu.lua:2035
-msgid "Settings Tab"
-msgstr ""
-#: sui_menu.lua:2036
-msgid "Show or hide the dedicated Simple UI tab in the menu bar.\nWhen hidden, Simple UI settings remain accessible via the main menu.\nTakes effect after a restart."
-msgstr ""
-#: sui_menu.lua:2047
-msgid "The Simple UI settings tab will be %s after restart.\n\nRestart now?"
-msgstr ""
-#: desktop_modules/module_clock.lua:494
-msgid "Show Battery"
-msgstr ""
-#: desktop_modules/module_clock.lua:482
-msgid "Show Clock"
-msgstr ""
-#: desktop_modules/module_clock.lua:488
-msgid "Show Date"
-msgstr ""
-#: sui_config.lua:1775
-msgid "Show section label"
-msgstr ""
-#: sui_menu.lua:504
-msgid ""
-"Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\n"
-"Navpager enables this automatically.\n"
-"Not available when Navpager is active."
-msgstr ""
-#: sui_menu.lua:401
-msgid ""
-"Shows a row of dots at the bottom of the homescreen.\n"
-"The active page dot is filled; the others are dimmed.\n"
-"Always active when Navpager is selected."
-msgstr ""
-#: desktop_modules/module_currently.lua:926
-msgid "Simple"
-msgstr ""
-#: sui_menu.lua:1902
-#: sui_menu.lua:1906
-#: main.lua:682
-#: main.lua:695
-msgid "Simple UI"
-msgstr ""
-#: sui_updater.lua:407
-msgid ""
-"Simple UI %s is available!\n"
-"You have %s."
-msgstr ""
-#: sui_updater.lua:357
-msgid ""
-"Simple UI %s successfully installed.\n"
-"\n"
-"Restart KOReader to apply the update?"
-msgstr ""
-#: sui_updater.lua:399
-msgid "Simple UI is up to date (%s)."
-msgstr ""
-#: sui_menu.lua:1923
-msgid ""
-"Simple UI will be %s after restart.\n"
-"\n"
-"Restart now?"
-msgstr ""
-#: sui_menu.lua:457
-#: sui_menu.lua:756
-#: sui_menu.lua:826
-msgid "Size"
-msgstr ""
-#: sui_menu.lua:891
-msgid ""
-"Size of the tab icons.\n"
-"100% is the default size."
-msgstr ""
-#: sui_menu.lua:911
-msgid ""
-"Size of the tab label text.\n"
-"100% is the default size."
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:473
-msgid ""
-"Size of the text inside the stat cards.\n"
-"Does not affect card size or padding.\n"
-"100% is the default size."
-msgstr ""
-#: sui_bottombar.lua:1746
-msgid "Sleep"
-msgstr ""
-#: sui_menu.lua:473
-msgid "Small"
-msgstr ""
-#: desktop_modules/module_quote.lua:1192
-#: desktop_modules/module_coverdeck.lua:725
-msgid "Source"
-msgstr ""
-#: sui_menu.lua:869
-msgid ""
-"Space below the bottom navigation bar.\n"
-"100% is the default spacing."
-msgstr ""
-#: sui_patches.lua:682
-#: sui_patches.lua:684
-msgid "Start with"
-msgstr ""
-#: sui_menu.lua:1835
-msgid "Start with Home Screen"
-msgstr ""
-#: sui_bottombar.lua:1117
-#: sui_bottombar.lua:1402
-msgid "Statistics plugin not available."
-msgstr ""
-#: sui_config.lua:142
-msgid "Stats"
-msgstr ""
-#: desktop_modules/module_currently.lua:951
-msgid "Stats layout"
-msgstr ""
-#: sui_menu.lua:1939
-msgid "Status Bar"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:67
-msgid "Streak"
-msgstr ""
-#: sui_menu.lua:1180
-msgid "Sub-pages Buttons"
-msgstr ""
-#: desktop_modules/module_clock.lua:50
-msgid "Sunday"
-msgstr ""
-#: sui_menu.lua:522
-msgid "Swipe Indicator"
-msgstr ""
-#: sui_quickactions.lua:947
-msgid "System Actions"
-msgstr ""
-#: sui_quickactions.lua:1253
-msgid "System action error: %s"
-msgstr ""
-#: sui_menu.lua:949
-msgid "Tabs  (%d/%d — %d left)"
-msgstr ""
-#: sui_menu.lua:947
-msgid "Tabs  (%d/%d — at limit)"
-msgstr ""
-#: sui_menu.lua:107
-msgid "Text"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:469
-#: desktop_modules/module_reading_stats.lua:472
-#: desktop_modules/module_collections.lua:514
-#: desktop_modules/module_collections.lua:515
-#: desktop_modules/module_currently.lua:825
-#: desktop_modules/module_currently.lua:826
-#: desktop_modules/module_new_books.lua:273
-#: desktop_modules/module_new_books.lua:274
-#: desktop_modules/module_quick_actions.lua:395
-#: desktop_modules/module_quick_actions.lua:398
-#: desktop_modules/module_recent.lua:271
-#: desktop_modules/module_recent.lua:272
-msgid "Text Size"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:470
-msgid "Text Size — %d%%"
-msgstr ""
-#: sui_menu.lua:109
-msgid "Text only"
-msgstr ""
-#: sui_menu.lua:2152
-#: desktop_modules/module_coverdeck.lua:715
-#: desktop_modules/module_coverdeck.lua:716
-msgid "Text size"
-msgstr ""
-#: sui_patches.lua:831
-msgid "The «To Be Read» collection cannot be renamed."
-msgstr ""
-#: desktop_modules/module_clock.lua:51
-msgid "Thursday"
-msgstr ""
-#: desktop_modules/module_currently.lua:270
-#: desktop_modules/module_coverdeck.lua:77
-msgid "Time read"
-msgstr ""
-#: desktop_modules/module_currently.lua:271
-#: desktop_modules/module_coverdeck.lua:78
-msgid "Time remaining"
-msgstr ""
-#: sui_titlebar.lua:58
-#: desktop_modules/module_currently.lua:265
-msgid "Title"
-msgstr ""
-#: sui_menu.lua:1940
-msgid "Title Bar"
-msgstr ""
-#: desktop_modules/module_coverdeck.lua:747
-msgid "Title Position"
-msgstr ""
-#: desktop_modules/module_tbr.lua:229
-#: desktop_modules/module_tbr.lua:230
-#: desktop_modules/module_tbr.lua:244
-#: desktop_modules/module_tbr.lua:280
-#: desktop_modules/module_tbr.lua:398
-#: desktop_modules/module_coverdeck.lua:736
-msgid "To Be Read"
-msgstr ""
-#: desktop_modules/module_tbr.lua:450
-msgid "To Be Read books"
-msgstr ""
-#: sui_patches.lua:879
-#: sui_patches.lua:918
-#: sui_patches.lua:950
-#: sui_patches.lua:991
-msgid "To Be Read list is full (max. 5 books)."
-msgstr ""
-#: desktop_modules/module_reading_goals.lua:511
-#: desktop_modules/module_reading_goals.lua:513
-#: desktop_modules/module_reading_goals.lua:536
-#: desktop_modules/module_reading_goals.lua:539
-msgid "Today"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:62
-msgid "Today — Pages"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:61
-msgid "Today — Time"
-msgstr ""
-#: sui_menu.lua:1937
-#: sui_menu.lua:2072
-#: sui_menu.lua:2126
-msgid "Top"
-msgstr ""
-#: sui_menu.lua:737
-#: sui_topbar.lua:507
-msgid "Top Bar"
-msgstr ""
-#: sui_menu.lua:762
-msgid "Top Bar Size"
-msgstr ""
-#: sui_menu.lua:745
-msgid ""
-"Top Bar will be %s after restart.\n"
-"\n"
-"Restart now?"
-msgstr ""
-#: sui_homescreen.lua:1743
-msgid "Top Margin  (%d%%)"
-msgstr ""
-#: sui_menu.lua:925
-msgid "Top separator"
-msgstr ""
-#: sui_menu.lua:2115
-msgid "Transparent"
-msgstr ""
-#: desktop_modules/module_clock.lua:50
-msgid "Tuesday"
-msgstr ""
-#: sui_menu.lua:938
-#: desktop_modules/module_reading_stats.lua:430
-#: desktop_modules/module_reading_goals.lua:586
-#: desktop_modules/module_quick_actions.lua:407
-msgid "Type"
-msgstr ""
-#: sui_menu.lua:2166
-msgid "Uniformize Covers (2:3)"
-msgstr ""
-#: sui_updater.lua:377
-msgid "Update cancelled."
-msgstr ""
-#: sui_updater.lua:487
-msgid "Update check cancelled."
-msgstr ""
-#: sui_menu.lua:2247
-msgid "Updater module not found."
-msgstr ""
-#: sui_menu.lua:423
-msgid ""
-"Uses the standard KOReader pagination bar on the homescreen.\n"
-"Not available when Navpager is active."
-msgstr ""
-#: sui_menu.lua:2232
-msgid "Version: %s"
-msgstr ""
-#: sui_homescreen.lua:1746
-msgid ""
-"Vertical space above this module.\n"
-"100% is the default spacing."
-msgstr ""
-#: sui_browsemeta.lua:778
-msgid "Virtual folder cover"
-msgstr ""
-#: sui_menu.lua:925
-msgid "Visible"
-msgstr ""
-#: desktop_modules/module_clock.lua:50
-msgid "Wednesday"
-msgstr ""
-#: sui_updater.lua:412
-msgid "What's new:"
-msgstr ""
-#: sui_menu.lua:1858
-msgid ""
-"When enabled, long-pressing a section opens its settings menu.\n"
-"Disable this to prevent the settings menu from appearing on long tap."
-msgstr ""
-#: sui_menu.lua:955
-msgid ""
-"When enabled, long-pressing the bottom bar opens its settings menu.\n"
-"Disable this to prevent the settings menu from appearing on long tap."
-msgstr ""
-#: sui_menu.lua:785
-msgid ""
-"When enabled, long-pressing the top bar opens its settings menu.\n"
-"Disable this to prevent the settings menu from appearing on long tap."
-msgstr ""
-#: sui_menu.lua:1846
-msgid ""
-"When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\n"
-"When disabled (default), SimpleUI always returns to the library root.\n"
-"This option works independently of \"Start with Home Screen\"."
-msgstr ""
-#: sui_config.lua:140
-msgid "Wi-Fi"
-msgstr ""
-#: sui_bottombar.lua:1462
-msgid "Wi-Fi off"
-msgstr ""
-#: sui_config.lua:166
-msgid "WiFi"
-msgstr ""
-#: sui_bottombar.lua:1449
-msgid "WiFi not available on this device."
-msgstr ""
-#: sui_quickactions.lua:625
-msgid "Wikipedia Lookup"
-msgstr ""
-#: desktop_modules/module_currently.lua:936
-msgid "With percentage"
-msgstr ""
-#: desktop_modules/module_quote.lua:897
-msgid "Your highlights"
-msgstr ""
-#: sui_updater.lua:410
-msgid ""
-"\n"
-"\n"
-"Download and install now?"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:66
-msgid "books finished"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:63
-msgid "daily avg (7 days)"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:68
-msgid "day streak"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:68
-msgid "days streak"
-msgstr ""
-#: sui_quickactions.lua:1010
-msgid "default"
-msgstr ""
-#: sui_menu.lua:745
-#: sui_menu.lua:814
-#: sui_menu.lua:1154
-#: sui_menu.lua:1923
-msgid "disabled"
-msgstr ""
-#: sui_quickactions.lua:850
-msgid "e.g. Comics…"
-msgstr ""
-#: sui_quickactions.lua:896
-msgid "e.g. Rakuyomi…"
-msgstr ""
-#: sui_quickactions.lua:869
-msgid "e.g. Sci-Fi…"
-msgstr ""
-#: sui_quickactions.lua:924
-msgid "e.g. Sleep, Refresh…"
-msgstr ""
-#: sui_menu.lua:745
-#: sui_menu.lua:814
-#: sui_menu.lua:1154
-#: sui_menu.lua:1923
-msgid "enabled"
-msgstr ""
-#: sui_quickactions.lua:421
-msgid "hex code, e.g. E001"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:68
-msgid "no streak"
-msgstr ""
-#: sui_quickactions.lua:1163
-#: sui_quickactions.lua:1179
-msgid "not configured"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:61
-msgid "of reading today"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:65
-msgid "of reading, all time"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:62
-msgid "pages read today"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:64
-msgid "pages/day (7 days)"
-msgstr ""
-#: sui_menu.lua:242
-#: sui_menu.lua:1340
-#: desktop_modules/module_reading_stats.lua:507
-#: desktop_modules/module_collections.lua:689
-#: desktop_modules/module_quick_actions.lua:324
-msgid "  (%d left)"
-msgid_plural "  (%d left)"
-msgstr[0] ""
-msgstr[1] ""
-#: desktop_modules/module_reading_goals.lua:619
-msgid "  Set Goal  (%d book in %s)"
-msgid_plural "  Set Goal  (%d books in %s)"
-msgstr[0] ""
-msgstr[1] ""
-#: desktop_modules/module_reading_goals.lua:418
-msgid "%d book"
-msgid_plural "%d books"
-msgstr[0] ""
-msgstr[1] ""
-#: desktop_modules/module_currently.lua:540
-#: desktop_modules/module_currently.lua:607
-#: desktop_modules/module_coverdeck.lua:574
-msgid "%d day of reading"
-msgid_plural "%d days of reading"
-msgstr[0] ""
-msgstr[1] ""
-#: desktop_modules/module_reading_goals.lua:417
-msgid "%d/%d book"
-msgid_plural "%d/%d books"
-msgstr[0] ""
-msgstr[1] ""
-#: sui_menu.lua:1234
-msgid "Digital: %d book in %s"
-msgid_plural "Digital: %d books in %s"
-msgstr[0] ""
-msgstr[1] ""
-#: sui_menu.lua:1240
-msgid "Physical: %d book in %s"
-msgid_plural "Physical: %d books in %s"
-msgstr[0] ""
-msgstr[1] ""
-#: sui_menu.lua:560
-msgid ""
-"Text shown in the top bar.\n"
-"Maximum %d character."
-msgid_plural ""
-"Text shown in the top bar.\n"
-"Maximum %d characters."
-msgstr[0] ""
-msgstr[1] ""
-#: sui_menu.lua:1304
-#: desktop_modules/module_quick_actions.lua:267
-msgid "The maximum of %d action per module has been reached. Remove one first."
-msgid_plural "The maximum of %d actions per module has been reached. Remove one first."
-msgstr[0] ""
-msgstr[1] ""
-#: sui_quickactions.lua:1124
-msgid "The maximum of %d quick action has been reached. Delete one first."
-msgid_plural "The maximum of %d quick actions has been reached. Delete one first."
-msgstr[0] ""
-msgstr[1] ""
-#: desktop_modules/module_reading_stats.lua:419
-msgid "The maximum of %d stat per row has been reached. Remove one first."
-msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-msgstr[0] ""
-msgstr[1] ""
-#: sui_menu.lua:275
-msgid "The maximum of %d tab has been reached. Remove one first."
-msgid_plural "The maximum of %d tabs has been reached. Remove one first."
-msgstr[0] ""
-msgstr[1] ""
-#: desktop_modules/module_recent.lua:317 desktop_modules/module_coverdeck.lua:824
-msgid "Show finished books"
-msgstr ""
 
-#: desktop_modules/module_clock.lua:534 desktop_modules/module_clock.lua:535 desktop_modules/module_clock.lua:543
-msgid "Date Spacing"
-msgstr ""
-
-#: desktop_modules/module_clock.lua:544
-msgid "Vertical space between the clock and the date.\n100% is the default spacing."
-msgstr ""
-
-#: desktop_modules/module_clock.lua:564 desktop_modules/module_clock.lua:565 desktop_modules/module_clock.lua:573
-msgid "Battery Spacing"
-msgstr ""
-
-#: desktop_modules/module_clock.lua:574
-msgid "Vertical space between the date (or clock) and the battery.\n100% is the default spacing."
-msgstr ""
-
-#: sui_homescreen.lua:2406
-msgid "Modules exceed the visible area.\nMove some to another page or adjust the scale."
-msgstr ""
-
-#: sui_quickactions.lua:396
-msgid "Use this Nerd Font icon?"
-msgstr ""
-
-#: desktop_modules/module_action_list.lua:280
-msgid "Action List"
-msgstr ""
-
-#: desktop_modules/module_action_list.lua:353
-msgid "Hide Icon"
-msgstr ""
-
-#: desktop_modules/module_action_list.lua:366
-msgid "Alignment"
-msgstr ""
-
-#: desktop_modules/module_action_list.lua:109 desktop_modules/module_action_list.lua:133 desktop_modules/module_quick_actions.lua:87
+#: desktop_modules/module_action_list.lua:109
+#: desktop_modules/module_action_list.lua:133
+#: desktop_modules/module_quick_actions.lua:87
 msgid "No actions configured"
 msgstr ""
 
-#: main.lua:93
-msgid "Simple UI: Go to Homescreen"
+#: sui_bottombar.lua:1408
+msgid "No book in history."
 msgstr ""
 
-#: main.lua:99
-msgid "Simple UI: Go to Library"
+#: sui_foldercovers.lua:469
+msgid "No books found in this folder."
 msgstr ""
 
-#: main.lua:105
-msgid "Simple UI: Toggle Homescreen / Library"
+#: sui_foldercovers.lua:413
+msgid "No books found in this series."
 msgstr ""
 
-#: main.lua:712
-msgid "Closing book…"
+#: sui_browsemeta.lua:774
+msgid "No books found."
+msgstr ""
+
+#: desktop_modules/module_tbr.lua:614
+msgid "No books in To Be Read list."
+msgstr ""
+
+#: sui_homescreen.lua:191
+msgid "No books opened yet"
+msgstr ""
+
+#: desktop_modules/module_collections.lua:673
+msgid "No collections found."
+msgstr ""
+
+#: desktop_modules/module_collections.lua:378
+msgid "No collections selected"
+msgstr ""
+
+#: desktop_modules/module_quote.lua:831
+msgid "No custom quotes found. Add a .lua file to the plugin\'s desktop_modules/custom_quotes/ folder and select it in Settings."
+msgstr ""
+
+#: sui_updater.lua:480
+msgid "No download file found.\n\nOpen the releases page?"
+msgstr ""
+
+#: sui_quickactions.lua:1233
+msgid "No folder, collection or plugin configured.\nGo to Simple UI \xe2\x86\x92 Settings \xe2\x86\x92 Quick Actions to set one."
+msgstr ""
+
+#: desktop_modules/module_quote.lua:895
+msgid "No highlights found. Open a book and highlight some passages."
+msgstr ""
+
+#: sui_quickactions.lua:517
+msgid "No icons found in:"
+msgstr ""
+
+#: sui_quickactions.lua:817
+msgid "No plugins found."
+msgstr ""
+
+#: desktop_modules/module_quote.lua:861
+msgid "No quotes found."
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:292
+msgid "No stats selected"
+msgstr ""
+
+#: sui_quickactions.lua:845
+msgid "No system actions found."
+msgstr ""
+
+#: desktop_modules/module_clock.lua:56
+msgid "November"
+msgstr ""
+
+#: sui_menu.lua:2182
+msgid "Number of Books in Folder"
+msgstr ""
+
+#: sui_menu.lua:1568
+#: sui_menu.lua:1582
+#: sui_menu.lua:2214
+msgid "Number of Pages"
+msgstr ""
+
+#: sui_menu.lua:585
+msgid "Number of Pages in Title Bar Always"
+msgstr ""
+
+#: sui_quickactions.lua:432
+#: sui_menu.lua:1588
+msgid "OK"
+msgstr ""
+
+#: desktop_modules/module_clock.lua:56
+msgid "October"
+msgstr ""
+
+#: sui_menu.lua:822
+#: sui_menu.lua:891
+#: sui_menu.lua:1081
+#: sui_menu.lua:1227
+#: sui_menu.lua:1911
+#: sui_menu.lua:2004
+msgid "Off"
+msgstr ""
+
+#: sui_menu.lua:822
+#: sui_menu.lua:891
+#: sui_menu.lua:1081
+#: sui_menu.lua:1227
+#: sui_menu.lua:1911
+#: sui_menu.lua:2004
+msgid "On"
+msgstr ""
+
+#: sui_homescreen.lua:421
+#: desktop_modules/module_quote.lua:1120
+msgid "Open"
+msgstr ""
+
+#: sui_homescreen.lua:200
+msgid "Open a book to get started"
+msgstr ""
+
+#: sui_updater.lua:481
+msgid "Open in browser"
+msgstr ""
+
+#: sui_homescreen.lua:420
+#: desktop_modules/module_quote.lua:1119
+msgid "Open this file?"
+msgstr ""
+
+#: sui_menu.lua:2178
+msgid "Overlays"
+msgstr ""
+
+#: sui_patches.lua:1461
+#: sui_patches.lua:1870
+#: sui_homescreen.lua:1771
+msgid "Page %1 of %2"
+msgstr ""
+
+#: sui_menu.lua:1709
+#: sui_menu.lua:1729
+msgid "Page %d"
+msgstr ""
+
+#: sui_menu.lua:2065
+msgid "Pagination Bar"
+msgstr ""
+
+#: sui_menu.lua:468
+msgid "Pagination bar hidden.\n\nRestart now?"
+msgstr ""
+
+#: sui_menu.lua:447
+msgid "Pagination bar set to Default.\n\nRestart now?"
+msgstr ""
+
+#: sui_menu.lua:554
+#: sui_menu.lua:566
+#: sui_menu.lua:578
+msgid "Pagination bar size will change after restart.\n\nRestart now?"
+msgstr ""
+
+#: sui_quickactions.lua:764
+msgid "Path chooser not available."
+msgstr ""
+
+#: desktop_modules/module_tbr.lua:550
+#: desktop_modules/module_recent.lua:308
+msgid "Percentage overlay on cover"
+msgstr ""
+
+#: desktop_modules/module_currently.lua:268
+#: desktop_modules/module_currently.lua:931
+#: desktop_modules/module_coverdeck.lua:74
+msgid "Percentage read"
+msgstr ""
+
+#: desktop_modules/module_tbr.lua:540
+#: desktop_modules/module_recent.lua:298
+msgid "Percentage text"
+msgstr ""
+
+#: desktop_modules/module_reading_goals.lua:382
+msgid "Physical Books — %s"
+msgstr ""
+
+#: desktop_modules/module_reading_goals.lua:383
+msgid "Physical books read this year:"
+msgstr ""
+
+#: desktop_modules/module_quote.lua:1306
+msgid "Place .lua files in the plugin's desktop_modules/custom_quotes/ folder"
+msgstr ""
+
+#: sui_menu.lua:2307
+msgid "Placeholder cover for bookless folders"
+msgstr ""
+
+#: sui_quickactions.lua:876
+msgid "Plugin"
+msgstr ""
+
+#: sui_quickactions.lua:1218
+msgid "Plugin error: %s"
+msgstr ""
+
+#: sui_quickactions.lua:1220
+msgid "Plugin not available: %s"
+msgstr ""
+
+#: sui_config.lua:143
+msgid "Power"
+msgstr ""
+
+#: sui_bottombar.lua:295
+msgid "Prev"
+msgstr ""
+
+#: desktop_modules/module_currently.lua:267
+#: desktop_modules/module_tbr.lua:530
+#: desktop_modules/module_recent.lua:288
+msgid "Progress bar"
+msgstr ""
+
+#: desktop_modules/module_currently.lua:943
+msgid "Progress bar style"
+msgstr ""
+
+#: sui_menu.lua:1541
+#: sui_menu.lua:2072
+msgid "Quick Actions"
+msgstr ""
+
+#: sui_menu.lua:2076
+msgid "Quick Actions  (%d/%d — %d left)"
+msgstr ""
+
+#: sui_menu.lua:2074
+msgid "Quick Actions  (%d/%d — at limit)"
+msgstr ""
+
+#: sui_menu.lua:1378
+#: desktop_modules/module_quick_actions.lua:214
+#: desktop_modules/module_quick_actions.lua:264
+msgid "Quick Actions %d"
+msgstr ""
+
+#: sui_bottombar.lua:1775
+msgid "Quit"
+msgstr ""
+
+#: desktop_modules/module_quote.lua:977
+msgid "Quote of the Day"
+msgstr ""
+
+#: desktop_modules/module_quote.lua:1246
+msgid "Quotes + My Highlights"
+msgstr ""
+
+#: sui_config.lua:170
+msgid "RAM Usage"
+msgstr ""
+
+#: desktop_modules/module_reading_goals.lua:489
+#: desktop_modules/module_reading_goals.lua:490
+#: desktop_modules/module_reading_goals.lua:516
+#: desktop_modules/module_reading_goals.lua:683
+msgid "Reading Goals"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:224
+msgid "Reading Stats"
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua:733
+#: desktop_modules/module_recent.lua:66
+#: desktop_modules/module_recent.lua:67
+#: desktop_modules/module_recent.lua:76
+#: desktop_modules/module_recent.lua:285
+msgid "Recent Books"
+msgstr ""
+
+#: desktop_modules/module_tbr.lua:290
+msgid "Remove from To Be Read"
+msgstr ""
+
+#: sui_quickactions.lua:987
+#: sui_quickactions.lua:1045
+msgid "Rename"
+msgstr ""
+
+#: sui_menu.lua:454
+msgid "Replaces the pagination bar with Prev/Next arrows at the edges of the bottom bar.\nThe arrows dim when there is no previous or next page.\nWith navpager active, as few as 1 tab and at most 4 tabs can be configured."
+msgstr ""
+
+#: sui_quickactions.lua:996
+#: sui_menu.lua:1882
+msgid "Reset"
+msgstr ""
+
+#: sui_menu.lua:1881
+msgid "Reset all scales to default (100%)? This cannot be undone."
+msgstr ""
+
+#: sui_menu.lua:1876
+msgid "Reset to Default Scale"
+msgstr ""
+
+#: sui_menu.lua:426
+#: sui_menu.lua:831
+#: sui_menu.lua:900
+#: sui_menu.lua:935
+#: sui_menu.lua:1241
+#: sui_menu.lua:2022
+#: sui_menu.lua:2050
+#: sui_bottombar.lua:1754
+#: sui_updater.lua:430
+msgid "Restart"
+msgstr ""
+
+#: sui_menu.lua:1931
+msgid "Return to Book Folder"
+msgstr ""
+
+#: sui_menu.lua:711
+#: sui_menu.lua:1125
+#: desktop_modules/module_action_list.lua:77
+#: desktop_modules/module_action_list.lua:399
+msgid "Right"
+msgstr ""
+
+#: desktop_modules/module_clock.lua:51
+msgid "Saturday"
+msgstr ""
+
+#: sui_quickactions.lua:739
+#: sui_quickactions.lua:1007
+#: desktop_modules/module_reading_goals.lua:369
+#: desktop_modules/module_reading_goals.lua:385
+#: desktop_modules/module_reading_goals.lua:402
+#: desktop_modules/module_reading_goals.lua:420
+msgid "Save"
+msgstr ""
+
+#: sui_menu.lua:1796
+#: desktop_modules/module_currently.lua:817
+#: desktop_modules/module_currently.lua:819
+#: desktop_modules/module_new_books.lua:246
+#: desktop_modules/module_new_books.lua:248
+#: desktop_modules/module_reading_stats.lua:400
+#: desktop_modules/module_reading_stats.lua:402
+#: desktop_modules/module_action_list.lua:348
+#: desktop_modules/module_action_list.lua:350
+#: desktop_modules/module_tbr.lua:474
+#: desktop_modules/module_tbr.lua:476
+#: desktop_modules/module_coverdeck.lua:703
+#: desktop_modules/module_coverdeck.lua:705
+#: desktop_modules/module_reading_goals.lua:643
+#: desktop_modules/module_reading_goals.lua:645
+#: desktop_modules/module_recent.lua:246
+#: desktop_modules/module_recent.lua:248
+#: desktop_modules/module_clock.lua:491
+#: desktop_modules/module_clock.lua:493
+#: desktop_modules/module_quick_actions.lua:400
+#: desktop_modules/module_quick_actions.lua:402
+#: desktop_modules/module_quote.lua:1166
+#: desktop_modules/module_quote.lua:1170
+#: desktop_modules/module_collections.lua:500
+#: desktop_modules/module_collections.lua:502
+msgid "Scale"
+msgstr ""
+
+#: desktop_modules/module_currently.lua:847
+msgid "Scale for all text elements (title, author, progress, time).\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_quick_actions.lua:414
+msgid "Scale for the button label text.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_collections.lua:516
+msgid "Scale for the collection name text.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_collections.lua:654
+msgid "Scale for the collection thumbnails only.\nThe label text follows the module scale.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_currently.lua:834
+msgid "Scale for the cover thumbnail only.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua:714
+msgid "Scale for the cover thumbnails only.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_new_books.lua:263
+#: desktop_modules/module_tbr.lua:524
+#: desktop_modules/module_recent.lua:263
+msgid "Scale for the cover thumbnails only.\nText and progress bar follow the module scale.\n100% is the default size."
+msgstr ""
+
+#: sui_menu.lua:2279
+msgid "Scale for the folder name overlay text.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_new_books.lua:275
+#: desktop_modules/module_action_list.lua:362
+msgid "Scale for the label text.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_tbr.lua:514
+#: desktop_modules/module_recent.lua:277
+msgid "Scale for the percentage read text.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua:706
+msgid "Scale for this module."
+msgstr ""
+
+#: desktop_modules/module_currently.lua:820
+#: desktop_modules/module_new_books.lua:249
+#: desktop_modules/module_reading_stats.lua:403
+#: desktop_modules/module_action_list.lua:351
+#: desktop_modules/module_tbr.lua:477
+#: desktop_modules/module_reading_goals.lua:646
+#: desktop_modules/module_recent.lua:249
+#: desktop_modules/module_clock.lua:494
+#: desktop_modules/module_quick_actions.lua:403
+#: desktop_modules/module_quote.lua:1172
+#: desktop_modules/module_collections.lua:503
+msgid "Scale for this module.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua:722
+msgid "Scale for title and statistics text.\n100% is the default size."
+msgstr ""
+
+#: sui_menu.lua:1819
+msgid "Scales all modules and labels together.\n100% is the default size."
+msgstr ""
+
+#: sui_menu.lua:1855
+msgid "Scales the section label text above each module.\n100% is the default size."
+msgstr ""
+
+#: sui_menu.lua:2322
+msgid "Scan subfolders for cover"
+msgstr ""
+
+#: sui_titlebar.lua:56
+msgid "Search"
+msgstr ""
+
+#: desktop_modules/module_collections.lua:627
+msgid "Select at least 2 collections to arrange."
+msgstr ""
+
+#: desktop_modules/module_clock.lua:56
+msgid "September"
+msgstr ""
+
+#: sui_config.lua:146
+#: sui_browsemeta.lua:67
+msgid "Series"
+msgstr ""
+
+#: sui_menu.lua:2220
+msgid "Series Index"
+msgstr ""
+
+#: sui_foldercovers.lua:455
+msgid "Series cover"
+msgstr ""
+
+#: sui_menu.lua:656
+msgid "Set"
+msgstr ""
+
+#: sui_foldercovers.lua:545
+msgid "Set folder cover…"
+msgstr ""
+
+#: sui_foldercovers.lua:541
+msgid "Set series cover…"
+msgstr ""
+
+#: sui_foldercovers.lua:543
+msgid "Set virtual folder cover…"
+msgstr ""
+
+#: sui_menu.lua:2036
+msgid "Settings Tab"
+msgstr ""
+
+#: sui_menu.lua:869
+#: sui_menu.lua:1039
+#: sui_menu.lua:1955
+msgid "Settings on Long Tap"
+msgstr ""
+
+#: desktop_modules/module_clock.lua:524
+msgid "Show Battery"
+msgstr ""
+
+#: desktop_modules/module_clock.lua:512
+msgid "Show Clock"
 msgstr ""
 
 #: sui_menu.lua:1943
 msgid "Show Closing Notice"
 msgstr ""
 
-#: sui_menu.lua:1944
-msgid ""
-"When enabled, a brief notice appears on screen when closing a book and "
-"returning to the Home Screen.\n"
-"It disappears automatically and does not slow down the Home Screen loading."
+#: desktop_modules/module_clock.lua:518
+msgid "Show Date"
 msgstr ""
+
+#: desktop_modules/module_coverdeck.lua:824
+#: desktop_modules/module_recent.lua:317
+msgid "Show finished books"
+msgstr ""
+
+#: sui_menu.lua:2037
+msgid "Show or hide the dedicated Simple UI tab in the menu bar.\nWhen hidden, Simple UI settings remain accessible via the main menu.\nTakes effect after a restart."
+msgstr ""
+
+#: sui_config.lua:1837
+msgid "Show section label"
+msgstr ""
+
+#: sui_menu.lua:589
+msgid "Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\nNavpager enables this automatically.\nNot available when Navpager is active."
+msgstr ""
+
+#: sui_menu.lua:486
+msgid "Shows a row of dots at the bottom of the homescreen.\nThe active page dot is filled; the others are dimmed.\nAlways active when Navpager is selected."
+msgstr ""
+
+#: desktop_modules/module_currently.lua:946
+msgid "Simple"
+msgstr ""
+
+#: main.lua:1064
+#: main.lua:1077
+#: sui_menu.lua:2000
+#: sui_menu.lua:2004
+msgid "Simple UI"
+msgstr ""
+
+#: sui_updater.lua:427
+msgid "Simple UI %s installed.\n\nRestart KOReader to apply the update?"
+msgstr ""
+
+#: sui_updater.lua:474
+msgid "Simple UI %s is available!\nYou have %s."
+msgstr ""
+
+#: sui_updater.lua:468
+msgid "Simple UI is up to date (%s)."
+msgstr ""
+
+#: sui_menu.lua:2021
+msgid "Simple UI will be %s after restart.\n\nRestart now?"
+msgstr ""
+
+#: main.lua:94
+msgid "Simple UI: Go to Homescreen"
+msgstr ""
+
+#: main.lua:100
+msgid "Simple UI: Go to Library"
+msgstr ""
+
+#: main.lua:106
+msgid "Simple UI: Toggle Homescreen / Library"
+msgstr ""
+
+#: sui_menu.lua:542
+#: sui_menu.lua:841
+#: sui_menu.lua:911
+msgid "Size"
+msgstr ""
+
+#: sui_menu.lua:976
+msgid "Size of the tab icons.\n100% is the default size."
+msgstr ""
+
+#: sui_menu.lua:996
+msgid "Size of the tab label text.\n100% is the default size."
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:484
+msgid "Size of the text inside the stat cards.\nDoes not affect card size or padding.\n100% is the default size."
+msgstr ""
+
+#: sui_bottombar.lua:1765
+msgid "Sleep"
+msgstr ""
+
+#: sui_menu.lua:558
+msgid "Small"
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua:730
+#: desktop_modules/module_quote.lua:1198
+msgid "Source"
+msgstr ""
+
+#: sui_menu.lua:954
+msgid "Space below the bottom navigation bar.\n100% is the default spacing."
+msgstr ""
+
+#: sui_patches.lua:727
+#: sui_patches.lua:729
+msgid "Start with"
+msgstr ""
+
+#: sui_menu.lua:1921
+msgid "Start with Home Screen"
+msgstr ""
+
+#: sui_bottombar.lua:1127
+#: sui_bottombar.lua:1421
+msgid "Statistics plugin not available."
+msgstr ""
+
+#: sui_config.lua:142
+msgid "Stats"
+msgstr ""
+
+#: desktop_modules/module_currently.lua:971
+msgid "Stats layout"
+msgstr ""
+
+#: sui_menu.lua:2033
+msgid "Status Bar"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:72
+msgid "Streak"
+msgstr ""
+
+#: sui_menu.lua:1265
+msgid "Sub-pages Buttons"
+msgstr ""
+
+#: desktop_modules/module_clock.lua:50
+msgid "Sunday"
+msgstr ""
+
+#: sui_menu.lua:607
+msgid "Swipe Indicator"
+msgstr ""
+
+#: sui_quickactions.lua:878
+msgid "System Actions"
+msgstr ""
+
+#: sui_quickactions.lua:1184
+msgid "System action error: %s"
+msgstr ""
+
+#: sui_menu.lua:1034
+msgid "Tabs  (%d/%d — %d left)"
+msgstr ""
+
+#: sui_menu.lua:1032
+msgid "Tabs  (%d/%d — at limit)"
+msgstr ""
+
+#: sui_menu.lua:192
+msgid "Text"
+msgstr ""
+
+#: desktop_modules/module_currently.lua:845
+#: desktop_modules/module_currently.lua:846
+#: desktop_modules/module_new_books.lua:273
+#: desktop_modules/module_new_books.lua:274
+#: desktop_modules/module_reading_stats.lua:480
+#: desktop_modules/module_reading_stats.lua:483
+#: desktop_modules/module_action_list.lua:359
+#: desktop_modules/module_action_list.lua:361
+#: desktop_modules/module_tbr.lua:512
+#: desktop_modules/module_tbr.lua:513
+#: desktop_modules/module_recent.lua:275
+#: desktop_modules/module_recent.lua:276
+#: desktop_modules/module_quick_actions.lua:410
+#: desktop_modules/module_quick_actions.lua:413
+#: desktop_modules/module_collections.lua:514
+#: desktop_modules/module_collections.lua:515
+msgid "Text Size"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:481
+msgid "Text Size — %d%%"
+msgstr ""
+
+#: sui_menu.lua:194
+msgid "Text only"
+msgstr ""
+
+#: sui_menu.lua:2276
+#: desktop_modules/module_coverdeck.lua:720
+#: desktop_modules/module_coverdeck.lua:721
+msgid "Text size"
+msgstr ""
+
+#: sui_menu.lua:2047
+msgid "The Simple UI settings tab will be %s after restart.\n\nRestart now?"
+msgstr ""
+
+#: sui_patches.lua:876
+msgid "The «To Be Read» collection cannot be renamed."
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:64
+msgid "This Week — Pages"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:63
+msgid "This Week — Time"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:68
+msgid "This month — Pages"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:67
+msgid "This month — Time"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:69
+msgid "This year — Time"
+msgstr ""
+
+#: desktop_modules/module_clock.lua:51
+msgid "Thursday"
+msgstr ""
+
+#: desktop_modules/module_currently.lua:270
+#: desktop_modules/module_coverdeck.lua:76
+msgid "Time read"
+msgstr ""
+
+#: desktop_modules/module_currently.lua:271
+#: desktop_modules/module_coverdeck.lua:77
+msgid "Time remaining"
+msgstr ""
+
+#: sui_titlebar.lua:58
+#: desktop_modules/module_currently.lua:265
+msgid "Title"
+msgstr ""
+
+#: sui_menu.lua:2034
+msgid "Title Bar"
+msgstr ""
+
+#: desktop_modules/module_coverdeck.lua:752
+msgid "Title Position"
+msgstr ""
+
+#: desktop_modules/module_tbr.lua:254
+#: desktop_modules/module_tbr.lua:255
+#: desktop_modules/module_tbr.lua:269
+#: desktop_modules/module_tbr.lua:305
+#: desktop_modules/module_tbr.lua:519
+#: desktop_modules/module_coverdeck.lua:741
+msgid "To Be Read"
+msgstr ""
+
+#: desktop_modules/module_tbr.lua:609
+msgid "To Be Read books"
+msgstr ""
+
+#: sui_patches.lua:924
+#: sui_patches.lua:963
+#: sui_patches.lua:995
+#: sui_patches.lua:1036
+msgid "To Be Read list is full (max. 5 books)."
+msgstr ""
+
+#: desktop_modules/module_reading_goals.lua:573
+#: desktop_modules/module_reading_goals.lua:575
+#: desktop_modules/module_reading_goals.lua:611
+#: desktop_modules/module_reading_goals.lua:614
+msgid "Today"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:62
+msgid "Today — Pages"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:61
+msgid "Today — Time"
+msgstr ""
+
+#: sui_menu.lua:2031
+#: sui_menu.lua:2196
+#: sui_menu.lua:2250
+msgid "Top"
+msgstr ""
+
+#: sui_topbar.lua:507
+#: sui_menu.lua:822
+msgid "Top Bar"
+msgstr ""
+
+#: sui_menu.lua:847
+msgid "Top Bar Size"
+msgstr ""
+
+#: sui_menu.lua:830
+msgid "Top Bar will be %s after restart.\n\nRestart now?"
+msgstr ""
+
+#: sui_homescreen.lua:1842
+msgid "Top Margin  (%d%%)"
+msgstr ""
+
+#: sui_menu.lua:1010
+msgid "Top separator"
+msgstr ""
+
+#: sui_menu.lua:2239
+msgid "Transparent"
+msgstr ""
+
+#: desktop_modules/module_clock.lua:50
+msgid "Tuesday"
+msgstr ""
+
+#: sui_menu.lua:1023
+#: desktop_modules/module_reading_stats.lua:441
+#: desktop_modules/module_reading_goals.lua:661
+#: desktop_modules/module_quick_actions.lua:422
+msgid "Type"
+msgstr ""
+
+#: sui_menu.lua:2290
+msgid "Uniformize Covers (2:3)"
+msgstr ""
+
+#: sui_updater.lua:447
+msgid "Update cancelled."
+msgstr ""
+
+#: sui_updater.lua:639
+msgid "Update check cancelled."
+msgstr ""
+
+#: sui_menu.lua:2368
+msgid "Updater module not found."
+msgstr ""
+
+#: sui_quickactions.lua:396
+msgid "Use this Nerd Font icon?"
+msgstr ""
+
+#: sui_menu.lua:508
+msgid "Uses the standard KOReader pagination bar on the homescreen.\nNot available when Navpager is active."
+msgstr ""
+
+#: sui_menu.lua:2353
+msgid "Version: %s"
+msgstr ""
+
+#: sui_homescreen.lua:1845
+msgid "Vertical space above this module.\n100% is the default spacing."
+msgstr ""
+
+#: desktop_modules/module_clock.lua:544
+msgid "Vertical space between the clock and the date.\n100% is the default spacing."
+msgstr ""
+
+#: desktop_modules/module_clock.lua:574
+msgid "Vertical space between the date (or clock) and the battery.\n100% is the default spacing."
+msgstr ""
+
+#: sui_browsemeta.lua:821
+msgid "Virtual folder cover"
+msgstr ""
+
+#: sui_menu.lua:1010
+msgid "Visible"
+msgstr ""
+
+#: desktop_modules/module_clock.lua:50
+msgid "Wednesday"
+msgstr ""
+
+#: sui_updater.lua:475
+msgid "What's new:"
+msgstr ""
+
+#: sui_menu.lua:1944
+msgid "When enabled, a brief notice appears on screen when closing a book and returning to the Home Screen.\nIt disappears automatically and does not slow down the Home Screen loading."
+msgstr ""
+
+#: sui_menu.lua:1956
+msgid "When enabled, long-pressing a section opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr ""
+
+#: sui_menu.lua:1040
+msgid "When enabled, long-pressing the bottom bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr ""
+
+#: sui_menu.lua:870
+msgid "When enabled, long-pressing the top bar opens its settings menu.\nDisable this to prevent the settings menu from appearing on long tap."
+msgstr ""
+
+#: sui_menu.lua:1932
+msgid "When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\nWhen disabled (default), SimpleUI always returns to the library root.\nThis option works independently of \"Start with Home Screen\"."
+msgstr ""
+
+#: sui_config.lua:140
+msgid "Wi-Fi"
+msgstr ""
+
+#: sui_bottombar.lua:1481
+msgid "Wi-Fi off"
+msgstr ""
+
+#: sui_config.lua:166
+msgid "WiFi"
+msgstr ""
+
+#: sui_bottombar.lua:1468
+msgid "WiFi not available on this device."
+msgstr ""
+
+#: sui_quickactions.lua:556
+msgid "Wikipedia Lookup"
+msgstr ""
+
+#: desktop_modules/module_currently.lua:956
+msgid "With percentage"
+msgstr ""
+
+#: desktop_modules/module_quote.lua:897
+msgid "Your highlights"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:71
+msgid "books finished"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:65
+msgid "daily avg (7 days)"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:73
+msgid "day streak"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:73
+msgid "days streak"
+msgstr ""
+
+#: sui_quickactions.lua:941
+msgid "default"
+msgstr ""
+
+#: sui_menu.lua:830
+#: sui_menu.lua:899
+#: sui_menu.lua:1239
+#: sui_menu.lua:2021
+msgid "disabled"
+msgstr ""
+
+#: sui_quickactions.lua:781
+msgid "e.g. Comics…"
+msgstr ""
+
+#: sui_quickactions.lua:827
+msgid "e.g. Rakuyomi…"
+msgstr ""
+
+#: sui_quickactions.lua:800
+msgid "e.g. Sci-Fi…"
+msgstr ""
+
+#: sui_quickactions.lua:855
+msgid "e.g. Sleep, Refresh…"
+msgstr ""
+
+#: sui_menu.lua:830
+#: sui_menu.lua:899
+#: sui_menu.lua:1239
+#: sui_menu.lua:2021
+msgid "enabled"
+msgstr ""
+
+#: sui_quickactions.lua:421
+msgid "hex code, e.g. E001"
+msgstr ""
+
+#: sui_menu.lua:2048
+msgid "hidden"
+msgstr ""
+
+#: sui_updater.lua:653
+msgid "latest"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:73
+msgid "no streak"
+msgstr ""
+
+#: sui_quickactions.lua:1094
+#: sui_quickactions.lua:1110
+msgid "not configured"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:70
+msgid "of reading all time"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:67
+msgid "of reading this month"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:63
+msgid "of reading this week"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:69
+msgid "of reading this year"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:61
+msgid "of reading today"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:68
+msgid "pages read this month"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:64
+msgid "pages read this week"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:62
+msgid "pages read today"
+msgstr ""
+
+#: desktop_modules/module_reading_stats.lua:66
+msgid "pages/day (7 days)"
+msgstr ""
+
+#: sui_menu.lua:2048
+msgid "shown"
+msgstr ""
+
+#: sui_updater.lua:655
+msgid "⬆ Update available: %s"
+msgstr ""
+
+#: sui_menu.lua:327
+#: sui_menu.lua:1425
+#: desktop_modules/module_reading_stats.lua:518
+#: desktop_modules/module_action_list.lua:490
+#: desktop_modules/module_quick_actions.lua:339
+#: desktop_modules/module_collections.lua:689
+msgid "  (%d left)"
+msgid_plural "  (%d left)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: desktop_modules/module_reading_goals.lua:694
+msgid "  Set Goal  (%d book in %s)"
+msgid_plural "  Set Goal  (%d books in %s)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: desktop_modules/module_reading_goals.lua:447
+msgid "%d book"
+msgid_plural "%d books"
+msgstr[0] ""
+msgstr[1] ""
+
+#: desktop_modules/module_currently.lua:560
+#: desktop_modules/module_currently.lua:627
+#: desktop_modules/module_coverdeck.lua:579
+msgid "%d day of reading"
+msgid_plural "%d days of reading"
+msgstr[0] ""
+msgstr[1] ""
+
+#: desktop_modules/module_reading_goals.lua:446
+msgid "%d/%d book"
+msgid_plural "%d/%d books"
+msgstr[0] ""
+msgstr[1] ""
+
+#: sui_menu.lua:1319
+msgid "Digital: %d book in %s"
+msgid_plural "Digital: %d books in %s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: sui_menu.lua:1325
+msgid "Physical: %d book in %s"
+msgid_plural "Physical: %d books in %s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: sui_menu.lua:645
+msgid "Text shown in the top bar.\nMaximum %d character."
+msgid_plural "Text shown in the top bar.\nMaximum %d characters."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sui_menu.lua:1389
+#: desktop_modules/module_action_list.lua:428
+#: desktop_modules/module_quick_actions.lua:282
+msgid "The maximum of %d action per module has been reached. Remove one first."
+msgid_plural "The maximum of %d actions per module has been reached. Remove one first."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sui_quickactions.lua:1055
+msgid "The maximum of %d quick action has been reached. Delete one first."
+msgid_plural "The maximum of %d quick actions has been reached. Delete one first."
+msgstr[0] ""
+msgstr[1] ""
+
+#: desktop_modules/module_reading_stats.lua:430
+msgid "The maximum of %d stat per row has been reached. Remove one first."
+msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
+msgstr[0] ""
+msgstr[1] ""
+
+#: sui_menu.lua:360
+msgid "The maximum of %d tab has been reached. Remove one first."
+msgid_plural "The maximum of %d tabs has been reached. Remove one first."
+msgstr[0] ""
+msgstr[1] ""
