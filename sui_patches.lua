@@ -2289,7 +2289,7 @@ function M.closeReaderToHomescreen(plugin)
         Bottombar.setActiveAndRefreshFM(plugin, "homescreen", tabs)
         if not plugin._goalTapCallback then plugin:addToMainMenu({}) end
         HS.show(
-            function(aid) plugin:_navigate(aid, plugin.ui, Config.loadTabConfig(), false) end,
+            function(aid) plugin:_navigate(aid, plugin.ui, tabs, false) end,
             plugin._goalTapCallback
         )
         local hs_inst = HS._instance
@@ -2611,10 +2611,16 @@ function M.teardownAll(plugin)
     plugin._closing_notice_shown = nil
 
     -- Reset module-level state so a re-enable cycle starts clean.
+    -- Transient flags are cleared unconditionally.
+    -- _start_with_hs is re-read from the persisted setting instead of being
+    -- forced to false: if the user does disable→enable in the same session,
+    -- package.loaded keeps this module alive so the top-level initialiser
+    -- never runs again, and hardcoding false would leave isStartWithHS() wrong
+    -- for the rest of the session.
     _hs_boot_done             = false
     _hs_pending_after_reader  = false
     _hs_pending_prev_action   = nil
-    _start_with_hs            = false
+    _start_with_hs            = G_reader_settings:readSetting("start_with", "filemanager") == "homescreen_simpleui"
     _navpager_rebuild_pending = false
 
     -- Clear lazy-refresh flag on the FM instance, if any.

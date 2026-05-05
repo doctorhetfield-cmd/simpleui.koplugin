@@ -475,10 +475,8 @@ end
 -- Otherwise (library or any other view): opens the Homescreen.
 function SimpleUIPlugin:onSimpleUIToggleHomeLibrary()
     local HS = package.loaded["sui_homescreen"]
-    local hs_open = HS and HS._instance ~= nil
-    local tabs = Config.loadTabConfig()
-    if hs_open then
-        self:_navigate("home", self.ui, tabs, false)
+    if HS and HS._instance then
+        self:_navigate("home", self.ui, Config.loadTabConfig(), false)
         return true
     end
     local RUI = package.loaded["apps/reader/readerui"]
@@ -486,7 +484,7 @@ function SimpleUIPlugin:onSimpleUIToggleHomeLibrary()
         Patches.closeReaderToHomescreen(self)
         return true
     end
-    self:_navigate("homescreen", self.ui, tabs, false)
+    self:_navigate("homescreen", self.ui, Config.loadTabConfig(), false)
     return true
 end
 
