@@ -416,7 +416,7 @@ msgstr "Gyűjtemény"
 
 #: sui_foldercovers.lua:559 sui_browsemeta.lua:854
 msgid "Collection \"%1\" created with %2 books."
-msgstr "\"%1\" gyűjtemény létrehozva %2 könyvvel."
+msgstr "„%1” gyűjtemény létrehozva %2 könyvvel."
 
 #: sui_foldercovers.lua:542 sui_browsemeta.lua:829
 msgid "Collection already exists: %1"
@@ -480,7 +480,7 @@ msgstr "Borítópakli"
 
 #: desktop_modules/module_collections.lua:613
 msgid "Cover for \"%s\""
-msgstr "Borító ehhez: \"%s\""
+msgstr "Borító ehhez: „%s”"
 
 #: desktop_modules/module_collections.lua:651
 #: desktop_modules/module_collections.lua:653
@@ -606,7 +606,7 @@ msgstr "Törlés"
 
 #: sui_quickactions.lua:1132
 msgid "Delete quick action \"%s\"?"
-msgstr "\"%s\" gyors művelet törlése?"
+msgstr "„%s” gyors művelet törlése?"
 
 #: sui_quickactions.lua:555
 msgid "Dictionary Lookup"
@@ -618,11 +618,11 @@ msgstr "Digitális cél  (%s)"
 
 #: sui_menu.lua:1846 sui_menu.lua:1848
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
-msgstr "Előbb kapcsold ki a \"Méretezés rögzítése\" opciót, hogy egyedi méretezést állíthass be."
+msgstr "Előbb kapcsold ki a „Méretezés rögzítése” opciót, hogy egyedi méretezést állíthass be."
 
 #: sui_config.lua:1703
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
-msgstr "Előbb kapcsold ki a \"Méretezés rögzítése\" opciót, hogy modulonkénti méretezést állíthass be."
+msgstr "Előbb kapcsold ki a „Méretezés rögzítése” opciót, hogy modulonkénti méretezést állíthass be."
 
 #: sui_config.lua:172
 msgid "Disk Usage"
@@ -666,7 +666,7 @@ msgstr "Gyors művelet szerkesztése"
 
 #: sui_bottombar.lua:1483
 msgid "Enable 'Browse by Author / Series / Tags' in the library menu first."
-msgstr ""
+msgstr "Engedélyezd a „Böngészés szerző / sorozat / címke alapján” opciót a könyvtár menüben előbb."
 
 #: sui_menu.lua:2185
 msgid "Enable Folder Covers"
@@ -683,6 +683,10 @@ msgid ""
 "  /koreader/fonts/nerdfonts/symbols.ttf\n"
 "Leave blank and press OK to remove a Nerd Font icon."
 msgstr ""
+"Add meg egy Nerd Fonts szimbólum Unicode kódpontját (hex).\n"
+"A kódok kereséséhez használhatod a wakamaifondue.com oldalt az alábbi fájl alapján:\n"
+"  /koreader/fonts/nerdfonts/symbols.ttf\n"
+"Hagyd üresen és nyomj OK-t a Nerd Font ikon eltávolításához."
 
 #: sui_updater.lua:611
 msgid "Error checking for updates."
@@ -772,6 +776,9 @@ msgid ""
 "Individual overrides in Module Settings take precedence.\n"
 "100% is the default size."
 msgstr ""
+"Globális méretezés az összes modulhoz.\n"
+"Az egyéni felülírások a modul beállításokban elsőbbséget élveznek.\n"
+"100% az alapértelmezett."
 
 #: sui_menu.lua:2244
 msgid "Group Books by Series"
@@ -782,12 +789,16 @@ msgid ""
 "Height of the bottom navigation bar.\n"
 "100% is the default size."
 msgstr ""
+"Az alsó navigációs sáv magassága.\n"
+"100% az alapértelmezett."
 
 #: sui_menu.lua:848 sui_menu.lua:850
 msgid ""
 "Height of the top status bar.\n"
 "100% is the default size."
 msgstr ""
+"Az alsó felső állapotsáv magassága.\n"
+"100% az alapértelmezett."
 
 #: sui_menu.lua:462 sui_menu.lua:521 sui_menu.lua:1010 sui_menu.lua:2262
 #: sui_menu.lua:2306
@@ -819,6 +830,8 @@ msgid ""
 "Hides the pagination bar on the homescreen.\n"
 "Not available when Navpager is active."
 msgstr ""
+"Elrejti a lapozó sávot a kezdőoldalról.\n"
+"Nem elérhető ha az Oldal lapozó be van kapcsolva."
 
 #: sui_quickactions.lua:549 sui_config.lua:137 sui_bottombar.lua:1073
 msgid "History"
@@ -882,12 +895,16 @@ msgid ""
 "Invalid arrangement.\n"
 "Keep items between the Left and Right separators."
 msgstr ""
+"Érvénytelen elrendezés.\n"
+"Tartsd az elemeket a Jobb és Bal elválasztók között."
 
 #: sui_menu.lua:732 sui_menu.lua:734
 msgid ""
 "Invalid arrangement.\n"
 "Keep the Left, Center and Right separators in order."
 msgstr ""
+"Érvénytelen elrendezés.\n"
+"Tartsd a Balra, Középre és Jobbra elválasztókat sorrendben."
 
 #: sui_quickactions.lua:464
 msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
@@ -1019,6 +1036,8 @@ msgid ""
 "Modules exceed the visible area.\n"
 "Move some to another page or adjust the scale."
 msgstr ""
+"A modulok átlépték a látható terület határait.\n"
+"Helyezz át párat másik lapra, vagy állíts a méretezésen."
 
 #: desktop_modules/module_clock.lua:50
 msgid "Monday"
@@ -1142,7 +1161,7 @@ msgstr "Nincs gyűjtemény kiválasztva"
 
 #: desktop_modules/module_quote.lua:831
 msgid "No custom quotes found. Add a .lua file to the plugin's desktop_modules/custom_quotes/ folder and select it in Settings."
-msgstr ""
+msgstr "Nem található egyéni idézet. Adj hozzá egy .lua fájlt a bővítmény desktop_modules/custom_quotes/ mappájához, majd válaszd ki a Beállításokban."
 
 #: sui_updater.lua:480
 msgid ""
@@ -1150,16 +1169,21 @@ msgid ""
 "\n"
 "Open the releases page?"
 msgstr ""
+"Nem található letöltési fájl.\n"
+"\n"
+"Kiadási oldal megnyitása?"
 
 #: sui_quickactions.lua:1233
 msgid ""
 "No folder, collection or plugin configured.\n"
 "Go to Simple UI \\xe2\\x86\\x92 Settings \\xe2\\x86\\x92 Quick Actions to set one."
 msgstr ""
+"Nincs beállítva mappa, gyűjtemény vagy bővítmény.\n"
+"Lépj a Simple UI \\xe2\\x86\\x92 Beállítások \\xe2\\x86\\x92 Gyors műveletek menübe a beállításhoz."
 
 #: desktop_modules/module_quote.lua:895
 msgid "No highlights found. Open a book and highlight some passages."
-msgstr ""
+msgstr "Nem található kiemelés. Nyiss meg egy könyvet és emelj ki néhány részt."
 
 #: sui_quickactions.lua:517
 msgid "No icons found in:"
@@ -1237,7 +1261,7 @@ msgstr "Fájl megnyitása?"
 
 #: sui_menu.lua:2255
 msgid "Overlays"
-msgstr "Rátétek"
+msgstr "Átfedések"
 
 #: sui_homescreen.lua:1415 sui_patches.lua:1464 sui_patches.lua:1873
 msgid "Page %1 of %2"
@@ -1310,11 +1334,11 @@ msgstr "Fizikai könyvek elolvasva ebben az évben:"
 
 #: desktop_modules/module_quote.lua:1306
 msgid "Place .lua files in the plugin's desktop_modules/custom_quotes/ folder"
-msgstr ""
+msgstr "Helyezz .lua fájlokat a bővítmény desktop_modules/custom_quotes/ mappájába"
 
 #: sui_menu.lua:2395
 msgid "Placeholder cover for bookless folders"
-msgstr ""
+msgstr "Helyettesítő borító könyv nélküli mappákhoz"
 
 #: sui_quickactions.lua:876
 msgid "Plugin"
@@ -1417,6 +1441,9 @@ msgid ""
 "The arrows dim when there is no previous or next page.\n"
 "With navpager active, as few as 1 tab and at most 4 tabs can be configured."
 msgstr ""
+"A lapozósáv helyett Előző/Következő nyilakat jelenít meg az alsó sáv szélein.\n"
+"A nyilak elhalványulnak, ha nincs előző vagy következő oldal.\n"
+"Oldal lapozó esetén legalább 1, legfeljebb 4 oldal konfigurálható."
 
 #: sui_quickactions.lua:996 sui_menu.lua:1882
 msgid "Reset"
@@ -1424,7 +1451,7 @@ msgstr "Visszaállítás"
 
 #: sui_menu.lua:1881
 msgid "Reset all scales to default (100%)? This cannot be undone."
-msgstr ""
+msgstr "Minden méretezés visszaállítása 100%-ra? Nem lehet visszavonni."
 
 #: sui_menu.lua:1876
 msgid "Reset to Default Scale"
@@ -1487,18 +1514,24 @@ msgid ""
 "Scale for all text elements (title, author, progress, time).\n"
 "100% is the default size."
 msgstr ""
+"Minden szöveg elem méretezése (cím, író, haladás, idő).\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_quick_actions.lua:424
 msgid ""
 "Scale for the button label text.\n"
 "100% is the default size."
 msgstr ""
+"Gomb felirat méretezése.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_collections.lua:516
 msgid ""
 "Scale for the collection name text.\n"
 "100% is the default size."
 msgstr ""
+"Gyűjtemény név szövegének a méretezése.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_collections.lua:654
 msgid ""
@@ -1506,18 +1539,25 @@ msgid ""
 "The label text follows the module scale.\n"
 "100% is the default size."
 msgstr ""
+"Csak a gyűjtemény bélyegkép méretezése.\n"
+"A címke szöveg a modul méretezést követi.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_currently.lua:834
 msgid ""
 "Scale for the cover thumbnail only.\n"
 "100% is the default size."
 msgstr ""
+"Csak a borító bélyegkép méretezése.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_coverdeck.lua:714
 msgid ""
 "Scale for the cover thumbnails only.\n"
 "100% is the default size."
 msgstr ""
+"Csak a borító bélyegképek méretezése.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_recent.lua:263 desktop_modules/module_tbr.lua:524
 #: desktop_modules/module_new_books.lua:263
@@ -1526,12 +1566,17 @@ msgid ""
 "Text and progress bar follow the module scale.\n"
 "100% is the default size."
 msgstr ""
+"Csak a borító bélyegképek méretezése.\n"
+"A szöveg és a haladás a modul méretezést követi.\n"
+"100% az alapértelmezett."
 
 #: sui_menu.lua:2356 sui_menu.lua:3343
 msgid ""
 "Scale for the folder name overlay text.\n"
 "100% is the default size."
 msgstr ""
+"Mappa név átfedő szövegének méretezése.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_action_list.lua:365
 #: desktop_modules/module_new_books.lua:275
@@ -1539,12 +1584,16 @@ msgid ""
 "Scale for the label text.\n"
 "100% is the default size."
 msgstr ""
+"Címke szövegének a méretezése.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_recent.lua:277 desktop_modules/module_tbr.lua:514
 msgid ""
 "Scale for the percentage read text.\n"
 "100% is the default size."
 msgstr ""
+"Elolvasott százalék szövegének a méretezése.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_coverdeck.lua:706
 msgid "Scale for this module."
@@ -1564,24 +1613,32 @@ msgid ""
 "Scale for this module.\n"
 "100% is the default size."
 msgstr ""
+"Ennek a modulnak a méretezése.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_coverdeck.lua:722
 msgid ""
 "Scale for title and statistics text.\n"
 "100% is the default size."
 msgstr ""
+"Cím és statisztika szövegének a méretezése.\n"
+"100% az alapértelmezett."
 
 #: sui_menu.lua:1819 sui_menu.lua:1821
 msgid ""
 "Scales all modules and labels together.\n"
 "100% is the default size."
 msgstr ""
+"Minden modul és címke méretezése együttesen.\n"
+"100% az alapértelmezett."
 
 #: sui_menu.lua:1855 sui_menu.lua:1857
 msgid ""
 "Scales the section label text above each module.\n"
 "100% is the default size."
 msgstr ""
+"Átméretezi a szekció címkét minden modul felett.\n"
+"100% az alapértelmezett."
 
 #: sui_menu.lua:2410
 msgid "Scan subfolders for cover"
@@ -1632,6 +1689,8 @@ msgid ""
 "When enabled, a notice is shown if the modules on a page are taller than the visible area.\n"
 "Disable this to silence the warning."
 msgstr ""
+"Ha engedélyezve van, figyelmeztetés jelenik meg, ha az oldalon lévő modulok magasabbak a látható területnél.\n"
+"Kapcsold ki, ha nem szeretnéd, hogy a figyelmeztetés megjelenjen."
 
 #: desktop_modules/module_clock.lua:524
 msgid "Show Battery"
@@ -1656,6 +1715,9 @@ msgid ""
 "When hidden, Simple UI settings remain accessible via the main menu.\n"
 "Takes effect after a restart."
 msgstr ""
+"A Simple UI külön lapjának megjelenítése vagy elrejtése a menüsávban.\n"
+"Elrejtve a Simple UI beállításai továbbra is elérhetők a főmenüből.\n"
+"Újraindítás után lép életbe."
 
 #: sui_config.lua:1840
 msgid "Show section label"
@@ -1667,6 +1729,9 @@ msgid ""
 "Navpager enables this automatically.\n"
 "Not available when Navpager is active."
 msgstr ""
+"A könyvtár, előzmények vagy gyűjtemények böngészése közben a címsáv alcímében megjeleníti: „Oldal: X/Y”.\n"
+"A Oldal lapozó ezt automatikusan engedélyezi.\n"
+"Oldal lapozó használata esetén nem érhető el."
 
 #: sui_menu.lua:486 sui_menu.lua:488
 msgid ""
@@ -1674,6 +1739,9 @@ msgid ""
 "The active page dot is filled; the others are dimmed.\n"
 "Always active when Navpager is selected."
 msgstr ""
+"Pontsort jelenít meg a kezdőképernyő alján.\n"
+"Az aktív oldal pontja kitöltött, a többi halvány.\n"
+"Oldal lapozó kiválasztásakor mindig aktív."
 
 #: desktop_modules/module_currently.lua:946
 msgid "Simple"
@@ -1689,6 +1757,9 @@ msgid ""
 "\n"
 "Restart KOReader to apply the update?"
 msgstr ""
+"Simple UI %s telepítve.\n"
+"\n"
+"KOReader újraindítása a frissítés alkalmazásához?"
 
 #: sui_updater.lua:474
 msgid ""
@@ -1737,12 +1808,16 @@ msgid ""
 "Size of the tab icons.\n"
 "100% is the default size."
 msgstr ""
+"Az oldal ikonok mérete.\n"
+"100% az alapértelmezett."
 
 #: sui_menu.lua:996 sui_menu.lua:998
 msgid ""
 "Size of the tab label text.\n"
 "100% is the default size."
 msgstr ""
+"Az oldal címke szövegének a mérete.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_reading_stats.lua:487
 msgid ""
@@ -1750,6 +1825,9 @@ msgid ""
 "Does not affect card size or padding.\n"
 "100% is the default size."
 msgstr ""
+"A szöveg mérete a statisztika kártyákban.\n"
+"Nem befolyásolja a kártya méretét vagy belső margóit.\n"
+"100% az alapértelmezett."
 
 #: sui_bottombar.lua:1813
 msgid "Sleep"
@@ -1769,6 +1847,8 @@ msgid ""
 "Space below the bottom navigation bar.\n"
 "100% is the default spacing."
 msgstr ""
+"Az alsó navigációs sáv alatt kihagyott hely:\n"
+"100% az alapértelmezett."
 
 #: sui_patches.lua:730 sui_patches.lua:732
 msgid "Start with"
@@ -1776,7 +1856,7 @@ msgstr "Indítás ezzel"
 
 #: sui_menu.lua:1921
 msgid "Start with Home Screen"
-msgstr "Kezdőoldallal indulás"
+msgstr "Kezdőképernyővell indulás"
 
 #: sui_bottombar.lua:1157 sui_bottombar.lua:1466
 msgid "Statistics plugin not available."
@@ -1876,7 +1956,7 @@ msgstr ""
 
 #: sui_patches.lua:879
 msgid "The «To Be Read» collection cannot be renamed."
-msgstr "A \"Olvasandó\" gyűjtemény nem átnevezhető."
+msgstr "Az „Olvasandó” gyűjtemény nem átnevezhető."
 
 #: desktop_modules/module_clock.lua:51
 msgid "Thursday"
@@ -2003,6 +2083,8 @@ msgid ""
 "Uses the standard KOReader pagination bar on the homescreen.\n"
 "Not available when Navpager is active."
 msgstr ""
+"A beépített KOReader lapozót használja a kezdőoldalon.\n"
+"Nem elérhető ha az Oldal lapozó aktív."
 
 #: sui_menu.lua:2441
 msgid "Version: %s"
@@ -2013,18 +2095,24 @@ msgid ""
 "Vertical space above this module.\n"
 "100% is the default spacing."
 msgstr ""
+"Függőlegesen kihagyott hely a modul felett.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_clock.lua:544
 msgid ""
 "Vertical space between the clock and the date.\n"
 "100% is the default spacing."
 msgstr ""
+"Függőlegesen kihagyott hely az óra és a dátum között.\n"
+"100% az alapértelmezett."
 
 #: desktop_modules/module_clock.lua:574
 msgid ""
 "Vertical space between the date (or clock) and the battery.\n"
 "100% is the default spacing."
 msgstr ""
+"Függőlegesen kihagyott hely a dátum (vagy óra) és az akkumulátor között.\n"
+"100% az alapértelmezett."
 
 #: sui_menu.lua:1010
 msgid "Visible"
@@ -2043,18 +2131,24 @@ msgid ""
 "When enabled, long-pressing a section opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
+"Ha engedélyezve van, akkor bármelyik szekció hosszan nyomása megnyitja a beállításait.\n"
+"Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra megjelenjen."
 
 #: sui_menu.lua:1040 sui_menu.lua:1042
 msgid ""
 "When enabled, long-pressing the bottom bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
+"Ha engedélyezve van, akkor az alsó sáv hosszan nyomása megnyitja a beállításait.\n"
+"Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra megjelenjen."
 
 #: sui_menu.lua:870 sui_menu.lua:872
 msgid ""
 "When enabled, long-pressing the top bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
+"Ha engedélyezve van, akkor az felső sáv hosszan nyomása megnyitja a beállításait.\n"
+"Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra megjelenjen."
 
 #: sui_menu.lua:1932 sui_menu.lua:2104
 msgid ""
@@ -2062,6 +2156,9 @@ msgid ""
 "When disabled (default), SimpleUI always returns to the library root.\n"
 "This option works independently of \"Start with Home Screen\"."
 msgstr ""
+"Ha engedélyezve van, a fájlböngésző a könyv befejezése vagy bezárása után abba a mappába nyit, ahol a könyv található, a KOReader natív viselkedését követve.\n"
+"Ha ki van kapcsolva (alapértelmezett), a SimpleUI mindig a könyvtár gyökérkönyvtárába tér vissza.\n"
+"Ez az opció a „Kezdőképernyővel indulás” beállítástól függetlenül működik."
 
 #: sui_config.lua:141
 msgid "Wi-Fi"
@@ -2235,32 +2332,36 @@ msgid_plural ""
 "Text shown in the top bar.\n"
 "Maximum %d characters."
 msgstr[0] ""
+"A felső sávban mutatott szöveg.\n"
+"Legfeljebb %d karakter."
 msgstr[1] ""
+"A felső sávban mutatott szöveg.\r\n"
+"Legfeljebb %d karakter."
 
 #: sui_menu.lua:1389 desktop_modules/module_action_list.lua:431
 #: desktop_modules/module_quick_actions.lua:292
 msgid "The maximum of %d action per module has been reached. Remove one first."
 msgid_plural "The maximum of %d actions per module has been reached. Remove one first."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "A legfeljebb %d művelet modulonként elérve. Távolíts el előbb egyet."
+msgstr[1] "A legfeljebb %d művelet modulonként elérve. Távolíts el előbb egyet."
 
 #: sui_quickactions.lua:1055
 msgid "The maximum of %d quick action has been reached. Delete one first."
 msgid_plural "The maximum of %d quick actions has been reached. Delete one first."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "A legfeljebb %d gyors művelet elérve. Távolíts el előbb egyet."
+msgstr[1] "A legfeljebb %d gyors művelet elérve. Távolíts el előbb egyet."
 
 #: desktop_modules/module_reading_stats.lua:433
 msgid "The maximum of %d stat per row has been reached. Remove one first."
 msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "A legfeljebb %d statisztika soronként elérve. Távolíts el előbb egyet."
+msgstr[1] "A legfeljebb %d statisztika soronként elérve. Távolíts el előbb egyet."
 
 #: sui_menu.lua:360
 msgid "The maximum of %d tab has been reached. Remove one first."
 msgid_plural "The maximum of %d tabs has been reached. Remove one first."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "A legfeljebb %d oldal elérve. Távolíts el előbb egyet."
+msgstr[1] "A legfeljebb %d oldal elérve. Távolíts el előbb egyet."
 
 #: sui_menu.lua:2534
 msgid "Title and Author Below Covers"
@@ -2361,7 +2462,7 @@ msgstr "Viselkedés"
 # ── Presets ────────────────────────────────────────────────────────────────
 #: sui_menu.lua:2232
 msgid "Preset \"%s\" not found."
-msgstr "\"%s\" sablon nem található."
+msgstr "„%s” sablon nem található."
 
 #: sui_menu.lua:2245
 msgid "Save as new preset…"
@@ -2381,14 +2482,14 @@ msgstr "Adj nevet a sablonnak."
 
 #: sui_menu.lua:2281
 msgid "Preset \"%s\" saved."
-msgstr "\"%s\" sablon elmentve."
+msgstr "„%s” sablon elmentve."
 
 #: sui_menu.lua:2288 sui_menu.lua:2299 #: sui_menu.lua:2779
 msgid ""
 "A preset named \"%s\" already exists.\n"
 "Overwrite it?"
 msgstr ""
-"\"%s\" nevű sablon már létezik.\n"
+"„%s” nevű sablon már létezik.\n"
 "Felülírod?"
 
 #: sui_menu.lua:2291 sui_menu.lua:2326 sui_menu.lua:2327
@@ -2401,11 +2502,11 @@ msgstr "Létező sablon frissítése…"
 
 #: sui_menu.lua:2322
 msgid "Overwrite preset \"%s\" with the current homescreen settings?"
-msgstr "\"%s\" sablon felülírása a jelenlegi Kezdőoldal beállításokkal?"
+msgstr "„%s” sablon felülírása a jelenlegi Kezdőoldal beállításokkal?"
 
 #: sui_menu.lua:2331
 msgid "Preset \"%s\" updated."
-msgstr "\"%s\" sablon frissítve."
+msgstr "„%s” sablon frissítve."
 
 #: sui_menu.lua:2347
 msgid "Rename preset…"
@@ -2413,11 +2514,11 @@ msgstr "Sablon átnevezése…"
 
 #: sui_menu.lua:2358
 msgid "Rename \"%s\""
-msgstr "\"%s\" átnevezése"
+msgstr "„%s” átnevezése"
 
 #: sui_menu.lua:2383
 msgid "A preset named \"%s\" already exists."
-msgstr "\"%s\" nevű sablon már létezik."
+msgstr "„%s” nevű sablon már létezik."
 
 #: sui_menu.lua:2412
 msgid "Delete preset…"
@@ -2425,7 +2526,7 @@ msgstr "Sablon törlése…"
 
 #: sui_menu.lua:2423
 msgid "Delete preset \"%s\"?"
-msgstr "\"%s\" sablon törlése?"
+msgstr "„%s” sablon törlése?"
 
 #: sui_style.lua:71
 msgid "Back Button"
@@ -2469,7 +2570,7 @@ msgstr "Menü gomb"
 
 #: sui_menu.lua:2808
 msgid "Overwrite preset \"%s\" with the current icon settings?"
-msgstr "\"%s\" sablon felülírása a jelenlegi ikon beállításokkal?"
+msgstr "„%s” sablon felülírása a jelenlegi ikon beállításokkal?"
 
 #: sui_menu.lua:2478
 msgid "Presets"
@@ -2601,7 +2702,7 @@ msgid ""
 "Pack \"%s\" installed.\n"
 "You can now apply it from the list."
 msgstr ""
-"\"%s\" csomag telepítve.\n"
+"„%s” csomag telepítve.\n"
 "Most már alkalmazhatod a listából."
 
 msgid "Error installing pack:"
@@ -2614,7 +2715,7 @@ msgid ""
 "Pack \"%s\" applied.\n"
 "%d icons replaced."
 msgstr ""
-"\"%s\" csomag alkalmazva.\n"
+"„%s” csomag alkalmazva.\n"
 "%d ikon lecserélve."
 
 msgid "Error applying pack:"
@@ -2654,7 +2755,7 @@ msgid "Import preset…"
 msgstr "Sablon importálása…"
 
 msgid "Preset \"%s\" imported."
-msgstr "\"%s\" sablon importálva."
+msgstr "„%s” sablon importálva."
 
 msgid "Error importing preset: "
 msgstr "Hiba sablon importálásakor: "
