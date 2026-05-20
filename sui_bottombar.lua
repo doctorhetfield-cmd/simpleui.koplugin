@@ -1591,7 +1591,15 @@ function M.refreshWifiIcon(plugin)
         Config.wifi_optimistic = nil
     end
     plugin:_rebuildAllNavbars()
-    plugin:_refreshCurrentView()
+    -- Refresh the HS QA row in place. Do NOT call _refreshCurrentView:
+    -- it re-invokes _navigate(active_action), which for "homescreen"/"bookfusion"
+    -- calls HS.show / BF.show → UIManager:show(new_widget) and pushes a fresh
+    -- fullscreen widget on top of anything a plugin put on the stack
+    -- (e.g. bf_browser's Menu during a wifi-gated action).
+    local HS = package.loaded["sui_homescreen"]
+    if HS and HS._instance then
+        pcall(function() HS.refreshImmediate(false) end)
+    end
 end
 
 function M.showFrontlightDialog()

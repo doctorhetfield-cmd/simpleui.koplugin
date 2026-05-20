@@ -1238,7 +1238,7 @@ function M.patchUIManagerShow(plugin)
 
     -- Widgets that receive navbar injection by name (in addition to those
     -- already sized to the content area via _navbar_height_reduced).
-    local INJECT_NAMES = { collections = true, history = true, coll_list = true, homescreen = true }
+    local INJECT_NAMES = { collections = true, history = true, coll_list = true, homescreen = true, bookfusion = true }
 
     -- Widgets that receive wallpaper injection. Intentionally narrower than
     -- INJECT_NAMES: SortWidget, PathChooser and other utility overlays that
@@ -1321,7 +1321,7 @@ function M.patchUIManagerShow(plugin)
             and not widget._navbar_skip_inject
             and widget ~= plugin.ui
             and widget.covers_fullscreen
-            -- title_bar is NOT required for BI-registered widgets: Titlebar.applyToInjected
+            -- title_bar is NOT required for BI-registered widgets: Titlebar.applyToSub
             -- already guards itself when title_bar is absent.
             and (widget.title_bar or _bi_desc ~= nil)
             and (widget._navbar_height_reduced
@@ -1380,6 +1380,8 @@ function M.patchUIManagerShow(plugin)
             else
                 effective_action = "homescreen"
             end
+        elseif widget.name == "bookfusion" and tabs_set["bookfusion"] then
+            effective_action = Bottombar.setActiveAndRefreshFM(plugin, "bookfusion", tabs)
         elseif widget.name == "coll_list"
                or (widget.name == "collections" and not Config.isFavoritesWidget(widget)) then
             if tabs_set["collections"] then

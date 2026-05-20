@@ -4001,6 +4001,24 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 end,
             },
             -- -----------------------------------------------------------------
+            -- "Custom Tabs" groups the settings for each custom-tab plugin
+            -- that slots into SimpleUI's navbar.  Right now only BookFusion
+            -- lives here; future custom tabs can be added alongside it.
+            -- Each tab's builder is pcall-wrapped so a syntax error in one
+            -- can't knock out the whole Simple UI settings menu.
+            -- -----------------------------------------------------------------
+            {
+                text = _("Custom Tabs"),
+                sub_item_table_func = function()
+                    local items = {}
+                    local ok_bfs, BFS = pcall(require, "sui_bookfusion_settings")
+                    if ok_bfs and BFS and BFS.build then
+                        items[#items+1] = BFS.build()
+                    end
+                    return items
+                end,
+            },
+            -- -----------------------------------------------------------------
             -- Developer submenu
             -- To re-enable: change _SHOW_DEVELOPER_MENU to true (line below).
             -- -----------------------------------------------------------------

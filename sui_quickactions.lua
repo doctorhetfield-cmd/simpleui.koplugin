@@ -227,6 +227,27 @@ local function _registerBuiltins()
             end,
         },
         {
+            id    = "bookfusion",
+            label = _("BookFusion"),
+            icon  = Config.ICON.bookfusion,
+            is_in_place = false,
+            execute = function(ctx)
+                local plugin = ctx.plugin or _simpleui_plugin()
+                local ok_bf, BF = pcall(require, "sui_bookfusion")
+                if ok_bf and BF and type(BF.show) == "function" then
+                    local on_qa_tap = function(aid)
+                        if plugin then
+                            plugin:_navigate(aid, plugin.ui, Config.loadTabConfig(), false)
+                        end
+                    end
+                    BF.show(on_qa_tap)
+                else
+                    local su = ctx.show_unavailable or _unavailToast
+                    su(_("BookFusion tab not available."))
+                end
+            end,
+        },
+        {
             id    = "collections",
             label = _("Collections"),
             icon  = Config.ICON.collections,
