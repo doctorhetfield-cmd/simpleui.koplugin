@@ -5,9 +5,7 @@
 -- keys live in sui_store and participate in preset export/import. Changes
 -- repaint the BookFusion tab in place when it's the active widget.
 
-local _           = require("gettext")
-local Device      = require("device")
-local Screen      = Device.screen
+local _           = require("sui_i18n").translate
 local SpinWidget  = require("ui/widget/spinwidget")
 local UIManager   = require("ui/uimanager")
 local SUISettings = require("sui_store")

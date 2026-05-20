@@ -45,7 +45,7 @@ local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local Size            = require("ui/size")
 local logger          = require("logger")
-local _               = require("gettext")
+local _               = require("sui_i18n").translate
 
 local UI          = require("sui_core")
 local SUISettings = require("sui_store")
@@ -1423,7 +1423,15 @@ function BookFusionTab:_buildLanding(sw, content_h)
         cover_w = tile_w
         cover_h = math.floor(cover_w * 1.55)
     end
-    if cover_h < Screen:scaleBySize(60) then cover_h = Screen:scaleBySize(60) end
+    -- Clamp both dimensions and recompute width from the clamped height so
+    -- the aspect stays consistent. Without this, cover_budget can go ≤ 0
+    -- on small screens / large text scales, leaving cover_w ≤ 0 even
+    -- after the cover_h floor — which propagates into BookTile/Geom.
+    local cover_min = Screen:scaleBySize(60)
+    if cover_h < cover_min then
+        cover_h = cover_min
+        cover_w = math.max(1, math.floor(cover_h / 1.55))
+    end
     local tile_h = cover_h + tile_text_h + tile_pct_h + Screen:scaleBySize(8)
 
     -- Current-reading books from cache.
@@ -1764,7 +1772,13 @@ function BookFusionTab:_buildSubpage(sw, content_h)
         cover_w = tile_w
         cover_h = math.floor(cover_w * 1.5)
     end
-    if cover_h < Screen:scaleBySize(60) then cover_h = Screen:scaleBySize(60) end
+    -- Clamp both dimensions and recompute width from the clamped height
+    -- (cover_h_budget can be ≤ 0 with many rows/cols on a short screen).
+    local cover_min = Screen:scaleBySize(60)
+    if cover_h < cover_min then
+        cover_h = cover_min
+        cover_w = math.max(1, math.floor(cover_h / 1.5))
+    end
     local tile_h  = cover_h + cover_title_gap + title_h_reserve
     local per_page = rows * grid_cols
 
