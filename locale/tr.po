@@ -1,13 +1,14 @@
 # Simple UI — KOReader plugin
 # Turkish Translation
 # Safa Burak Erenkara <safaburak@gmail.com>, 2026.
+# Ayberk Tepeli <ayberktepeli55@gmail.com>, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
 "POT-Creation-Date: 2026-04-14 21:00\n"
-"PO-Revision-Date: 2026-04-19 14:55+0300\n"
-"Last-Translator: Safa Burak Erenkara <safaburak@gmail.com>\n"
+"PO-Revision-Date: 2026-05-20 16:46+0300\n"
+"Last-Translator: Ayberk Tepeli <ayberktepeli55@gmail.com>\n"
 "Language-Team: Turkish\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +26,7 @@ msgstr "  Hedef Belirle  (%d dk/gün)"
 
 #: desktop_modules/module_reading_goals.lua:620
 msgid "  Set Goal  (%s)"
-msgstr ""
+msgstr "  Hedef Belirle  (%s)"
 
 #: desktop_modules/module_reading_goals.lua:640
 msgid "  Set Goal  (disabled)"
@@ -199,11 +200,11 @@ msgstr "Geri"
 
 #: desktop_modules/module_collections.lua:662
 msgid "Badge position: Bottom"
-msgstr ""
+msgstr "Rozet konumu: Alt"
 
 #: desktop_modules/module_collections.lua:663
 msgid "Badge position: Top"
-msgstr ""
+msgstr "Rozet konumu: Üst"
 
 #: sui_config.lua:168
 msgid "Battery"
@@ -412,7 +413,7 @@ msgstr "Devam Et"
 
 #: desktop_modules/module_coverdeck.lua:325
 msgid "Cover Deck"
-msgstr ""
+msgstr "Kapak Galerisi"
 
 #: desktop_modules/module_collections.lua:613
 msgid "Cover for \"%s\""
@@ -429,7 +430,7 @@ msgstr "\"%s\" için kapak"
 #: desktop_modules/module_recent.lua:256
 #: desktop_modules/module_recent.lua:258
 msgid "Cover size"
-msgstr ""
+msgstr "Kapak boyutu"
 
 #: sui_quickactions.lua:1119
 msgid "Create Quick Action"
@@ -441,7 +442,7 @@ msgstr "Hızlı Eylem Oluştur"
 #: desktop_modules/module_currently.lua:402
 #: desktop_modules/module_currently.lua:981
 msgid "Currently Reading"
-msgstr ""
+msgstr "Şu Anda Okunanlar"
 
 #: sui_config.lua:561
 msgid "Custom"
@@ -533,7 +534,7 @@ msgstr "Sözlükte Ara"
 
 #: sui_menu.lua:1234
 msgid "Digital Goal  (%s)"
-msgstr ""
+msgstr "Dijital Hedef  (%s)"
 
 #: sui_menu.lua:1760
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
@@ -736,7 +737,7 @@ msgstr "Ana klasör"
 
 #: sui_bottombar.lua:1052
 msgid "Home folder + subfolders"
-msgstr ""
+msgstr "Ana klasör + alt klasörler"
 
 #: sui_homescreen.lua:1080
 msgid "Homescreen"
@@ -754,11 +755,11 @@ msgstr "Simge"
 #: sui_menu.lua:887
 #: sui_menu.lua:890
 msgid "Icon Size"
-msgstr ""
+msgstr "Simge Boyutu"
 
 #: sui_menu.lua:888
 msgid "Icon Size — %d%%"
-msgstr ""
+msgstr "Simge Boyutu — %%%d"
 
 #: sui_quickactions.lua:756
 msgid "Icon: Default"
@@ -815,11 +816,11 @@ msgstr "Etiket Ölçeği"
 #: sui_menu.lua:907
 #: sui_menu.lua:910
 msgid "Label Size"
-msgstr ""
+msgstr "Etiket Boyutu"
 
 #: sui_menu.lua:908
 msgid "Label Size — %d%%"
-msgstr ""
+msgstr "Etiket Boyutu — %%%d"
 
 #: sui_menu.lua:1753
 msgid "Labels"
@@ -937,11 +938,11 @@ msgstr "Navpager etkinleştirildi.\n\nŞimdi yeniden başlatılsın mı?"
 
 #: sui_quickactions.lua:488
 msgid "Nerd Font Icon"
-msgstr ""
+msgstr "Nerd Font Simgesi"
 
 #: sui_quickactions.lua:573
 msgid "Nerd Font symbol…"
-msgstr ""
+msgstr "Nerd Font sembolü…"
 
 #: sui_bottombar.lua:1454
 msgid "Network manager unavailable."
@@ -1111,7 +1112,7 @@ msgstr "Katmanlar"
 #: sui_patches.lua:1759
 #: sui_homescreen.lua:1673
 msgid "Page %1 of %2"
-msgstr ""
+msgstr "Sayfa %1 / %2"
 
 #: sui_menu.lua:1948
 msgid "Pagination Bar"
@@ -1163,7 +1164,7 @@ msgstr ".lua dosyalarını eklentinin desktop_modules/custom_quotes/ klasörüne
 
 #: sui_menu.lua:2183
 msgid "Placeholder cover for bookless folders"
-msgstr "Kitap olmayan klasörler için yer tutucu kapak"
+msgstr "Boş klasörler için yer tutucu kapak"
 
 #: sui_quickactions.lua:945
 msgid "Plugin"
@@ -1183,7 +1184,7 @@ msgstr "Güç"
 
 #: sui_bottombar.lua:288
 msgid "Prev"
-msgstr "Geri"
+msgstr "Önceki"
 
 #: desktop_modules/module_currently.lua:267
 #: desktop_modules/module_recent.lua:284
@@ -1246,7 +1247,7 @@ msgstr "Okuma İstatistikleri"
 #: desktop_modules/module_recent.lua:72
 #: desktop_modules/module_recent.lua:281
 msgid "Recent Books"
-msgstr ""
+msgstr "Son Kitaplar"
 
 #: desktop_modules/module_tbr.lua:265
 msgid "Remove from To Be Read"
@@ -1259,7 +1260,7 @@ msgstr "Yeniden Adlandır"
 
 #: sui_menu.lua:369
 msgid "Replaces the pagination bar with Prev/Next arrows at the edges of the bottom bar.\nThe arrows dim when there is no previous or next page.\nWith navpager active, as few as 1 tab and at most 4 tabs can be configured."
-msgstr "Sayfalandırma çubuğunu alt çubuğun kenarlarındaki Geri/İleri oklarıyla değiştirir.\nÖnceki veya sonraki sayfa olmadığında oklar kararır.\nNavpager etkinken, en az 1 ve en fazla 4 sekme yapılandırılabilir."
+msgstr "Sayfalandırma çubuğunu alt çubuğun kenarlarındaki Önceki/İleri oklarıyla değiştirir.\nÖnceki veya sonraki sayfa olmadığında oklar kararır.\nNavpager etkinken, en az 1 ve en fazla 4 sekme yapılandırılabilir."
 
 #: sui_quickactions.lua:1065
 #: sui_menu.lua:1796
@@ -1463,7 +1464,7 @@ msgstr "Pili Göster"
 
 #: desktop_modules/module_clock.lua:482
 msgid "Show Clock"
-msgstr ""
+msgstr "Saati Göster"
 
 #: desktop_modules/module_clock.lua:488
 msgid "Show Date"
@@ -1502,7 +1503,7 @@ msgstr "Simple UI %s başarıyla kuruldu.\n\nGüncellemeyi uygulamak için KORea
 
 #: sui_updater.lua:399
 msgid "Simple UI is up to date (%s)."
-msgstr ""
+msgstr "Simple UI güncel (%s)."
 
 #: sui_menu.lua:1923
 msgid "Simple UI will be %s after restart.\n\nRestart now?"
@@ -1622,7 +1623,7 @@ msgstr "Metin Boyutu"
 
 #: desktop_modules/module_reading_stats.lua:470
 msgid "Text Size — %d%%"
-msgstr ""
+msgstr "Metin Boyutu — %%%d"
 
 #: sui_menu.lua:109
 msgid "Text only"
@@ -1744,7 +1745,7 @@ msgstr "Tür"
 
 #: sui_menu.lua:2166
 msgid "Uniformize Covers (2:3)"
-msgstr "Kapakları Tekdüze Yap (2:3)"
+msgstr "Kapak Boyutlarını Eşitle (2:3)"
 
 #: sui_updater.lua:377
 msgid "Update cancelled."
@@ -1820,7 +1821,7 @@ msgstr "WiFi bu cihazda kullanılamıyor."
 
 #: sui_quickactions.lua:625
 msgid "Wikipedia Lookup"
-msgstr ""
+msgstr "Vikipedi'de Ara"
 
 #: desktop_modules/module_currently.lua:936
 msgid "With percentage"
@@ -1886,7 +1887,7 @@ msgstr "etkin"
 
 #: sui_quickactions.lua:490
 msgid "hex code, e.g. E001"
-msgstr ""
+msgstr "hex kodu, örn. E001"
 
 #: desktop_modules/module_reading_stats.lua:68
 msgid "no streak"
