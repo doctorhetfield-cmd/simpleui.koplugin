@@ -2554,6 +2554,25 @@ end
 -- fresh data from the updated DB.
 --
 -- Returning false lets the event propagate to ReaderStatistics as normal.
+--
+-- FIX: _db_sync_guard stuck-forever bug.
+-- The original code gated the entire tick callback on
+--   Homescreen._instance == self_ref
+-- so if the homescreen instance was replaced between the handler and the
+-- callback (e.g. a tab switch during a Kobo sync cycle), _db_sync_guard was
+-- never cleared on self_ref.  Because _db_sync_guard is an INSTANCE field,
+-- that check is wrong in both directions:
+--   • Dead instance (onCloseWidget already ran): clearing is harmless —
+--     nobody calls _buildCtx on a dead widget.
+--   • Live instance no longer registered as _instance: refusing to clear
+--     leaves _db_sync_guard = true permanently.  _buildCtx never opens the
+--     DB again for the rest of the session, so Currently Reading and Reading
+--     Goals stop updating until KOReader is restarted.
+-- Fix: always clear the guard on self_ref; only gate _refresh() on the
+-- instance still being the current one (refreshing a dead widget is a no-op
+-- at best and a crash at worst).  A scheduleIn(10) fallback provides a
+-- second safety net for the edge case where the tick callbacks are never
+-- invoked (e.g. UIManager teardown during a hot plugin reload).
 function HomescreenWidget:onSyncBookStats()
     if self._db_conn then
         pcall(function() self._db_conn:close() end)
@@ -2561,14 +2580,31 @@ function HomescreenWidget:onSyncBookStats()
     end
     self._db_sync_guard = true
     local self_ref = self
-    UIManager:tickAfterNext(function()
-        UIManager:nextTick(function()
-            if Homescreen._instance ~= self_ref then return end
-            self_ref._db_sync_guard = false
-            self_ref._ctx_cache     = nil
+    -- One-shot flag so the fallback timer and the tick path don't both fire.
+    local cleared = false
+
+    local function clearGuard()
+        if cleared then return end
+        cleared = true
+        -- Always clear the guard on this instance — safe whether alive or dead.
+        self_ref._db_sync_guard = false
+        self_ref._ctx_cache     = nil
+        -- Only repaint when this instance is still the one on screen.
+        if Homescreen._instance == self_ref then
             self_ref:_refresh(false)
-        end)
+        end
+    end
+
+    -- Primary path: two UIManager ticks guarantee the sync has finished.
+    UIManager:tickAfterNext(function()
+        UIManager:nextTick(clearGuard)
     end)
+
+    -- Safety-net: if the tick callbacks are never invoked (edge case),
+    -- release the guard after 10 s so the homescreen does not stay broken
+    -- for the rest of the KOReader session.
+    UIManager:scheduleIn(10, clearGuard)
+
     return false  -- do not consume; Statistics plugin must still handle this
 end
 
