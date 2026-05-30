@@ -202,12 +202,12 @@ msgstr "Szerzők"
 
 #: sui_menu.lua:2230
 msgid "Auto (Single ↔ 4-Cover Grid)"
-msgstr "Auto (Egy könyv ↔ 4 borítós rács)"
+msgstr "Automatikus (Egy könyv ↔ 4 borítós rács)"
 
 #: sui_foldercovers.lua:588 sui_foldercovers.lua:644 sui_browsemeta.lua:890
 #: desktop_modules/module_collections.lua:583
 msgid "Auto (first book)"
-msgstr "Auto (első könyv)"
+msgstr "Automatikus (első könyv)"
 
 #: sui_titlebar.lua:67
 msgid "Back"
@@ -245,7 +245,7 @@ msgstr "Alatta"
 
 #: sui_quickactions.lua:550
 msgid "Book Info"
-msgstr "Könyv info"
+msgstr "Könyv infó"
 
 #: sui_bottombar.lua:1069
 msgid "Bookmark browser"
@@ -462,16 +462,21 @@ msgstr "Folytatás"
 
 #: sui_menu.lua:1944 sui_menu.lua:2116
 msgid ""
-"Controls when the brief \"Closing book…\" notice is shown when leaving a book.\n"
+"Controls when the brief \"Closing book…\" notice is shown when leaving a "
+"book.\n"
 "\n"
-"• Always: shown whenever a book is closed, whether via the menu or a gesture.\n"
-"• Gesture Only: shown only when closing via a gesture (e.g. swipe); not shown when using the reader menu.\n"
+"• Always: shown whenever a book is closed, whether via the menu or a "
+"gesture.\n"
+"• Gesture Only: shown only when closing via a gesture (e.g. swipe); not "
+"shown when using the reader menu.\n"
 "• Never: the notice is never shown."
 msgstr ""
-"Beállítja, mikor jelenjen meg a rövid „Könyv bezárása…” értesítés kilépéskor.\n"
+"Beállítja, mikor jelenjen meg a rövid „Könyv bezárása…” értesítés "
+"kilépéskor.\n"
 "\n"
 "• Mindig: minden könyv bezárásakor megjelenik, menüből vagy gesztussal is.\n"
-"• Csak gesztusnál: csak gesztussal (pl. húzás) történő bezáráskor jelenik meg; menüből nem.\n"
+"• Csak gesztusnál: csak gesztussal (pl. húzás) történő bezáráskor jelenik "
+"meg; menüből nem.\n"
 "• Soha: az értesítés nem jelenik meg."
 
 #: desktop_modules/module_coverdeck.lua:310
@@ -590,7 +595,7 @@ msgstr "Alap (Mappa)"
 
 #: sui_quickactions.lua:828
 msgid "Default (Plugin)"
-msgstr "Alap (Plugin)"
+msgstr "Alap (Bővítmény)"
 
 #: sui_quickactions.lua:856
 msgid "Default (System)"
@@ -618,11 +623,15 @@ msgstr "Digitális cél  (%s)"
 
 #: sui_menu.lua:1846 sui_menu.lua:1848
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
-msgstr "Előbb kapcsold ki a „Méretezés rögzítése” opciót, hogy egyedi méretezést állíthass be."
+msgstr ""
+"Előbb kapcsold ki a „Méretezés rögzítése” opciót, hogy egyedi méretezést "
+"állíthass be."
 
 #: sui_config.lua:1703
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
-msgstr "Előbb kapcsold ki a „Méretezés rögzítése” opciót, hogy modulonkénti méretezést állíthass be."
+msgstr ""
+"Előbb kapcsold ki a „Méretezés rögzítése” opciót, hogy modulonkénti "
+"méretezést állíthass be."
 
 #: sui_config.lua:172
 msgid "Disk Usage"
@@ -666,7 +675,9 @@ msgstr "Gyors művelet szerkesztése"
 
 #: sui_bottombar.lua:1483
 msgid "Enable 'Browse by Author / Series / Tags' in the library menu first."
-msgstr "Engedélyezd a „Böngészés szerző / sorozat / címke alapján” opciót a könyvtár menüben előbb."
+msgstr ""
+"Engedélyezd a „Böngészés szerző / sorozat / címke alapján” opciót a könyvtár "
+"menüben előbb."
 
 #: sui_menu.lua:2185
 msgid "Enable Folder Covers"
@@ -684,9 +695,10 @@ msgid ""
 "Leave blank and press OK to remove a Nerd Font icon."
 msgstr ""
 "Add meg egy Nerd Fonts szimbólum Unicode kódpontját (hex).\n"
-"A kódok kereséséhez használhatod a wakamaifondue.com oldalt az alábbi fájl alapján:\n"
+"A kódok kereséséhez használhatod a wakamaifondue.com oldalt az alábbi fájl "
+"alapján:\n"
 "  /koreader/fonts/nerdfonts/symbols.ttf\n"
-"Hagyd üresen és nyomj OK-t a Nerd Font ikon eltávolításához."
+"Hagyd üresen és nyomj Okét a Nerd Font ikon eltávolításához."
 
 #: sui_updater.lua:611
 msgid "Error checking for updates."
@@ -908,7 +920,8 @@ msgstr ""
 
 #: sui_quickactions.lua:464
 msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
-msgstr "Érvénytelen bemenet. Kérlek 1-6 hexadecimális számjegyet adj meg (0-9, A-F)."
+msgstr ""
+"Érvénytelen bemenet. Kérlek 1-6 hexadecimális számjegyet adj meg (0-9, A-F)."
 
 #: sui_menu.lua:867 sui_menu.lua:1445
 #: desktop_modules/module_action_list.lua:504
@@ -1160,8 +1173,12 @@ msgid "No collections selected"
 msgstr "Nincs gyűjtemény kiválasztva"
 
 #: desktop_modules/module_quote.lua:831
-msgid "No custom quotes found. Add a .lua file to the plugin's desktop_modules/custom_quotes/ folder and select it in Settings."
-msgstr "Nem található egyéni idézet. Adj hozzá egy .lua fájlt a bővítmény desktop_modules/custom_quotes/ mappájához, majd válaszd ki a Beállításokban."
+msgid ""
+"No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder "
+"and select it in Settings."
+msgstr ""
+"Nem található egyéni idézet. Adj hozzá egy .lua fájlt a bővítmény "
+"sui_quotes/ mappájához, majd válaszd ki a Beállításokban."
 
 #: sui_updater.lua:480
 msgid ""
@@ -1176,14 +1193,17 @@ msgstr ""
 #: sui_quickactions.lua:1233
 msgid ""
 "No folder, collection or plugin configured.\n"
-"Go to Simple UI \\xe2\\x86\\x92 Settings \\xe2\\x86\\x92 Quick Actions to set one."
+"Go to Simple UI \\xe2\\x86\\x92 Settings \\xe2\\x86\\x92 Quick Actions to "
+"set one."
 msgstr ""
 "Nincs beállítva mappa, gyűjtemény vagy bővítmény.\n"
-"Lépj a Simple UI \\xe2\\x86\\x92 Beállítások \\xe2\\x86\\x92 Gyors műveletek menübe a beállításhoz."
+"Lépj a Simple UI \\xe2\\x86\\x92 Beállítások \\xe2\\x86\\x92 Gyors műveletek "
+"menübe a beállításhoz."
 
 #: desktop_modules/module_quote.lua:895
 msgid "No highlights found. Open a book and highlight some passages."
-msgstr "Nem található kiemelés. Nyiss meg egy könyvet és emelj ki néhány részt."
+msgstr ""
+"Nem található kiemelés. Nyiss meg egy könyvet és emelj ki néhány részt."
 
 #: sui_quickactions.lua:517
 msgid "No icons found in:"
@@ -1231,7 +1251,7 @@ msgstr "Oké"
 
 #: desktop_modules/module_clock.lua:56
 msgid "October"
-msgstr "Októbek"
+msgstr "Október"
 
 #: sui_menu.lua:822 sui_menu.lua:891 sui_menu.lua:1081 sui_menu.lua:1227
 #: sui_menu.lua:1911 sui_menu.lua:2037
@@ -1245,7 +1265,7 @@ msgstr "Be"
 
 #: sui_homescreen.lua:418 desktop_modules/module_quote.lua:1120
 msgid "Open"
-msgstr "Meggnyitás"
+msgstr "Megnyitás"
 
 #: sui_homescreen.lua:161
 msgid "Open a book to get started"
@@ -1333,8 +1353,8 @@ msgid "Physical books read this year:"
 msgstr "Fizikai könyvek elolvasva ebben az évben:"
 
 #: desktop_modules/module_quote.lua:1306
-msgid "Place .lua files in the plugin's desktop_modules/custom_quotes/ folder"
-msgstr "Helyezz .lua fájlokat a bővítmény desktop_modules/custom_quotes/ mappájába"
+msgid "Place .lua files in the plugin's sui_quotes/ folder"
+msgstr "Helyezz .lua fájlokat a bővítmény sui_quotes/ mappájába"
 
 #: sui_menu.lua:2395
 msgid "Placeholder cover for bookless folders"
@@ -1437,11 +1457,13 @@ msgstr "Átnevezés"
 
 #: sui_menu.lua:454 sui_menu.lua:456
 msgid ""
-"Replaces the pagination bar with Prev/Next arrows at the edges of the bottom bar.\n"
+"Replaces the pagination bar with Prev/Next arrows at the edges of the bottom "
+"bar.\n"
 "The arrows dim when there is no previous or next page.\n"
 "With navpager active, as few as 1 tab and at most 4 tabs can be configured."
 msgstr ""
-"A lapozósáv helyett Előző/Következő nyilakat jelenít meg az alsó sáv szélein.\n"
+"A lapozósáv helyett Előző/Következő nyilakat jelenít meg az alsó sáv "
+"szélein.\n"
 "A nyilak elhalványulnak, ha nincs előző vagy következő oldal.\n"
 "Oldal lapozó esetén legalább 1, legfeljebb 4 oldal konfigurálható."
 
@@ -1686,10 +1708,12 @@ msgstr "Figyelmeztetés ha a modulok túlcsordulnak"
 
 #: sui_menu.lua:2000 sui_menu.lua:2173
 msgid ""
-"When enabled, a notice is shown if the modules on a page are taller than the visible area.\n"
+"When enabled, a notice is shown if the modules on a page are taller than the "
+"visible area.\n"
 "Disable this to silence the warning."
 msgstr ""
-"Ha engedélyezve van, figyelmeztetés jelenik meg, ha az oldalon lévő modulok magasabbak a látható területnél.\n"
+"Ha engedélyezve van, figyelmeztetés jelenik meg, ha az oldalon lévő modulok "
+"magasabbak a látható területnél.\n"
 "Kapcsold ki, ha nem szeretnéd, hogy a figyelmeztetés megjelenjen."
 
 #: desktop_modules/module_clock.lua:524
@@ -1725,11 +1749,13 @@ msgstr "Szekció címke mutatása"
 
 #: sui_menu.lua:589 sui_menu.lua:591
 msgid ""
-"Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\n"
+"Shows \"Page X of Y\" in the title bar subtitle when browsing the library, "
+"history or collections.\n"
 "Navpager enables this automatically.\n"
 "Not available when Navpager is active."
 msgstr ""
-"A könyvtár, előzmények vagy gyűjtemények böngészése közben a címsáv alcímében megjeleníti: „Oldal: X/Y”.\n"
+"A könyvtár, előzmények vagy gyűjtemények böngészése közben a címsáv "
+"alcímében megjeleníti: „Oldal: X/Y”.\n"
 "A Oldal lapozó ezt automatikusan engedélyezi.\n"
 "Oldal lapozó használata esetén nem érhető el."
 
@@ -1856,7 +1882,7 @@ msgstr "Indítás ezzel"
 
 #: sui_menu.lua:1921
 msgid "Start with Home Screen"
-msgstr "Kezdőképernyővell indulás"
+msgstr "Kezdőképernyővel indulás"
 
 #: sui_bottombar.lua:1157 sui_bottombar.lua:1466
 msgid "Statistics plugin not available."
@@ -2131,33 +2157,43 @@ msgid ""
 "When enabled, long-pressing a section opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
-"Ha engedélyezve van, akkor bármelyik szekció hosszan nyomása megnyitja a beállításait.\n"
-"Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra megjelenjen."
+"Ha engedélyezve van, akkor bármelyik szekció hosszan nyomása megnyitja a "
+"beállításait.\n"
+"Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra "
+"megjelenjen."
 
 #: sui_menu.lua:1040 sui_menu.lua:1042
 msgid ""
 "When enabled, long-pressing the bottom bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
-"Ha engedélyezve van, akkor az alsó sáv hosszan nyomása megnyitja a beállításait.\n"
-"Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra megjelenjen."
+"Ha engedélyezve van, akkor az alsó sáv hosszan nyomása megnyitja a "
+"beállításait.\n"
+"Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra "
+"megjelenjen."
 
 #: sui_menu.lua:870 sui_menu.lua:872
 msgid ""
 "When enabled, long-pressing the top bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
-"Ha engedélyezve van, akkor az felső sáv hosszan nyomása megnyitja a beállításait.\n"
-"Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra megjelenjen."
+"Ha engedélyezve van, akkor az felső sáv hosszan nyomása megnyitja a "
+"beállításait.\n"
+"Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra "
+"megjelenjen."
 
 #: sui_menu.lua:1932 sui_menu.lua:2104
 msgid ""
-"When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching native KOReader behaviour.\n"
+"When enabled, opening the file browser after finishing or closing a book "
+"navigates to the folder the book is in, matching native KOReader behaviour.\n"
 "When disabled (default), SimpleUI always returns to the library root.\n"
 "This option works independently of \"Start with Home Screen\"."
 msgstr ""
-"Ha engedélyezve van, a fájlböngésző a könyv befejezése vagy bezárása után abba a mappába nyit, ahol a könyv található, a KOReader natív viselkedését követve.\n"
-"Ha ki van kapcsolva (alapértelmezett), a SimpleUI mindig a könyvtár gyökérkönyvtárába tér vissza.\n"
+"Ha engedélyezve van, a fájlböngésző a könyv befejezése vagy bezárása után "
+"abba a mappába nyit, ahol a könyv található, a KOReader natív viselkedését "
+"követve.\n"
+"Ha ki van kapcsolva (alapértelmezett), a SimpleUI mindig a könyvtár "
+"gyökérkönyvtárába tér vissza.\n"
 "Ez az opció a „Kezdőképernyővel indulás” beállítástól függetlenül működik."
 
 #: sui_config.lua:141
@@ -2286,6 +2322,12 @@ msgid_plural "  (%d left)"
 msgstr[0] "  (%d maradt)"
 msgstr[1] "  (%d maradt)"
 
+msgid "Frame"
+msgstr "Keret"
+
+msgid "Solid Background"
+msgstr "Nem átlátszó háttér"
+
 #: desktop_modules/module_reading_goals.lua:626
 msgid "  Set Goal  (%d book in %s)"
 msgid_plural "  Set Goal  (%d books in %s)"
@@ -2341,21 +2383,28 @@ msgstr[1] ""
 #: sui_menu.lua:1389 desktop_modules/module_action_list.lua:431
 #: desktop_modules/module_quick_actions.lua:292
 msgid "The maximum of %d action per module has been reached. Remove one first."
-msgid_plural "The maximum of %d actions per module has been reached. Remove one first."
-msgstr[0] "A legfeljebb %d művelet modulonként elérve. Távolíts el előbb egyet."
-msgstr[1] "A legfeljebb %d művelet modulonként elérve. Távolíts el előbb egyet."
+msgid_plural ""
+"The maximum of %d actions per module has been reached. Remove one first."
+msgstr[0] ""
+"A legfeljebb %d művelet modulonként elérve. Távolíts el előbb egyet."
+msgstr[1] ""
+"A legfeljebb %d művelet modulonként elérve. Távolíts el előbb egyet."
 
 #: sui_quickactions.lua:1055
 msgid "The maximum of %d quick action has been reached. Delete one first."
-msgid_plural "The maximum of %d quick actions has been reached. Delete one first."
+msgid_plural ""
+"The maximum of %d quick actions has been reached. Delete one first."
 msgstr[0] "A legfeljebb %d gyors művelet elérve. Távolíts el előbb egyet."
 msgstr[1] "A legfeljebb %d gyors művelet elérve. Távolíts el előbb egyet."
 
 #: desktop_modules/module_reading_stats.lua:433
 msgid "The maximum of %d stat per row has been reached. Remove one first."
-msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-msgstr[0] "A legfeljebb %d statisztika soronként elérve. Távolíts el előbb egyet."
-msgstr[1] "A legfeljebb %d statisztika soronként elérve. Távolíts el előbb egyet."
+msgid_plural ""
+"The maximum of %d stats per row has been reached. Remove one first."
+msgstr[0] ""
+"A legfeljebb %d statisztika soronként elérve. Távolíts el előbb egyet."
+msgstr[1] ""
+"A legfeljebb %d statisztika soronként elérve. Távolíts el előbb egyet."
 
 #: sui_menu.lua:360
 msgid "The maximum of %d tab has been reached. Remove one first."
@@ -2801,7 +2850,7 @@ msgstr ""
 "%1"
 
 msgid "Factory Reset"
-msgstr "Gyári viszzaállítás"
+msgstr "Gyári visszaállítás"
 
 msgid ""
 "This will delete all Simple UI settings and restart KOReader.\n"
