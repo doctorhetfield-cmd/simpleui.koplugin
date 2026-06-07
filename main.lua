@@ -1199,6 +1199,23 @@ function SimpleUIPlugin:onSimpleUISettingsWindow()
     return true
 end
 
+-- onCloseWidget fires on the plugin when the FM (self.ui) closes.
+-- We use this — mirroring the Bookshelf plugin pattern — to close the
+-- homescreen whenever the FM shuts down for a real exit.
+-- The discriminator is self.ui.tearing_down: KOReader sets it to true on the
+-- FM only when the reader is about to open (filemanager.lua:onShowingReader /
+-- onSetupShowReader). On a real exit the FM closes via onClose() directly,
+-- without tearing_down, so we correctly close the HS and let the stack drain.
+function SimpleUIPlugin:onCloseWidget()
+    local HS = package.loaded["sui_homescreen"]
+    local hs_inst = HS and HS._instance
+    if not hs_inst then return end
+    if self.ui and self.ui.tearing_down then return end
+    hs_inst._navbar_closing_intentionally = true
+    UIManager:close(hs_inst)
+    if HS._instance == hs_inst then HS._instance = nil end
+end
+
 function SimpleUIPlugin:onTeardown()
     -- Flush the plugin settings store so any in-memory writes are persisted
     -- before the plugin is unloaded or KOReader exits.

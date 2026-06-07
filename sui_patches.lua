@@ -1676,20 +1676,10 @@ function M.patchUIManagerClose(plugin)
         end
         -- ────────────────────────────────────────────────────────────────────
 
-        -- When the FM closes, close the homescreen too — but ONLY when the
-        -- app is actually exiting.  If the FM is closing because the reader
-        -- is opening we leave the HS alive on the stack; _raiseHSFromStack()
-        -- will promote it back to the top when the reader closes, giving the
-        -- same warm-path behaviour as the Bookshelf plugin.
-        if widget_is_fm then
-            local HS      = liveHS()
-            local hs_inst = HS and HS._instance
-            if hs_inst and UIManager._exit_code ~= nil then
-                hs_inst._navbar_closing_intentionally = true
-                orig_close(um_self, hs_inst)  -- bypass our wrapper
-                if HS._instance == hs_inst then HS._instance = nil end
-            end
-        end
+        -- The homescreen is closed on FM exit via SimpleUIPlugin:onCloseWidget,
+        -- which mirrors the Bookshelf plugin pattern and uses self.ui.tearing_down
+        -- as the discriminator (set only when the reader is opening, not on exit).
+        -- Nothing to do here.
 
         local result = orig_close(um_self, widget, ...)
 
@@ -1758,6 +1748,9 @@ function M.patchUIManagerClose(plugin)
                             if fm_ref then fm_ref._sui_lazy_refresh_path = true end
                             UIManager:nextTick(function()
                                 if UIManager._exit_code ~= nil then return end
+                                -- If the FM is already gone, the app is exiting
+                                -- (exit from reader: FM closes before this tick runs).
+                                if not liveFM() then return end
                                 local RUI2 = package.loaded["apps/reader/readerui"]
                                 if RUI2 and RUI2.instance then return end
                                 if _raiseHSFromStack(plugin, prev_action) then return end
@@ -1777,10 +1770,11 @@ function M.patchUIManagerClose(plugin)
                 else
                     UIManager:scheduleIn(0, function()
                         if UIManager._exit_code ~= nil then return end
+                        local fm2 = liveFM()
+                        if not fm2 then return end  -- FM gone = app is exiting
                         local RUI = package.loaded["apps/reader/readerui"]
                         if RUI and RUI.instance then return end
-                        local fm2 = liveFM()
-                        if fm2 then _doShowHS(fm2, plugin) end
+                        _doShowHS(fm2, plugin)
                     end)
                 end
             end

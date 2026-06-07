@@ -2348,7 +2348,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     end
     plugin.makeWallpaperMenuItems = makeWallpaperMenuItems
 
-    local function makeBehaviourMenuItems()
+    local function makeBehaviourMenuItems(ctx)
+        ctx = ctx or HOMESCREEN_CTX
         return {
             {
                 text           = _("Start with Home Screen"),
@@ -2372,7 +2373,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                         separator = true,
                         callback = function()
                             Config.setScaleLinked(not Config.isScaleLinked())
-                            ctx.refresh()
+                            _applyFullLayoutRefresh()
                         end,
                     },
                     {
@@ -2400,7 +2401,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                     Config.setModuleScale(spin.value)
                                     local HS = package.loaded["sui_homescreen"]
                                     if HS and HS.invalidateLabelCache then HS.invalidateLabelCache() end
-                                    ctx.refresh()
+                                    _applyFullLayoutRefresh()
+                                    if ctx and ctx.refresh then ctx.refresh() end
                                 end,
                             })
                         end,
@@ -2435,7 +2437,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                     Config.setLabelScale(spin.value)
                                     local HS = package.loaded["sui_homescreen"]
                                     if HS and HS.invalidateLabelCache then HS.invalidateLabelCache() end
-                                    ctx.refresh()
+                                    _applyFullLayoutRefresh()
+                                    if ctx and ctx.refresh then ctx.refresh() end
                                 end,
                             })
                         end,
@@ -2452,7 +2455,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                     Config.resetAllScales(ctx.pfx, ctx.pfx_qa)
                                     local HS = package.loaded["sui_homescreen"]
                                     if HS and HS.invalidateLabelCache then HS.invalidateLabelCache() end
-                                    ctx.refresh()
+                                    _applyFullLayoutRefresh()
+                                    if ctx and ctx.refresh then ctx.refresh() end
                                 end,
                             })
                         end,
@@ -2562,7 +2566,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                             local HS = package.loaded["sui_homescreen"]
                             if HS and HS.rebuildLayout then HS.rebuildLayout() end
                             refreshHomescreen()
-                        _applyFullLayoutRefresh()
+                            _applyFullLayoutRefresh()
                         end,
                         on_save        = refreshHomescreen,
                         lock_overlay   = ctx_menu and ctx_menu.lock_overlay,
@@ -2572,7 +2576,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             },
             {
                 text = _("Behaviour"),
-                sub_item_table_func = makeBehaviourMenuItems,
+                sub_item_table_func = function() return makeBehaviourMenuItems(HOMESCREEN_CTX) end,
             },
         }
     end
