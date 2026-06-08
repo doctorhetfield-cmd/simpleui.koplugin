@@ -723,6 +723,47 @@ function SimpleUIPlugin:init()
         end
         -- -------------------------------------------------------------------
 
+        -- Settings migration v7:
+        -- 1. Restore coverdeck_show_title when written as false by the
+        --    "Momentum" preset but never explicitly toggled by the user.
+        --    Detects the exact Momentum signature (title=false, author=false,
+        --    progress=true, percent=true, book_days=true) and resets to true.
+        -- 2. Enable recent_show_finished when it has never been set, so users
+        --    upgrading from 1.5.x (where the filter did not exist) don't find
+        --    Recent Books / Cover Deck empty because all their books are at 100%.
+        -- 3. Enable the automatic update check when it has never been set,
+        --    making auto-check opt-out instead of opt-in.
+        if not SUISettings:isTrue("simpleui_settings_migrated_v7") then
+            pcall(function()
+                local PFX       = "simpleui_hs_"
+                -- 1. coverdeck_show_title
+                local title     = SUISettings:get(PFX .. "coverdeck_show_title")
+                local author    = SUISettings:get(PFX .. "coverdeck_show_author")
+                local progress  = SUISettings:get(PFX .. "coverdeck_show_progress")
+                local percent   = SUISettings:get(PFX .. "coverdeck_show_percent")
+                local book_days = SUISettings:get(PFX .. "coverdeck_show_book_days")
+                if title == false and author == false
+                        and progress == true and percent == true
+                        and book_days == true then
+                    SUISettings:set(PFX .. "coverdeck_show_title", true)
+                    logger.info("simpleui: migration v7 — restored coverdeck_show_title to true")
+                end
+                -- 2. recent_show_finished
+                if SUISettings:get(PFX .. "recent_show_finished") == nil then
+                    SUISettings:set(PFX .. "recent_show_finished", true)
+                    logger.info("simpleui: migration v7 — enabled recent_show_finished")
+                end
+                -- 3. auto update check
+                if SUISettings:get("simpleui_updater_auto_check") == nil then
+                    SUISettings:set("simpleui_updater_auto_check", true)
+                    logger.info("simpleui: migration v7 — enabled simpleui_updater_auto_check")
+                end
+            end)
+            SUISettings:set("simpleui_settings_migrated_v7", true)
+            SUISettings:flush()
+        end
+        -- -------------------------------------------------------------------
+
         Config.applyFirstRunDefaults()
         Config.migrateOldCustomSlots()
         -- Always run sanitizeQASlots: it cleans both custom QA slot references

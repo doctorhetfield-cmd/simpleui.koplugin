@@ -3154,9 +3154,11 @@ function M.patchWallpaperFM(plugin)
 
         local orig_tbw_free = TextBoxWidget.free
         plugin._orig_wp_tbw_free = orig_tbw_free
-        TextBoxWidget.free = function(tbw_self)
-            if tbw_self._sui_tmp_bb then tbw_self._sui_tmp_bb:free(); tbw_self._sui_tmp_bb = nil end
-            if orig_tbw_free then orig_tbw_free(tbw_self) end
+        TextBoxWidget.free = function(tbw_self, full)
+            if tbw_self._sui_tmp_bb and full ~= false then
+                tbw_self._sui_tmp_bb:free(); tbw_self._sui_tmp_bb = nil
+            end
+            if orig_tbw_free then orig_tbw_free(tbw_self, full) end
         end
     end
 

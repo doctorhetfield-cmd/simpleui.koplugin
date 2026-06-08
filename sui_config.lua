@@ -958,6 +958,16 @@ local BIM_MAX_COVERS   = 30
 local _bim_cover_cache = {}
 local _bim_cover_count = 0
 local _RenderImage = nil
+local _lfs_cover   = nil  -- lazy-loaded lfs for filepath validation
+
+local function _lfsMode(fp)
+    if not _lfs_cover then
+        local ok, l = pcall(require, "libs/libkoreader-lfs")
+        if not (ok and l) then return nil end
+        _lfs_cover = l
+    end
+    return _lfs_cover.attributes(fp, "mode")
+end
 
 local function _evictOldestCover()
     local oldest_key, oldest_t = nil, math.huge
@@ -1027,6 +1037,10 @@ function M.getCoverBB(filepath, w, h, align, stretch_limit)
     local cached = _bim_cover_cache[key]
     if cached then cached.t = os.time(); return cached.bb end
 
+    -- Reject non-regular-file paths (e.g. directories, ".." traversals)
+    -- before hitting the native extractor, which can segfault on invalid input.
+    if _lfsMode(filepath) ~= "file" then _markNoCover(filepath); return nil end
+
     local bim = M.getBookInfoManager()
     if not bim then return nil end
     local ok, bookinfo = pcall(bim.getBookInfo, bim, filepath, true)
@@ -1089,7 +1103,11 @@ function M.flushCoverQueue()
     end
     local files = {}
     for _, fp in ipairs(queue) do
-        files[#files + 1] = { filepath = fp, cover_specs = M._cover_extract_specs[fp] }
+        if _lfsMode(fp) == "file" then
+            files[#files + 1] = { filepath = fp, cover_specs = M._cover_extract_specs[fp] }
+        else
+            M._cover_extract_pending[fp] = nil
+        end
         M._cover_extract_specs[fp] = nil
     end
     local ok = pcall(bim.extractInBackground, bim, files)
@@ -1330,6 +1348,17 @@ function M.applyFirstRunDefaults()
     def(PFX .. "currently_show_book_days",     false)
     def(PFX .. "currently_show_book_time",     false)
     def(PFX .. "currently_show_book_remaining", false)
+    def(PFX .. "coverdeck_show_title",          true)
+    def(PFX .. "coverdeck_show_author",         false)
+    def(PFX .. "coverdeck_show_progress",       true)
+    def(PFX .. "coverdeck_show_percent",        false)
+    def(PFX .. "coverdeck_show_book_days",      false)
+    def(PFX .. "coverdeck_show_book_time",      false)
+    def(PFX .. "coverdeck_show_book_remaining", false)
+    def(PFX .. "recent_show_finished",          true)
+
+    -- Updater
+    def("simpleui_updater_auto_check",          true)
 
     -- Quick Actions Row instances (three stable ids that won't clash with
     -- runtime-generated ones, which use os.time() as suffix).

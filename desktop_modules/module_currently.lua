@@ -178,7 +178,7 @@ local function fetchBookStats(md5, shared_conn, ctx, force)
         -- created by openStatsDB() for O(log n) lookup instead of full-table scan.
         local row = conn:exec(string.format([[
             WITH b AS (
-                SELECT id FROM book WHERE md5 = %q LIMIT 1
+                SELECT id FROM book WHERE md5 = '%s' LIMIT 1
             ),
             ps_agg AS (
                 SELECT ps.page,
