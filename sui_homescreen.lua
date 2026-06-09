@@ -497,7 +497,13 @@ end
 local function _resolveSwipeNav(cur, total, swipe_dir)
     local step = _pageStep(total)
     local raw
-    if swipe_dir == "west" then
+    -- In RTL layouts the user swipes in the opposite physical direction to
+    -- move forward, so we invert west/east before acting.
+    local dir = swipe_dir
+    if BD.mirroredUILayout() then
+        if dir == "west" then dir = "east" elseif dir == "east" then dir = "west" end
+    end
+    if dir == "west" then
         raw = cur + step
         if raw > total then raw = 1 end
     else -- "east"
@@ -627,6 +633,10 @@ local function buildDotFooter(goto_fn)
     function bar_input:onSwipeDot(_args, ges)
         if not ges then return true end
         local dir = ges.direction
+        -- Mirror swipe direction for RTL layouts.
+        if BD.mirroredUILayout() then
+            if dir == "west" then dir = "east" elseif dir == "east" then dir = "west" end
+        end
         local cur = dot_widget.current_page
         local tot = dot_widget.total_pages
         if dir == "west" then

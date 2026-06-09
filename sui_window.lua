@@ -109,6 +109,7 @@ local RightContainer  = require("ui/widget/container/rightcontainer")
 local Size            = require("ui/size")
 local T               = require("ffi/util").template
 local _               = require("sui_i18n").translate
+local BD              = require("ui/bidi")
 local TextWidget      = require("ui/widget/textwidget")
 local TitleBar        = require("ui/widget/titlebar")
 local UIManager       = require("ui/uimanager")
@@ -385,9 +386,17 @@ function SUIWindow:show()
                             ratio_h = nav_h  / screen_h,
                         },
                         handler = function(_ges)
-                            if win._current_page > 1 then
-                                win._current_page = win._current_page - 1
-                                win:_repaint()
+                            -- In RTL the left physical zone is visually "next".
+                            if BD.mirroredUILayout() then
+                                if win._current_page < win._total_pages then
+                                    win._current_page = win._current_page + 1
+                                    win:_repaint()
+                                end
+                            else
+                                if win._current_page > 1 then
+                                    win._current_page = win._current_page - 1
+                                    win:_repaint()
+                                end
                             end
                             return true
                         end,
@@ -402,9 +411,17 @@ function SUIWindow:show()
                             ratio_h = nav_h  / screen_h,
                         },
                         handler = function(_ges)
-                            if win._current_page < win._total_pages then
-                                win._current_page = win._current_page + 1
-                                win:_repaint()
+                            -- In RTL the right physical zone is visually "prev".
+                            if BD.mirroredUILayout() then
+                                if win._current_page > 1 then
+                                    win._current_page = win._current_page - 1
+                                    win:_repaint()
+                                end
+                            else
+                                if win._current_page < win._total_pages then
+                                    win._current_page = win._current_page + 1
+                                    win:_repaint()
+                                end
                             end
                             return true
                         end,
@@ -1121,6 +1138,10 @@ function SUIWindow:_buildDotBar(total_pages)
         local bar_x = self.dimen.x + math.floor((self._inner_w - self._dot_sz.w) / 2)
         local idx   = math.floor((ges.pos.x - bar_x) / self._dot_touch_w) + 1
         idx = math.max(1, math.min(idx, self._total_pages))
+        -- In RTL the dots are rendered right-to-left, so mirror the index.
+        if BD.mirroredUILayout() then
+            idx = self._total_pages - idx + 1
+        end
         if idx ~= win._current_page then
             win._current_page = idx
             win:_repaint()
@@ -1129,6 +1150,10 @@ function SUIWindow:_buildDotBar(total_pages)
     end
     function bar:onSwipeDot(_, ges)
         local dir = ges.direction
+        -- Mirror swipe direction for RTL layouts.
+        if BD.mirroredUILayout() then
+            if dir == "west" then dir = "east" elseif dir == "east" then dir = "west" end
+        end
         if dir == "west" and win._current_page < win._total_pages then
             win._current_page = win._current_page + 1
             win:_repaint()

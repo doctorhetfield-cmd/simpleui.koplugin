@@ -27,6 +27,7 @@ local Device          = require("device")
 local Screen          = Device.screen
 local logger          = require("logger")
 local _ = require("sui_i18n").translate
+local BD = require("ui/bidi")
 
 local Config = require("sui_config")
 local SUISettings = require("sui_store")
@@ -1083,8 +1084,12 @@ function M.registerTouchZones(plugin, fm_self)
                     ratio_h = nav_h      / screen_h,
                 },
                 handler = function(_ges)
-                    local action_id = tabs_snap[pos]
-                    logger.dbg("simpleui tz: navbar_pos_", pos, "fired action=", tostring(action_id))
+                    -- In RTL the HorizontalGroup visually reverses the tabs,
+                    -- so physical slot i maps to the mirrored tab index.
+                    local tab_pos = BD.mirroredUILayout() and (center_n - pos + 1) or pos
+                    local action_id = tabs_snap[tab_pos]
+                    logger.dbg("simpleui tz: navbar_pos_", pos, "fired action=", tostring(action_id),
+                        "(tab_pos=", tab_pos, "rtl=", tostring(BD.mirroredUILayout()), ")")
                     if not action_id then return true end
                     plugin:_onTabTap(action_id, fm_self)
                     return true
@@ -1148,7 +1153,11 @@ function M.registerTouchZones(plugin, fm_self)
                 handler = function(_ges)
                     if not active then return false end
                     if pos > Config.getNumTabs() then return false end
-                    local action_id = tabs_snap[pos]
+                    -- In RTL the HorizontalGroup visually reverses the tabs,
+                    -- so physical slot i maps to the mirrored tab index.
+                    local cur_n = Config.getNumTabs()
+                    local tab_pos = BD.mirroredUILayout() and (cur_n - pos + 1) or pos
+                    local action_id = tabs_snap[tab_pos]
                     if not action_id then return true end
                     plugin:_onTabTap(action_id, fm_self)
                     return true
