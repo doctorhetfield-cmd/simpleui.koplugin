@@ -1215,6 +1215,7 @@ function M.patchUIManagerShow(plugin)
         -- Wire the native "File browser" menu tab to use our flash-free
         -- close path every time a ReaderUI is shown (guard inside the fn).
         if widget.name == "ReaderUI" then
+            widget._simpleui_plugin = plugin
             pcall(M.wireReaderMenuFMTab,    plugin, widget)
             pcall(M.patchReloadDocument,    plugin, widget)
         end
