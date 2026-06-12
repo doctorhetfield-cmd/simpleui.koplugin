@@ -94,11 +94,11 @@ M.CUSTOM_DISPATCHER_ICON = M.ICON.ko_settings
 -- ===========================================================================
 
 M.DEFAULT_NUM_TABS       = 5
-M.MAX_TABS               = 6
-M.MAX_TABS_NAVPAGER      = 4
-M.MAX_LABEL_LEN          = 20
+M.MAX_TABS               = 10
+M.MAX_TABS_NAVPAGER      = 6
+M.MAX_LABEL_LEN          = 40
 M.MAX_CUSTOM_QA          = 24
-M.NAVPAGER_CENTER_TABS   = 4
+M.NAVPAGER_CENTER_TABS   = 6
 
 M.DEFAULT_TABS = { "home", "sui_settings", "homescreen", "history", "power" }
 
@@ -138,7 +138,7 @@ local function _QA_lazy() return package.loaded["sui_quickactions"] or require("
 function M.getCustomQAList()         return _QA_lazy().getCustomQAList()                                                              end
 function M.saveCustomQAList(list)    return _QA_lazy().saveCustomQAList(list)                                                         end
 function M.getCustomQAConfig(id)     return _QA_lazy().getCustomQAConfig(id)                                                          end
-function M.saveCustomQAConfig(id, label, path, coll, icon, pk, pm, da) return _QA_lazy().saveCustomQAConfig(id, label, path, coll, icon, pk, pm, da) end
+function M.saveCustomQAConfig(id, label, path, coll, icon, pk, pm, da, dv, mp) return _QA_lazy().saveCustomQAConfig(id, label, path, coll, icon, pk, pm, da, dv, mp) end
 function M.deleteCustomQA(id)        return _QA_lazy().deleteCustomQA(id)                                                             end
 function M.purgeQACollection(coll)   return _QA_lazy().purgeQACollection(coll)                                                        end
 function M.renameQACollection(o, n)  return _QA_lazy().renameQACollection(o, n)                                                       end
