@@ -42,9 +42,9 @@ local N_ = require("sui_i18n").ngettext
 
 local Config      = require("sui_config")
 local SUISettings = require("sui_store")
+local ButtonDialog = require("ui/widget/buttondialog")
 
 local QA = {}
-
 -- ---------------------------------------------------------------------------
 -- Icon path guard — picker-time validation
 -- ---------------------------------------------------------------------------
@@ -603,11 +603,13 @@ function QA.getCustomQAConfig(qa_id)
         plugin_key        = cfg.plugin_key,
         plugin_method     = cfg.plugin_method,
         dispatcher_action = cfg.dispatcher_action,
+        dispatcher_value  = cfg.dispatcher_value,
+        menu_path         = cfg.menu_path,
         icon              = cfg.icon,
     }
 end
 
-function QA.saveCustomQAConfig(qa_id, label, path, collection, icon, plugin_key, plugin_method, dispatcher_action)
+function QA.saveCustomQAConfig(qa_id, label, path, collection, icon, plugin_key, plugin_method, dispatcher_action, dispatcher_value, menu_path)
     SUISettings:set(getQASettingsKey(qa_id), {
         label             = label,
         path              = path,
@@ -615,6 +617,8 @@ function QA.saveCustomQAConfig(qa_id, label, path, collection, icon, plugin_key,
         plugin_key        = plugin_key,
         plugin_method     = plugin_method,
         dispatcher_action = dispatcher_action,
+        dispatcher_value  = dispatcher_value,
+        menu_path         = menu_path,
         icon              = icon,
     })
 end
@@ -848,6 +852,8 @@ function QA.sui_show_qa_list(plugin, ctx_menu, ctx)
                 desc = "⬡ " .. c.plugin_key .. ":" .. (c.plugin_method or "?")
             elseif c.collection and c.collection ~= "" then
                 desc = "⊞ " .. c.collection
+            elseif c.menu_path and type(c.menu_path) == "table" then
+                desc = "⊚ " .. (c.menu_path.display_label or "Menu Action")
             else
                 desc = c.path or ctx_menu._("not configured")
                 if #desc > 34 then desc = "…" .. desc:sub(-31) end
@@ -1367,6 +1373,25 @@ function QA.showIconPicker(current_icon, on_select, default_label, _picker_handl
             end,
         }}
     end
+
+    -- ==========================================================================
+    -- Browse files button — opens sui_icon_browser to pick icons from filesystem
+    -- ==========================================================================
+    buttons[#buttons + 1] = {{
+        text = _("Browse files…"),
+        callback = function()
+            UIManager:close(_picker_handle[picker_key])
+            local IconBrowser = require("sui_icon_browser")
+            local DataStorage = require("datastorage")
+            UIManager:show(IconBrowser:new{
+                path = DataStorage:getDataDir() .. "/icons/",
+                onConfirm = function(file_path)
+                    on_select(file_path)
+                end,
+            })
+        end,
+    }}
+
     if #icons == 0 then
         buttons[#buttons + 1] = {{
             text    = _("No icons found in:") .. "\n" .. QA.ICONS_DIR,
@@ -1554,6 +1579,10 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
         current_action_type = "path"
         current_action_val1 = cfg.path
         current_action_title = cfg.path:match("([^/]+)$") or cfg.path
+    elseif cfg.menu_path and type(cfg.menu_path) == "table" then
+        current_action_type = "menu"
+        current_action_val1 = cfg.menu_path
+        current_action_title = cfg.menu_path.display_label or "Menu Action"
     end
 
     local function iconButtonLabel(default_lbl)
@@ -1568,7 +1597,7 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
         return _("Icon") .. ": " .. stem
     end
 
-    local function commitQA(final_label, path, coll, default_icon, fm_key, fm_method, dispatcher_action)
+    local function commitQA(final_label, path, coll, default_icon, fm_key, fm_method, dispatcher_action, dispatcher_value, menu_path)
         local final_id = qa_id or Config.nextCustomQAId()
         if not qa_id then
             local list = Config.getCustomQAList()
@@ -1576,7 +1605,7 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
             Config.saveCustomQAList(list)
         end
         Config.saveCustomQAConfig(final_id, final_label, path, coll,
-            chosen_icon or default_icon, fm_key, fm_method, dispatcher_action)
+            chosen_icon or default_icon, fm_key, fm_method, dispatcher_action, dispatcher_value, menu_path)
         QA.invalidateCustomQACache()
         plugin:_rebuildAllNavbars()
         if on_done then on_done() end
@@ -1589,7 +1618,15 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
         if not current_action_type and not qa_id then
             if on_done then on_done() end
         else
-            _buildSaveDialog(false)
+          if active_dialog then
+             UIManager:close(active_dialog)
+             active_dialog = nil
+           end
+           if _buildSaveDialog then
+               _buildSaveDialog(false)
+           elseif on_done then
+               on_done()
+           end
         end
     end
 
@@ -1630,6 +1667,9 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
         elseif current_action_type == "dispatcher" then
             action_label = action_label .. (current_action_title or "")
             icon_default = Config.CUSTOM_DISPATCHER_ICON
+        elseif current_action_type == "menu" then
+            action_label = action_label .. (current_action_title or "")
+            icon_default = Config.CUSTOM_ICON
         else
             action_label = action_label .. _("None")
         end
@@ -1666,14 +1706,15 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
                         
                         UIManager:close(active_dialog); active_dialog = nil
                         
-                        local p_path, p_coll, p_pk, p_pm, p_da
+                        local p_path, p_coll, p_pk, p_pm, p_da, p_dv, p_mp
                         if current_action_type == "path" then p_path = current_action_val1
                         elseif current_action_type == "collection" then p_coll = current_action_val1
                         elseif current_action_type == "plugin" then p_pk = current_action_val1; p_pm = current_action_val2
-                        elseif current_action_type == "dispatcher" then p_da = current_action_val1
+                        elseif current_action_type == "dispatcher" then p_da = current_action_val1; p_dv = current_action_val2
+                        elseif current_action_type == "menu" then p_mp = current_action_val1
                         end
                         
-                        commitQA(final_label, p_path, p_coll, chosen_icon or icon_default, p_pk, p_pm, p_da)
+                        commitQA(final_label, p_path, p_coll, chosen_icon or icon_default, p_pk, p_pm, p_da, p_dv, p_mp)
                     end } },
             },
         }
@@ -1756,30 +1797,278 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
     end
 
     local function openDispatcherPicker()
-        local actions = _scanDispatcherActions()
-        if #actions == 0 then
+        local Dispatcher = require("dispatcher")
+        Dispatcher:init()
+        
+        -- Get settingsList upvalue
+        local settingsList, dispatcher_menu_order
+        local fn_idx = 1
+        while true do
+            local name, val = debug.getupvalue(Dispatcher.registerAction, fn_idx)
+            if not name then break end
+            if name == "settingsList" then settingsList = val end
+            if name == "dispatcher_menu_order" then dispatcher_menu_order = val end
+            fn_idx = fn_idx + 1
+        end
+        
+        if type(settingsList) ~= "table" then
             UIManager:show(InfoMessage:new{ text = _("No system actions found."), timeout = 3 })
             cancelActionPicker()
             return
         end
-        local buttons = {}
-        table.sort(actions, function(a, b) return a.title:lower() < b.title:lower() end)
-        for _i, a in ipairs(actions) do
-            local _a = a
-            buttons[#buttons + 1] = {{ text = _a.title, callback = function()
-                UIManager:close(plugin._qa_dispatcher_picker)
-                current_action_type = "dispatcher"
-                current_action_val1 = _a.id
-                current_action_title = _a.title
-                _buildSaveDialog(true)
-            end }}
+        local order = (type(dispatcher_menu_order) == "table" and dispatcher_menu_order)
+            or (function()
+                local keys = {}
+                for key in pairs(settingsList) do keys[#keys + 1] = key end
+                table.sort(keys)
+                return keys
+            end)()
+        
+        -- Define categories for grouping
+        local sections = {
+            { key = "general",     title = _("General") },
+            { key = "device",      title = _("Device") },
+            { key = "screen",      title = _("Screen and lights") },
+            { key = "filemanager", title = _("File browser") },
+            { key = "reader",      title = _("Reader") },
+            { key = "rolling",     title = _("Reflowable documents (epub, fb2, txt…)") },
+            { key = "paging",      title = _("Fixed layout documents (pdf, djvu, pics…)") },
+        }
+        
+        -- Collect actions by category
+        local sections_map = {}
+        for _, sec in ipairs(sections) do
+            sections_map[sec.key] = { title = sec.title, items = {} }
         end
-        buttons[#buttons + 1] = {{ text = _("Cancel"),
-            callback = function() UIManager:close(plugin._qa_dispatcher_picker); cancelActionPicker() end }}
-        plugin._qa_dispatcher_picker = ButtonDialog:new{ title = _("System Actions"), title_align = "center", buttons = buttons }
-        UIManager:show(plugin._qa_dispatcher_picker)
+        
+        for _, action_id in ipairs(order) do
+            local def = settingsList[action_id]
+            if type(def) == "table" and def.title and def.category
+                    and (def.condition == nil or def.condition == true) then
+                -- Determine section
+                local section_key = "general"
+                for _, sec in ipairs(sections) do
+                    if def[sec.key] == true then
+                        section_key = sec.key
+                        break
+                    end
+                end
+                table.insert(sections_map[section_key].items, {
+                    id = action_id,
+                    title = tostring(def.title),
+                    category = def.category,
+                    def = def,
+                })
+            end
+        end
+        
+        -- Handle action selection based on category
+        local function handleAction(action)
+            local category = action.category
+            local action_id = action.id
+            local action_title = action.title
+            local def = action.def
+            
+            if category == "none" or category == "arg" then
+                -- Direct action with no arguments or simple argument
+                current_action_type = "dispatcher"
+                current_action_val1 = action_id
+                current_action_val2 = true
+                current_action_title = action_title
+                _buildSaveDialog(true)
+             elseif category == "absolutenumber" or category == "incrementalnumber" then
+                -- Numeric action: show SpinWidget to select value
+                local SpinWidget = require("ui/widget/spinwidget")
+                local spin = SpinWidget:new{
+                    title_text = action_title,
+                    value = def.default or def.min or 0,
+                    value_min = def.min or 0,
+                    value_max = def.max or 100,
+                    value_step = def.step or 1,
+                    unit = def.unit,
+                    callback = function(spin)
+                        local value = spin.value
+                        current_action_type = "dispatcher"
+                        current_action_val1 = action_id
+                        current_action_val2 = value
+                        current_action_title = action_title .. ": " .. tostring(value)
+                        _buildSaveDialog(true)
+                    end,
+                }
+                UIManager:show(spin)
+            elseif category == "string" or category == "configurable" then
+                -- Parameterized action: show submenu with available options
+                local sub_items = {}
+                local args = def.args
+                local toggle = def.toggle
+                if def.args_func then
+                    local ok, a, t = pcall(def.args_func)
+                    if ok then
+                        args = a
+                        toggle = t
+                    end
+                end
+                
+                if args and #args > 0 then
+                    for i, value in ipairs(args) do
+                        local display = toggle and toggle[i] or tostring(value)
+                        table.insert(sub_items, {{
+                            text = display,
+                            callback = function()
+                                current_action_type = "dispatcher"
+                                current_action_val1 = action_id
+                                current_action_val2 = value
+                                current_action_title = display
+                                _buildSaveDialog(true)
+                            end,
+                        }})
+                    end
+                end
+                
+                if #sub_items > 0 then
+                    local sub_dialog = ButtonDialog:new{
+                        title = action_title,
+                        title_align = "center",
+                        buttons = sub_items,
+                        width = math.floor(Screen:getWidth() * 0.7),
+                    }
+                    UIManager:show(sub_dialog)
+                else
+                    UIManager:show(InfoMessage:new{
+                        text = _("No options available for this action."),
+                        timeout = 2,
+                    })
+                end
+            end
+        end
+        -- Build category buttons
+        local buttons = {}
+        for _, sec in ipairs(sections) do
+            local items = sections_map[sec.key].items
+            if #items > 0 then
+                table.sort(items, function(a, b) return a.title:lower() < b.title:lower() end)
+                local sub_buttons = {}
+                for _, action in ipairs(items) do
+                    sub_buttons[#sub_buttons + 1] = {{
+                        text = action.title,
+                        callback = function()
+                            handleAction(action)
+                        end,
+                    }}
+                end
+                buttons[#buttons + 1] = {{
+                    text = sec.title,
+                    callback = function()
+                        local sub_dialog = ButtonDialog:new{
+                            title = sec.title,
+                            title_align = "center",
+                            buttons = sub_buttons,
+                            width = math.floor(Screen:getWidth() * 0.7),
+                        }
+                        UIManager:show(sub_dialog)
+                    end,
+                }}
+            end
+        end
+        
+        if #buttons == 0 then
+            UIManager:show(InfoMessage:new{ text = _("No system actions found."), timeout = 3 })
+            cancelActionPicker()
+            return
+        end
+        
+        local picker = ButtonDialog:new{
+            title = _("System Actions"),
+            title_align = "center",
+            buttons = buttons,
+            width = math.floor(Screen:getWidth() * 0.7),
+        }
+        UIManager:show(picker)
+    end
+    -- ==========================================================================
+    -- openMenuPicker — record a menu navigation path
+    -- ==========================================================================
+    local function openMenuPicker()
+        local FM = package.loaded["apps/filemanager/filemanager"]
+        local fm = FM and FM.instance
+        local RUI = package.loaded["apps/reader/readerui"]
+        
+        local target_menu = nil
+        local view = "reader"
+        
+        -- Try to get ReaderUI menu first
+        if RUI and RUI.instance and RUI.instance.menu then
+            if not RUI.instance.menu.menu_container or not RUI.instance.menu.menu_container[1] then
+                RUI.instance.menu:onShowMenu()
+            end
+            target_menu = RUI.instance.menu.menu_container and RUI.instance.menu.menu_container[1]
+            view = "reader"
+        elseif fm and fm.menu then
+            -- Fall back to FileManager menu
+            if not fm.menu.menu_container or not fm.menu.menu_container[1] then
+                fm.menu:onShowMenu()
+            end
+            target_menu = fm.menu.menu_container and fm.menu.menu_container[1]
+            view = "fb"
+        else
+            UIManager:show(InfoMessage:new{
+                text = _("Open a book or go to file browser first."),
+                timeout = 3,
+            })
+            cancelActionPicker()
+            return
+        end
+        
+        if not target_menu then
+            UIManager:show(InfoMessage:new{
+                text = _("Could not open menu."),
+                timeout = 3,
+            })
+            cancelActionPicker()
+            return
+        end
+        
+        local ok, MenuPicker = pcall(require, "sui_menu_picker")
+        if not ok then
+            UIManager:show(InfoMessage:new{
+                text = _("Failed to load menu picker module."),
+                timeout = 3,
+            })
+            cancelActionPicker()
+            return
+        end
+        
+        MenuPicker.startPicking(
+            target_menu,
+            function(path_record)
+                -- Create a clean copy with only serializable data
+                local function cleanString(s)
+                    if not s then return "" end
+                    return s:gsub("[\n\r]", ""):match("^%s*(.-)%s*$") or ""
+                end
+                local clean_record = {
+                    tab_index = path_record.tab_index,
+                    display_label = cleanString(path_record.display_label),
+                    index_path = path_record.index_path,
+                    view = view,
+                    is_leaf = path_record.is_leaf,
+                }
+                
+                current_action_type = "menu"
+                current_action_val1 = clean_record
+                current_action_title = clean_record.display_label
+                _buildSaveDialog(true)
+            end,
+            function()
+                cancelActionPicker()
+            end,
+            view
+        )
     end
 
+    -- ==========================================================================
+    -- openActionPicker — main action type selection dialog
+    -- ==========================================================================
     openActionPicker = function()
         if active_dialog then UIManager:close(active_dialog); active_dialog = nil end
         local choice_dialog
@@ -1792,6 +2081,15 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
                callback = function() UIManager:close(choice_dialog); openPluginPicker() end }},
             {{ text = _("System Actions"),
                callback = function() UIManager:close(choice_dialog); openDispatcherPicker() end }},
+            {{ text = _("Menu Action"),
+               callback = function()
+                   UIManager:close(choice_dialog)
+                   local SUIWindow = require("sui_window")
+                   for _, inst in ipairs(SUIWindow._open_instances or {}) do
+                       inst:close()
+                   end
+                   openMenuPicker()
+               end }},
             {{ text = _("Cancel"),
                callback = function() UIManager:close(choice_dialog); cancelActionPicker() end }},
         }}
@@ -2016,6 +2314,8 @@ function QA.makeMenuItems(plugin, ctx_menu)
                     desc = "⬡ " .. c.plugin_key .. ":" .. (c.plugin_method or "?")
                 elseif c.collection and c.collection ~= "" then
                     desc = "⊞ " .. c.collection
+                elseif c.menu_path and type(c.menu_path) == "table" then
+                    desc = "⊚ " .. (c.menu_path.display_label or "Menu Action")
                 else
                     desc = c.path or _("not configured")
                     if #desc > 34 then desc = "…" .. desc:sub(-31) end
@@ -2032,6 +2332,8 @@ function QA.makeMenuItems(plugin, ctx_menu)
                             desc = "⬡ " .. c.plugin_key .. ":" .. (c.plugin_method or "?")
                         elseif c.collection and c.collection ~= "" then
                             desc = "⊞ " .. c.collection
+                        elseif c.menu_path and type(c.menu_path) == "table" then
+                            desc = "⊚ " .. (c.menu_path.display_label or "Menu Action")
                         else
                             desc = c.path or _("not configured")
                             if #desc > 38 then desc = "…" .. desc:sub(-35) end
@@ -2096,8 +2398,9 @@ function QA.executeCustomQA(action_id, fm, show_unavailable_fn)
     if cfg.dispatcher_action and cfg.dispatcher_action ~= "" then
         local ok_disp, Dispatcher = pcall(require, "dispatcher")
         if ok_disp and Dispatcher then
+            local action_value = cfg.dispatcher_value or true
             local ok, err = pcall(function()
-                Dispatcher:execute({ [cfg.dispatcher_action] = true })
+                Dispatcher:execute({ [cfg.dispatcher_action] = action_value })
             end)
             if not ok then
                 logger.warn("simpleui: dispatcher_action failed:", cfg.dispatcher_action, tostring(err))
@@ -2141,6 +2444,69 @@ function QA.executeCustomQA(action_id, fm, show_unavailable_fn)
 
     elseif cfg.path and cfg.path ~= "" then
         if fm and fm.file_chooser then fm.file_chooser:changeToPath(cfg.path) end
+
+    -- Menu action (recorded menu navigation path)
+    elseif cfg.menu_path and type(cfg.menu_path) == "table" then
+        local MenuPicker = require("sui_menu_picker")
+        local target_menu = nil
+        
+        local recorded_view = cfg.menu_path.view or "reader"
+        local RUI = package.loaded["apps/reader/readerui"]
+        local FM_mod = package.loaded["apps/filemanager/filemanager"]
+        local fm_inst = FM_mod and FM_mod.instance
+        local rui_inst = RUI and RUI.instance
+        
+        -- Check if current view matches the recorded view
+        local current_view = nil
+        if rui_inst and rui_inst.menu then
+            current_view = "reader"
+        elseif fm_inst and fm_inst.menu then
+            current_view = "fb"
+        end
+        
+        if recorded_view ~= current_view then
+            local msg = (recorded_view == "reader") 
+                and _("This shortcut only works in the reader. Please open a book first.")
+                or _("This shortcut only works in the file browser.")
+            _unavail(msg)
+            return
+        end
+        
+        -- Get the target menu widget
+        if recorded_view == "reader" then
+            if rui_inst and rui_inst.menu then
+                if not rui_inst.menu.show_parent then
+                    rui_inst.menu:onShowMenu()
+                end
+                local mc = rui_inst.menu.menu_container
+                if mc and mc[1] then
+                    target_menu = mc[1]
+                else
+                    target_menu = rui_inst.menu
+                end
+            end
+        else  -- "fb"
+            if fm_inst and fm_inst.menu then
+                fm_inst.menu:onShowMenu(cfg.menu_path.tab_index or 1)
+                local mc = fm_inst.menu.menu_container
+                if mc and mc[1] then
+                    target_menu = mc[1]
+                else
+                    target_menu = fm_inst.menu
+                end
+            end
+        end
+        
+        if not target_menu then
+            _unavail(_("Menu not available."))
+            return
+        end
+        
+        local ok, err = pcall(MenuPicker.replay, target_menu, cfg.menu_path)
+        if not ok then
+            logger.warn("simpleui: menu replay failed for", action_id, tostring(err))
+            _unavail(_("Failed to replay menu action. Menu structure may have changed."))
+        end
 
     else
         _unavail(_("No folder, collection or plugin configured.\nGo to Simple UI → Settings → Quick Actions to set one."))
