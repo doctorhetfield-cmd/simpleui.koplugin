@@ -68,7 +68,7 @@ local FRONTLIGHT_KEY = "simpleui_qs_bar_frontlight"
 local WARMTH_KEY     = "simpleui_qs_bar_warmth"
 local LABELS_KEY     = "simpleui_qs_bar_labels"
 local LABEL_SCALE_KEY= "simpleui_qs_bar_label_scale_pct"
-local MAX_SLOTS      = 6
+local MAX_SLOTS      = 24
 
 local function getSlots()
     local raw = SUISettings:readSetting(SLOTS_KEY)
@@ -127,7 +127,79 @@ end
 -- ---------------------------------------------------------------------------
 
 local function buildPanel(touch_menu)
-    local slots    = getSlots()
+    local original_slots = getSlots()
+
+    -- Detect current view: "reader" (inside a book) or "fb" (file browser)
+    local current_view = nil
+    local RUI = package.loaded["apps/reader/readerui"]
+    if RUI and RUI.instance and not RUI.instance.tearing_down then
+        current_view = "reader"
+    else
+        current_view = "fb"
+    end
+
+    -- Determine which context an action belongs to
+    -- Returns: "fb", "reader", or "common" (both)
+    local function getActionCategory(action_id)
+        local cfg = SUISettings:get("simpleui_qa_" .. action_id) or {}
+
+        -- Folder or collection: file browser only
+        if cfg.path or cfg.collection then
+            return "fb"
+        end
+
+        -- Plugin action: works everywhere
+        if cfg.plugin_key then
+            return "common"
+        end
+
+        -- Action with explicit menu_path.view setting
+        if cfg.menu_path and type(cfg.menu_path) == "table" then
+            return cfg.menu_path.view
+        end
+
+        -- Dispatcher action: inspect its category
+        if cfg.dispatcher_action then
+            local Dispatcher = require("dispatcher")
+            local settingsList
+            local fn_idx = 1
+            while true do
+                local name, val = debug.getupvalue(Dispatcher.registerAction, fn_idx)
+                if not name then break end
+                if name == "settingsList" then settingsList = val end
+                fn_idx = fn_idx + 1
+            end
+            local def = settingsList and settingsList[cfg.dispatcher_action]
+            if def then
+                if def.filemanager then return "fb" end
+                if def.reader or def.rolling or def.paging then return "reader" end
+            end
+            return "common"
+        end
+
+        -- Built-in file browser actions
+        local fb_actions = {
+            "home", "collections", "history", "favorites",
+            "browse_authors", "browse_series", "browse_tags"
+        }
+        for _, id in ipairs(fb_actions) do
+            if action_id == id then return "fb" end
+        end
+
+        -- Default: available in both contexts
+        return "common"
+    end
+
+    -- Filter slots: only show actions valid in current view
+    local slots = {}
+    for _, action_id in ipairs(original_slots) do
+        local category = getActionCategory(action_id)
+        if category == "common" or category == current_view then
+            table.insert(slots, action_id)
+        end
+    end
+
+    local n = #slots
     local panel_w  = touch_menu.item_width
     local padding  = Screen:scaleBySize(28)
     local inner_w  = panel_w - padding * 2
@@ -240,15 +312,35 @@ local function buildPanel(touch_menu)
         return vg, btn_frame
     end
 
-    local btn_row = HorizontalGroup:new{ align = "center" }
-    local n = #slots
+local n = #slots
+-- Calculate max buttons per row based on available width
+local fixed_gap = Screen:scaleBySize(8)
+local max_per_row = math.floor((inner_w + fixed_gap) / (btn_size + fixed_gap))
+if max_per_row < 1 then max_per_row = 1 end
 
-    if n > 0 then
-        local gap = (n > 1)
-            and math.max(0, math.floor((inner_w - n * btn_size) / (n - 1)))
+-- Split into multiple rows
+local rows = {}
+for i = 1, n, max_per_row do
+    local row_slots = {}
+    for j = i, math.min(i + max_per_row - 1, n) do
+        table.insert(row_slots, slots[j])
+    end
+    table.insert(rows, row_slots)
+end
+
+-- Build all rows vertically
+local rows_vg = VerticalGroup:new{ align = "center" }
+local row_gap = Screen:scaleBySize(8)
+
+if n > 0 then
+    for ri, row_slots in ipairs(rows) do
+        local row_n = #row_slots
+        local gap = (row_n > 1)
+            and math.max(0, math.floor((inner_w - row_n * btn_size) / (row_n - 1)))
             or 0
-
-        for i, action_id in ipairs(slots) do
+        
+        local hg = HorizontalGroup:new{ align = "center" }
+        for i, action_id in ipairs(row_slots) do
             local vg, btn_frame = makeButton(action_id)
             local _aid = action_id
             table.insert(refs.buttons, {
@@ -345,18 +437,27 @@ local function buildPanel(touch_menu)
                     return stay_open
                 end,
             })
-            table.insert(btn_row, vg)
-            if i < n then
-                table.insert(btn_row, HorizontalSpan:new{ width = gap })
+            table.insert(hg, vg)
+            if i < row_n then
+                table.insert(hg, HorizontalSpan:new{ width = gap })
             end
         end
-    else
-        table.insert(btn_row, TextWidget:new{
-            text    = _("No actions configured.\nGo to Bars → Quick Settings Bar."),
-            face    = Font:getFace("cfont"),
-            fgcolor = Blitbuffer.COLOR_DARK_GRAY,
-        })
+        
+        table.insert(rows_vg, hg)
+        if ri < #rows then
+            table.insert(rows_vg, VerticalSpan:new{ width = row_gap })
+        end
     end
+else
+    -- No actions configured, show a hint message
+    table.insert(rows_vg, TextWidget:new{
+        text    = _("No actions configured.\nGo to Bars → Quick Settings Bar."),
+        face    = Font:getFace("cfont"),
+        fgcolor = Blitbuffer.COLOR_DARK_GRAY,
+    })
+end
+
+local btn_row = rows_vg
 
     -- ── Slider helpers ───────────────────────────────────────────────────────
     local Button         = require("ui/widget/button")
@@ -949,6 +1050,45 @@ function QSBar.install()
     -- 1. Patch TouchMenu methods.
     patchTouchMenu()
 
+    -- Reset FileManagerMenu tab index to 1 when closing
+    -- This ensures Quick Settings panel is active when menu reopens
+    local function patchFileManagerMenuClose()
+        local ok, FileManagerMenu = pcall(require, "apps/filemanager/filemanagermenu")
+        if not ok or not FileManagerMenu then return end
+        if FileManagerMenu._sui_qs_fm_patched then return end
+        FileManagerMenu._sui_qs_fm_patched = true
+
+        local orig_onCloseFileManagerMenu = FileManagerMenu.onCloseFileManagerMenu
+        FileManagerMenu.onCloseFileManagerMenu = function(self)
+            if self.menu_container and self.menu_container[1] then
+                self.menu_container[1].last_index = 1
+            end
+            return orig_onCloseFileManagerMenu(self)
+        end
+    end
+
+    patchFileManagerMenuClose()
+
+    -- Reset ReaderMenu tab index to 1 when closing
+    -- This ensures Quick Settings panel is active when menu reopens
+    local function patchReaderMenuClose()
+        local ok, ReaderMenu = pcall(require, "apps/reader/modules/readermenu")
+        if not ok or not ReaderMenu then return end
+        if ReaderMenu._sui_qs_reader_patched then return end
+        ReaderMenu._sui_qs_reader_patched = true
+
+        local orig_onCloseReaderMenu = ReaderMenu.onCloseReaderMenu
+        ReaderMenu.onCloseReaderMenu = function(self)
+            if self.menu_container and self.menu_container[1] then
+                self.menu_container[1].last_index = 1
+                self.last_tab_index = 1
+            end
+            return orig_onCloseReaderMenu(self)
+        end
+    end
+
+    patchReaderMenuClose()
+
     -- 2. Patch FileManagerMenu:setUpdateItemTable to inject the panel tab.
     local ok_fm, FMMenu = pcall(require, "apps/filemanager/filemanagermenu")
     if not ok_fm or not FMMenu then return end
@@ -978,6 +1118,18 @@ function QSBar.install()
             -- tab_item_table is built (or already cached) at this point;
             -- inject our panel tab before the TouchMenu is created.
             if m_self.tab_item_table then
+                -- Move "File manager" tab to the end of the list
+                -- This gives priority to reader-specific tabs
+                local tabs = m_self.tab_item_table
+                for i, tab in ipairs(tabs) do
+                    if tab.id == "filemanager" or (tab.text and tab.text == _("File manager")) then
+                        if i < #tabs then
+                            table.remove(tabs, i)
+                            table.insert(tabs, tab)
+                        end
+                        break
+                    end
+                end 
                 injectPanelTab(m_self)
             end
             return orig_show_menu(m_self, ...)
