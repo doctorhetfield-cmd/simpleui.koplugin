@@ -798,6 +798,14 @@ local function patchTouchMenu()
         self.page_info_left_chev:showHide(false)
         self.page_info_right_chev:showHide(false)
 
+        -- Disable long-press on pagination buttons to prevent crashes
+        if self.page_info_left_chev then
+            self.page_info_left_chev.hold_callback = nil
+        end
+        if self.page_info_right_chev then
+            self.page_info_right_chev.hold_callback = nil
+        end
+
         -- Update clock/battery in footer
         local time_txt = datetime.secondsToHour(
             os.time(), G_reader_settings:isTrue("twelve_hour_clock"))
