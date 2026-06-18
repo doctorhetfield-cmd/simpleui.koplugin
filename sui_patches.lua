@@ -2345,6 +2345,28 @@ end
 -- ---------------------------------------------------------------------------
 
 local function _onStatusChanged(file)
+    -- 0. If the book is no longer "complete", remove it from the deleted-books
+    --    store (in case it was previously deleted then re-added by the user and
+    --    its status is now being changed back to reading/abandoned).
+    --    We read the sidecar — saveSummary has already flushed the new status
+    --    to disk before caller_callback() is invoked, so this is always current.
+    pcall(function()
+        local DB = SUISettings.DeletedBooks
+        if not (DB and DB.isEnabled()) then return end
+        local ok_DS, DocSettings = pcall(require, "docsettings")
+        if not ok_DS or not DocSettings then return end
+        local ds = DocSettings:open(file)
+        local summary = ds:readSetting("summary")
+        local new_status = type(summary) == "table" and summary.status or nil
+        if new_status ~= "complete" then
+            local md5 = ds:readSetting("partial_md5_checksum")
+            pcall(function() ds:close() end)
+            if md5 then DB.removeByMd5(md5) end
+        else
+            pcall(function() ds:close() end)
+        end
+    end)
+
     -- 1. Invalidate the sidecar cache for this file so the stale summary is
     --    not reused when the homescreen re-renders.
     local SH = package.loaded["desktop_modules/module_books_shared"]
@@ -3360,6 +3382,48 @@ function M.patchDeleteFile(FileManager, plugin)
                 return true
             end
         end
+
+        -- Preserve finished books in statistics before the sidecar is purged.
+        -- DocSettings.updateLocation (called inside orig_deleteFile) deletes the
+        -- .sdr, which is the only place summary.status lives.  We snapshot the
+        -- relevant fields here, before the delete, so countMarkedReadBoth can
+        -- continue counting this book even after the file and sidecar are gone.
+        if is_file then
+            pcall(function()
+                local DB = SUISettings.DeletedBooks
+                if not DB or not DB.isEnabled() then return end
+                local ok_DS, DocSettings = pcall(require, "docsettings")
+                if not ok_DS or not DocSettings then return end
+                local ds = DocSettings:open(file)
+                local summary = ds:readSetting("summary")
+                if type(summary) ~= "table" or summary.status ~= "complete" then
+                    pcall(function() ds:close() end)
+                    return
+                end
+                local md5 = ds:readSetting("partial_md5_checksum")
+                if not md5 then
+                    pcall(function() ds:close() end)
+                    return
+                end
+                local doc_props = ds:readSetting("doc_props")
+                local title   = doc_props and doc_props.title   or ""
+                local authors = doc_props and doc_props.authors or ""
+                -- Derive year from summary.modified (same source as countMarkedReadBoth).
+                local year = 0
+                local mod = summary.modified
+                if type(mod) == "number" then
+                    year = tonumber(os.date("%Y", mod)) or 0
+                elseif type(mod) == "string" and #mod >= 4 then
+                    year = tonumber(mod:sub(1, 4)) or 0
+                elseif type(mod) == "table" and mod.year then
+                    year = mod.year
+                end
+                pcall(function() ds:close() end)
+                DB.add(md5, title, authors, year)
+                logger.dbg("simpleui: preserved deleted finished book in stats:", title, "(md5:", md5, "year:", year, ")")
+            end)
+        end
+
         return orig_deleteFile(fm_self, file, is_file)
     end
 end

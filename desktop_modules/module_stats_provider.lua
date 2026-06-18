@@ -339,6 +339,46 @@ local function countMarkedReadBoth(year_str, year_start, db_conn)
             end
         end
     end
+    -- Include finished books that were deleted from the device while the
+    -- "Preserve deleted books in statistics" option was enabled.  These are
+    -- stored in sui_store.lua (DeletedBooks) keyed by partial_md5_checksum.
+    -- We skip md5s already counted from the ReadHistory loop above to avoid
+    -- doubles when a book was deleted and then re-added by the user (the live
+    -- sidecar entry takes precedence).
+    local ok_SS, SUISettings2 = pcall(require, "sui_store")
+    if ok_SS and SUISettings2 and SUISettings2.DeletedBooks then
+        local DB = SUISettings2.DeletedBooks
+        if DB.isEnabled() then
+            -- Build the set of md5s already counted from the ReadHistory loop.
+            -- Done lazily here so there is zero overhead when the feature is off.
+            local counted_md5s = {}
+            for i = 1, math.min(#ReadHistory.hist, _MAX_HIST) do
+                local entry = ReadHistory.hist[i]
+                local fp    = entry and entry.file
+                if fp and lfs.attributes(fp, "mode") == "file" then
+                    -- Re-use the sidecar cache that was already warmed above.
+                    local md5
+                    if SH then
+                        local cached = SH._cacheGet and SH._cacheGet(fp)
+                        if cached then md5 = cached.partial_md5_checksum end
+                    end
+                    if md5 then counted_md5s[md5] = true end
+                end
+            end
+
+            local deleted = DB.getAll()
+            local year_int = tonumber(year_str)
+            for md5, entry in pairs(deleted) do
+                if not counted_md5s[md5] then
+                    books_total = books_total + 1
+                    if entry.year and entry.year == year_int then
+                        books_year = books_year + 1
+                    end
+                end
+            end
+        end
+    end
+
     return books_year, books_total
 end
 

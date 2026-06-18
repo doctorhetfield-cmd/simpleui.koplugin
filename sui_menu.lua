@@ -2550,6 +2550,21 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     refreshHomescreen()
                 end,
             },
+            {
+                text           = _("Preserve Deleted Books in Statistics"),
+                help_text      = _("When a finished book is deleted from the device, keep it counted in the Books Read statistics on the Home Screen.\n\nBooks changed back to Reading or Abandoned are automatically removed from this list."),
+                checked_func   = function()
+                    return SUISettings:nilOrTrue("simpleui_preserve_deleted_books_in_stats")
+                end,
+                keep_menu_open = true,
+                callback       = function()
+                    local on = SUISettings:nilOrTrue("simpleui_preserve_deleted_books_in_stats")
+                    SUISettings:saveSetting("simpleui_preserve_deleted_books_in_stats", not on)
+                    local SP = package.loaded["desktop_modules/module_stats_provider"]
+                    if SP and SP.invalidate then pcall(SP.invalidate) end
+                    refreshHomescreen()
+                end,
+            },
         }
     end
     plugin.makeBehaviourMenuItems = makeBehaviourMenuItems

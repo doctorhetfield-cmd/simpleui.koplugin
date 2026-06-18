@@ -167,4 +167,80 @@ function SUISettings:iterateKeys()
     return next, data, nil
 end
 
+-- ---------------------------------------------------------------------------
+-- DeletedBooks — persistent store for finished books removed from the device.
+--
+-- When "Preserve deleted books in statistics" is enabled (default: on) and a
+-- book whose summary.status == "complete" is deleted via the KOReader file
+-- manager, this module records a minimal entry so the book continues to be
+-- counted in books_year / books_total on the homescreen.
+--
+-- Storage: a single key "simpleui_deleted_books" inside the existing
+-- sui_settings.lua file.  Value is a table keyed by partial_md5_checksum:
+--
+--   {
+--     ["<md5>"] = { title = "…", authors = "…", year = 2024 },
+--     …
+--   }
+--
+-- year is the calendar year (integer) captured at deletion time from
+-- summary.modified — the same source used by countMarkedReadBoth.
+--
+-- Public API:
+--   DeletedBooks.isEnabled()          → boolean (nil → true, i.e. on by default)
+--   DeletedBooks.add(md5, title, authors, year)
+--   DeletedBooks.removeByMd5(md5)
+--   DeletedBooks.getAll()             → table (keyed by md5) or {}
+-- ---------------------------------------------------------------------------
+
+local STORE_KEY = "simpleui_deleted_books"
+
+local DeletedBooks = {}
+
+function DeletedBooks.isEnabled()
+    return SUISettings:nilOrTrue("simpleui_preserve_deleted_books_in_stats")
+end
+
+-- Load the raw store table (always a copy-by-reference of the live data).
+local function _load()
+    return SUISettings:get(STORE_KEY) or {}
+end
+
+-- Persist the store table immediately.
+local function _save(tbl)
+    SUISettings:set(STORE_KEY, tbl)
+end
+
+--- Add or update an entry for a deleted finished book.
+-- md5     : partial_md5_checksum string (key used by the statistics DB)
+-- title   : book title string (may be nil)
+-- authors : book authors string (may be nil)
+-- year    : integer calendar year when the book was finished
+function DeletedBooks.add(md5, title, authors, year)
+    if not md5 then return end
+    local tbl = _load()
+    tbl[md5] = {
+        title   = title   or "",
+        authors = authors or "",
+        year    = year    or 0,
+    }
+    _save(tbl)
+end
+
+--- Remove the entry whose key matches md5 (no-op when absent).
+function DeletedBooks.removeByMd5(md5)
+    if not md5 then return end
+    local tbl = _load()
+    if tbl[md5] == nil then return end   -- nothing to do
+    tbl[md5] = nil
+    _save(tbl)
+end
+
+--- Return the full store table (keyed by md5).  Empty table when nothing stored.
+function DeletedBooks.getAll()
+    return _load()
+end
+
+SUISettings.DeletedBooks = DeletedBooks
+
 return SUISettings
