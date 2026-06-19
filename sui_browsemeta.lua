@@ -98,6 +98,11 @@ local _repr_file_cache      = {}
 local _author_count_cache   = {}  -- { [base_dir] = { [author_name] = count } }
 local _cache_base_dir       = nil
 
+-- Calibre metadata index: { [base_dir] = { [fullpath] = {title,authors,series,...} } }
+-- Populated lazily on first _getMatchingFiles call for a given base_dir.
+-- false means we already tried and found no metadata.calibre (avoid re-trying).
+local _calibre_index_cache  = {}  -- { [base_dir] = table | false }
+
 -- Lazy module references — cached on first use, cleared on uninstall.
 local _bim_cache = nil
 local _FM_cache  = nil
@@ -117,6 +122,7 @@ local function _clearCaches()
     for k in pairs(_matching_files_cache) do _matching_files_cache[k] = nil end
     for k in pairs(_repr_file_cache)      do _repr_file_cache[k]      = nil end
     for k in pairs(_author_count_cache)   do _author_count_cache[k]   = nil end
+    for k in pairs(_calibre_index_cache)  do _calibre_index_cache[k]  = nil end
 end
 
 local function _ensureCacheBaseDir(base_dir)
@@ -234,6 +240,103 @@ local function _getSuiPatches()
 end
 
 -- ---------------------------------------------------------------------------
+-- Calibre metadata index
+-- ---------------------------------------------------------------------------
+
+-- Loads metadata.calibre from *dir* (read-only / search mode) and returns a
+-- lookup table keyed by the book's absolute path on disk:
+--
+--   { ["/sdcard/Books/Comics/Batman/issue1.cbz"] = {
+--       title        = "Batman #1",
+--       authors      = "Grant Morrison\nDave McKean",   ← newline-delimited
+--       series       = "Arkham Asylum",
+--       series_index = 1,
+--       keywords     = "DC Comics\nSuperhero",          ← newline-delimited
+--     }, ... }
+--
+-- Returns false when no metadata.calibre exists under *dir*.
+-- Result is cached in _calibre_index_cache for the session.
+local function _loadCalibreIndex(dir)
+    local cached = _calibre_index_cache[dir]
+    if cached ~= nil then return cached end  -- false = already tried, nothing found
+
+    -- "metadata" is reachable because KOReader's PluginLoader appends every enabled
+    -- plugin directory to package.path at startup (pluginloader.lua loadPlugins()).
+    -- package.loaded["metadata"] is set on first require; subsequent calls are free.
+    local ok_cm, CalibreMetadata = pcall(require, "metadata")
+    -- Guard: make sure we got CalibreMetadata, not some unrelated "metadata" module.
+    if not ok_cm or not CalibreMetadata or type(CalibreMetadata.loadBookList) ~= "function" then
+        _calibre_index_cache[dir] = false
+        return false
+    end
+
+    -- Create a fresh instance so we never mutate the shared singleton that
+    -- the Calibre plugin itself may be using.
+    local cm = setmetatable({}, { __index = CalibreMetadata })
+    cm.drive = {}
+    cm.books = {}
+
+    local ok_init, result = pcall(function() return cm:init(dir, true) end)
+    if not ok_init or not result then
+        cm:clean()
+        _calibre_index_cache[dir] = false
+        return false
+    end
+
+    -- Build the index: absolute path → metadata row.
+    local index = {}
+    for _, book in ipairs(cm.books) do
+        local lpath = book.lpath
+        -- lpath is nil/null for corrupted entries; guard before concat.
+        if lpath and type(lpath) == "string" then
+            local fullpath = dir .. "/" .. lpath
+
+            -- authors: JSON array {"Author One", "Author Two"} → newline string.
+            local authors_str
+            local raw_authors = book.authors
+            if raw_authors and type(raw_authors) == "table" and #raw_authors > 0 then
+                authors_str = table.concat(raw_authors, "\n")
+            end
+
+            -- tags: JSON array → newline string (stored in bookinfo as "keywords").
+            local keywords_str
+            local raw_tags = book.tags
+            if raw_tags and type(raw_tags) == "table" and #raw_tags > 0 then
+                keywords_str = table.concat(raw_tags, "\n")
+            end
+
+            -- series / series_index: null is stored as rapidjson.null (light userdata).
+            local series = book.series
+            if type(series) ~= "string" then series = nil end
+            local series_index = book.series_index
+            if type(series_index) ~= "number" then series_index = nil end
+
+            local title = book.title
+            if type(title) ~= "string" then title = nil end
+
+            index[fullpath] = {
+                title        = title,
+                authors      = authors_str,
+                series       = series,
+                series_index = series_index,
+                keywords     = keywords_str,
+            }
+        end
+    end
+    cm:clean()
+
+    if next(index) then
+        _calibre_index_cache[dir] = index
+        local n = 0; for _ in pairs(index) do n = n + 1 end
+        logger.dbg("sui_browsemeta: calibre index loaded for", dir, "(", n, "entries)")
+        return index
+    else
+        _calibre_index_cache[dir] = false
+        return false
+    end
+end
+
+-- ---------------------------------------------------------------------------
 -- Database access
 -- ---------------------------------------------------------------------------
 
@@ -292,6 +395,84 @@ local function _getMatchingFiles(base_dir, filters)
         logger.warn("sui_browsemeta: SQL error:", tostring(err))
         return {}
     end
+    -- Enrich rows that the bookinfo DB does not yet know about (e.g. CBZ files
+    -- that have never been opened and therefore were never scanned by CoverBrowser)
+    -- using data from Calibre's metadata.calibre JSON file when it exists.
+    --
+    -- Strategy:
+    --   1. Build a set of fullpaths already present in the SQL results.
+    --   2. Load the calibre index for base_dir (cached after first call).
+    --   3. For each calibre entry under base_dir, if the file is not in the
+    --      SQL results AND it exists on disk, append a synthetic row.
+    --   4. For SQL rows that have no authors/series, backfill from calibre
+    --      so the browse grouping works even before the first document open.
+    --
+    -- bookinfo values always take priority — custom metadata edits are preserved.
+
+    local cal_index = _loadCalibreIndex(base_dir)
+    if cal_index then
+        -- Pass 1: backfill missing fields in existing SQL rows.
+        for _, row in ipairs(results) do
+            local cal = cal_index[row[1]]
+            if cal then
+                if not row.authors      then row.authors      = cal.authors      end
+                if not row.series       then row.series       = cal.series       end
+                if not row.series_index then row.series_index = cal.series_index end
+                if not row.title        then row.title        = cal.title        end
+                if not row.keywords     then row.keywords     = cal.keywords     end
+            end
+        end
+
+        -- Pass 2: append calibre-only entries (files never scanned by bookinfo).
+        -- Build a fast-lookup set of paths already in results.
+        local seen = {}
+        for _, row in ipairs(results) do seen[row[1]] = true end
+
+        -- Apply any filters that were passed to _getMatchingFiles.
+        local function _calibreRowMatchesFilters(cal_row)
+            for _, f in ipairs(filters or {}) do
+                local col, val = f[1], f[2]
+                -- Map bookinfo column names to calibre index field names.
+                local field_map = {
+                    authors  = "authors",
+                    series   = "series",
+                    keywords = "keywords",
+                }
+                local field = field_map[col] or col
+                local fval  = cal_row[field]
+                if val == false then
+                    if fval ~= nil then return false end
+                elseif col == "authors" or col == "keywords" then
+                    -- Multi-value: newline-delimited token match.
+                    if not fval then return false end
+                    local token = val
+                    if not ("\n" .. fval .. "\n"):find("\n" .. token .. "\n", 1, true) then
+                        return false
+                    end
+                else
+                    if fval ~= val then return false end
+                end
+            end
+            return true
+        end
+
+        for fullpath, cal in pairs(cal_index) do
+            if not seen[fullpath] and _calibreRowMatchesFilters(cal) then
+                local fname = fullpath:match("([^/]+)$")
+                if fname then
+                    results[#results + 1] = {
+                        fullpath, fname,
+                        title        = cal.title,
+                        authors      = cal.authors,
+                        series       = cal.series,
+                        series_index = cal.series_index,
+                        keywords     = cal.keywords,
+                    }
+                end
+            end
+        end
+    end
+
     return results
 end
 
