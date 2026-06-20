@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
 "POT-Creation-Date: 2026-06-03 19:48\n"
-"PO-Revision-Date: 2026-06-06 17:19+0800\n"
+"PO-Revision-Date: 2026-06-18 23:50+0800\n"
 "Last-Translator: \n"
 "Language-Team: Chinese (Simplified)\n"
 "Language: zh_CN\n"
@@ -268,7 +268,7 @@ msgstr "应用调色板…"
 
 #: desktop_modules/module_clock.lua:60
 msgid "April"
-msgstr "四月"
+msgstr "4月"
 
 #: desktop_modules/module_tbr.lua:570 desktop_modules/module_tbr.lua:643
 #: desktop_modules/module_tbr.lua:666
@@ -322,7 +322,7 @@ msgstr "概览"
 
 #: desktop_modules/module_clock.lua:61
 msgid "August"
-msgstr "八月"
+msgstr "8月"
 
 #: desktop_modules/module_currently.lua:247
 msgid "Author"
@@ -620,7 +620,7 @@ msgstr "收藏夹"
 
 #: sui_foldercovers.lua:740 sui_browsemeta.lua:937
 msgid "Collection \"%1\" created with %2 books."
-msgstr "收藏“%1”已创建，包含 %2 本书。"
+msgstr "收藏夹 “%1” 已创建，包含 %2 本书。"
 
 #: sui_foldercovers.lua:725 sui_browsemeta.lua:912
 msgid "Collection already exists: %1"
@@ -825,7 +825,7 @@ msgstr "阅读天数"
 
 #: desktop_modules/module_clock.lua:62
 msgid "December"
-msgstr "十二月"
+msgstr "12月"
 
 #: sui_quickactions.lua:1344 sui_quickactions.lua:1594 sui_titlebar.lua:996
 #: sui_menu.lua:444 sui_menu.lua:573 sui_menu.lua:1253 sui_menu.lua:1779
@@ -1085,7 +1085,7 @@ msgstr "收藏不可用。"
 
 #: desktop_modules/module_clock.lua:60
 msgid "February"
-msgstr "二月"
+msgstr "2月"
 
 #: sui_bottombar.lua:1370
 msgid "Fetching bookmarks\\xe2\\x80\\xa6"
@@ -1446,15 +1446,15 @@ msgstr "项目"
 
 #: desktop_modules/module_clock.lua:60
 msgid "January"
-msgstr "一月"
+msgstr "1月"
 
 #: desktop_modules/module_clock.lua:61
 msgid "July"
-msgstr "七月"
+msgstr "7月"
 
 #: desktop_modules/module_clock.lua:61
 msgid "June"
-msgstr "六月"
+msgstr "6月"
 
 #: sui_menu.lua:502
 msgid "KOReader"
@@ -1578,7 +1578,7 @@ msgstr "手动导入的书籍（%s）"
 
 #: desktop_modules/module_clock.lua:60
 msgid "March"
-msgstr "三月"
+msgstr "3月"
 
 #: sui_quicksettings_bar.lua:439 sui_quicksettings_bar.lua:545
 msgid "Max"
@@ -1595,7 +1595,7 @@ msgstr "已达最大槽位数量。"
 
 #: desktop_modules/module_clock.lua:61
 msgid "May"
-msgstr "五月"
+msgstr "5月"
 
 #: sui_titlebar.lua:102 sui_titlebar.lua:107
 msgid "Menu"
@@ -1777,6 +1777,30 @@ msgstr "新"
 #: sui_menu.lua:3008
 msgid "New Book"
 msgstr "新书"
+
+#: sui_menu.lua:3088
+msgid "Finished Books"
+msgstr "已读完的书籍"
+
+#: sui_menu.lua:3095
+msgid "Fade Finished Books"
+msgstr "淡化已读完的书籍"
+
+#: sui_menu.lua:3104
+msgid "Intensity"
+msgstr "强度"
+
+#: sui_menu.lua:3110
+msgid "Fade Intensity"
+msgstr "淡化强度"
+
+#: sui_menu.lua:3111
+msgid ""
+"Fades finished book covers towards white.\n"
+"50% is the default."
+msgstr ""
+"将已读完的书籍封面向白色淡化。\n"
+"50% 为默认值。"
 
 #: desktop_modules/module_new_books.lua:50
 #: desktop_modules/module_new_books.lua:51
@@ -2034,7 +2058,7 @@ msgstr "笔记"
 
 #: desktop_modules/module_clock.lua:62
 msgid "November"
-msgstr "十一月"
+msgstr "11月"
 
 #: sui_menu.lua:2759
 msgid "Number of Books in Folder"
@@ -2054,7 +2078,7 @@ msgstr "确定"
 
 #: desktop_modules/module_clock.lua:62
 msgid "October"
-msgstr "十月"
+msgstr "10月"
 
 #: sui_quickactions.lua:995 sui_quickactions.lua:1885 sui_menu.lua:1394
 #: sui_menu.lua:1599 sui_menu.lua:3177 sui_menu.lua:4274
@@ -2781,7 +2805,7 @@ msgstr "经典棕褐色"
 
 #: desktop_modules/module_clock.lua:62
 msgid "September"
-msgstr "九月"
+msgstr "9月"
 
 #: sui_quickactions.lua:417 sui_config.lua:127 sui_browsemeta.lua:71
 msgid "Series"
@@ -2821,6 +2845,22 @@ msgstr "未找到设置。"
 #: sui_quicksettings_bar.lua:1333
 msgid "Settings on Long Tap"
 msgstr "长按打开设置"
+
+#: sui_menu.lua:2541
+msgid "Preserve Deleted Books in Statistics"
+msgstr "删除书籍后仍保留统计"
+
+#: sui_menu.lua:2541
+msgid ""
+"When a finished book is deleted from the device, keep it counted in the "
+"Books Read statistics on the Home Screen.\n"
+"\n"
+"Books changed back to Reading or Abandoned are automatically removed from "
+"this list."
+msgstr ""
+"已读完的书籍从设备中删除后，仍保留在主屏幕“已读书籍”统计中。\n"
+"\n"
+"若将书籍状态改回“阅读中”或“放弃”，则会自动从该列表中移除。"
 
 #: desktop_modules/module_clock.lua:198 desktop_modules/module_clock.lua:248
 msgid "Seven"
@@ -3832,8 +3872,8 @@ msgstr "⬆ 有可用更新：%s"
 #: desktop_modules/module_quick_actions.lua:377
 msgid "  (%d left)"
 msgid_plural "  (%d left)"
-msgstr[0] "（剩余 %s）"
-msgstr[1] "（剩余 %s）"
+msgstr[0] "  (剩余 %s)"
+msgstr[1] "  (剩余 %s)"
 
 #: desktop_modules/module_reading_goals.lua:833
 msgid "  Set Goal  (%d book in %s)"
@@ -3845,7 +3885,7 @@ msgstr[1] "  设置目标  (读 %d 本书在 %s 年)"
 msgid "%d book"
 msgid_plural "%d books"
 msgstr[0] "%d 本书"
-msgstr[0] "%d 本书"
+msgstr[1] "%d 本书"
 
 #: desktop_modules/module_reading_goals.lua:938
 msgid "%d book in %s"
@@ -3973,432 +4013,3 @@ msgstr[1] "已读页数"
 #: main.lua:986
 msgid "Book statistics"
 msgstr "书籍统计"
-
-#~ msgid "Arrange Collections"
-#~ msgstr "排序收藏夹"
-
-#~ msgid "Arrange Modules"
-#~ msgstr "排序模块"
-
-#~ msgid "Bottom Bar Size"
-#~ msgstr "底部栏大小"
-
-#~ msgid "Bottom Margin — %d%%"
-#~ msgstr "底部边距 — %d%%"
-
-#~ msgid ""
-#~ "Cannot place modules after Page 1 separator.\n"
-#~ "Page 1 must always have at least 1 module."
-#~ msgstr ""
-#~ "无法将模块放置在第 1 页分隔符之后。\n"
-#~ "第 1 页必须至少包含 1 个模块。"
-
-#~ msgid "Change Icons"
-#~ msgstr "更改图标"
-
-#~ msgid ""
-#~ "Choose how many pages the homescreen has.\n"
-#~ "Empty pages stay empty. Modules keep their position."
-#~ msgstr ""
-#~ "选择主屏幕的页面数量。\n"
-#~ "空页面保持为空，模块位置不变。"
-
-#~ msgid ""
-#~ "Controls when the brief \"Closing book…\" notice is shown when leaving a "
-#~ "book.\n"
-#~ "\n"
-#~ "• Always: shown whenever a book is closed, whether via the menu or a "
-#~ "gesture.\n"
-#~ "• Gesture Only: shown only when closing via a gesture (e.g. swipe); not "
-#~ "shown when using the reader menu.\n"
-#~ "• Never: the notice is never shown."
-#~ msgstr ""
-#~ "控制离开书籍时是否显示“正在关闭书籍…”提示。\n"
-#~ "\n"
-#~ "• 始终：无论通过菜单还是手势关闭书籍，都会显示提示。\n"
-#~ "• 仅手势：仅当通过手势（如滑动）关闭时显示提示；使用阅读器菜单关闭时不显"
-#~ "示。\n"
-#~ "• 从不：从不显示该提示。"
-
-#~ msgid "Custom Title Bar"
-#~ msgstr "自定义标题栏"
-
-#~ msgid ""
-#~ "Custom Title Bar will be %s after restart.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "自定义标题栏重启后将变为 %s。\n"
-#~ "\n"
-#~ "是否立即重启？"
-
-#~ msgid "Digital Goal  (%s)"
-#~ msgstr "数字目标  (%s)"
-
-#~ msgid "Enable at least 2 modules to arrange."
-#~ msgstr "请至少启用 2 个模块以便排序。"
-
-#~ msgid "General"
-#~ msgstr "通用"
-
-#~ msgid "Hide Icon"
-#~ msgstr "隐藏图标"
-
-#~ msgid "Icon Size — %d%%"
-#~ msgstr "图标大小 — %d%%"
-
-#~ msgid "Label Size — %d%%"
-#~ msgstr "标签大小 — %d%%"
-
-#~ msgid "Number of Pages in Title Bar Always"
-#~ msgstr "标题栏始终显示页数"
-
-#~ msgid "Quick Actions %d"
-#~ msgstr "快捷操作 %d"
-
-#~ msgid "Warn When Modules Overflow"
-#~ msgstr "模块溢出时警告"
-
-#~ msgid ""
-#~ "When enabled, a notice is shown if the modules on a page are taller than "
-#~ "the visible area.\n"
-#~ "Disable this to silence the warning."
-#~ msgstr ""
-#~ "启用后，当页面上的模块高度超过可见区域时会显示提示。\n"
-#~ "禁用此项可关闭该警告。"
-
-#~ msgid ""
-#~ "Show or hide the dedicated Simple UI tab in the menu bar.\n"
-#~ "When hidden, Simple UI settings remain accessible via the main menu.\n"
-#~ "Takes effect after a restart."
-#~ msgstr ""
-#~ "在菜单栏中显示或隐藏专用的 Simple UI 标签页。\n"
-#~ "隐藏时，仍可通过主菜单访问 Simple UI 设置。\n"
-#~ "重启后生效。"
-
-#~ msgid "Top separator"
-#~ msgstr "顶部分隔符"
-
-#~ msgid ""
-#~ "When enabled, long-pressing a section opens its settings menu.\n"
-#~ "Disable this to prevent the settings menu from appearing on long tap."
-#~ msgstr ""
-#~ "启用后，长按分区会打开其设置菜单。\n"
-#~ "禁用此项可防止长按时出现设置菜单。"
-
-#~ msgid ""
-#~ "When enabled, opening the file browser after finishing or closing a book "
-#~ "navigates to the folder the book is in, matching native KOReader "
-#~ "behaviour.\n"
-#~ "When disabled (default), SimpleUI always returns to the library root.\n"
-#~ "This option works independently of \"Start with Home Screen\"."
-#~ msgstr ""
-#~ "启用后，完成或关闭一本书后打开文件浏览器时，会定位到该书所在的文件夹，与 "
-#~ "KOReader 原生行为一致。\n"
-#~ "禁用（默认）时，SimpleUI 始终返回书库根目录。\n"
-#~ "此选项独立于“启动时显示主屏幕”设置。"
-
-#~ msgid "e.g. Comics…"
-#~ msgstr "例如：漫画…"
-
-#~ msgid "e.g. Rakuyomi…"
-#~ msgstr "例如：Rakuyomi…"
-
-#~ msgid "e.g. Sci-Fi…"
-#~ msgstr "例如：科幻…"
-
-#~ msgid "e.g. Sleep, Refresh…"
-#~ msgstr "例如：休眠、刷新…"
-
-#~ msgid "hidden"
-#~ msgstr "隐藏"
-
-#~ msgid "shown"
-#~ msgstr "显示"
-
-#~ msgid "Physical: %d book in %s"
-#~ msgid_plural "Physical: %d books in %s"
-#~ msgstr[0] "实体书：读了 %d 本书 在 %s 年"
-#~ msgstr[1] "实体书：读了 %d 本书 在 %s 年"
-
-#~ msgid "Rotate image"
-#~ msgstr "旋转图片"
-
-#~ msgid "Image opacity: %1%"
-#~ msgstr "图片不透明度：%1%"
-
-#~ msgid "Image opacity"
-#~ msgstr "图片不透明度"
-
-#~ msgid "Lower the opacity to improve readability."
-#~ msgstr "降低不透明度可提高可读性。"
-
-#~ msgid ""
-#~ "No images found.\n"
-#~ "Drop files into:\n"
-#~ "%1"
-#~ msgstr ""
-#~ "未找到图片。\n"
-#~ "请将文件放入：\n"
-#~ "%1"
-
-#~ msgid "Update existing preset…"
-#~ msgstr "更新已有预设…"
-
-#~ msgid "Rename preset…"
-#~ msgstr "重命名预设…"
-
-#~ msgid "Also search system fonts"
-#~ msgstr "同时搜索系统字体"
-
-#~ msgid "Icon Presets  (%d)"
-#~ msgstr "图标预设（%d）"
-
-#~ msgid "Icon Presets  [%s]"
-#~ msgstr "图标预设 [%s]"
-
-#~ msgid "No fonts found — place .ttf/.otf files in sui_fonts/"
-#~ msgstr "未找到字体 — 请将 .ttf/.otf 文件放入 sui_fonts/ 文件夹中"
-
-#~ msgid "Presets  (%d)"
-#~ msgstr "预设（%d）"
-
-#~ msgid "Homepage Presets  (%d)"
-#~ msgstr "主页预设（%d）"
-
-#~ msgid "Presets  [%s]"
-#~ msgstr "预设 [%s]"
-
-#~ msgid "Homepage Presets  [%s]"
-#~ msgstr "主页预设 [%s]"
-
-#~ msgid "Show wallpaper in File Manager"
-#~ msgstr "在文件管理器中显示壁纸"
-
-#~ msgid "Icon Packs  (%d)"
-#~ msgstr "图标包（%d）"
-
-#~ msgid "[zip]"
-#~ msgstr "[zip]"
-
-#~ msgid "Pagination Chevrons"
-#~ msgstr "分页箭头"
-
-#~ msgid "Navpager Arrows"
-#~ msgstr "导航分页器箭头"
-
-#~ msgid "Open import folder"
-#~ msgstr "打开导入文件夹"
-
-#~ msgid "Square Buttons"
-#~ msgstr "方形按钮"
-
-#~ msgid "Square Buttons - Transparent"
-#~ msgstr "方形按钮 - 透明"
-
-#~ msgid "Badge position: Bottom"
-#~ msgstr "徽章位置：底部"
-
-#~ msgid "Badge position: Top"
-#~ msgstr "徽章位置：顶部"
-
-#~ msgid "Series cover"
-#~ msgstr "系列封面"
-
-#~ msgid "Set series cover…"
-#~ msgstr "设置系列封面…"
-
-#~ msgid "Set virtual folder cover…"
-#~ msgstr "设置文件夹封面…"
-
-#~ msgid "Virtual folder cover"
-#~ msgstr "文件夹封面"
-
-#~ msgid "Bottom Bar will be %s after restart"
-#~ msgstr "重启后底部栏将变为 %s"
-
-#~ msgid "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol"
-#~ msgstr "请输入 Nerd Fonts 符号的 Unicode 码点（十六进制）。"
-
-#~ msgid "Global scale for all modules"
-#~ msgstr "所有模块的全局缩放比例"
-
-#~ msgid "Height of the top status bar"
-#~ msgstr "顶部状态栏的高度"
-
-#~ msgid "Navpager enabled"
-#~ msgstr "导航页已启用"
-
-#~ msgid "No automatic update file was found"
-#~ msgstr "未找到自动更新文件"
-
-#~ msgid "No folder, collection or plugin configured"
-#~ msgstr "未配置文件夹、合集或插件"
-
-#~ msgid "Pagination bar hidden"
-#~ msgstr "分页栏已隐藏"
-
-#~ msgid ""
-#~ "Replaces the pagination bar with Prev/Next arrows at the edges of the "
-#~ "bottom bar"
-#~ msgstr "用底部栏边缘的上/下页箭头替换分页栏"
-
-#~ msgid "Scale for the button label text"
-#~ msgstr "按钮标签文本的缩放比例"
-
-#~ msgid "Scale for the collection name text"
-#~ msgstr "收藏夹名称文本的缩放比例"
-
-#~ msgid "Scale for the collection thumbnails only"
-#~ msgstr "仅收藏夹缩略图的缩放比例"
-
-#~ msgid "Scale for the cover thumbnail only"
-#~ msgstr "仅封面缩略图的缩放比例"
-
-#~ msgid "Scale for the cover thumbnails only"
-#~ msgstr "仅封面缩略图的缩放比例"
-
-#~ msgid "Scale for the folder name overlay text"
-#~ msgstr "文件夹名称叠加文本的缩放比例"
-
-#~ msgid "Scale for the label text"
-#~ msgstr "标签文本的缩放比例"
-
-#~ msgid "Scale for the percentage read text"
-#~ msgstr "已读百分比文本的缩放比例"
-
-#~ msgid "Scale for this module"
-#~ msgstr "此模块的缩放比例"
-
-#~ msgid "Scale for title and statistics text"
-#~ msgstr "标题和统计文本的缩放比例"
-
-#~ msgid "Scales all modules and labels together"
-#~ msgstr "同时缩放所有模块和标签"
-
-#~ msgid "Shows a row of dots at the bottom of the homescreen"
-#~ msgstr "在主页屏幕底部显示一行点"
-
-#~ msgid "Simple UI %s successfully installed"
-#~ msgstr "Simple UI %s 已成功安装"
-
-#~ msgid "Simple UI will be %s after restart"
-#~ msgstr "重启后 Simple UI 将变为 %s"
-
-#~ msgid "Size of the tab icons"
-#~ msgstr "标签页图标的大小"
-
-#~ msgid "Size of the tab label text"
-#~ msgstr "标签页标签文本的大小"
-
-#~ msgid "Size of the text inside the stat cards"
-#~ msgstr "统计卡片内文本的大小"
-
-#~ msgid "Top Bar will be %s after restart"
-#~ msgstr "重启后顶部栏将变为 %s"
-
-#~ msgid "Vertical space above this module"
-#~ msgstr "此模块上方的垂直空间"
-
-#~ msgid ""
-#~ "When enabled, opening the file browser after finishing or closing a book "
-#~ "navigates to the folder the book is in, matching native KOReader behaviour"
-#~ msgstr ""
-#~ "启用后，完成或关闭一本书时，打开文件浏览器将自动定位到该书所在的文件夹，"
-#~ "与 KOReader 原生行为一致"
-
-#~ msgid "    Size"
-#~ msgstr "    大小"
-
-#~ msgid "  Set Goal  (%d books in %s)"
-#~ msgstr "  设置目标  (%s 年 %d 本书)"
-
-#~ msgid "1 day of reading"
-#~ msgstr "阅读 1 天"
-
-#~ msgid "Maximum %d modules active. Disable one first."
-#~ msgstr "最多 %d 个活动模块。请先禁用一个。"
-
-#~ msgid "Maximum %d stats per row. Remove one first."
-#~ msgstr "每行最多 %d 个统计项。请先删除一个。"
-
-#~ msgid ""
-#~ "Module limit disabled. Enabling too many modules may slow down the "
-#~ "homescreen significantly and modules may be clipped at the bottom of the "
-#~ "page."
-#~ msgstr ""
-#~ "已禁用模块限制。启用过多模块可能会显著减慢主屏幕速度，模块可能会在页面底部"
-#~ "被截断。"
-
-#~ msgid "Modules  (%d — no limit)"
-#~ msgstr "模块  (%d — 无限制)"
-
-#~ msgid "Modules  (%d/%d — %d left)"
-#~ msgstr "模块  (%d/%d — 剩余 %d)"
-
-#~ msgid "Modules  (%d/%d — at limit)"
-#~ msgstr "模块  (%d/%d — 已达限制)"
-
-#~ msgid "No Module Limit  ⚠ not recommended"
-#~ msgstr "无模块限制  ⚠ 不推荐"
-
-#~ msgid "Path"
-#~ msgstr "路径"
-
-#~ msgid ""
-#~ "Simple UI was updated (%s → %s).\n"
-#~ "\n"
-#~ "A restart is recommended to apply all changes cleanly."
-#~ msgstr ""
-#~ "Simple UI 已更新（%s → %s）。\n"
-#~ "\n"
-#~ "建议重启以干净地应用所有更改。"
-
-#~ msgid "visible"
-#~ msgstr "可见"
-
-#~ msgid "1 day"
-#~ msgstr "1 天"
-
-#~ msgid "Modules per Page  (%d)"
-#~ msgstr "每页模块数  (%d)"
-
-#~ msgid "Modules per Page"
-#~ msgstr "每页模块数"
-
-#~ msgid ""
-#~ "Maximum number of modules shown on each page.\n"
-#~ "Swipe left/right on the Home Screen to turn pages."
-#~ msgstr ""
-#~ "每页显示的最大模块数。\n"
-#~ "在主屏幕上左/右滑动可翻页。"
-
-#~ msgid "  Scan subfolders for cover"
-#~ msgstr "  扫描子文件夹中的封面"
-
-#~ msgid "Could not retrieve version information."
-#~ msgstr "无法获取版本信息"
-
-#~ msgid ""
-#~ "Simple UI %s is available (you have %s).\n"
-#~ "\n"
-#~ "No automatic update file was found.\n"
-#~ "\n"
-#~ "Open the releases page on GitHub?"
-#~ msgstr ""
-#~ "Simple UI %s 可用（您当前版本为 %s）。\n"
-#~ "\n"
-#~ "未找到自动更新文件。\n"
-#~ "\n"
-#~ "是否打开 GitHub 发布页面？"
-
-#~ msgid ""
-#~ "Simple UI %s is available!\n"
-#~ "Current version: %s\n"
-#~ "\n"
-#~ "Download and install now?"
-#~ msgstr ""
-#~ "Simple UI %s 有新版本！\n"
-#~ "当前版本：%s\n"
-#~ "\n"
-#~ "是否立即下载并安装？"
