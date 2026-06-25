@@ -2416,6 +2416,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     },
                     {
                         text_func      = function() return _("Labels") end,
+                        value_func     = function() return Config.getLabelScalePct() .. "%" end,
                         keep_menu_open = true,
                         callback = function()
                             if Config.isScaleLinked() then
