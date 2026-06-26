@@ -21,6 +21,63 @@ local QSBar        = require("sui_quicksettings_bar")
 local Patches      = require("sui_patches")
 local SUISettings  = require("sui_store")
 
+-- ---------------------------------------------------------------------------
+-- ReaderStatistics class-table accessor
+-- ---------------------------------------------------------------------------
+-- KOReader loads plugins via dofile(), not require(), so the statistics plugin
+-- is never registered in package.loaded under a predictable key. The path also
+-- differs between platforms (Kobo: relative "plugins/…", Linux deb/Android:
+-- absolute path under /usr/lib/koreader or the data dir). We try every known
+-- location in order and cache the result so subsequent calls are free.
+local _rs_module_cache  -- nil = not yet resolved, false = not available
+local _RS_CANDIDATE_KEYS = {
+    "plugins/statistics.koplugin/main",  -- Kobo / relative working dir
+    "statistics.koplugin/main",          -- extra_plugin_paths installs
+    "statistics",                         -- hypothetical future short-name
+}
+
+local function _requireStatistics()
+    if _rs_module_cache ~= nil then return _rs_module_cache or nil end
+
+    -- 1. Check package.loaded under every known key (free, no I/O).
+    for _, key in ipairs(_RS_CANDIDATE_KEYS) do
+        local m = package.loaded[key]
+        if m then
+            _rs_module_cache = m
+            return m
+        end
+    end
+
+    -- 2. Ask PluginLoader for the live instance; from there we can reach the
+    --    class table via getmetatable(instance).__index (standard KOReader pattern).
+    local ok_pl, PluginLoader = pcall(require, "pluginloader")
+    if ok_pl and PluginLoader then
+        local instance = PluginLoader:getPluginInstance("statistics")
+        if instance then
+            -- The class table is the __index of the instance metatable.
+            local mt = getmetatable(instance)
+            local cls = mt and mt.__index
+            if cls then
+                _rs_module_cache = cls
+                return cls
+            end
+        end
+    end
+
+    -- 3. Last resort: try require() with each candidate key.
+    for _, key in ipairs(_RS_CANDIDATE_KEYS) do
+        local ok, m = pcall(require, key)
+        if ok and m then
+            _rs_module_cache = m
+            return m
+        end
+    end
+
+    -- Not available (statistics plugin disabled or not installed).
+    _rs_module_cache = false
+    return nil
+end
+
 local SimpleUIPlugin = WidgetContainer:new{
     name = "simpleui",
 
@@ -1095,8 +1152,8 @@ function SimpleUIPlugin:init()
             -- SimpleUI:init() runs, so the RS class table is already in
             -- package.loaded.
             do
-                local ok_rs, RS = pcall(require, "plugins/statistics.koplugin/main")
-                if ok_rs and RS and RS.onSyncBookStats and not RS._sui_sync_patched then
+                local RS = _requireStatistics()
+                if RS and RS.onSyncBookStats and not RS._sui_sync_patched then
                     local orig_onSyncBookStats = RS.onSyncBookStats
                     RS._sui_orig_onSyncBookStats = orig_onSyncBookStats
                     RS._sui_sync_patched         = true
@@ -1376,7 +1433,7 @@ function SimpleUIPlugin:onTeardown()
     -- on the next plugin load, instead of reusing the old in-memory versions.
     _menu_installer = nil
     -- Restore the ReaderStatistics:onSyncBookStats patch.
-    local RS = package.loaded["plugins/statistics.koplugin/main"]
+    local RS = _requireStatistics()
     if RS and RS._sui_sync_patched then
         if RS._sui_orig_onSyncBookStats then
             RS.onSyncBookStats = RS._sui_orig_onSyncBookStats
