@@ -858,7 +858,10 @@ function StatsWindows.showFinishedBooksDialog(initial_page)
                 fgcolor   = CLR_BLACK,
                 width     = text_max_w,
                 alignment = "center",
-                max_lines = 2,
+                height    = math.floor(1.3 * face_title.size + 0.5) * 1,
+                height_adjust = true,
+                max_lines = 1,
+                height_overflow_show_ellipsis = true,
             },
             VerticalSpan:new{ width = Screen:scaleBySize(4) },
             TextWidget:new{
@@ -1034,7 +1037,7 @@ function StatsWindows.showFinishedBooksDialog(initial_page)
 
         -- DB-derived fallbacks (used for display and as Reset targets).
         local original_start_str = _fmtDate(d.first_open)
-        local original_end_str   = (d.last_open and _fmtDate(d.last_open)) or "\xe2\x80\x93"
+        local original_end_str   = (type(book.date_finished) == "string" and d.last_open and _fmtDate(d.last_open)) or "\xe2\x80\x93"
 
         -- Prefer sidecar dates over raw DB timestamps.
         local date_start_str = (type(book.date_started) == "string" and book.date_started)
@@ -2465,7 +2468,7 @@ function StatsWindows.showBookStatsFromFile(filepath)
             -- date card shows the user-visible dates rather than raw DB timestamps.
             local summary = ds:readSetting("summary")
             if type(summary) == "table" then
-                if type(summary.modified)    == "string" then
+                if summary.status == "complete" and type(summary.modified) == "string" then
                     book.date_finished = summary.modified
                 end
                 if type(summary.date_started) == "string" then
@@ -2577,7 +2580,10 @@ function StatsWindows.showBookStatsFromFile(filepath)
                 fgcolor   = CLR_BLACK,
                 width     = text_max_w,
                 alignment = "center",
-                max_lines = 2,
+                height    = math.floor(1.3 * face_title.size + 0.5) * 1,
+                height_adjust = true,
+                max_lines = 1,
+                height_overflow_show_ellipsis = true,
             },
             VerticalSpan:new{ width = Screen:scaleBySize(4) },
             TextWidget:new{
@@ -2721,7 +2727,7 @@ function StatsWindows.showBookStatsFromFile(filepath)
 
         -- DB-derived fallbacks (used for display and as Reset targets).
         local original_start_str = _fmtDate(d.first_open)
-        local original_end_str   = (d.last_open and _fmtDate(d.last_open)) or "\xe2\x80\x93"
+        local original_end_str   = (type(book.date_finished) == "string" and d.last_open and _fmtDate(d.last_open)) or "\xe2\x80\x93"
 
         -- Prefer sidecar dates over raw DB timestamps.
         local date_start_str = (type(book.date_started) == "string" and book.date_started)

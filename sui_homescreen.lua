@@ -2917,6 +2917,7 @@ end
 
 function HomescreenWidget:onResume()
     self._suspended = false
+    if Device.screen_saver_mode then return end
     -- Invalidate the time-series portion of the stats cache so that any reading
     -- done before the suspend (or while the device was awake in the reader) is
     -- reflected immediately on wakeup.  We use invalidateTimeSeries rather than
