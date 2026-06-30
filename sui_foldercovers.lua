@@ -46,6 +46,7 @@ local SK = {
     hide_underline    = "simpleui_fc_hide_underline",
     label_style       = "simpleui_fc_label_style",
     label_position    = "simpleui_fc_label_position",
+    label_color       = "simpleui_fc_label_color",
     badge_position    = "simpleui_fc_badge_position",
     badge_hidden      = "simpleui_fc_badge_hidden",
     cover_mode        = "simpleui_fc_cover_mode",
@@ -98,6 +99,10 @@ function M.setLabelStyle(v)   SUISettings:saveSetting(SK.label_style, v)        
 -- "bottom" (default) | "center" | "top"
 function M.getLabelPosition()  return SUISettings:readSetting(SK.label_position) or "bottom" end
 function M.setLabelPosition(v) SUISettings:saveSetting(SK.label_position, v)                 end
+
+-- "light" (default, white background / black text) | "dark" (black background / white text)
+function M.getLabelColor()  return SUISettings:readSetting(SK.label_color) or "light" end
+function M.setLabelColor(v) SUISettings:saveSetting(SK.label_color, v)                end
 
 -- "top" (default) | "bottom"
 function M.getBadgePosition()  return SUISettings:readSetting(SK.badge_position) or "top"   end
@@ -1695,15 +1700,18 @@ end
 -- ── Folder-name label overlay ─────────────────────────────────────────────────
 
 -- Returns the overlay label widget, or nil when disabled.
--- `display` is the pre-read settings table { label_mode, show_name, label_style, label_pos }.
+-- `display` is the pre-read settings table { label_mode, show_name, label_style, label_pos, label_color }.
 local function _buildLabel(item, available_w, size, border, cv_scale, display, spine_w)
     if display.label_mode ~= "overlay" then return nil end
     if not display.show_name            then return nil end
     local label_style = display.label_style
     local label_pos   = display.label_pos
+    local dark        = display.label_color == "dark"
+    local bg_color    = dark and Blitbuffer.COLOR_BLACK or Blitbuffer.COLOR_WHITE
+    local fg_color    = dark and Blitbuffer.COLOR_WHITE or Blitbuffer.COLOR_BLACK
 
     local dir_max_fs = math.max(8, math.floor(_BASE_DIR_FS * M.getLabelScale()))
-    local directory  = item:_getFolderNameWidget(available_w, dir_max_fs)
+    local directory  = item:_getFolderNameWidget(available_w, dir_max_fs, fg_color, bg_color)
     local img_only   = Geom:new{ w = size.w, h = size.h }
     local img_dimen  = Geom:new{ w = size.w + border * 2, h = size.h + border * 2 }
 
@@ -1714,7 +1722,7 @@ local function _buildLabel(item, available_w, size, border, cv_scale, display, s
         padding_left   = _LATERAL_PAD,
         padding_right  = _LATERAL_PAD,
         bordersize     = border,
-        background     = Blitbuffer.COLOR_WHITE,
+        background     = bg_color,
         directory,
     }
 
@@ -2472,6 +2480,7 @@ function M.install()
             show_name   = M.getShowName(),
             label_style = M.getLabelStyle(),
             label_pos   = M.getLabelPosition(),
+            label_color = M.getLabelColor(),
         }
         -- When the strip is active it already shows the folder name below
         -- the cover — suppress the overlay label to avoid redundancy.
@@ -2684,6 +2693,7 @@ function M.install()
                 show_name   = M.getShowName(),
                 label_style = M.getLabelStyle(),
                 label_pos   = M.getLabelPosition(),
+                label_color = M.getLabelColor(),
             }
             if _STRIP_H > 0 then display.label_mode = "hidden" end
         end
@@ -2718,6 +2728,7 @@ function M.install()
                 show_name   = M.getShowName(),
                 label_style = M.getLabelStyle(),
                 label_pos   = M.getLabelPosition(),
+                label_color = M.getLabelColor(),
             }
             if _STRIP_H > 0 then display.label_mode = "hidden" end
         end
@@ -2793,7 +2804,7 @@ function M.install()
     -- Binary-search the largest font size where the folder name fits in two
     -- lines within available_w. Result cached by text+width+max_fs.
     -- Capitalises the first letter of each word.
-    function MosaicMenuItem:_getFolderNameWidget(available_w, dir_max_font_size)
+    function MosaicMenuItem:_getFolderNameWidget(available_w, dir_max_font_size, fgcolor, bgcolor)
         if not self._fc_display_text then
             local text = self.text
             if text:match("/$") then text = text:sub(1, -2) end
@@ -2803,6 +2814,8 @@ function M.install()
         local text      = self._fc_display_text
         local max_fs    = dir_max_font_size or _BASE_DIR_FS
         local cache_key = text .. "\0" .. available_w .. "\0" .. max_fs
+        local fg        = fgcolor or Blitbuffer.COLOR_BLACK
+        local bg        = bgcolor or Blitbuffer.COLOR_WHITE
 
         local cached_fs = _fsCacheGet(cache_key)
         if cached_fs then
@@ -2812,6 +2825,8 @@ function M.install()
                 width     = available_w,
                 alignment = "center",
                 bold      = true,
+                fgcolor   = fg,
+                bgcolor   = bg,
             }
         end
 
@@ -2870,6 +2885,8 @@ function M.install()
             width     = available_w,
             alignment = "center",
             bold      = true,
+            fgcolor   = fg,
+            bgcolor   = bg,
         }
     end
 

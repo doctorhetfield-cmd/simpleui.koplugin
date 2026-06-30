@@ -3238,6 +3238,29 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                                             },
                                         },
                                     },
+                                    {
+                                        text_func  = function() return _("Color") end,
+                                        value_func = function()
+                                            return FC.getLabelColor() == "dark" and _("Dark") or _("Light")
+                                        end,
+                                        enabled_func = function() return FC.getLabelMode() ~= "hidden" end,
+                                        sub_item_table = {
+                                            {
+                                                text           = _("Light"),
+                                                radio          = true,
+                                                checked_func   = function() return FC.getLabelColor() ~= "dark" end,
+                                                keep_menu_open = true,
+                                                callback       = function() FC.setLabelColor("light"); _refreshFC() end,
+                                            },
+                                            {
+                                                text           = _("Dark"),
+                                                radio          = true,
+                                                checked_func   = function() return FC.getLabelColor() == "dark" end,
+                                                keep_menu_open = true,
+                                                callback       = function() FC.setLabelColor("dark"); _refreshFC() end,
+                                            },
+                                        },
+                                    },
                                     (function()
                                         local Config = require("sui_config")
                                         return Config.makeScaleItem({
