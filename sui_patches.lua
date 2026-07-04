@@ -2257,17 +2257,35 @@ end
 -- ---------------------------------------------------------------------------
 -- showHSAfterResume
 -- Opens the homescreen after the device wakes from suspend.
--- Runs only when "Start with Homescreen" is active, the reader is closed,
--- and the homescreen is not already visible. The homescreen tab does NOT
--- need to be present in the navbar for this to fire.
+--
+-- Normal mode (force=false/nil): runs only when "Start with Homescreen" is
+-- active, the reader is closed, and the homescreen is not already visible.
+-- The homescreen tab does NOT need to be present in the navbar for this to
+-- fire.
+--
+-- Forced mode (force=true): used by "Return to Home Screen on Wakeup". Bypasses
+-- the isStartWithHS() gate entirely, and — unlike normal mode — also handles
+-- the reader being open: it closes the reader via closeReaderToHomescreen()
+-- first (which raises/shows the HS itself), then returns. This lets the
+-- feature work even when the user was mid-book at the moment of suspend.
+--
 -- Called from SimpleUIPlugin:onResume() in main.lua.
 -- ---------------------------------------------------------------------------
 
-function M.showHSAfterResume(plugin)
-    if not isStartWithHS() then return end
+function M.showHSAfterResume(plugin, force)
+    if not (force or isStartWithHS()) then return end
 
     local RUI = package.loaded["apps/reader/readerui"]
-    if RUI and RUI.instance then return end
+    if RUI and RUI.instance then
+        if not force then return end
+        -- Forced path: the reader is open on wakeup but the user wants the
+        -- Homescreen regardless. closeReaderToHomescreen() already performs
+        -- onClose(false) + showFileManager() + raising/showing the HS (or
+        -- landing in the book's folder if "Return to Book Folder" is on),
+        -- so there is nothing left to do here once it has been scheduled.
+        M.closeReaderToHomescreen(plugin, false)
+        return
+    end
 
     local tabs = Config.loadTabConfig()
     -- Note: we intentionally do NOT require the "homescreen" tab to be in

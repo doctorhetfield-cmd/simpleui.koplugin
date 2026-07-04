@@ -1572,6 +1572,21 @@ function SimpleUIPlugin:onResume()
     -- causing the homescreen to open on wakeup instead of returning to the reader.
     local reader_active = self._simpleui_reader_was_active
     self._simpleui_reader_was_active = nil  -- consume; next suspend will repopulate
+
+    -- "Return to Home Screen on Wakeup": unlike "Start with Homescreen" (which
+    -- only ever fires when the reader was already closed), this setting must
+    -- also override a reader that WAS open at suspend time. Handle it first,
+    -- via the live RUI check (not the snapshot) so we don't try to close a
+    -- reader that already tore itself down during the races described above.
+    if SUISettings:nilOrTrue("simpleui_enabled")
+            and SUISettings:isTrue("simpleui_hs_return_on_wakeup") then
+        local RUI_live = package.loaded["apps/reader/readerui"]
+        if RUI_live and RUI_live.instance then
+            Patches.showHSAfterResume(self, true)
+            return
+        end
+    end
+
     -- Outside the reader: restore the Homescreen.
     -- RS and RG have a built-in date-key guard (_stats_cache_day): they re-query
     -- automatically on a new calendar day and serve the in-memory cache otherwise.
@@ -2100,7 +2115,7 @@ end
 
 function SimpleUIPlugin:_showFrontlightDialog()
     local QA = package.loaded["sui_quickactions"] or require("sui_quickactions")
-    QA.showFrontlightDialog()
+    QA.showFrontlightDialog(self)
 end
 
 function SimpleUIPlugin:_scheduleRebuild()

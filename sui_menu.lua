@@ -172,7 +172,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- Currently only "frontlight" is hardware-gated; all other ids are always shown.
     local function actionAvailable(id)
         if id == "frontlight" then return hasFrontlight() end
-        if id == "browse_authors" or id == "browse_series" or id == "browse_tags" then
+        if require("sui_quickactions").getBrowseMode(id) then
             local ok_bm, BM = pcall(require, "sui_browsemeta")
             return ok_bm and BM and BM.isEnabled()
         end
@@ -2367,6 +2367,18 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 callback       = function()
                     local is_hs = G_reader_settings:readSetting("start_with") == "homescreen_simpleui"
                     G_reader_settings:saveSetting("start_with", is_hs and "filemanager" or "homescreen_simpleui")
+                end,
+            },
+            {
+                text           = _("Return to Home Screen on Wakeup"),
+                help_text      = _("When waking the device from sleep/suspend, always return to the Home Screen — even if a book was open when it went to sleep."),
+                checked_func   = function()
+                    return SUISettings:isTrue("simpleui_hs_return_on_wakeup")
+                end,
+                keep_menu_open = true,
+                callback       = function()
+                    local on = SUISettings:isTrue("simpleui_hs_return_on_wakeup")
+                    SUISettings:saveSetting("simpleui_hs_return_on_wakeup", not on)
                 end,
             },
             {

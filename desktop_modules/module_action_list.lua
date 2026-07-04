@@ -297,7 +297,7 @@ local function actionAvailable(id)
         end
         return _has_fl
     end
-    if id == "browse_authors" or id == "browse_series" then
+    if QA.getBrowseMode(id) then
         local ok_bm, BM = pcall(require, "sui_browsemeta")
         return ok_bm and BM and BM.isEnabled()
     end

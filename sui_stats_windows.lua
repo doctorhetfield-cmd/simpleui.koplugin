@@ -2226,7 +2226,7 @@ end
 --- Opens the Reading Insights window.
 --- Can be called from module_reading_stats (streak card tap) or any other
 --- SimpleUI touch-point.
-function StatsWindows.showReadingInsightsWindow()
+function StatsWindows.showReadingInsightsWindow(on_close_extra)
     _lazyLoad()
     local SUIWindow = require("sui_window")
 
@@ -2465,6 +2465,7 @@ function StatsWindows.showReadingInsightsWindow()
         },
         on_close = function()
             _riClearCache()
+            if on_close_extra then on_close_extra() end
         end,
     }
     win_ref = win

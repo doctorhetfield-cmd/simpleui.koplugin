@@ -72,39 +72,33 @@ local function _BM()
 end
 
 -- Action-only tabs: these fire a dialog/toggle without becoming the active tab.
--- Used by onTabTap (early-return guard) AND setActiveAndRefreshFM (write guard).
--- Keeping the list in one place makes it impossible for the two sites to drift.
-local _ACTION_ONLY = {
-    bookmark_browser = true,
-    wifi_toggle      = true,
-    frontlight       = true,
-    power            = true,
-    sui_settings     = true,
-}
-
--- Custom QA "Groups" (qa_folder) open a transient modal listing member
--- actions instead of navigating to a persistent screen — same character as
--- the built-in action-only entries above. Checked dynamically since group
--- ids (custom_qa_N) can't live in the static table.
+-- Used by onTabTap (early-return guard), setActiveAndRefreshFM (write guard),
+-- and navigate() (active_action write guard).
+--
+-- This used to be a hand-maintained static table here, separate from
+-- QA.isInPlace() ("single authority replacing _isInPlaceAction in bottombar").
+-- That duplication had already drifted: night_mode and stats_calendar are
+-- valid tab-bar entries (see Config.ALL_ACTIONS) with is_in_place = true in
+-- their QA descriptors, but were missing from the static table — so placing
+-- either on the bottom bar let it "stick" as the active tab on tap, even
+-- though tapping it never navigates anywhere. Custom QAs with a
+-- dispatcher_action or plugin_key (not just qa_folder groups) had the same
+-- problem. Delegating to QA.isInPlace() closes both gaps for free and
+-- removes the second list to keep in sync.
 local function _isActionOnly(action_id)
-    return _ACTION_ONLY[action_id] == true or _QA().isAsyncInPlaceCustomQA(action_id)
+    return _QA().isInPlace(action_id)
 end
 
--- _BROWSE_ACTIONS: action IDs that open a virtual browse view in the FM.
--- When one of these is triggered, the active tab indicator should follow
--- this priority: (1) the action's own tab if it is in the tab bar,
--- (2) the "home" (Library) tab if it is in the tab bar, (3) action_id as-is.
-local _BROWSE_ACTIONS = {
-    browse_authors = true,
-    browse_series  = true,
-    browse_tags    = true,
-}
-
 -- Returns the tab ID that should receive the active indicator when
--- action_id is a browse action. For non-browse actions returns action_id
--- unchanged so all existing call sites are unaffected.
+-- action_id is a browse action (browse_authors/browse_series/browse_tags).
+-- Priority: (1) the action's own tab if it is in the tab bar, (2) the
+-- "home" (Library) tab if it is in the tab bar, (3) action_id as-is.
+-- For non-browse actions returns action_id unchanged so all existing call
+-- sites are unaffected. Browse-ness is read from QA.getBrowseMode() (backed
+-- by the `browsemeta_mode` field already on the browse_* descriptors)
+-- instead of a separate hardcoded id list.
 local function _resolveActiveTab(action_id, tabs)
-    if not _BROWSE_ACTIONS[action_id] then return action_id end
+    if not _QA().getBrowseMode(action_id) then return action_id end
     -- Prefer the action's own tab if the user has placed it on the bar.
     for _, tid in ipairs(tabs) do
         if tid == action_id then return action_id end
@@ -1580,7 +1574,12 @@ function M.setTempTabActive(plugin, action_id, active, prev_action)
         if not w or not w._navbar_container or seen[w] then return end
         seen[w] = true
         M.replaceBar(w, M.buildBarWidget(show_id, tabs, nil, mode), tabs)
-        UIManager:setDirty(w._navbar_container, "ui")
+        -- setDirty(w) covers the full screen and recurses into navbar_container
+        -- (see the identical note in onTabTap). Dirtying just the sub-container
+        -- was the previous approach here and is unreliable once a dialog is
+        -- about to be shown on top of w: the indicator update could silently
+        -- get dropped instead of repainting alongside the dialog.
+        UIManager:setDirty(w, "ui")
     end
 
     local UI    = require("sui_core")

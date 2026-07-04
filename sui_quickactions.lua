@@ -264,7 +264,74 @@ local function _refreshWifiIcon(plugin)
 end
 
 -- showFrontlightDialog: open the KOReader brightness widget.
-local function _showFrontlightDialog()
+-- ---------------------------------------------------------------------------
+-- Indicator tracking for dialog/window-style in-place actions.
+--
+-- Actions like power/settings/frontlight are `is_in_place = true`: tapping
+-- them opens a dialog without "navigating" anywhere, so they should light up
+-- the bottom bar indicator only for as long as that dialog is on screen, then
+-- restore whatever tab was active before it opened. bookmark_browser and
+-- power already did this by hand (see the historical setTempTabActive call
+-- sites below); these two helpers make it a reusable primitive instead of
+-- something every new dialog action has to re-implement.
+--
+-- Two variants, matching the two shapes dialogs come in:
+--   trackIndicatorWhileOpen  — for widgets with no on_close hook of their own
+--                               (e.g. KOReader's core FrontlightWidget):
+--                               monkey-patches onCloseWidget, chaining any
+--                               existing handler.
+--   trackIndicatorViaCallback — for windows that already accept an on_close
+--                               callback (SettingsWindow, SUIWindow-based
+--                               windows): passes a `restore` function through
+--                               instead of touching the widget at all.
+-- Both no-op safely (dialog still opens) when `plugin` is nil or the
+-- bottombar module/API isn't available.
+-- ---------------------------------------------------------------------------
+
+function QA.trackIndicatorWhileOpen(plugin, action_id, widget)
+    if not (plugin and widget) then return widget end
+    local BB = _Bottombar()
+    if not (BB and BB.setTempTabActive) then return widget end
+
+    local prev_action = plugin.active_action
+    local restored = false
+    local function restore()
+        if restored then return end
+        restored = true
+        BB.setTempTabActive(plugin, action_id, false, prev_action)
+    end
+
+    BB.setTempTabActive(plugin, action_id, true, prev_action)
+
+    local orig_close = widget.onCloseWidget
+    widget.onCloseWidget = function(self_w)
+        restore()
+        self_w.onCloseWidget = orig_close
+        if orig_close then return orig_close(self_w) end
+    end
+
+    return widget
+end
+
+function QA.trackIndicatorViaCallback(plugin, action_id, opener)
+    local BB = _Bottombar()
+    if not (plugin and BB and BB.setTempTabActive) then
+        return opener(function() end)
+    end
+
+    local prev_action = plugin.active_action
+    local restored = false
+    local function restore()
+        if restored then return end
+        restored = true
+        BB.setTempTabActive(plugin, action_id, false, prev_action)
+    end
+
+    BB.setTempTabActive(plugin, action_id, true, prev_action)
+    return opener(restore)
+end
+
+local function _showFrontlightDialog(plugin)
     local ok_f, has_fl = pcall(function() return Device:hasFrontlight() end)
     if not ok_f or not has_fl then
         UIManager:show(require("ui/widget/infomessage"):new{
@@ -272,7 +339,9 @@ local function _showFrontlightDialog()
         })
         return
     end
-    UIManager:show(require("ui/widget/frontlightwidget"):new{})
+    local widget = require("ui/widget/frontlightwidget"):new{}
+    QA.trackIndicatorWhileOpen(plugin, "frontlight", widget)
+    UIManager:show(widget)
 end
 
 -- showBookmarkBrowserSourceDialog: source-picker for the bookmark browser.
@@ -634,8 +703,8 @@ local function _registerBuiltins()
             label = _("Brightness"),
             icon  = Config.ICON.frontlight,
             is_in_place = true,
-            execute = function(_ctx)
-                _showFrontlightDialog()
+            execute = function(ctx)
+                _showFrontlightDialog(ctx.plugin or _simpleui_plugin())
             end,
         },
         {
@@ -654,9 +723,12 @@ local function _registerBuiltins()
             is_in_place = true,
             execute = function(ctx)
                 local su = ctx.show_unavailable or _unavailToast
+                local plugin = ctx.plugin or _simpleui_plugin()
                 local ok, SW = pcall(require, "sui_stats_windows")
                 if ok and SW and SW.showReadingInsightsWindow then
-                    SW.showReadingInsightsWindow()
+                    QA.trackIndicatorViaCallback(plugin, "stats_calendar", function(restore)
+                        SW.showReadingInsightsWindow(restore)
+                    end)
                 else
                     local ok2, err = pcall(function()
                         UIManager:broadcastEvent(require("ui/event"):new("ShowCalendarView"))
@@ -680,8 +752,10 @@ local function _registerBuiltins()
             icon  = Config.ICON.ko_settings,
             is_in_place = true,
             execute = function(ctx)
-                local SettingsWindow = require("sui_settings_window")
-                SettingsWindow:show()
+                local plugin = ctx.plugin or _simpleui_plugin()
+                QA.trackIndicatorViaCallback(plugin, "sui_settings", function(restore)
+                    require("sui_settings_window"):show(restore)
+                end)
             end,
         },
         -- ── Browse meta actions ─────────────────────────────────────────────
@@ -827,6 +901,21 @@ function QA.isInPlace(id)
     local iip = desc.is_in_place
     if type(iip) == "function" then return iip(id) end
     return iip == true
+end
+
+-- ---------------------------------------------------------------------------
+-- QA.getBrowseMode(id) — single authority for "is this a browsemeta action,
+-- and under which mode (author/series/tags)". Reads the same `browsemeta_mode`
+-- field already carried by the browse_authors/browse_series/browse_tags
+-- descriptors (see the builtins table above), instead of requiring every
+-- caller to hardcode the three ids. Returns nil for anything else, so
+-- `if QA.getBrowseMode(id) then ... end` works as a plain boolean check too.
+-- ---------------------------------------------------------------------------
+
+function QA.getBrowseMode(id)
+    if not id then return nil end
+    local desc = _registry[id]
+    return desc and desc.browsemeta_mode or nil
 end
 
 -- ---------------------------------------------------------------------------
@@ -2161,7 +2250,7 @@ function QA.showQuickActionDialog(plugin, qa_id, on_done)
             local ok, v = pcall(function() return Device:hasFrontlight() end)
             return ok and v == true
         end
-        if id == "browse_authors" or id == "browse_series" or id == "browse_tags" then
+        if QA.getBrowseMode(id) then
             local ok_bm, BM = pcall(require, "sui_browsemeta")
             return ok_bm and BM and BM.isEnabled()
         end
@@ -2696,6 +2785,10 @@ end
 
 function QA.showQAFolderDialog(qa_id, title, fm, show_unavailable_fn)
     local SUIWindow = require("sui_window")
+    -- Same plugin-resolution helper runMember() below already relies on —
+    -- needed here too so the group's own tab can light up while the window
+    -- is open (see trackIndicatorViaCallback below).
+    local plugin = _resolveSimpleUIPlugin(fm)
 
     -- Shared by both grid tiles and the list fallback: executes a member,
     -- routing non-in-place members (folder/collection/library-style QAs)
@@ -2810,14 +2903,25 @@ function QA.showQAFolderDialog(qa_id, title, fm, show_unavailable_fn)
         }
     end
 
-    local win = SUIWindow:new{
-        name        = "sui_win_qa_folder",
-        title       = function() return title or _("Quick Actions") end,
-        screens     = { __root__ = buildRoot },
-        position    = "bottom",
-        auto_height = true,
-    }
-    win:show()
+    -- QA group ids (custom_qa_N with qa_folder=true) are `is_in_place` via
+    -- QA.isInPlaceCustomQA — same character as power/settings/stats: opening
+    -- the group's window doesn't "navigate" anywhere, so the tab should only
+    -- light up while it's on screen. trackIndicatorViaCallback (the same
+    -- primitive used for sui_settings/stats_calendar) hands back a `restore`
+    -- closure that plugs straight into SUIWindow's own on_close hook — no
+    -- per-window bookkeeping needed here, and it degrades gracefully
+    -- (window still opens, just untracked) if plugin can't be resolved.
+    QA.trackIndicatorViaCallback(plugin, qa_id, function(restore)
+        local win = SUIWindow:new{
+            name        = "sui_win_qa_folder",
+            title       = function() return title or _("Quick Actions") end,
+            screens     = { __root__ = buildRoot },
+            position    = "bottom",
+            auto_height = true,
+            on_close    = restore,
+        }
+        win:show()
+    end)
 end
 
 -- ---------------------------------------------------------------------------
