@@ -131,8 +131,8 @@ msgstr "O wtyczce"
 msgid "Accent / Active Color"
 msgstr "Kolor akcentu / aktywny"
 
-#: sui_quickactions.lua:2080
-#: sui_quickactions.lua:2126
+#: sui_quickactions.lua:2098
+#: sui_quickactions.lua:2144
 msgid "Action"
 msgstr "Akcja"
 
@@ -140,19 +140,19 @@ msgstr "Akcja"
 msgid "Action List"
 msgstr "Lista akcji"
 
-#: sui_quickactions.lua:2330
+#: sui_quickactions.lua:2348
 msgid "Action Type"
 msgstr "Typ akcji"
 
-#: sui_quickactions.lua:946
+#: sui_quickactions.lua:964
 msgid "Action error: %s"
 msgstr "Błąd akcji: %s"
 
-#: sui_quickactions.lua:2102
+#: sui_quickactions.lua:2120
 msgid "Action name…"
 msgstr "Nazwa akcji…"
 
-#: sui_quickactions.lua:939
+#: sui_quickactions.lua:957
 msgid "Action not available: %s"
 msgstr "Akcja niedostępna: %s"
 
@@ -278,8 +278,8 @@ msgstr "Roczny cel czytania"
 msgid "Appearance"
 msgstr "Wygląd"
 
-#: sui_config.lua:822
-#: sui_config.lua:894
+#: sui_config.lua:824
+#: sui_config.lua:896
 #: sui_menu.lua:1036
 #: sui_menu.lua:1313
 #: sui_menu.lua:2344
@@ -379,9 +379,9 @@ msgstr "Autor"
 msgid "Author: %s"
 msgstr "Autor: %s"
 
-#: sui_config.lua:127
+#: sui_config.lua:129
 #: sui_browsemeta.lua:77
-#: sui_quickactions.lua:764
+#: sui_quickactions.lua:782
 msgid "Authors"
 msgstr "Autorzy"
 
@@ -467,7 +467,7 @@ msgstr "Prosty"
 msgid "Bars"
 msgstr "Paski"
 
-#: sui_config.lua:165
+#: sui_config.lua:167
 msgid "Battery"
 msgstr "Bateria"
 
@@ -487,7 +487,7 @@ msgstr "Zachowanie"
 msgid "Best streak"
 msgstr "Najdłuższa passa"
 
-#: sui_quickactions.lua:1859
+#: sui_quickactions.lua:1877
 msgid "Book Info"
 msgstr "Informacje o książce"
 
@@ -495,7 +495,7 @@ msgstr "Informacje o książce"
 msgid "Book Statistics"
 msgstr "Statystyki książki"
 
-#: main.lua:1104
+#: main.lua:1110
 msgid "Book statistics"
 msgstr "Statystyki książki"
 
@@ -511,8 +511,8 @@ msgstr "Przeglądarka zakładek"
 msgid "Bookmark browser not available."
 msgstr "Przeglądarka zakładek niedostępna."
 
-#: sui_config.lua:120
-#: sui_quickactions.lua:665
+#: sui_config.lua:122
+#: sui_quickactions.lua:683
 msgid "Bookmarks"
 msgstr "Zakładki"
 
@@ -546,9 +546,9 @@ msgstr "Pasek dolny — Tekst i ikony"
 msgid "Bottom Margin"
 msgstr "Dolny margines"
 
-#: sui_config.lua:122
-#: sui_config.lua:164
-#: sui_quickactions.lua:703
+#: sui_config.lua:124
+#: sui_config.lua:166
+#: sui_quickactions.lua:721
 msgid "Brightness"
 msgstr "Jasność"
 
@@ -580,9 +580,9 @@ msgstr "Przeglądaj ikony"
 msgid "Browse by"
 msgstr "Przeglądaj według"
 
-#: sui_quickactions.lua:771
 #: sui_quickactions.lua:789
 #: sui_quickactions.lua:807
+#: sui_quickactions.lua:825
 msgid "Browse by Authors/Series/Tags not available."
 msgstr "Przeglądanie według autorów/cykli/tagów niedostępne."
 
@@ -616,25 +616,25 @@ msgstr "Według cyklu"
 msgid "By tags"
 msgstr "Według tagów"
 
-#: sui_config.lua:823
-#: sui_config.lua:895
+#: sui_config.lua:825
+#: sui_config.lua:897
 #: sui_browsemeta.lua:1085
 #: sui_browsemeta.lua:1193
 #: sui_browsemeta.lua:1403
 #: sui_titlebar.lua:1000
 #: sui_quickactions.lua:438
-#: sui_quickactions.lua:1316
-#: sui_quickactions.lua:1599
-#: sui_quickactions.lua:1723
-#: sui_quickactions.lua:1745
-#: sui_quickactions.lua:1839
-#: sui_quickactions.lua:2117
-#: sui_quickactions.lua:2188
-#: sui_quickactions.lua:2214
-#: sui_quickactions.lua:2239
-#: sui_quickactions.lua:2317
-#: sui_quickactions.lua:2341
-#: sui_quickactions.lua:2616
+#: sui_quickactions.lua:1334
+#: sui_quickactions.lua:1617
+#: sui_quickactions.lua:1741
+#: sui_quickactions.lua:1763
+#: sui_quickactions.lua:1857
+#: sui_quickactions.lua:2135
+#: sui_quickactions.lua:2206
+#: sui_quickactions.lua:2232
+#: sui_quickactions.lua:2257
+#: sui_quickactions.lua:2335
+#: sui_quickactions.lua:2359
+#: sui_quickactions.lua:2634
 #: sui_presets.lua:818
 #: sui_presets.lua:857
 #: sui_presets.lua:887
@@ -717,7 +717,7 @@ msgstr "Sprawdzanie aktualizacji…"
 msgid "Choose your initial layout"
 msgstr "Wybierz układ początkowy"
 
-#: sui_config.lua:162
+#: sui_config.lua:164
 #: sui_presets.lua:137
 #: desktop_modules/module_clock.lua:534
 msgid "Clock"
@@ -735,16 +735,16 @@ msgstr "Zamknij"
 msgid "Closing Book Notice"
 msgstr "Powiadomienie o zamknięciu książki"
 
-#: main.lua:1692
+#: main.lua:1704
 msgid "Closing book…"
 msgstr "Zamykanie książki…"
 
-#: sui_quickactions.lua:1771
+#: sui_quickactions.lua:1789
 msgid "Codepoint out of valid Unicode range (0–10FFFF)."
 msgstr "Codepoint poza poprawnym zakresem Unicode (0–10FFFF)."
 
-#: sui_quickactions.lua:2190
-#: sui_quickactions.lua:2333
+#: sui_quickactions.lua:2208
+#: sui_quickactions.lua:2351
 msgid "Collection"
 msgstr "Kolekcje"
 
@@ -763,14 +763,14 @@ msgstr "Kolekcja już istnieje: %1"
 msgid "Collection is empty."
 msgstr "Kolekcja jest pusta."
 
-#: sui_quickactions.lua:2697
+#: sui_quickactions.lua:2715
 msgid "Collection not available: %s"
 msgstr "Kolekcja niedostępna: %s"
 
-#: sui_config.lua:116
+#: sui_config.lua:117
 #: sui_quickactions.lua:424
 #: sui_quickactions.lua:610
-#: sui_quickactions.lua:1861
+#: sui_quickactions.lua:1879
 #: desktop_modules/module_collections.lua:338
 #: desktop_modules/module_collections.lua:339
 #: desktop_modules/module_collections.lua:359
@@ -809,12 +809,12 @@ msgstr "Kolor"
 msgid "Compact"
 msgstr "Kompaktowy"
 
-#: sui_quickactions.lua:1722
+#: sui_quickactions.lua:1740
 msgid "Confirm"
 msgstr "Potwierdź"
 
-#: sui_config.lua:118
-#: sui_quickactions.lua:634
+#: sui_config.lua:120
+#: sui_quickactions.lua:652
 #: sui_onboarding.lua:249
 #: sui_onboarding.lua:255
 #: sui_onboarding.lua:261
@@ -883,8 +883,8 @@ msgstr "Okładki"
 msgid "Create"
 msgstr "Utwórz"
 
-#: sui_quickactions.lua:1348
-#: sui_quickactions.lua:2523
+#: sui_quickactions.lua:1366
+#: sui_quickactions.lua:2541
 msgid "Create Quick Action"
 msgstr "Stwórz Szybką Akcję"
 
@@ -908,12 +908,12 @@ msgstr "Bieżąca passa"
 msgid "Currently Reading"
 msgstr "Teraz czytane"
 
-#: sui_config.lua:1273
+#: sui_config.lua:1275
 msgid "Custom"
 msgstr "Niestandardowy"
 
-#: sui_quickactions.lua:1578
-#: sui_quickactions.lua:1581
+#: sui_quickactions.lua:1596
+#: sui_quickactions.lua:1599
 msgid "Custom Actions"
 msgstr "Niestandardowe akcje"
 
@@ -921,7 +921,7 @@ msgstr "Niestandardowe akcje"
 msgid "Custom File"
 msgstr "Własny plik"
 
-#: sui_config.lua:168
+#: sui_config.lua:170
 #: sui_menu.lua:634
 #: sui_menu.lua:900
 msgid "Custom Text"
@@ -1006,8 +1006,8 @@ msgid "December"
 msgstr "Grudzień"
 
 #: sui_titlebar.lua:996
-#: sui_quickactions.lua:1800
-#: sui_quickactions.lua:2057
+#: sui_quickactions.lua:1818
+#: sui_quickactions.lua:2075
 #: sui_menu.lua:451
 #: sui_menu.lua:580
 #: sui_menu.lua:1260
@@ -1017,15 +1017,15 @@ msgstr "Grudzień"
 msgid "Default"
 msgstr "Domyślne"
 
-#: sui_quickactions.lua:2058
+#: sui_quickactions.lua:2076
 msgid "Default (Folder)"
 msgstr "Domyślny (folder)"
 
-#: sui_quickactions.lua:2059
+#: sui_quickactions.lua:2077
 msgid "Default (Plugin)"
 msgstr "Domyślne (Wtyczka)"
 
-#: sui_quickactions.lua:2060
+#: sui_quickactions.lua:2078
 msgid "Default (System)"
 msgstr "Domyślne (System)"
 
@@ -1051,9 +1051,9 @@ msgstr "Domyślne: System"
 
 #: sui_settings_window.lua:352
 #: sui_settings_window.lua:468
-#: sui_quickactions.lua:1315
-#: sui_quickactions.lua:2610
-#: sui_quickactions.lua:2615
+#: sui_quickactions.lua:1333
+#: sui_quickactions.lua:2628
+#: sui_quickactions.lua:2633
 #: sui_presets.lua:928
 #: sui_presets.lua:931
 #: sui_presets.lua:971
@@ -1076,12 +1076,12 @@ msgstr "Usuń ustawienia"
 msgid "Delete preset \"%s\"?"
 msgstr "Usunąć preset \"%s\"?"
 
-#: sui_quickactions.lua:1314
-#: sui_quickactions.lua:2614
+#: sui_quickactions.lua:1332
+#: sui_quickactions.lua:2632
 msgid "Delete quick action \"%s\"?"
 msgstr "Usunąć szybką akcję \"%s\"?"
 
-#: sui_quickactions.lua:1864
+#: sui_quickactions.lua:1882
 msgid "Dictionary Lookup"
 msgstr "Wyszukiwanie w słowniku"
 
@@ -1094,15 +1094,15 @@ msgstr "Cyfrowe"
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
 msgstr "Wyłącz blokadę skali, aby ustawić niestandardowy rozmiar etykiety."
 
-#: sui_config.lua:807
+#: sui_config.lua:809
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
 msgstr "Wyłącz blokadę skali, aby ustawić skalę na moduł."
 
-#: sui_config.lua:166
+#: sui_config.lua:168
 msgid "Disk Usage"
 msgstr "Użycie pamięci"
 
-#: sui_quickactions.lua:2665
+#: sui_quickactions.lua:2683
 msgid "Dispatcher not available."
 msgstr "Dyspozytor niedostępny."
 
@@ -1114,7 +1114,7 @@ msgstr "Wyświetlacz"
 msgid "Do something"
 msgstr "Zrób coś"
 
-#: sui_quickactions.lua:2308
+#: sui_quickactions.lua:2326
 msgid "Done"
 msgstr "Gotowe"
 
@@ -1138,7 +1138,7 @@ msgstr "Błąd pobierania: "
 msgid "Downloading Simple UI %s…"
 msgstr "Pobieranie Simple UI %s…"
 
-#: sui_quickactions.lua:2599
+#: sui_quickactions.lua:2617
 msgid "Edit"
 msgstr "Edytuj"
 
@@ -1153,7 +1153,7 @@ msgstr "Edytuj niestandardowy tekst"
 msgid "Edit Layout"
 msgstr "Edytuj układ"
 
-#: sui_quickactions.lua:1983
+#: sui_quickactions.lua:2001
 msgid "Edit Quick Action"
 msgstr "Edytuj Szybką Akcję"
 
@@ -1176,9 +1176,9 @@ msgstr "Jedenaście"
 msgid "Empty"
 msgstr "Pusty"
 
-#: sui_quickactions.lua:772
 #: sui_quickactions.lua:790
 #: sui_quickactions.lua:808
+#: sui_quickactions.lua:826
 msgid "Enable 'Browse by Author / Series / Tags' in the library menu first."
 msgstr ""
 "Najpierw włącz 'Przeglądaj według autora / cyklu / tagów' w menu biblioteki."
@@ -1223,7 +1223,7 @@ msgstr ""
 "Wprowadź kolor w formacie hex (#RRGGBB). Na ekranach e-ink w skali szarości "
 "używana jest postrzegana jasność."
 
-#: sui_quickactions.lua:1742
+#: sui_quickactions.lua:1760
 msgid ""
 "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\n"
 "You can look up codes with wakamaifondue.com using the file:\n"
@@ -1306,13 +1306,13 @@ msgstr ""
 "Rozjaśnia tapetę w kierunku bieli dla lepszej czytelności tekstu.\n"
 "0% to ustawienie domyślne (bez rozjaśniania)."
 
-#: sui_config.lua:119
-#: sui_quickactions.lua:652
-#: sui_quickactions.lua:1860
+#: sui_config.lua:121
+#: sui_quickactions.lua:670
+#: sui_quickactions.lua:1878
 msgid "Favorites"
 msgstr "Ulubione"
 
-#: sui_quickactions.lua:659
+#: sui_quickactions.lua:677
 msgid "Favorites not available."
 msgstr "Ulubione niedostępne."
 
@@ -1330,7 +1330,7 @@ msgstr "Piętnaście"
 msgid "Fifty"
 msgstr "Pięćdziesiąt"
 
-#: sui_quickactions.lua:1862
+#: sui_quickactions.lua:1880
 msgid "File Search"
 msgstr "Wyszukiwarka plików"
 
@@ -1358,7 +1358,7 @@ msgstr "Stała wysokość"
 msgid "Flat"
 msgstr "Płaski"
 
-#: sui_quickactions.lua:2331
+#: sui_quickactions.lua:2349
 msgid "Folder"
 msgstr "Folder"
 
@@ -1382,7 +1382,7 @@ msgstr "Nazwa folderu"
 msgid "Folder Name Text Size"
 msgstr "Rozmiar tekstu nazwy folderu"
 
-#: sui_quickactions.lua:1863
+#: sui_quickactions.lua:1881
 msgid "Folder Shortcuts"
 msgstr "Skróty do folderów"
 
@@ -1477,8 +1477,8 @@ msgstr ""
 msgid "Goals"
 msgstr "Cele"
 
-#: sui_quickactions.lua:1994
-#: sui_quickactions.lua:2314
+#: sui_quickactions.lua:2012
+#: sui_quickactions.lua:2332
 msgid "Group"
 msgstr "Grupa"
 
@@ -1486,11 +1486,11 @@ msgstr "Grupa"
 msgid "Group by Book Series"
 msgstr "Grupuj według cyklu"
 
-#: sui_quickactions.lua:2339
+#: sui_quickactions.lua:2357
 msgid "Group of Quick Actions"
 msgstr "Grupa Szybkich Akcji"
 
-#: sui_quickactions.lua:2321
+#: sui_quickactions.lua:2339
 msgid "Group: select actions"
 msgstr "Grupa: wybierz akcje"
 
@@ -1567,10 +1567,10 @@ msgstr ""
 msgid "Highlights"
 msgstr "Wyróżnienia"
 
-#: sui_config.lua:117
+#: sui_config.lua:118
 #: sui_quickactions.lua:417
 #: sui_quickactions.lua:622
-#: sui_quickactions.lua:1858
+#: sui_quickactions.lua:1876
 msgid "History"
 msgstr "Historia"
 
@@ -1578,7 +1578,7 @@ msgstr "Historia"
 msgid "History not available."
 msgstr "Historia niedostępna."
 
-#: sui_config.lua:115
+#: sui_config.lua:116
 #: sui_quickactions.lua:573
 msgid "Home"
 msgstr "Dom"
@@ -1635,8 +1635,8 @@ msgstr ""
 msgid "Hours per month:"
 msgstr "Godziny na miesiąc:"
 
-#: sui_quickactions.lua:2019
-#: sui_quickactions.lua:2023
+#: sui_quickactions.lua:2037
+#: sui_quickactions.lua:2041
 msgid "Icon"
 msgstr "Ikona"
 
@@ -1653,7 +1653,7 @@ msgstr "Presety ikon"
 msgid "Icon Size"
 msgstr "Rozmiar ikony"
 
-#: sui_quickactions.lua:2015
+#: sui_quickactions.lua:2033
 msgid "Icon: Default"
 msgstr "Ikona: Domyślna"
 
@@ -1712,7 +1712,7 @@ msgstr ""
 msgid "Invalid data"
 msgstr "Nieprawidłowe dane"
 
-#: sui_quickactions.lua:1777
+#: sui_quickactions.lua:1795
 msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
 msgstr ""
 "Nieprawidłowe dane wejściowe. Proszę wprowadzić 1–6 cyfr szesnastkowych "
@@ -1829,8 +1829,8 @@ msgstr "Układ, tapeta i zachowanie"
 msgid "Left"
 msgstr "Lewo"
 
-#: sui_config.lua:114
-#: sui_config.lua:364
+#: sui_config.lua:115
+#: sui_config.lua:366
 #: sui_settings_window.lua:265
 #: sui_settings_window.lua:853
 #: sui_titlebar.lua:1078
@@ -2016,7 +2016,7 @@ msgstr "Cel miesięczny"
 msgid "Monthly Reading Goal"
 msgstr "Miesięczny cel czytelniczy"
 
-#: main.lua:1053
+#: main.lua:1059
 msgid "More by %s (%d)"
 msgstr "Więcej od %s (%d)"
 
@@ -2047,7 +2047,7 @@ msgstr "Moje zaznaczenia"
 msgid "My Presets"
 msgstr "Moje presety"
 
-#: sui_quickactions.lua:2102
+#: sui_quickactions.lua:2120
 msgid "Name"
 msgstr "Nazwa"
 
@@ -2099,11 +2099,11 @@ msgstr "Nawigacja: Następny"
 msgid "Navpager: Previous"
 msgstr "Nawigacja: Poprzedni"
 
-#: sui_quickactions.lua:1739
+#: sui_quickactions.lua:1757
 msgid "Nerd Font Icon"
 msgstr "Ikona czcionki Nerd"
 
-#: sui_quickactions.lua:1810
+#: sui_quickactions.lua:1828
 msgid "Nerd Font symbol…"
 msgstr "Symbol Czcionki Nerd…"
 
@@ -2132,7 +2132,7 @@ msgstr "Nowa książka"
 msgid "New Books"
 msgstr "Nowe Książki"
 
-#: sui_quickactions.lua:1983
+#: sui_quickactions.lua:2001
 msgid "New Quick Action"
 msgstr "Nowa Szybka Akcja"
 
@@ -2145,8 +2145,8 @@ msgstr "Nazwa nowej kolekcji"
 msgid "Next"
 msgstr "Następny"
 
-#: sui_config.lua:123
-#: sui_quickactions.lua:712
+#: sui_config.lua:125
+#: sui_quickactions.lua:730
 msgid "Night Mode"
 msgstr "Tryb nocny"
 
@@ -2180,7 +2180,7 @@ msgid "No actions active yet."
 msgstr "Brak aktywnych akcji."
 
 #: sui_settings_window.lua:453
-#: sui_quickactions.lua:1347
+#: sui_quickactions.lua:1365
 #: desktop_modules/module_action_list.lua:108
 #: desktop_modules/module_action_list.lua:135
 #: desktop_modules/module_quick_actions.lua:90
@@ -2201,7 +2201,7 @@ msgstr ""
 "Brak skonfigurowanych akcji.\n"
 "Przejdź do Paski → Pasek szybkich ustawień."
 
-#: sui_quickactions.lua:646
+#: sui_quickactions.lua:664
 msgid "No book in history."
 msgstr "Brak książek w historii."
 
@@ -2267,7 +2267,7 @@ msgstr "Brak katalogu eksportu"
 msgid "No filepath."
 msgstr "Brak ścieżki pliku."
 
-#: sui_quickactions.lua:2704
+#: sui_quickactions.lua:2722
 msgid ""
 "No folder, collection or plugin configured.\n"
 "Go to Simple UI → Settings → Quick Actions to set one."
@@ -2284,7 +2284,7 @@ msgid "No highlights found. Open a book and highlight some passages."
 msgstr ""
 "Nie znaleziono żadnych zaznaczeń. Otwórz książkę i zaznacz trochę tekstu."
 
-#: sui_quickactions.lua:1823
+#: sui_quickactions.lua:1841
 msgid "No icons found in:"
 msgstr "Nie znaleziono ikon w:"
 
@@ -2334,7 +2334,7 @@ msgstr "Brak innych stron."
 msgid "No packs found."
 msgstr "Nie znaleziono paczek."
 
-#: sui_quickactions.lua:2197
+#: sui_quickactions.lua:2215
 msgid "No plugins found."
 msgstr "Nie znaleziono wtyczek."
 
@@ -2376,7 +2376,7 @@ msgstr "Nie wybrano statystyk"
 msgid "No stats selected  —  long press to configure"
 msgstr "Brak wybranych statystyk  —  przytrzymaj, aby skonfigurować"
 
-#: sui_quickactions.lua:2223
+#: sui_quickactions.lua:2241
 msgid "No system actions found."
 msgstr "Nie znaleziono żadnych systemowych akcji."
 
@@ -2384,7 +2384,7 @@ msgstr "Nie znaleziono żadnych systemowych akcji."
 msgid "No wallpapers found."
 msgstr "Nie znaleziono tapet."
 
-#: sui_quickactions.lua:2095
+#: sui_quickactions.lua:2113
 #: sui_menu.lua:2997
 #: sui_menu.lua:3006
 #: sui_menu.lua:3024
@@ -2428,7 +2428,7 @@ msgstr "Liczba stron"
 msgid "O'Clock"
 msgstr "w punkt"
 
-#: sui_quickactions.lua:1752
+#: sui_quickactions.lua:1770
 msgid "OK"
 msgstr "OK"
 
@@ -2436,8 +2436,8 @@ msgstr "OK"
 msgid "October"
 msgstr "Październik"
 
-#: sui_quickactions.lua:1444
-#: sui_quickactions.lua:2436
+#: sui_quickactions.lua:1462
+#: sui_quickactions.lua:2454
 #: sui_menu.lua:1401
 #: sui_menu.lua:1606
 #: sui_menu.lua:3130
@@ -2451,8 +2451,8 @@ msgstr "Wyłącz"
 msgid "Oh"
 msgstr "zero"
 
-#: sui_quickactions.lua:1443
-#: sui_quickactions.lua:2435
+#: sui_quickactions.lua:1461
+#: sui_quickactions.lua:2453
 #: sui_menu.lua:1401
 #: sui_menu.lua:1606
 #: sui_menu.lua:4392
@@ -2617,7 +2617,7 @@ msgstr "Stronicowanie: Następna strona"
 msgid "Pagination: Previous Page"
 msgstr "Stronicowanie: Poprzednia strona"
 
-#: sui_quickactions.lua:2151
+#: sui_quickactions.lua:2169
 msgid "Path chooser not available."
 msgstr "Wybieracz ścieżki niedostępny."
 
@@ -2686,20 +2686,20 @@ msgstr "Wprowadź datę w formacie RRRR-MM-DD."
 msgid "Please enter a name for the preset."
 msgstr "Wprowadź nazwę presetu."
 
-#: sui_quickactions.lua:2122
+#: sui_quickactions.lua:2140
 msgid "Please select an action."
 msgstr "Wybierz akcję."
 
-#: sui_quickactions.lua:2216
-#: sui_quickactions.lua:2335
+#: sui_quickactions.lua:2234
+#: sui_quickactions.lua:2353
 msgid "Plugin"
 msgstr "Wtyczka"
 
-#: sui_quickactions.lua:2689
+#: sui_quickactions.lua:2707
 msgid "Plugin error: %s"
 msgstr "Błąd wtyczki: %s"
 
-#: sui_quickactions.lua:2691
+#: sui_quickactions.lua:2709
 msgid "Plugin not available: %s"
 msgstr "Wtyczka niedostępna: %s"
 
@@ -2708,8 +2708,8 @@ msgstr "Wtyczka niedostępna: %s"
 msgid "Position"
 msgstr "Pozycja"
 
-#: sui_config.lua:125
-#: sui_quickactions.lua:742
+#: sui_config.lua:127
+#: sui_quickactions.lua:760
 msgid "Power"
 msgstr "Zasilanie"
 
@@ -2803,8 +2803,8 @@ msgid "Progress bar style"
 msgstr "Styl paska postępu"
 
 #: sui_settings_window.lua:279
-#: sui_quickactions.lua:1345
-#: sui_quickactions.lua:2917
+#: sui_quickactions.lua:1363
+#: sui_quickactions.lua:2935
 #: sui_menu.lua:2130
 #: sui_menu.lua:4447
 #: sui_quicksettings_bar.lua:1175
@@ -2828,7 +2828,7 @@ msgstr "Szybkie Akcje (%d/%d — pozostało %d)"
 msgid "Quick Actions  (%d/%d — at limit)"
 msgstr "Szybkie Akcje (%d/%d  — osiągnięto limit)"
 
-#: sui_quickactions.lua:1590
+#: sui_quickactions.lua:1608
 #: sui_menu.lua:3586
 msgid "Quick Actions Icons"
 msgstr "Ikony Szybkich Akcji"
@@ -2867,7 +2867,7 @@ msgstr "Cytat Dnia"
 msgid "Quotes + My Highlights"
 msgstr "Cytaty + Moje Zaznaczenia"
 
-#: sui_config.lua:167
+#: sui_config.lua:169
 msgid "RAM Usage"
 msgstr "Użycie RAM"
 
@@ -2892,6 +2892,11 @@ msgstr "Statystyki czytania"
 msgid "Reboot"
 msgstr "Uruchom ponownie"
 
+#: sui_config.lua:119
+#: sui_quickactions.lua:634
+msgid "Recent"
+msgstr "Ostatnie"
+
 #: sui_presets.lua:137
 #: sui_presets.lua:172
 #: sui_presets.lua:230
@@ -2902,6 +2907,10 @@ msgstr "Uruchom ponownie"
 #: desktop_modules/module_recent.lua:541
 msgid "Recent Books"
 msgstr "Ostatnie Książki"
+
+#: sui_quickactions.lua:646
+msgid "Recent not available."
+msgstr "Ostatnie niedostępne."
 
 #: desktop_modules/module_tbr.lua:294
 msgid "Remove from To Be Read"
@@ -2935,19 +2944,19 @@ msgstr ""
 "Strzałki przyciemniają się, gdy nie ma poprzedniej lub następnej strony.\n"
 "Przy aktywnym navpagerze można skonfigurować od 1 do 4 zakładek."
 
-#: sui_quickactions.lua:1598
+#: sui_quickactions.lua:1616
 #: sui_menu.lua:2473
 #: sui_style.lua:1103
 #: sui_stats_windows.lua:595
 msgid "Reset"
 msgstr "Resetuj"
 
-#: sui_quickactions.lua:1592
+#: sui_quickactions.lua:1610
 #: sui_style.lua:1097
 msgid "Reset All"
 msgstr "Resetuj wszystko"
 
-#: sui_quickactions.lua:2362
+#: sui_quickactions.lua:2380
 msgid "Reset All Quick Action Icons"
 msgstr "Zresetuj wszystkie ikony Szybkich Akcji"
 
@@ -2959,7 +2968,7 @@ msgstr "Zresetuj wszystkie ikony systemowe"
 msgid "Reset All Theme Colors"
 msgstr "Zresetuj wszystkie kolory motywu"
 
-#: sui_quickactions.lua:1597
+#: sui_quickactions.lua:1615
 msgid "Reset all Quick Actions icons to default?"
 msgstr "Zresetować wszystkie ikony szybkich akcji do domyślnych?"
 
@@ -3042,7 +3051,7 @@ msgstr "Zaokrąglony kwadrat"
 msgid "Saturday"
 msgstr "Sobota"
 
-#: sui_quickactions.lua:2119
+#: sui_quickactions.lua:2137
 #: sui_presets.lua:823
 #: sui_menu.lua:3900
 #: sui_stats_windows.lua:604
@@ -3285,9 +3294,9 @@ msgstr "Klasyczna sepia"
 msgid "September"
 msgstr "Wrzesień"
 
-#: sui_config.lua:129
+#: sui_config.lua:131
 #: sui_browsemeta.lua:78
-#: sui_quickactions.lua:782
+#: sui_quickactions.lua:800
 msgid "Series"
 msgstr "Cykl"
 
@@ -3316,8 +3325,8 @@ msgstr "Ustaw okładkę folderu"
 msgid "Set your reading goal"
 msgstr "Ustaw swój cel czytelniczy"
 
-#: sui_config.lua:126
-#: sui_quickactions.lua:751
+#: sui_config.lua:128
+#: sui_quickactions.lua:769
 msgid "Settings"
 msgstr "Ustawienia"
 
@@ -3376,7 +3385,7 @@ msgstr ""
 msgid "Show finished books"
 msgstr "Pokaż ukończone książki"
 
-#: sui_config.lua:925
+#: sui_config.lua:927
 msgid "Show section label"
 msgstr "Pokaż etykietę sekcji"
 
@@ -3408,8 +3417,8 @@ msgstr ""
 msgid "Simple"
 msgstr "Prosty"
 
-#: main.lua:2144
-#: main.lua:2157
+#: main.lua:2156
+#: main.lua:2169
 #: sui_menu.lua:4387
 #: sui_menu.lua:4392
 msgid "Simple UI"
@@ -3466,6 +3475,10 @@ msgstr "Simple UI: Przejdź do ekranu głównego"
 #: main.lua:875
 msgid "Simple UI: Go to Library"
 msgstr "Simple UI: Przejdź do biblioteki"
+
+#: main.lua:893
+msgid "Simple UI: Recent"
+msgstr "Simple UI: Ostatnie"
 
 #: main.lua:887
 msgid "Simple UI: Settings"
@@ -3605,12 +3618,12 @@ msgstr "Powiadomienie o wczytywaniu statystyk"
 msgid "Statistics database library not available."
 msgstr "Biblioteka bazy danych statystyk niedostępna."
 
-#: sui_quickactions.lua:736
+#: sui_quickactions.lua:754
 msgid "Statistics plugin not available."
 msgstr "Wtyczka statystyk niedostępna."
 
-#: sui_config.lua:124
-#: sui_quickactions.lua:721
+#: sui_config.lua:126
+#: sui_quickactions.lua:739
 #: desktop_modules/module_currently.lua:1194
 #: desktop_modules/module_currently.lua:1276
 #: desktop_modules/module_currently.lua:1337
@@ -3686,10 +3699,10 @@ msgstr "Niedziela"
 msgid "Swipe Indicator"
 msgstr "Wskaźnik Przeciągnięcia"
 
-#: sui_quickactions.lua:1568
-#: sui_quickactions.lua:1571
-#: sui_quickactions.lua:2241
-#: sui_quickactions.lua:2337
+#: sui_quickactions.lua:1586
+#: sui_quickactions.lua:1589
+#: sui_quickactions.lua:2259
+#: sui_quickactions.lua:2355
 msgid "System Actions"
 msgstr "Akcje Systemowe"
 
@@ -3699,7 +3712,7 @@ msgstr "Akcje Systemowe"
 msgid "System Icons"
 msgstr "Ikony systemowe"
 
-#: sui_quickactions.lua:2662
+#: sui_quickactions.lua:2680
 msgid "System action error: %s"
 msgstr "Błąd akcji systemowej: %s"
 
@@ -3736,9 +3749,9 @@ msgstr "Zakładki  (%d/%d — %d pozostało)"
 msgid "Tabs  (%d/%d — at limit)"
 msgstr "Zakładki  (%d/%d — limit osiągnięty)"
 
-#: sui_config.lua:131
+#: sui_config.lua:133
 #: sui_browsemeta.lua:79
-#: sui_quickactions.lua:800
+#: sui_quickactions.lua:818
 msgid "Tags"
 msgstr "Tagi"
 
@@ -3810,8 +3823,8 @@ msgstr "Trzynaście"
 msgid "Thirty"
 msgstr "Trzydzieści"
 
-#: sui_quickactions.lua:2818
-#: sui_quickactions.lua:2901
+#: sui_quickactions.lua:2836
+#: sui_quickactions.lua:2919
 msgid "This group is empty.\nAdd actions to it from Settings → Quick Actions."
 msgstr "Ta grupa jest pusta.\nDodaj do niej akcje w Ustawienia → Szybkie Akcje."
 
@@ -4051,7 +4064,7 @@ msgid "Unsupported format (use a folder or a .zip file)"
 msgstr "Nieobsługiwany format (użyj folderu lub pliku .zip)"
 
 #: sui_quickactions.lua:75
-#: sui_quickactions.lua:1525
+#: sui_quickactions.lua:1543
 #: sui_style.lua:851
 #: sui_style.lua:1053
 msgid ""
@@ -4090,7 +4103,7 @@ msgstr "Zaktualizuj z bieżącymi ustawieniami"
 msgid "Updater module not found."
 msgstr "Nie znaleziono modułu aktualizacji."
 
-#: sui_quickactions.lua:1721
+#: sui_quickactions.lua:1739
 msgid "Use this Nerd Font icon?"
 msgstr "Użyć tej ikony Nerd Font?"
 
@@ -4244,8 +4257,8 @@ msgstr ""
 msgid "When waking the device from sleep/suspend, always return to the Home Screen — even if a book was open when it went to sleep."
 msgstr "Podczas wybudzania urządzenia z uśpienia/wstrzymania zawsze wracaj do ekranu głównego — nawet jeśli książka była otwarta, gdy urządzenie zostało uśpione."
 
-#: sui_config.lua:121
-#: sui_quickactions.lua:687
+#: sui_config.lua:123
+#: sui_quickactions.lua:705
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
@@ -4253,7 +4266,7 @@ msgstr "Wi-Fi"
 msgid "Wi-Fi off"
 msgstr "Wi-Fi wyłączone"
 
-#: sui_config.lua:163
+#: sui_config.lua:165
 msgid "WiFi"
 msgstr "WiFi"
 
@@ -4261,7 +4274,7 @@ msgstr "WiFi"
 msgid "WiFi not available on this device."
 msgstr "WiFi niedostępne na tym urządzeniu."
 
-#: sui_quickactions.lua:1865
+#: sui_quickactions.lua:1883
 msgid "Wikipedia Lookup"
 msgstr "Wyszukiwanie w Wikipedii"
 
@@ -4307,8 +4320,8 @@ msgstr "dni z rzędu"
 msgid "dec"
 msgstr "gru"
 
-#: sui_quickactions.lua:1517
-#: sui_quickactions.lua:2475
+#: sui_quickactions.lua:1535
+#: sui_quickactions.lua:2493
 msgid "default"
 msgstr "domyślny"
 
@@ -4340,7 +4353,7 @@ msgstr "lut"
 msgid "ffi/archiver not available in this KOReader version"
 msgstr "ffi/archiver niedostępny w tej wersji KOReadera"
 
-#: sui_quickactions.lua:1741
+#: sui_quickactions.lua:1759
 msgid "hex code, e.g. E001"
 msgstr "kod hex, np. E001"
 
@@ -4377,9 +4390,9 @@ msgstr "maj"
 msgid "no streak"
 msgstr "brak serii"
 
-#: sui_quickactions.lua:1296
-#: sui_quickactions.lua:2572
-#: sui_quickactions.lua:2591
+#: sui_quickactions.lua:1314
+#: sui_quickactions.lua:2590
+#: sui_quickactions.lua:2609
 msgid "not configured"
 msgstr "nie skonfigurowano"
 
@@ -4509,9 +4522,9 @@ msgstr[0] "%d w %s"
 msgstr[1] "%d w %s"
 msgstr[2] "%d w %s"
 
-#: sui_quickactions.lua:1288
-#: sui_quickactions.lua:2564
-#: sui_quickactions.lua:2585
+#: sui_quickactions.lua:1306
+#: sui_quickactions.lua:2582
+#: sui_quickactions.lua:2603
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d element"
@@ -4542,7 +4555,7 @@ msgstr[0] "(%d/%d — %d pozostało)"
 msgstr[1] "(%d/%d — %d pozostały)"
 msgstr[2] "(%d/%d — %d pozostało)"
 
-#: sui_quickactions.lua:2092
+#: sui_quickactions.lua:2110
 msgid "Group (%d item)"
 msgid_plural "Group (%d items)"
 msgstr[0] "Grupa (%d element)"
@@ -4598,8 +4611,8 @@ msgstr[1] ""
 msgstr[2] ""
 "Osiągnięto maksymalną liczbę %d akcji na moduł. Najpierw usuń jedną."
 
-#: sui_quickactions.lua:1354
-#: sui_quickactions.lua:2528
+#: sui_quickactions.lua:1372
+#: sui_quickactions.lua:2546
 msgid "The maximum of %d quick action has been reached. Delete one first."
 msgid_plural ""
 "The maximum of %d quick actions has been reached. Delete one first."
