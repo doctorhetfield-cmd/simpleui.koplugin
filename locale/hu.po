@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-06-03 19:48\n"
-"PO-Revision-Date: 2026-06-25 21:57+0200\n"
+"POT-Creation-Date: 2026-07-05 07:51\n"
+"PO-Revision-Date: 2026-07-05 23:03+0200\n"
 "Last-Translator: Kónya Márton <konyamarci52@proton.me>\n"
 "Language-Team: \n"
 "Language: hu\n"
@@ -16,82 +16,83 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.9\n"
 
-#: desktop_modules/module_reading_goals.lua:854
+#: desktop_modules/module_reading_goals.lua:868
 msgid "  Set Goal  (%d hr/month)"
 msgstr "  Cél beállítása  (%d óra/hónap)"
 
-#: desktop_modules/module_reading_goals.lua:874
+#: desktop_modules/module_reading_goals.lua:888
 msgid "  Set Goal  (%d min/day)"
 msgstr "  Cél beállítása  (%d perc/nap)"
 
-#: desktop_modules/module_reading_goals.lua:834
+#: desktop_modules/module_reading_goals.lua:848
 msgid "  Set Goal  (%s)"
 msgstr "  Cél beállítása  (%s)"
 
-#: desktop_modules/module_reading_goals.lua:853
-#: desktop_modules/module_reading_goals.lua:873
+#: desktop_modules/module_reading_goals.lua:867
+#: desktop_modules/module_reading_goals.lua:887
 msgid "  Set Goal  (disabled)"
 msgstr "  Cél beállítása  (Letiltva)"
 
-#: sui_foldercovers.lua:2358
+#: sui_foldercovers.lua:2395
 msgid " p."
 msgstr " o."
 
-#: desktop_modules/module_reading_goals.lua:953
+#: desktop_modules/module_reading_goals.lua:967
 msgid "%d hr/month"
 msgstr "%d óra/hónap"
 
-#: desktop_modules/module_reading_goals.lua:968
+#: desktop_modules/module_reading_goals.lua:982
 msgid "%d min/day"
 msgstr "%d perc/nap"
 
-#: desktop_modules/module_recent.lua:145 desktop_modules/module_tbr.lua:372
+#: desktop_modules/module_recent.lua:162 desktop_modules/module_recent.lua:434
+#: desktop_modules/module_tbr.lua:372
 msgid "%d%%"
 msgstr "%d%%"
 
-#: desktop_modules/module_recent.lua:179 desktop_modules/module_tbr.lua:402
-#: desktop_modules/module_coverdeck.lua:633
+#: desktop_modules/module_recent.lua:196 desktop_modules/module_recent.lua:456
+#: desktop_modules/module_tbr.lua:402 desktop_modules/module_coverdeck.lua:758
 #: desktop_modules/module_new_books.lua:218
-#: desktop_modules/module_currently.lua:621
-#: desktop_modules/module_currently.lua:630
+#: desktop_modules/module_currently.lua:627
+#: desktop_modules/module_currently.lua:636
 msgid "%d%% Read"
 msgstr "%d%% elolvasva"
 
-#: desktop_modules/module_currently.lua:724
+#: desktop_modules/module_currently.lua:730
 msgid "%s left"
 msgstr "%s maradt"
 
 #: desktop_modules/module_reading_goals.lua:496
 #: desktop_modules/module_reading_goals.lua:524
-#: desktop_modules/module_coverdeck.lua:638
-#: desktop_modules/module_currently.lua:664
-#: desktop_modules/module_currently.lua:665
-#: desktop_modules/module_currently.lua:722
-#: desktop_modules/module_currently.lua:733
+#: desktop_modules/module_coverdeck.lua:763
+#: desktop_modules/module_currently.lua:670
+#: desktop_modules/module_currently.lua:671
+#: desktop_modules/module_currently.lua:728
+#: desktop_modules/module_currently.lua:739
 msgid "%s read"
 msgstr "%s elolvasva"
 
-#: desktop_modules/module_coverdeck.lua:644
-#: desktop_modules/module_currently.lua:687
-#: desktop_modules/module_currently.lua:691
+#: desktop_modules/module_coverdeck.lua:769
+#: desktop_modules/module_currently.lua:693
+#: desktop_modules/module_currently.lua:697
 msgid "%s remaining"
 msgstr "%s maradt"
 
 #: desktop_modules/module_collections.lua:354
-#: desktop_modules/module_reading_stats.lua:276
+#: desktop_modules/module_reading_stats.lua:296
 #: desktop_modules/module_quick_actions.lua:492
 msgid "(%d/%d — at limit)"
 msgstr "(%d/%d — limit elérve)"
 
-#: sui_menu.lua:2698
+#: sui_menu.lua:2749
 msgid "4-Cover Grid (Mosaic View Only)"
 msgstr "4 borítós rács (Csak csempenézetben)"
 
-#: sui_menu.lua:3863 sui_menu.lua:3948 sui_presets.lua:906 sui_presets.lua:992
+#: sui_menu.lua:3981 sui_menu.lua:4066 sui_presets.lua:914 sui_presets.lua:1000
 msgid "A preset named \"%s\" already exists."
 msgstr "„%s” nevű sablon már létezik."
 
-#: sui_menu.lua:3809 sui_presets.lua:847
+#: sui_menu.lua:3927 sui_presets.lua:855
 msgid ""
 "A preset named \"%s\" already exists.\n"
 "Overwrite it?"
@@ -99,7 +100,7 @@ msgstr ""
 "„%s” nevű sablon már létezik.\n"
 "Felülírod?"
 
-#: sui_menu.lua:1039 sui_menu.lua:1316
+#: sui_menu.lua:1046 sui_menu.lua:1323
 msgid ""
 "A restart is required to apply the new bar size across all layouts.\n"
 "\n"
@@ -109,23 +110,29 @@ msgstr ""
 "\n"
 "Újraindítás most?"
 
-#: sui_stats_windows.lua:2092
+#: sui_menu.lua:4249
+msgid ""
+"A restart is required to apply the new text size everywhere.\n"
+"\n"
+"Restart now?"
+msgstr ""
+"Újraindítás szükséges, hogy mindenhol alkalmazva legyen az új szöveg méret.\n"
+"\n"
+"Újraindítás most?"
+
+#: sui_stats_windows.lua:2418
 msgid "ALL TIME"
 msgstr "MINDENKORI"
 
-#: sui_menu.lua:4341 sui_settings_window.lua:290 sui_settings_window.lua:847
+#: sui_menu.lua:4502 sui_settings_window.lua:298 sui_settings_window.lua:855
 msgid "About"
 msgstr "Névjegy"
 
-#: desktop_modules/module_coverdeck.lua:870
-msgid "Above"
-msgstr "Felette"
-
-#: sui_style.lua:1774
+#: sui_style.lua:1788
 msgid "Accent / Active Color"
 msgstr "Kiemelő / Aktív szín"
 
-#: sui_quickactions.lua:1617 sui_quickactions.lua:1660
+#: sui_quickactions.lua:2089 sui_quickactions.lua:2135
 msgid "Action"
 msgstr "Művelet"
 
@@ -133,62 +140,64 @@ msgstr "Művelet"
 msgid "Action List"
 msgstr "Művelet lista"
 
-#: sui_quickactions.lua:1781
+#: sui_quickactions.lua:2339
 msgid "Action Type"
 msgstr "Művelet típus"
 
-#: sui_quickactions.lua:566
+#: sui_quickactions.lua:955
 msgid "Action error: %s"
 msgstr "Művelet hiba: %s"
 
-#: sui_quickactions.lua:1636
+#: sui_quickactions.lua:2111
 msgid "Action name…"
 msgstr "Művelet név…"
 
-#: sui_quickactions.lua:559
+#: sui_quickactions.lua:948
 msgid "Action not available: %s"
 msgstr "Művelet nem elérhető: %s"
 
-#: sui_quicksettings_bar.lua:1179 sui_quicksettings_bar.lua:1206
+#: sui_quicksettings_bar.lua:1213 sui_quicksettings_bar.lua:1240
 msgid "Add Action"
 msgstr "Művelet hozzáadása"
 
-#: sui_menu.lua:1548 sui_menu.lua:1586
+#: sui_menu.lua:1555 sui_menu.lua:1593
 msgid "Add Button"
 msgstr "Gomb hozzáadása"
 
-#: desktop_modules/module_collections.lua:837
-#: desktop_modules/module_collections.lua:871
+#: desktop_modules/module_collections.lua:853
+#: desktop_modules/module_collections.lua:887
 msgid "Add Collection"
 msgstr "Gyűjtemény hozzáadása"
 
-#: sui_homescreen.lua:1848 sui_menu.lua:967 sui_menu.lua:1004 sui_menu.lua:1190
-#: sui_menu.lua:1236 sui_menu.lua:1985 sui_menu.lua:2021
-#: sui_quicksettings_bar.lua:993 sui_window.lua:642 sui_settings_window.lua:852
-#: desktop_modules/module_action_list.lua:513
+#: sui_homescreen.lua:1899 sui_menu.lua:974 sui_menu.lua:1011 sui_menu.lua:1197
+#: sui_menu.lua:1243 sui_menu.lua:1992 sui_menu.lua:2028
+#: sui_quicksettings_bar.lua:1027 sui_window.lua:673
+#: sui_settings_window.lua:860 desktop_modules/module_action_list.lua:513
 #: desktop_modules/module_action_list.lua:549
-#: desktop_modules/module_reading_stats.lua:608
-#: desktop_modules/module_reading_stats.lua:640
-#: desktop_modules/module_reading_goals.lua:899
-#: desktop_modules/module_reading_goals.lua:928
-#: desktop_modules/module_coverdeck.lua:978
-#: desktop_modules/module_coverdeck.lua:1022
-#: desktop_modules/module_currently.lua:1196
-#: desktop_modules/module_currently.lua:1243
+#: desktop_modules/module_reading_stats.lua:646
+#: desktop_modules/module_reading_stats.lua:678
+#: desktop_modules/module_reading_goals.lua:913
+#: desktop_modules/module_reading_goals.lua:942
+#: desktop_modules/module_coverdeck.lua:1090
+#: desktop_modules/module_coverdeck.lua:1126
+#: desktop_modules/module_coverdeck.lua:1240
+#: desktop_modules/module_coverdeck.lua:1270
+#: desktop_modules/module_currently.lua:1207
+#: desktop_modules/module_currently.lua:1254
 #: desktop_modules/module_quick_actions.lua:440
 #: desktop_modules/module_quick_actions.lua:476
 msgid "Add Item"
 msgstr "Elem hozzáadása"
 
-#: sui_settings_window.lua:849 sui_settings_window.lua:965
+#: sui_settings_window.lua:857 sui_settings_window.lua:954
 msgid "Add Module"
 msgstr "Modul hozzáadása"
 
-#: sui_settings_window.lua:931
+#: sui_settings_window.lua:920
 msgid "Add Page"
 msgstr "Oldal hozzáadása"
 
-#: sui_menu.lua:1905 sui_quicksettings_bar.lua:1052
+#: sui_menu.lua:1912 sui_quicksettings_bar.lua:1086
 #: desktop_modules/module_action_list.lua:424
 #: desktop_modules/module_quick_actions.lua:345
 msgid "Add at least 2 actions to arrange."
@@ -198,7 +207,7 @@ msgstr "Adj hozzá legalább 2 műveletet, hogy elrendezhesd."
 msgid "Add at least 2 books to arrange."
 msgstr "Adj hozzá legalább 2 könyvet, hogy elrendezhesd."
 
-#: desktop_modules/module_reading_stats.lua:557
+#: desktop_modules/module_reading_stats.lua:595
 msgid "Add at least 2 stats to arrange."
 msgstr "Adj hozzá legalább 2 statisztikát, hogy elrendezhesd."
 
@@ -206,28 +215,32 @@ msgstr "Adj hozzá legalább 2 statisztikát, hogy elrendezhesd."
 msgid "Add to To Be Read"
 msgstr "Hozzáadás Olvasandókhoz"
 
-#: sui_window.lua:1832
+#: sui_window.lua:1928
 msgid "Advanced"
 msgstr "Haladó"
 
-#: sui_window.lua:1741
+#: sui_window.lua:1837
 msgid "Advanced option"
 msgstr "Haladó beállítások"
 
-#: desktop_modules/module_quote.lua:1381
+#: desktop_modules/module_quote.lua:1417
 #: desktop_modules/module_action_list.lua:587
-#: desktop_modules/module_reading_stats.lua:713
+#: desktop_modules/module_reading_stats.lua:751
 #: desktop_modules/module_clock.lua:851
 msgid "Alignment"
 msgstr "Elrendezés"
 
-#: sui_window.lua:2862 sui_settings_window.lua:625
+#: sui_window.lua:2961 sui_settings_window.lua:633
 msgid "All items have already been added."
 msgstr "Már minden elem hozzá lett adva."
 
-#: sui_settings_window.lua:603
+#: sui_settings_window.lua:611
 msgid "All modules have already been added."
 msgstr "Már minden modul hozzá lett adva."
+
+#: sui_quickactions.lua:3046
+msgid "All recent books are finished."
+msgstr "Minden mostanában megnyitott könyv be lett fejezve."
 
 #: desktop_modules/module_reading_stats.lua:92
 msgid "All time — Books"
@@ -237,14 +250,14 @@ msgstr "Teljes időszak — Könyvek"
 msgid "All time — Time"
 msgstr "Teljes időszak — Idő"
 
-#: sui_menu.lua:2479
+#: sui_menu.lua:2503
 msgid "Always"
 msgstr "Mindig"
 
-#: desktop_modules/module_reading_goals.lua:821
-#: desktop_modules/module_reading_goals.lua:887
-#: desktop_modules/module_reading_goals.lua:924
-#: desktop_modules/module_reading_goals.lua:941
+#: desktop_modules/module_reading_goals.lua:835
+#: desktop_modules/module_reading_goals.lua:901
+#: desktop_modules/module_reading_goals.lua:938
+#: desktop_modules/module_reading_goals.lua:955
 msgid "Annual Goal"
 msgstr "Éves cél"
 
@@ -252,18 +265,18 @@ msgstr "Éves cél"
 msgid "Annual Reading Goal"
 msgstr "Éves olvasási cél"
 
-#: sui_menu.lua:1764 sui_menu.lua:1767
+#: sui_menu.lua:1771 sui_menu.lua:1774
 msgid "Appearance"
 msgstr "Kinézet"
 
-#: sui_config.lua:818 sui_config.lua:890 sui_menu.lua:1029 sui_menu.lua:1306
-#: sui_menu.lua:2337 sui_menu.lua:2396 sui_menu.lua:2431 sui_menu.lua:2746
-#: sui_style.lua:1798 desktop_modules/module_clock.lua:894
-#: desktop_modules/module_clock.lua:920
+#: sui_config.lua:851 sui_config.lua:923 sui_menu.lua:1036 sui_menu.lua:1313
+#: sui_menu.lua:2344 sui_menu.lua:2416 sui_menu.lua:2453 sui_menu.lua:2797
+#: sui_menu.lua:3158 sui_menu.lua:4243 sui_style.lua:1812
+#: desktop_modules/module_clock.lua:894 desktop_modules/module_clock.lua:920
 msgid "Apply"
 msgstr "Alkalmaz"
 
-#: sui_style.lua:1848
+#: sui_style.lua:1862
 msgid "Apply Palette…"
 msgstr "Paletta alkalmazása…"
 
@@ -276,40 +289,41 @@ msgstr "Április"
 msgid "Arrange"
 msgstr "Elrendezés"
 
-#: sui_menu.lua:1909 desktop_modules/module_action_list.lua:444
+#: sui_menu.lua:1916 desktop_modules/module_action_list.lua:444
 #: desktop_modules/module_quick_actions.lua:363
 msgid "Arrange %s"
 msgstr "Elrendezés %s"
 
-#: sui_menu.lua:1492 sui_menu.lua:1499 sui_menu.lua:1688 sui_menu.lua:1703
+#: sui_menu.lua:1499 sui_menu.lua:1506 sui_menu.lua:1695 sui_menu.lua:1710
 msgid "Arrange Buttons"
 msgstr "Gombok elrendezése"
 
-#: sui_homescreen.lua:1847 sui_menu.lua:679 sui_menu.lua:750 sui_menu.lua:757
-#: sui_menu.lua:1899 sui_topbar.lua:514 sui_bottombar.lua:886
-#: sui_quicksettings_bar.lua:992 sui_quicksettings_bar.lua:1043
-#: sui_settings_window.lua:41 sui_settings_window.lua:874
+#: sui_homescreen.lua:1898 sui_menu.lua:686 sui_menu.lua:757 sui_menu.lua:764
+#: sui_menu.lua:1906 sui_topbar.lua:514 sui_bottombar.lua:889
+#: sui_quicksettings_bar.lua:1026 sui_quicksettings_bar.lua:1077
+#: sui_settings_window.lua:41 sui_settings_window.lua:882
 #: desktop_modules/module_action_list.lua:415
-#: desktop_modules/module_currently.lua:1070
-#: desktop_modules/module_currently.lua:1113
+#: desktop_modules/module_coverdeck.lua:1180
+#: desktop_modules/module_coverdeck.lua:1186
+#: desktop_modules/module_currently.lua:1081
+#: desktop_modules/module_currently.lua:1124
 #: desktop_modules/module_quick_actions.lua:336
 msgid "Arrange Items"
 msgstr "Elemek elrendezése"
 
-#: sui_quicksettings_bar.lua:1068
+#: sui_quicksettings_bar.lua:1102
 msgid "Arrange Quick Settings"
 msgstr "Gyorsmenük elrendezése"
 
-#: desktop_modules/module_reading_stats.lua:568
+#: desktop_modules/module_reading_stats.lua:606
 msgid "Arrange Reading Stats"
 msgstr "Olvasási statisztikák elrendezése"
 
-#: desktop_modules/module_coverdeck.lua:896
-#: desktop_modules/module_coverdeck.lua:923
+#: desktop_modules/module_coverdeck.lua:1201
 msgid "Arrange Statistics"
 msgstr "Statisztikák elrendezése"
 
-#: sui_menu.lua:286 sui_menu.lua:304
+#: sui_menu.lua:293 sui_menu.lua:311
 msgid "Arrange Tabs"
 msgstr "Lapok elrendezése"
 
@@ -317,7 +331,7 @@ msgstr "Lapok elrendezése"
 msgid "Arrange To Be Read List"
 msgstr "Olvasandók lista elrendezése"
 
-#: sui_presets.lua:130
+#: sui_presets.lua:136
 msgid "At a Glance"
 msgstr "Gyors áttekintés"
 
@@ -325,40 +339,42 @@ msgstr "Gyors áttekintés"
 msgid "August"
 msgstr "Augusztus"
 
+#: desktop_modules/module_coverdeck.lua:91
 #: desktop_modules/module_currently.lua:247
 msgid "Author"
 msgstr "Szerző"
 
-#: sui_menu.lua:4170
+#: sui_menu.lua:4331
 msgid "Author: %s"
 msgstr "Szerző : %s"
 
-#: sui_quickactions.lua:399 sui_config.lua:125 sui_browsemeta.lua:70
+#: sui_quickactions.lua:773 sui_config.lua:129 sui_browsemeta.lua:77
 msgid "Authors"
 msgstr "Szerzők"
 
-#: sui_menu.lua:2709
+#: sui_menu.lua:2760
 msgid "Auto (Single ↔ 4-Cover Grid)"
 msgstr "Automatikus (Egy könyv ↔ 4 borítós rács)"
 
-#: sui_foldercovers.lua:769 sui_foldercovers.lua:826 sui_browsemeta.lua:973
-#: desktop_modules/module_collections.lua:732
+#: sui_foldercovers.lua:803 sui_foldercovers.lua:860 sui_browsemeta.lua:1161
+#: desktop_modules/module_collections.lua:748
 msgid "Auto (first book)"
 msgstr "Automatikus (első könyv)"
 
-#: sui_menu.lua:2294
+#: sui_menu.lua:2301
 msgid "Auto-rotate"
 msgstr "Automatikus forgatás"
 
-#: sui_menu.lua:4175
+#: sui_menu.lua:4336
 msgid "Automatic Update Check"
 msgstr "Automatikus frissítés keresés"
 
-#: sui_stats_windows.lua:742 sui_stats_windows.lua:1787
+#: sui_stats_windows.lua:1060 sui_stats_windows.lua:2089
+#: sui_stats_windows.lua:2763
 msgid "Average per day"
 msgstr "Átlagosan naponta"
 
-#: sui_stats_windows.lua:744
+#: sui_stats_windows.lua:1062 sui_stats_windows.lua:2765
 msgid "Average per page"
 msgstr "Átlagosan oldalanként"
 
@@ -370,42 +386,42 @@ msgstr "Vissza"
 msgid "Back Button"
 msgstr "Vissza gomb"
 
-#: sui_menu.lua:3011 sui_menu.lua:3020 sui_menu.lua:3026
-#: desktop_modules/module_collections.lua:913
+#: sui_menu.lua:3062 sui_menu.lua:3071 sui_menu.lua:3077
+#: desktop_modules/module_collections.lua:929
 msgid "Badge"
 msgstr "Jelvény"
 
-#: sui_menu.lua:2739
+#: sui_menu.lua:2790
 msgid "Badge Size"
 msgstr "Jelvény méret"
 
-#: sui_menu.lua:2727
+#: sui_menu.lua:2778
 msgid "Badges"
 msgstr "Jelvények"
 
-#: sui_foldercovers.lua:259 sui_menu.lua:2944 sui_menu.lua:2953
-#: sui_menu.lua:2959
+#: sui_foldercovers.lua:293 sui_menu.lua:2995 sui_menu.lua:3004
+#: sui_menu.lua:3010
 msgid "Banner"
 msgstr "Haladási sáv"
 
-#: sui_menu.lua:545 sui_menu.lua:1292
+#: sui_menu.lua:552 sui_menu.lua:1299
 msgid "Bar Size"
 msgstr "Sáv méret"
 
-#: sui_menu.lua:1250
+#: sui_menu.lua:1257
 msgid "Bar Style"
 msgstr "Sáv stílus"
 
-#: sui_menu.lua:1277 sui_quicksettings_bar.lua:1283
+#: sui_menu.lua:1284 sui_quicksettings_bar.lua:1317
 #: desktop_modules/module_quick_actions.lua:595
 msgid "Bare"
 msgstr "Minimalista"
 
-#: sui_menu.lua:4303 sui_settings_window.lua:250 sui_settings_window.lua:844
+#: sui_menu.lua:4464 sui_settings_window.lua:258 sui_settings_window.lua:852
 msgid "Bars"
 msgstr "Sávok"
 
-#: sui_config.lua:161
+#: sui_config.lua:167
 msgid "Battery"
 msgstr "Akkumulátor"
 
@@ -413,35 +429,39 @@ msgstr "Akkumulátor"
 msgid "Battery Spacing"
 msgstr "Akkumulátor térköz"
 
-#: sui_menu.lua:2574 sui_settings_window.lua:322 sui_settings_window.lua:855
+#: sui_menu.lua:2625 sui_settings_window.lua:330 sui_settings_window.lua:863
 msgid "Behaviour"
 msgstr "Viselkedés"
 
-#: desktop_modules/module_coverdeck.lua:879
-msgid "Below"
-msgstr "Alatta"
-
-#: sui_stats_windows.lua:1845 sui_stats_windows.lua:1868
+#: sui_stats_windows.lua:2147 sui_stats_windows.lua:2170
 msgid "Best streak"
 msgstr "Legjobb széria"
 
-#: sui_quickactions.lua:1403
+#: sui_quickactions.lua:1868
 msgid "Book Info"
 msgstr "Könyv infó"
 
-#: sui_settings_window.lua:258
+#: sui_stats_windows.lua:2814
+msgid "Book Statistics"
+msgstr "Könyv statisztikák"
+
+#: main.lua:1110
+msgid "Book statistics"
+msgstr "Könyv statisztikák"
+
+#: sui_settings_window.lua:266
 msgid "Book-browser settings"
 msgstr "Könyv böngésző beállításai"
 
-#: sui_bottombar.lua:1419
+#: sui_quickactions.lua:413
 msgid "Bookmark browser"
 msgstr "Könyvjelző böngésző"
 
-#: sui_bottombar.lua:1340
+#: sui_quickactions.lua:352
 msgid "Bookmark browser not available."
 msgstr "Könyvjelző böngésző nem elérhető."
 
-#: sui_quickactions.lua:301 sui_config.lua:118
+#: sui_quickactions.lua:674 sui_config.lua:122
 msgid "Bookmarks"
 msgstr "Könyvjelzők"
 
@@ -449,28 +469,28 @@ msgstr "Könyvjelzők"
 msgid "Books to read in %s:"
 msgstr "Könyvek elolvasva ekkor %s:"
 
-#: sui_menu.lua:2762 sui_menu.lua:2769 sui_menu.lua:2784 sui_menu.lua:3131
-#: sui_menu.lua:3150 desktop_modules/module_collections.lua:934
+#: sui_menu.lua:2813 sui_menu.lua:2820 sui_menu.lua:2835 sui_menu.lua:3226
+#: sui_menu.lua:3245 desktop_modules/module_collections.lua:950
 msgid "Bottom"
 msgstr "Alul"
 
-#: sui_bottombar.lua:887
+#: sui_bottombar.lua:890
 msgid "Bottom Bar"
 msgstr "Alsó sáv"
 
-#: sui_style.lua:1767
+#: sui_style.lua:1781
 msgid "Bottom Bar — Background"
 msgstr "Alsó sáv — Háttér"
 
-#: sui_style.lua:1770
+#: sui_style.lua:1784
 msgid "Bottom Bar — Text and Icons"
 msgstr "Állapotsáv — Szöveg és Ikonok"
 
-#: sui_menu.lua:1349 sui_menu.lua:1350
+#: sui_menu.lua:1356 sui_menu.lua:1357
 msgid "Bottom Margin"
 msgstr "Alsó margó"
 
-#: sui_quickactions.lua:343 sui_config.lua:120 sui_config.lua:160
+#: sui_quickactions.lua:712 sui_config.lua:124 sui_config.lua:166
 msgid "Brightness"
 msgstr "Fényerő"
 
@@ -494,15 +514,15 @@ msgstr "Böngészés gomb (sorozat)"
 msgid "Browse Button (tags)"
 msgstr "Böngészés gomb (címkék)"
 
-#: sui_style.lua:1081
+#: sui_style.lua:1087
 msgid "Browse Icons"
 msgstr "Ikonok böngészése"
 
-#: sui_browsemeta.lua:442
+#: sui_browsemeta.lua:630
 msgid "Browse by"
 msgstr "Böngészés"
 
-#: sui_quickactions.lua:406 sui_quickactions.lua:424 sui_quickactions.lua:442
+#: sui_quickactions.lua:780 sui_quickactions.lua:798 sui_quickactions.lua:816
 msgid "Browse by Authors/Series/Tags not available."
 msgstr "Böngészés szerző/sorozat/címke alapján nem elérhető."
 
@@ -510,15 +530,15 @@ msgstr "Böngészés szerző/sorozat/címke alapján nem elérhető."
 msgid "Browse library"
 msgstr "Könyvtár böngészése"
 
-#: sui_quicksettings_bar.lua:1296 desktop_modules/module_quick_actions.lua:608
+#: sui_quicksettings_bar.lua:1330 desktop_modules/module_quick_actions.lua:608
 msgid "Button Background"
 msgstr "Gomb háttér"
 
-#: sui_menu.lua:1775
+#: sui_menu.lua:1782
 msgid "Button Size"
 msgstr "Gomb méret"
 
-#: sui_quicksettings_bar.lua:1260 desktop_modules/module_quick_actions.lua:572
+#: sui_quicksettings_bar.lua:1294 desktop_modules/module_quick_actions.lua:572
 msgid "Button Type"
 msgstr "Gomb típus"
 
@@ -534,25 +554,27 @@ msgstr "Sorozat által"
 msgid "By tags"
 msgstr "Címkék által"
 
-#: sui_quickactions.lua:867 sui_quickactions.lua:1146 sui_quickactions.lua:1267
-#: sui_quickactions.lua:1289 sui_quickactions.lua:1383
-#: sui_quickactions.lua:1651 sui_quickactions.lua:1721
-#: sui_quickactions.lua:1747 sui_quickactions.lua:1772
-#: sui_quickactions.lua:1790 sui_quickactions.lua:2056 sui_titlebar.lua:1000
-#: sui_foldercovers.lua:713 sui_foldercovers.lua:797 sui_foldercovers.lua:854
-#: sui_foldercovers.lua:1223 sui_config.lua:819 sui_config.lua:891
-#: sui_menu.lua:635 sui_menu.lua:900 sui_menu.lua:1030 sui_menu.lua:1307
-#: sui_menu.lua:2338 sui_menu.lua:2397 sui_menu.lua:2432 sui_menu.lua:2747
-#: sui_menu.lua:3777 sui_menu.lua:3811 sui_menu.lua:3840 sui_menu.lua:3857
-#: sui_menu.lua:3883 sui_menu.lua:3924 sui_menu.lua:3942 sui_menu.lua:3969
-#: sui_menu.lua:4210 sui_stats_windows.lua:410 sui_bottombar.lua:1444
-#: sui_browsemeta.lua:897 sui_browsemeta.lua:1005 sui_browsemeta.lua:1215
-#: sui_style.lua:1098 sui_style.lua:1794 sui_updater.lua:483
-#: sui_updater.lua:500 sui_presets.lua:810 sui_presets.lua:849
-#: sui_presets.lua:879 sui_presets.lua:896 sui_presets.lua:924
-#: sui_presets.lua:964 sui_presets.lua:982 sui_presets.lua:1011
-#: desktop_modules/module_quote.lua:1180
-#: desktop_modules/module_collections.lua:758
+#: sui_quickactions.lua:438 sui_quickactions.lua:1325 sui_quickactions.lua:1608
+#: sui_quickactions.lua:1732 sui_quickactions.lua:1754
+#: sui_quickactions.lua:1848 sui_quickactions.lua:2126
+#: sui_quickactions.lua:2197 sui_quickactions.lua:2223
+#: sui_quickactions.lua:2248 sui_quickactions.lua:2326
+#: sui_quickactions.lua:2350 sui_quickactions.lua:2625
+#: sui_quickactions.lua:2984 sui_titlebar.lua:1000 sui_foldercovers.lua:747
+#: sui_foldercovers.lua:831 sui_foldercovers.lua:888 sui_foldercovers.lua:1257
+#: sui_config.lua:852 sui_config.lua:924 sui_menu.lua:642 sui_menu.lua:907
+#: sui_menu.lua:1037 sui_menu.lua:1314 sui_menu.lua:2345 sui_menu.lua:2417
+#: sui_menu.lua:2454 sui_menu.lua:2798 sui_menu.lua:3159 sui_menu.lua:3895
+#: sui_menu.lua:3929 sui_menu.lua:3958 sui_menu.lua:3975 sui_menu.lua:4001
+#: sui_menu.lua:4042 sui_menu.lua:4060 sui_menu.lua:4087 sui_menu.lua:4244
+#: sui_menu.lua:4371 sui_stats_windows.lua:591 sui_stats_windows.lua:714
+#: sui_browsemeta.lua:1085 sui_browsemeta.lua:1193 sui_browsemeta.lua:1403
+#: sui_style.lua:1104 sui_style.lua:1808 sui_updater.lua:483
+#: sui_updater.lua:500 sui_presets.lua:818 sui_presets.lua:857
+#: sui_presets.lua:887 sui_presets.lua:904 sui_presets.lua:932
+#: sui_presets.lua:972 sui_presets.lua:990 sui_presets.lua:1019
+#: desktop_modules/module_quote.lua:1213
+#: desktop_modules/module_collections.lua:774
 #: desktop_modules/module_reading_goals.lua:391
 #: desktop_modules/module_reading_goals.lua:407
 #: desktop_modules/module_reading_goals.lua:424
@@ -561,25 +583,25 @@ msgstr "Címkék által"
 msgid "Cancel"
 msgstr "Mégse"
 
-#: desktop_modules/module_reading_stats.lua:671
+#: desktop_modules/module_reading_stats.lua:709
 msgid "Cards"
 msgstr "Kártyák"
 
-#: desktop_modules/module_reading_stats.lua:681
+#: desktop_modules/module_reading_stats.lua:719
 msgid "Cards - Transparent"
 msgstr "Kártya - Átlátszó"
 
-#: sui_menu.lua:695 sui_menu.lua:930 sui_menu.lua:3130 sui_menu.lua:3143
-#: desktop_modules/module_quote.lua:123 desktop_modules/module_quote.lua:1391
+#: sui_menu.lua:702 sui_menu.lua:937 sui_menu.lua:3225 sui_menu.lua:3238
+#: desktop_modules/module_quote.lua:126 desktop_modules/module_quote.lua:1427
 #: desktop_modules/module_action_list.lua:75
 #: desktop_modules/module_action_list.lua:597
 #: desktop_modules/module_reading_stats.lua:67
-#: desktop_modules/module_reading_stats.lua:727
+#: desktop_modules/module_reading_stats.lua:765
 #: desktop_modules/module_clock.lua:117 desktop_modules/module_clock.lua:863
 msgid "Center"
 msgstr "Középre"
 
-#: sui_menu.lua:4186
+#: sui_menu.lua:4347
 msgid "Check for Updates"
 msgstr "Frissítések keresése"
 
@@ -591,7 +613,7 @@ msgstr "Frissítések keresése…"
 msgid "Choose your initial layout"
 msgstr "Kezdő elrendezés választása"
 
-#: sui_config.lua:158 sui_presets.lua:131 desktop_modules/module_clock.lua:534
+#: sui_config.lua:164 sui_presets.lua:137 desktop_modules/module_clock.lua:534
 msgid "Clock"
 msgstr "Óra"
 
@@ -603,56 +625,56 @@ msgstr "Óra stílus"
 msgid "Close"
 msgstr "Bezárás"
 
-#: sui_menu.lua:2475
+#: sui_menu.lua:2499
 msgid "Closing Book Notice"
 msgstr "Könyv bezárás értesítő"
 
-#: main.lua:1447
+#: main.lua:1704
 msgid "Closing book…"
 msgstr "Könyv bezárása…"
 
-#: sui_quickactions.lua:1315
+#: sui_quickactions.lua:1780
 msgid "Codepoint out of valid Unicode range (0–10FFFF)."
 msgstr "A kódpont kívül esik az érvényes Unicode-tartományon (0–10FFFF)."
 
-#: sui_quickactions.lua:1723 sui_quickactions.lua:1784
+#: sui_quickactions.lua:2199 sui_quickactions.lua:2342
 msgid "Collection"
 msgstr "Gyűjtemény"
 
-#: sui_foldercovers.lua:740 sui_browsemeta.lua:937
+#: sui_foldercovers.lua:774 sui_browsemeta.lua:1125
 msgid "Collection \"%1\" created with %2 books."
 msgstr "„%1” gyűjtemény létrehozva %2 könyvvel."
 
-#: sui_foldercovers.lua:725 sui_browsemeta.lua:912
+#: sui_foldercovers.lua:759 sui_browsemeta.lua:1100
 msgid "Collection already exists: %1"
 msgstr "Gyűjtemény már létezik: %1"
 
-#: desktop_modules/module_collections.lua:719
-#: desktop_modules/module_collections.lua:725
+#: desktop_modules/module_collections.lua:735
+#: desktop_modules/module_collections.lua:741
 msgid "Collection is empty."
 msgstr "Gyűjtemény üres."
 
-#: sui_quickactions.lua:2134
+#: sui_quickactions.lua:2706
 msgid "Collection not available: %s"
 msgstr "Gyűjtemény nem elérhető: %s"
 
-#: sui_quickactions.lua:246 sui_quickactions.lua:1405 sui_config.lua:114
-#: sui_bottombar.lua:1430 desktop_modules/module_collections.lua:338
+#: sui_quickactions.lua:424 sui_quickactions.lua:610 sui_quickactions.lua:1870
+#: sui_config.lua:117 desktop_modules/module_collections.lua:338
 #: desktop_modules/module_collections.lua:339
 #: desktop_modules/module_collections.lua:359
-#: desktop_modules/module_collections.lua:770
-#: desktop_modules/module_collections.lua:790
-#: desktop_modules/module_collections.lua:799
-#: desktop_modules/module_collections.lua:825
-#: desktop_modules/module_collections.lua:893
+#: desktop_modules/module_collections.lua:786
+#: desktop_modules/module_collections.lua:806
+#: desktop_modules/module_collections.lua:815
+#: desktop_modules/module_collections.lua:841
+#: desktop_modules/module_collections.lua:909
 msgid "Collections"
 msgstr "Gyűjtemények"
 
-#: sui_patches.lua:1074
+#: sui_patches.lua:1127
 msgid "Collections (%1)"
 msgstr "Gyűjtemények (%1)"
 
-#: sui_quickactions.lua:253
+#: sui_quickactions.lua:617
 msgid "Collections not available."
 msgstr "Gyűjtemények nem elérhető."
 
@@ -660,112 +682,116 @@ msgstr "Gyűjtemények nem elérhető."
 msgid "Collections: Back Button"
 msgstr "Gyűjtemények: Vissza gomb"
 
-#: sui_menu.lua:2807 sui_menu.lua:2861 sui_menu.lua:2915 sui_menu.lua:2982
-#: sui_menu.lua:3049
+#: sui_menu.lua:2858 sui_menu.lua:2912 sui_menu.lua:2966 sui_menu.lua:3033
+#: sui_menu.lua:3100 sui_menu.lua:3254
 msgid "Color"
 msgstr "Szín"
 
-#: sui_menu.lua:1778 desktop_modules/module_reading_goals.lua:1045
-#: desktop_modules/module_currently.lua:1524
+#: sui_menu.lua:1785 desktop_modules/module_reading_goals.lua:1059
+#: desktop_modules/module_currently.lua:1535
 msgid "Compact"
 msgstr "Kompakt"
 
-#: sui_quickactions.lua:1266
+#: sui_quickactions.lua:1731
 msgid "Confirm"
 msgstr "Megerősít"
 
-#: sui_quickactions.lua:270 sui_config.lua:116 sui_onboarding.lua:249
+#: sui_quickactions.lua:643 sui_config.lua:120 sui_onboarding.lua:249
 #: sui_onboarding.lua:255 sui_onboarding.lua:261
 msgid "Continue"
 msgstr "Folytatás"
 
-#: sui_style.lua:1723
+#: sui_style.lua:1737
 msgid "Cool Mist"
 msgstr "Hideg köd"
 
-#: sui_style.lua:2035
+#: sui_style.lua:2049
 msgid "Could not determine packs folder"
 msgstr "Nem állapítható meg a csomag mappa"
 
-#: sui_stats_windows.lua:145
+#: sui_stats_windows.lua:146
 msgid "Could not open statistics database."
 msgstr "Nem nyitható meg a statisztika adatbázis."
 
-#: sui_style.lua:2037
+#: sui_style.lua:2051
 msgid "Could not open zip (invalid format or corrupted)"
 msgstr "Nem lehet megnyitni a zip fájlt (érvénytelen formátum vagy sérült)"
 
-#: sui_presets.lua:201 sui_presets.lua:223
-#: desktop_modules/module_coverdeck.lua:313
+#: sui_presets.lua:207 sui_presets.lua:230
+#: desktop_modules/module_coverdeck.lua:371
 msgid "Cover Deck"
 msgstr "Borítópakli"
 
-#: sui_menu.lua:2679
+#: sui_menu.lua:2730
 msgid "Cover Settings"
 msgstr "Borító beállítások"
 
-#: desktop_modules/module_collections.lua:884
-#: desktop_modules/module_collections.lua:886
+#: desktop_modules/module_collections.lua:900
+#: desktop_modules/module_collections.lua:902
 #: desktop_modules/module_tbr.lua:746 desktop_modules/module_tbr.lua:748
 msgid "Cover Size"
 msgstr "Borító méret"
 
-#: desktop_modules/module_currently.lua:1027
-#: desktop_modules/module_currently.lua:1029
+#: desktop_modules/module_currently.lua:1038
+#: desktop_modules/module_currently.lua:1040
 msgid "Cover Spacing"
 msgstr "Borító térköz"
 
-#: desktop_modules/module_collections.lua:762
+#: desktop_modules/module_collections.lua:778
 msgid "Cover for \"%s\""
 msgstr "Borító ehhez: „%s”"
 
-#: desktop_modules/module_recent.lua:322 desktop_modules/module_recent.lua:324
-#: desktop_modules/module_coverdeck.lua:825
-#: desktop_modules/module_coverdeck.lua:826
+#: desktop_modules/module_recent.lua:515 desktop_modules/module_recent.lua:517
+#: desktop_modules/module_coverdeck.lua:1017
+#: desktop_modules/module_coverdeck.lua:1018
 #: desktop_modules/module_new_books.lua:339
 #: desktop_modules/module_new_books.lua:341
-#: desktop_modules/module_currently.lua:1000
-#: desktop_modules/module_currently.lua:1001
+#: desktop_modules/module_currently.lua:1011
+#: desktop_modules/module_currently.lua:1012
 msgid "Cover size"
 msgstr "Borító méret"
 
-#: sui_foldercovers.lua:718 sui_browsemeta.lua:904
+#: desktop_modules/module_coverdeck.lua:89
+msgid "Covers"
+msgstr "Borítók"
+
+#: sui_foldercovers.lua:752 sui_browsemeta.lua:1092
 msgid "Create"
 msgstr "Létrehozás"
 
-#: sui_quickactions.lua:899 sui_quickactions.lua:1969
+#: sui_quickactions.lua:1357 sui_quickactions.lua:2532
 msgid "Create Quick Action"
 msgstr "Gyors művelet létrehozása"
 
-#: sui_foldercovers.lua:931 sui_foldercovers.lua:1215 sui_browsemeta.lua:1207
+#: sui_foldercovers.lua:965 sui_foldercovers.lua:1249 sui_browsemeta.lua:1395
 msgid "Create collection"
 msgstr "Gyűjtemény létrehozása"
 
-#: sui_stats_windows.lua:1843 sui_stats_windows.lua:1866
+#: sui_stats_windows.lua:2145 sui_stats_windows.lua:2168
 msgid "Current streak"
 msgstr "Jelenlegi széria"
 
-#: sui_presets.lua:131 sui_presets.lua:166
+#: sui_presets.lua:137 sui_presets.lua:172
 #: desktop_modules/module_currently.lua:285
 #: desktop_modules/module_currently.lua:286
 #: desktop_modules/module_currently.lua:408
-#: desktop_modules/module_currently.lua:1466
+#: desktop_modules/module_currently.lua:1477
 msgid "Currently Reading"
 msgstr "Jelenleg olvasott"
 
-#: sui_config.lua:1251
+#: sui_config.lua:1302
 msgid "Custom"
 msgstr "Egyedi"
 
-#: sui_quickactions.lua:1125 sui_quickactions.lua:1128
+#: sui_quickactions.lua:1587 sui_quickactions.lua:1590
 msgid "Custom Actions"
 msgstr "Egyedi műveletek"
 
-#: desktop_modules/module_quote.lua:1327
+#: desktop_modules/module_quote.lua:1363
 msgid "Custom File"
 msgstr "Egyedi fájl"
 
-#: sui_config.lua:164 sui_menu.lua:627 sui_menu.lua:893
+#: sui_config.lua:170 sui_menu.lua:634 sui_menu.lua:900
 msgid "Custom Text"
 msgstr "Egyedi szöveg"
 
@@ -777,14 +803,14 @@ msgstr "Egyedi háttérképek és ikonok"
 msgid "Customize even more"
 msgstr "Még több személyre szabás"
 
-#: sui_stats_windows.lua:2064
+#: sui_stats_windows.lua:2390
 msgid "DAY STREAK"
 msgstr "NAPI SZÉRIA"
 
-#: desktop_modules/module_reading_goals.lua:861
-#: desktop_modules/module_reading_goals.lua:889
-#: desktop_modules/module_reading_goals.lua:926
-#: desktop_modules/module_reading_goals.lua:971
+#: desktop_modules/module_reading_goals.lua:875
+#: desktop_modules/module_reading_goals.lua:903
+#: desktop_modules/module_reading_goals.lua:940
+#: desktop_modules/module_reading_goals.lua:985
 msgid "Daily Goal"
 msgstr "Napi cél"
 
@@ -800,14 +826,14 @@ msgstr "Napi átlag — Oldalak"
 msgid "Daily avg — Time"
 msgstr "Napi átlag — Idő"
 
-#: sui_menu.lua:2809 sui_menu.lua:2814 sui_menu.lua:2863 sui_menu.lua:2868
-#: sui_menu.lua:2917 sui_menu.lua:2922 sui_menu.lua:2984 sui_menu.lua:2989
-#: sui_menu.lua:3051 sui_menu.lua:3056
-#: desktop_modules/module_collections.lua:943
+#: sui_menu.lua:2860 sui_menu.lua:2865 sui_menu.lua:2914 sui_menu.lua:2919
+#: sui_menu.lua:2968 sui_menu.lua:2973 sui_menu.lua:3035 sui_menu.lua:3040
+#: sui_menu.lua:3102 sui_menu.lua:3107 sui_menu.lua:3256 sui_menu.lua:3268
+#: desktop_modules/module_collections.lua:959
 msgid "Dark"
 msgstr "Sötét"
 
-#: sui_style.lua:1709
+#: sui_style.lua:1723
 msgid "Dark Slate"
 msgstr "Palaszürke"
 
@@ -815,11 +841,19 @@ msgstr "Palaszürke"
 msgid "Date Spacing"
 msgstr "Dátum térköz"
 
-#: sui_stats_windows.lua:565
+#: sui_stats_windows.lua:669
+msgid "Date finished"
+msgstr "Befejezés dátuma"
+
+#: sui_stats_windows.lua:662
+msgid "Date started"
+msgstr "Kezdés dátuma"
+
+#: sui_stats_windows.lua:880 sui_stats_windows.lua:2612
 msgid "Days"
 msgstr "Nap"
 
-#: desktop_modules/module_coverdeck.lua:78
+#: desktop_modules/module_coverdeck.lua:79
 #: desktop_modules/module_currently.lua:250
 msgid "Days of reading"
 msgstr "Nap olvasva"
@@ -828,32 +862,36 @@ msgstr "Nap olvasva"
 msgid "December"
 msgstr "December"
 
-#: sui_quickactions.lua:1344 sui_quickactions.lua:1594 sui_titlebar.lua:996
-#: sui_menu.lua:444 sui_menu.lua:573 sui_menu.lua:1253 sui_menu.lua:1779
-#: desktop_modules/module_reading_goals.lua:1037
-#: desktop_modules/module_currently.lua:1514
+#: sui_quickactions.lua:1809 sui_quickactions.lua:2066 sui_titlebar.lua:996
+#: sui_menu.lua:451 sui_menu.lua:580 sui_menu.lua:1260 sui_menu.lua:1786
+#: desktop_modules/module_reading_goals.lua:1051
+#: desktop_modules/module_currently.lua:1525
 msgid "Default"
 msgstr "Alapértelmezett"
 
-#: sui_quickactions.lua:1595
+#: sui_quickactions.lua:2067
 msgid "Default (Folder)"
 msgstr "Alap (Mappa)"
 
-#: sui_quickactions.lua:1596
+#: sui_quickactions.lua:2068
 msgid "Default (Plugin)"
 msgstr "Alap (Bővítmény)"
 
-#: sui_quickactions.lua:1597
+#: sui_quickactions.lua:2069
 msgid "Default (System)"
 msgstr "Alap (Rendszer)"
 
-#: desktop_modules/module_quote.lua:1263
+#: desktop_modules/module_quote.lua:1299
 msgid "Default Quotes"
 msgstr "Alap idézetek"
 
 #: sui_style.lua:171
 msgid "Default: Folder"
 msgstr "Alap: Mappa"
+
+#: sui_style.lua:189
+msgid "Default: Group"
+msgstr "Alap: Csoport"
 
 #: sui_style.lua:177
 msgid "Default: Plugin"
@@ -863,26 +901,27 @@ msgstr "Alap: Bővítmény"
 msgid "Default: System"
 msgstr "Alap: Rendszer"
 
-#: sui_quickactions.lua:866 sui_quickactions.lua:2050 sui_quickactions.lua:2055
-#: sui_menu.lua:3879 sui_menu.lua:3882 sui_menu.lua:3923 sui_window.lua:1507
-#: sui_window.lua:2348 sui_presets.lua:920 sui_presets.lua:923
-#: sui_presets.lua:963 sui_settings_window.lua:344 sui_settings_window.lua:460
+#: sui_quickactions.lua:1324 sui_quickactions.lua:2619
+#: sui_quickactions.lua:2624 sui_menu.lua:3997 sui_menu.lua:4000
+#: sui_menu.lua:4041 sui_window.lua:1603 sui_window.lua:2444
+#: sui_presets.lua:928 sui_presets.lua:931 sui_presets.lua:971
+#: sui_settings_window.lua:352 sui_settings_window.lua:468
 msgid "Delete"
 msgstr "Törlés"
 
-#: sui_menu.lua:4209
+#: sui_menu.lua:4370
 msgid "Delete Settings"
 msgstr "Beállítások törlése"
 
-#: sui_menu.lua:3881 sui_menu.lua:3922 sui_presets.lua:922 sui_presets.lua:962
+#: sui_menu.lua:3999 sui_menu.lua:4040 sui_presets.lua:930 sui_presets.lua:970
 msgid "Delete preset \"%s\"?"
 msgstr "„%s” sablon törlése?"
 
-#: sui_quickactions.lua:865 sui_quickactions.lua:2054
+#: sui_quickactions.lua:1323 sui_quickactions.lua:2623
 msgid "Delete quick action \"%s\"?"
 msgstr "„%s” gyors művelet törlése?"
 
-#: sui_quickactions.lua:1408
+#: sui_quickactions.lua:1873
 msgid "Dictionary Lookup"
 msgstr "Szótár keresés"
 
@@ -890,27 +929,27 @@ msgstr "Szótár keresés"
 msgid "Digital"
 msgstr "Digitális"
 
-#: sui_menu.lua:2416
+#: sui_menu.lua:2438
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
 msgstr ""
 "Előbb kapcsold ki a „Méretezés rögzítése” opciót, hogy egyedi méretezést "
 "állíthass be."
 
-#: sui_config.lua:803
+#: sui_config.lua:836
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
 msgstr ""
 "Előbb kapcsold ki a „Méretezés rögzítése” opciót, hogy modulonkénti "
 "méretezést állíthass be."
 
-#: sui_config.lua:162
+#: sui_config.lua:168
 msgid "Disk Usage"
 msgstr "Lemezhasználat"
 
-#: sui_quickactions.lua:2102
+#: sui_quickactions.lua:2674
 msgid "Dispatcher not available."
 msgstr "Kezelő nem elérhető."
 
-#: sui_menu.lua:3308
+#: sui_menu.lua:3426
 msgid "Display"
 msgstr "Megjelenés"
 
@@ -918,7 +957,11 @@ msgstr "Megjelenés"
 msgid "Do something"
 msgstr "Csinálj valamit"
 
-#: sui_menu.lua:481
+#: sui_quickactions.lua:2317
+msgid "Done"
+msgstr "Kész"
+
+#: sui_menu.lua:488
 msgid "Dot Pager"
 msgstr "Pont lapozó"
 
@@ -938,19 +981,19 @@ msgstr "Letöltési hiba: "
 msgid "Downloading Simple UI %s…"
 msgstr "SimpleUI letöltése %s…"
 
-#: sui_quickactions.lua:2039
+#: sui_quickactions.lua:2608
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: sui_menu.lua:619 sui_menu.lua:621 sui_menu.lua:887
+#: sui_menu.lua:626 sui_menu.lua:628 sui_menu.lua:894
 msgid "Edit Custom Text"
 msgstr "Egyedi szöveg szerkesztése"
 
-#: sui_menu.lua:2139 sui_settings_window.lua:304
+#: sui_menu.lua:2146 sui_settings_window.lua:312
 msgid "Edit Layout"
 msgstr "Elrendezés szerkesztése"
 
-#: sui_quickactions.lua:1527
+#: sui_quickactions.lua:1992
 msgid "Edit Quick Action"
 msgstr "Gyors művelet szerkesztése"
 
@@ -966,49 +1009,49 @@ msgstr "Tizennyolc"
 msgid "Eleven"
 msgstr "Tizenegy"
 
-#: sui_menu.lua:880
+#: sui_menu.lua:887
 msgid "Empty"
 msgstr "Üres"
 
-#: sui_quickactions.lua:407 sui_quickactions.lua:425 sui_quickactions.lua:443
+#: sui_quickactions.lua:781 sui_quickactions.lua:799 sui_quickactions.lua:817
 msgid "Enable 'Browse by Author / Series / Tags' in the library menu first."
 msgstr ""
 "Engedélyezd a „Böngészés szerző / sorozat / címke alapján” opciót a könyvtár "
 "menüben előbb."
 
-#: sui_menu.lua:2630
+#: sui_menu.lua:2681
 msgid "Enable Browse by Author / Series / Tags"
 msgstr "Böngészés szerző / sorozat / címke alapján"
 
-#: sui_menu.lua:2614
+#: sui_menu.lua:2665
 msgid "Enable Library Custom Covers"
 msgstr "Egyedi borító képek engedélyezése"
 
-#: sui_menu.lua:1093
+#: sui_menu.lua:1100
 msgid "Enable Navigation Bar"
 msgstr "Navigációs sáv engedélyezése"
 
-#: sui_quicksettings_bar.lua:1117
+#: sui_quicksettings_bar.lua:1151
 msgid "Enable Quick Settings Bar"
 msgstr "Gyorsmenü sáv engedélyezése"
 
-#: sui_menu.lua:827
+#: sui_menu.lua:834
 msgid "Enable Status Bar"
 msgstr "Állapotsáv engedélyezése"
 
-#: sui_menu.lua:1729
+#: sui_menu.lua:1736
 msgid "Enable Title Bar"
 msgstr "Címsor engedélyezése"
 
-#: sui_menu.lua:2187
+#: sui_menu.lua:2194
 msgid "Enable Wallpaper"
 msgstr "Háttérkép engedélyezése"
 
-#: sui_style.lua:1458
+#: sui_style.lua:1472
 msgid "Enable custom UI font"
 msgstr "Egyedi betűtípus engedélyezése"
 
-#: sui_style.lua:1791
+#: sui_style.lua:1805
 msgid ""
 "Enter a hex color (#RRGGBB). On greyscale e-ink the perceived brightness is "
 "used."
@@ -1016,7 +1059,7 @@ msgstr ""
 "Hex szín megadása (#RRGGBB). Szürkeárnyalatos e-ink kijelzőn a érzékelt "
 "világosság lesz használva."
 
-#: sui_quickactions.lua:1286
+#: sui_quickactions.lua:1751
 msgid ""
 "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\n"
 "You can look up codes with wakamaifondue.com using the file:\n"
@@ -1029,7 +1072,7 @@ msgstr ""
 "  /koreader/fonts/nerdfonts/symbols.ttf\n"
 "Hagyd üresen és nyomj Okét a Nerd Font ikon eltávolításához."
 
-#: sui_menu.lua:3640
+#: sui_menu.lua:3758
 msgid "Error applying pack:"
 msgstr "Hiba csomag alkalmazásakor:"
 
@@ -1041,31 +1084,31 @@ msgstr "Hiba frissítések keresése közben."
 msgid "Error checking for updates: "
 msgstr "Hiba frissítések keresése közben: "
 
-#: sui_menu.lua:4061 sui_presets.lua:1101
+#: sui_menu.lua:4179 sui_presets.lua:1109
 msgid "Error exporting preset: "
 msgstr "Hiba sablon exportálásakor: "
 
-#: sui_style.lua:2084
+#: sui_style.lua:2098
 msgid "Error extracting zip: "
 msgstr "Hiba zip kibontásakor: "
 
-#: sui_menu.lua:4028 sui_presets.lua:1069
+#: sui_menu.lua:4146 sui_presets.lua:1077
 msgid "Error importing preset: "
 msgstr "Hiba sablon importálásakor: "
 
-#: desktop_modules/module_reading_goals.lua:755
+#: desktop_modules/module_reading_goals.lua:757
 msgid "Error in Reading Goals: check crash.log"
 msgstr "Hiba az Olvasási célban: ellenőrzés crash.log-ban"
 
-#: sui_menu.lua:3601
+#: sui_menu.lua:3719
 msgid "Error installing pack:"
 msgstr "Hiba csomag telepítésekor:"
 
-#: sui_menu.lua:4044 sui_presets.lua:1085
+#: sui_menu.lua:4162 sui_presets.lua:1093
 msgid "Export preset"
 msgstr "Sablon exportálása"
 
-#: sui_menu.lua:549
+#: sui_menu.lua:556
 msgid "Extra Small"
 msgstr "Nagyon kicsi"
 
@@ -1073,11 +1116,27 @@ msgstr "Nagyon kicsi"
 msgid "Extraction error: "
 msgstr "Kibontási hiba: "
 
-#: sui_menu.lua:4202
+#: sui_menu.lua:4363
 msgid "Factory Reset"
 msgstr "Gyári visszaállítás"
 
-#: sui_menu.lua:2331
+#: sui_menu.lua:3135
+msgid "Fade Finished Books"
+msgstr "Befejezett könyvek elhalványítása"
+
+#: sui_menu.lua:3151
+msgid "Fade Intensity"
+msgstr "Elhalványítás erőssége"
+
+#: sui_menu.lua:3152
+msgid ""
+"Fades finished book covers towards white.\n"
+"50% is the default."
+msgstr ""
+"Befejezett könyvek elhalványításának mértéke.\n"
+"100% az alapértelmezett."
+
+#: sui_menu.lua:2338
 msgid ""
 "Fades the wallpaper towards white to improve text readability.\n"
 "0% is the default (no lightening)."
@@ -1085,11 +1144,11 @@ msgstr ""
 "Kifehéríti a háttérképet, hogy javuljon az olvashatóság.\n"
 "0% az alapértelmezett (nincs világosítás)"
 
-#: sui_quickactions.lua:288 sui_quickactions.lua:1404 sui_config.lua:117
+#: sui_quickactions.lua:661 sui_quickactions.lua:1869 sui_config.lua:121
 msgid "Favorites"
 msgstr "Kedvencek"
 
-#: sui_quickactions.lua:295
+#: sui_quickactions.lua:668
 msgid "Favorites not available."
 msgstr "Kedvencek nem elérhető."
 
@@ -1097,7 +1156,7 @@ msgstr "Kedvencek nem elérhető."
 msgid "February"
 msgstr "Február"
 
-#: sui_bottombar.lua:1370
+#: sui_quickactions.lua:368
 msgid "Fetching bookmarks\\xe2\\x80\\xa6"
 msgstr "Könyvjelzők begyűjtése\\xe2\\x80\\xa6"
 
@@ -1109,57 +1168,65 @@ msgstr "Tizenöt"
 msgid "Fifty"
 msgstr "Ötven"
 
-#: sui_quickactions.lua:1406
+#: sui_quickactions.lua:1871
 msgid "File Search"
 msgstr "Fájl keresés"
 
-#: sui_style.lua:2031
+#: sui_style.lua:2045
 msgid "File not found: "
 msgstr "Fájl nem található: "
+
+#: sui_menu.lua:3128
+msgid "Finished Books"
+msgstr "Befejezett könyvek"
 
 #: desktop_modules/module_clock.lua:196 desktop_modules/module_clock.lua:247
 msgid "Five"
 msgstr "Öt"
 
-#: sui_menu.lua:4104 sui_quicksettings_bar.lua:1320
-#: desktop_modules/module_reading_stats.lua:691
+#: desktop_modules/module_quote.lua:1442
+msgid "Fixed Height"
+msgstr "Fix magasság"
+
+#: sui_menu.lua:4265 sui_quicksettings_bar.lua:1354
+#: desktop_modules/module_reading_stats.lua:729
 #: desktop_modules/module_quick_actions.lua:632
 msgid "Flat"
 msgstr "Lapos"
 
-#: sui_quickactions.lua:1782
+#: sui_quickactions.lua:2340
 msgid "Folder"
 msgstr "Mappa"
 
-#: sui_menu.lua:2684
+#: sui_menu.lua:2735
 msgid "Folder Cover Type"
 msgstr "Mappa borító típus"
 
-#: sui_style.lua:1084
+#: sui_style.lua:1090
 msgid "Folder Covers"
 msgstr "Mappa borító"
 
-#: sui_style.lua:190
+#: sui_style.lua:196
 msgid "Folder Covers: Empty Folder"
 msgstr "Mappa borítók: Üres mappák"
 
-#: sui_menu.lua:3077
+#: sui_menu.lua:3172
 msgid "Folder Name"
 msgstr "Mappa név"
 
-#: sui_menu.lua:3163
+#: sui_menu.lua:3281
 msgid "Folder Name Text Size"
 msgstr "Mappa név mérete"
 
-#: sui_quickactions.lua:1407
+#: sui_quickactions.lua:1872
 msgid "Folder Shortcuts"
 msgstr "Mappahivatkozások"
 
-#: sui_foldercovers.lua:801 sui_foldercovers.lua:858 sui_browsemeta.lua:1009
+#: sui_foldercovers.lua:835 sui_foldercovers.lua:892 sui_browsemeta.lua:1197
 msgid "Folder cover"
 msgstr "Mappa borító"
 
-#: sui_window.lua:1764 sui_window.lua:1769
+#: sui_window.lua:1860 sui_window.lua:1865
 msgid "Font weight"
 msgstr "Betűvastagság"
 
@@ -1175,15 +1242,15 @@ msgstr "Négy"
 msgid "Fourteen"
 msgstr "Tizennégy"
 
-#: desktop_modules/module_collections.lua:895
-#: desktop_modules/module_recent.lua:350 desktop_modules/module_tbr.lua:757
-#: desktop_modules/module_reading_goals.lua:1057
+#: desktop_modules/module_collections.lua:911
+#: desktop_modules/module_recent.lua:543 desktop_modules/module_tbr.lua:757
+#: desktop_modules/module_reading_goals.lua:1071
 #: desktop_modules/module_new_books.lua:360
-#: desktop_modules/module_currently.lua:1468
+#: desktop_modules/module_currently.lua:1479
 msgid "Frame"
 msgstr "Keret"
 
-#: sui_menu.lua:1265 sui_menu.lua:4115
+#: sui_menu.lua:1272 sui_menu.lua:4276
 msgid "Framed"
 msgstr "Bekeretezett"
 
@@ -1191,31 +1258,49 @@ msgstr "Bekeretezett"
 msgid "Friday"
 msgstr "Péntek"
 
-#: sui_quicksettings_bar.lua:392 sui_quicksettings_bar.lua:414
+#: sui_quicksettings_bar.lua:396 sui_quicksettings_bar.lua:418
 msgid "Frontlight"
 msgstr "Megvilágítás"
 
-#: sui_quicksettings_bar.lua:1215
+#: sui_quicksettings_bar.lua:1249
 msgid "Frontlight Slider"
 msgstr "Megvilágítás csúszka"
 
-#: sui_bottombar.lua:1798
+#: sui_quickactions.lua:338
 msgid "Frontlight not available on this device."
 msgstr "Kijelzővilágítás nem elérhető ezen az eszközön."
 
-#: sui_menu.lua:2492
+#: sui_menu.lua:2516
 msgid "Gesture Only"
 msgstr "Csak gesztusra"
 
-#: sui_settings_window.lua:275
+#: sui_menu.lua:4229 sui_menu.lua:4236
+msgid "Global Text Size"
+msgstr "Globális szöveg méret"
+
+#: sui_settings_window.lua:283
 msgid "Global custom quick actions"
 msgstr "Globális egyedi gyors műveletek"
 
-#: sui_settings_window.lua:276
+#: sui_settings_window.lua:284
 msgid "Global custom quick actions  (%d/%d)"
 msgstr "Globális egyedi gyors műveletek  (%d/%d)"
 
-#: sui_menu.lua:2390
+#: sui_menu.lua:4237
+msgid ""
+"Global scale applied to all of KOReader's interface text — menus, dialogs, "
+"titles, and Simple UI. It does not change the book's reading font size, "
+"which has its own setting.\n"
+"100% is the default size. Useful when a chosen UI font (see UI Font above) "
+"renders smaller or larger than usual."
+msgstr ""
+"Globális méretezés ami érvényes a KOReader felületére — menük, ablakok, "
+"szövegek és a Simple UI-ra is. A könyv betűmérete nem változik, annak saját "
+"beállítása van.\n"
+"100% az alapértelmezett. Hasznos ha a kiválasztott felhasználói felület "
+"betűtípus túl kicsi, vagy túl nagy."
+
+#: sui_menu.lua:2410
 msgid ""
 "Global scale for all modules.\n"
 "Individual overrides in Module Settings take precedence.\n"
@@ -1231,17 +1316,29 @@ msgstr ""
 "Beállítások > Kezdőképernyő menü segítségével bármikor szerkeszthető az "
 "elrendezés."
 
-#: desktop_modules/module_reading_goals.lua:818
-#: desktop_modules/module_reading_goals.lua:883
+#: desktop_modules/module_reading_goals.lua:832
 #: desktop_modules/module_reading_goals.lua:897
+#: desktop_modules/module_reading_goals.lua:911
 msgid "Goals"
 msgstr "Célok"
 
-#: sui_menu.lua:2666
+#: sui_quickactions.lua:2003 sui_quickactions.lua:2323
+msgid "Group"
+msgstr "Csoport"
+
+#: sui_menu.lua:2717
 msgid "Group by Book Series"
 msgstr "Csoportosítás könyvsorozat alapján"
 
-#: sui_menu.lua:1300
+#: sui_quickactions.lua:2348
+msgid "Group of Quick Actions"
+msgstr "Gyors műveletek csoportja"
+
+#: sui_quickactions.lua:2330
+msgid "Group: select actions"
+msgstr "Csoport: műveletek kiválasztása"
+
+#: sui_menu.lua:1307
 msgid ""
 "Height of the bottom navigation bar.\n"
 "100% is the default size."
@@ -1257,7 +1354,7 @@ msgstr ""
 "Térkitöltő magassága.\n"
 "100% az alapértelmezett."
 
-#: sui_menu.lua:1023
+#: sui_menu.lua:1030
 msgid ""
 "Height of the top status bar.\n"
 "100% is the default size."
@@ -1265,32 +1362,32 @@ msgstr ""
 "Az alsó felső állapotsáv magassága.\n"
 "100% az alapértelmezett."
 
-#: sui_menu.lua:465 sui_menu.lua:524 sui_menu.lua:2761 sui_menu.lua:2768
-#: sui_menu.lua:2795 sui_menu.lua:2835 sui_menu.lua:2841 sui_menu.lua:2852
-#: sui_menu.lua:2889 sui_menu.lua:2895 sui_menu.lua:2906 sui_menu.lua:3083
-#: sui_menu.lua:3114 desktop_modules/module_collections.lua:916
+#: sui_menu.lua:472 sui_menu.lua:531 sui_menu.lua:2812 sui_menu.lua:2819
+#: sui_menu.lua:2846 sui_menu.lua:2886 sui_menu.lua:2892 sui_menu.lua:2903
+#: sui_menu.lua:2940 sui_menu.lua:2946 sui_menu.lua:2957 sui_menu.lua:3178
+#: sui_menu.lua:3209 desktop_modules/module_collections.lua:932
 msgid "Hidden"
 msgstr "Rejtett"
 
-#: sui_menu.lua:3265
+#: sui_menu.lua:3383
 msgid "Hide Folder Book Spine"
 msgstr "Mappa könyvgerinc elrejtése"
 
-#: sui_menu.lua:1932 sui_quicksettings_bar.lua:1248
+#: sui_menu.lua:1939 sui_quicksettings_bar.lua:1282
 #: desktop_modules/module_quick_actions.lua:387
 #: desktop_modules/module_quick_actions.lua:540
 msgid "Hide Label"
 msgstr "Felirat elrejtése"
 
-#: sui_menu.lua:3259
+#: sui_menu.lua:3377
 msgid "Hide Selection Underline"
 msgstr "Kiválasztási aláhúzás elrejtése"
 
-#: sui_menu.lua:1062
+#: sui_menu.lua:1069
 msgid "Hide Wi-Fi Icon When Off"
 msgstr "Wi-Fi ikon elrejtése kikapcsolt állapotban"
 
-#: sui_menu.lua:532
+#: sui_menu.lua:539
 msgid ""
 "Hides the pagination bar on the homescreen.\n"
 "Not available when Navpager is active."
@@ -1298,61 +1395,61 @@ msgstr ""
 "Elrejti a lapozó sávot a kezdőoldalról.\n"
 "Nem elérhető ha az Oldal lapozó be van kapcsolva."
 
-#: sui_stats_windows.lua:746
+#: sui_stats_windows.lua:1064 sui_stats_windows.lua:2767
 msgid "Highlights"
 msgstr "Kiemelések"
 
-#: sui_quickactions.lua:258 sui_quickactions.lua:1402 sui_config.lua:115
-#: sui_bottombar.lua:1423
+#: sui_quickactions.lua:417 sui_quickactions.lua:622 sui_quickactions.lua:1867
+#: sui_config.lua:118
 msgid "History"
 msgstr "Előzmények"
 
-#: sui_quickactions.lua:265
+#: sui_quickactions.lua:629
 msgid "History not available."
 msgstr "Előzmények nem elérhető."
 
-#: sui_quickactions.lua:209 sui_config.lua:113
+#: sui_quickactions.lua:573 sui_config.lua:116
 msgid "Home"
 msgstr "Kezdőlap"
 
-#: sui_menu.lua:4308 sui_patches.lua:790 sui_patches.lua:817
-#: sui_settings_window.lua:243 sui_settings_window.lua:843
+#: sui_menu.lua:4469 sui_patches.lua:843 sui_patches.lua:870
+#: sui_settings_window.lua:251 sui_settings_window.lua:851
 msgid "Home Screen"
 msgstr "Kezdőképernyő"
 
-#: sui_settings_window.lua:856
+#: sui_settings_window.lua:864
 msgid "Home Screen Presets"
 msgstr "Kezdőoldal sablonok"
 
-#: sui_menu.lua:478
+#: sui_menu.lua:485
 msgid "Home Screen Style"
 msgstr "Kezdőoldal stílus"
 
-#: sui_style.lua:1766
+#: sui_style.lua:1780
 msgid "Home Screen — Background"
 msgstr "Kezdőoldal — Háttér"
 
-#: sui_style.lua:1769
+#: sui_style.lua:1783
 msgid "Home Screen — Text"
 msgstr "Kezdőoldal — Szöveg"
 
-#: sui_bottombar.lua:1440
+#: sui_quickactions.lua:434
 msgid "Home folder"
 msgstr "Kezdőmappa"
 
-#: sui_bottombar.lua:1442
+#: sui_quickactions.lua:436
 msgid "Home folder + subfolders"
 msgstr "Kezdőmappa + almappák"
 
-#: sui_homescreen.lua:1174
+#: sui_homescreen.lua:1219
 msgid "Homescreen"
 msgstr "Kezdőképernyő"
 
-#: sui_quickactions.lua:240
+#: sui_quickactions.lua:604
 msgid "Homescreen not available."
 msgstr "Kezdőképernyő nem elérhető."
 
-#: desktop_modules/module_currently.lua:1030
+#: desktop_modules/module_currently.lua:1041
 msgid ""
 "Horizontal space between the cover and the text.\n"
 "100% is the default spacing."
@@ -1364,35 +1461,35 @@ msgstr ""
 msgid "Hours per month:"
 msgstr "Óra havonta:"
 
-#: sui_quickactions.lua:1559 sui_quickactions.lua:1563
+#: sui_quickactions.lua:2028 sui_quickactions.lua:2032
 msgid "Icon"
 msgstr "Ikon"
 
-#: sui_menu.lua:3490
+#: sui_menu.lua:3608
 msgid "Icon Packs"
 msgstr "Ikon csomagok"
 
-#: sui_menu.lua:3657
+#: sui_menu.lua:3775
 msgid "Icon Presets"
 msgstr "Ikon sablonok"
 
-#: sui_menu.lua:1329 sui_menu.lua:1330
+#: sui_menu.lua:1336 sui_menu.lua:1337
 msgid "Icon Size"
 msgstr "Ikon méret"
 
-#: sui_quickactions.lua:1555
+#: sui_quickactions.lua:2024
 msgid "Icon: Default"
 msgstr "Ikon: Alap"
 
-#: sui_menu.lua:194 sui_menu.lua:3394
+#: sui_menu.lua:201 sui_menu.lua:3512
 msgid "Icons"
 msgstr "Ikonok"
 
-#: sui_menu.lua:195
+#: sui_menu.lua:202
 msgid "Icons only"
 msgstr "Csak ikonok"
 
-#: sui_settings_window.lua:265
+#: sui_settings_window.lua:273
 msgid "Icons, fonts and appearance"
 msgstr "Ikonok, betűstílusok és kinézet"
 
@@ -1404,15 +1501,19 @@ msgstr ""
 "Ha a Momentum sablon lett kiválasztva, az Olvasási cél modul hosszan "
 "érintésével beállíthatók az olvasási célok."
 
-#: sui_menu.lua:4000 sui_presets.lua:1042
+#: sui_menu.lua:4118 sui_presets.lua:1050
 msgid "Import preset"
 msgstr "Sablon importálása"
 
-#: sui_menu.lua:3564
+#: sui_menu.lua:3682
 msgid "Install pack from ZIP"
 msgstr "Csomag telepítés ZIP-ből"
 
-#: sui_menu.lua:1458
+#: sui_menu.lua:3144
+msgid "Intensity"
+msgstr "Erősség"
+
+#: sui_menu.lua:1465
 msgid ""
 "Invalid arrangement.\n"
 "Keep items between the Left and Right separators."
@@ -1420,7 +1521,7 @@ msgstr ""
 "Érvénytelen elrendezés.\n"
 "Tartsd az elemeket a Jobb és Bal elválasztók között."
 
-#: sui_menu.lua:720
+#: sui_menu.lua:727
 msgid ""
 "Invalid arrangement.\n"
 "Keep the Left, Center and Right separators in order."
@@ -1428,34 +1529,34 @@ msgstr ""
 "Érvénytelen elrendezés.\n"
 "Tartsd a Balra, Középre és Jobbra elválasztókat sorrendben."
 
-#: sui_presets.lua:410 sui_presets.lua:590
+#: sui_presets.lua:418 sui_presets.lua:598
 msgid "Invalid data"
 msgstr "Érvénytelen adat"
 
-#: sui_quickactions.lua:1321
+#: sui_quickactions.lua:1786
 msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
 msgstr ""
 "Érvénytelen bemenet. Kérlek 1-6 hexadecimális számjegyet adj meg (0-9, A-F)."
 
-#: sui_presets.lua:406 sui_presets.lua:586
+#: sui_presets.lua:414 sui_presets.lua:594
 msgid "Invalid preset file"
 msgstr "Érvénytelen sablon fájl"
 
-#: sui_menu.lua:2305
+#: sui_menu.lua:2312
 msgid "Invert in Night Mode"
 msgstr "Invertálás éjszakai módban"
 
-#: sui_menu.lua:846 sui_menu.lua:851 sui_menu.lua:940 sui_menu.lua:1942
-#: sui_menu.lua:1947 sui_menu.lua:1973
-#: desktop_modules/module_reading_stats.lua:553
-#: desktop_modules/module_reading_stats.lua:574
-#: desktop_modules/module_reading_stats.lua:596
-#: desktop_modules/module_coverdeck.lua:891
-#: desktop_modules/module_coverdeck.lua:938
-#: desktop_modules/module_coverdeck.lua:959
-#: desktop_modules/module_currently.lua:1167
-#: desktop_modules/module_currently.lua:1172
-#: desktop_modules/module_currently.lua:1195
+#: sui_menu.lua:853 sui_menu.lua:858 sui_menu.lua:947 sui_menu.lua:1949
+#: sui_menu.lua:1954 sui_menu.lua:1980
+#: desktop_modules/module_reading_stats.lua:591
+#: desktop_modules/module_reading_stats.lua:612
+#: desktop_modules/module_reading_stats.lua:634
+#: desktop_modules/module_coverdeck.lua:1177
+#: desktop_modules/module_coverdeck.lua:1217
+#: desktop_modules/module_coverdeck.lua:1231
+#: desktop_modules/module_currently.lua:1178
+#: desktop_modules/module_currently.lua:1183
+#: desktop_modules/module_currently.lua:1206
 msgid "Items"
 msgstr "Elemek"
 
@@ -1471,101 +1572,101 @@ msgstr "Július"
 msgid "June"
 msgstr "Június"
 
-#: sui_menu.lua:502
+#: sui_menu.lua:509
 msgid "KOReader"
 msgstr "KOReader"
 
-#: sui_stats_windows.lua:2076
+#: sui_stats_windows.lua:2402
 msgid "LAST 7 DAYS"
 msgstr "ELMÚLT 7 NAP"
 
-#: sui_quicksettings_bar.lua:1237 desktop_modules/module_quick_actions.lua:557
+#: sui_quicksettings_bar.lua:1271 desktop_modules/module_quick_actions.lua:557
 msgid "Label"
 msgstr "Felirat"
 
-#: sui_menu.lua:2424
+#: sui_menu.lua:2446
 msgid "Label Scale"
 msgstr "Címke méretezés"
 
-#: sui_menu.lua:1339 sui_menu.lua:1340
+#: sui_menu.lua:1346 sui_menu.lua:1347
 msgid "Label Size"
 msgstr "Címke méret"
 
-#: sui_menu.lua:2409
+#: sui_menu.lua:2430
 msgid "Labels"
 msgstr "Címkék"
 
-#: sui_menu.lua:1780
+#: sui_menu.lua:1787
 msgid "Large"
 msgstr "Nagy"
 
-#: sui_menu.lua:429 sui_menu.lua:836 sui_menu.lua:1041 sui_menu.lua:1102
-#: sui_menu.lua:1318 sui_menu.lua:1744 sui_menu.lua:3191 sui_menu.lua:3214
-#: sui_menu.lua:3236 sui_menu.lua:4292 sui_quicksettings_bar.lua:1131
-#: sui_updater.lua:432
+#: sui_menu.lua:436 sui_menu.lua:843 sui_menu.lua:1048 sui_menu.lua:1109
+#: sui_menu.lua:1325 sui_menu.lua:1751 sui_menu.lua:3309 sui_menu.lua:3332
+#: sui_menu.lua:3354 sui_menu.lua:4251 sui_menu.lua:4453
+#: sui_quicksettings_bar.lua:1165 sui_updater.lua:432
 msgid "Later"
 msgstr "Később"
 
-#: desktop_modules/module_reading_goals.lua:1035
+#: desktop_modules/module_reading_goals.lua:1049
 msgid "Layout"
 msgstr "Elrendezés"
 
-#: sui_settings_window.lua:848
+#: sui_settings_window.lua:856
 msgid "Layout Editor"
 msgstr "Elrendezés szerkesztő"
 
-#: sui_settings_window.lua:244
+#: sui_settings_window.lua:252
 msgid "Layout, wallpaper and behaviour"
 msgstr "Elrendezés, háttérkép és viselkedés"
 
-#: sui_menu.lua:689 sui_menu.lua:926 sui_menu.lua:1430 sui_menu.lua:1632
-#: desktop_modules/module_quote.lua:121 desktop_modules/module_quote.lua:1385
+#: sui_menu.lua:696 sui_menu.lua:933 sui_menu.lua:1437 sui_menu.lua:1639
+#: desktop_modules/module_quote.lua:124 desktop_modules/module_quote.lua:1421
 #: desktop_modules/module_action_list.lua:73
 #: desktop_modules/module_action_list.lua:591
 #: desktop_modules/module_reading_stats.lua:65
-#: desktop_modules/module_reading_stats.lua:717
+#: desktop_modules/module_reading_stats.lua:755
 #: desktop_modules/module_clock.lua:115 desktop_modules/module_clock.lua:856
 msgid "Left"
 msgstr "Balra"
 
-#: sui_quickactions.lua:195 sui_titlebar.lua:1078 sui_config.lua:112
-#: sui_config.lua:360 sui_menu.lua:4312 sui_settings_window.lua:257
-#: sui_settings_window.lua:845
+#: sui_quickactions.lua:546 sui_titlebar.lua:1078 sui_config.lua:115
+#: sui_config.lua:366 sui_menu.lua:4473 sui_settings_window.lua:265
+#: sui_settings_window.lua:853
 msgid "Library"
 msgstr "Könyvtár"
 
-#: sui_menu.lua:1752 sui_menu.lua:1755
+#: sui_menu.lua:1759 sui_menu.lua:1762
 msgid "Library Buttons"
 msgstr "Könyvtár gombok"
 
-#: sui_presets.lua:222
+#: sui_presets.lua:229
 msgid "Library View"
 msgstr "Könyvtárnézet"
 
-#: sui_menu.lua:2809 sui_menu.lua:2821 sui_menu.lua:2863 sui_menu.lua:2875
-#: sui_menu.lua:2917 sui_menu.lua:2929 sui_menu.lua:2984 sui_menu.lua:2996
-#: sui_menu.lua:3051 sui_menu.lua:3063
-#: desktop_modules/module_collections.lua:950
+#: sui_menu.lua:2860 sui_menu.lua:2872 sui_menu.lua:2914 sui_menu.lua:2926
+#: sui_menu.lua:2968 sui_menu.lua:2980 sui_menu.lua:3035 sui_menu.lua:3047
+#: sui_menu.lua:3102 sui_menu.lua:3114 sui_menu.lua:3256 sui_menu.lua:3261
+#: desktop_modules/module_collections.lua:966
 msgid "Light"
 msgstr "Világos"
 
-#: sui_menu.lua:2317
+#: sui_menu.lua:2324
 msgid "Lighten"
 msgstr "Világosítás"
 
-#: sui_menu.lua:2330
+#: sui_menu.lua:2337
 msgid "Lighten Wallpaper"
 msgstr "Háttérkép világosítása"
 
-#: desktop_modules/module_reading_stats.lua:701
+#: desktop_modules/module_reading_stats.lua:739
 msgid "List"
 msgstr "Lista"
 
-#: sui_stats_windows.lua
-msgid "Loading statistics…"
-msgstr "Statisztikák betöltése…"
+#: sui_stats_windows.lua:2217
+msgid "Loading statistics\\xe2\\x80\\xa6"
+msgstr "Statisztikák betöltése\\xe2\\x80\\xa6"
 
-#: sui_menu.lua:2369
+#: sui_menu.lua:2389
 msgid "Lock Scale"
 msgstr "Méretezés rögzítése"
 
@@ -1573,8 +1674,8 @@ msgstr "Méretezés rögzítése"
 msgid "Long press to customize"
 msgstr "Személyre szabás hosszan érintéssel"
 
-#: sui_presets.lua:389 sui_presets.lua:401 sui_presets.lua:569
-#: sui_presets.lua:581
+#: sui_presets.lua:397 sui_presets.lua:409 sui_presets.lua:577
+#: sui_presets.lua:589
 msgid "LuaSettings module unavailable"
 msgstr "LuaSettings modul nem elérhető"
 
@@ -1582,16 +1683,16 @@ msgstr "LuaSettings modul nem elérhető"
 msgid "Make it yours"
 msgstr "Tedd egyedivé"
 
-#: sui_menu.lua:3828 sui_menu.lua:3902 sui_menu.lua:3907 sui_presets.lua:867
-#: sui_presets.lua:943 sui_presets.lua:948
+#: sui_menu.lua:3946 sui_menu.lua:4020 sui_menu.lua:4025 sui_presets.lua:875
+#: sui_presets.lua:951 sui_presets.lua:956
 msgid "Manage presets"
 msgstr "Sablonok kezelése"
 
-#: desktop_modules/module_reading_goals.lua:1028
+#: desktop_modules/module_reading_goals.lua:1042
 msgid "Manually Tracked Books"
 msgstr "Kézzel követett könyvek"
 
-#: desktop_modules/module_reading_goals.lua:1016
+#: desktop_modules/module_reading_goals.lua:1030
 msgid "Manually Tracked Books  (%s)"
 msgstr "Kézzel követett könyvek  (%s)"
 
@@ -1599,16 +1700,16 @@ msgstr "Kézzel követett könyvek  (%s)"
 msgid "March"
 msgstr "Március"
 
-#: sui_quicksettings_bar.lua:439 sui_quicksettings_bar.lua:545
+#: sui_quicksettings_bar.lua:443 sui_quicksettings_bar.lua:549
 msgid "Max"
 msgstr "Max"
 
-#: desktop_modules/module_collections.lua:856
-#: desktop_modules/module_collections.lua:996
+#: desktop_modules/module_collections.lua:872
+#: desktop_modules/module_collections.lua:1012
 msgid "Maximum 5 collections. Remove one first."
 msgstr "Legfeljebb 5 gyűjtemény. Távolíts el egyet előbb."
 
-#: sui_quicksettings_bar.lua:1193
+#: sui_quicksettings_bar.lua:1227
 msgid "Maximum slots reached."
 msgstr "Maximális helyek száma elérve."
 
@@ -1628,15 +1729,15 @@ msgstr "Menü gomb"
 msgid "Midnight"
 msgstr "Huszonnégy"
 
-#: sui_presets.lua:165
+#: sui_presets.lua:171
 msgid "Mindful Reading"
 msgstr "Tudatos olvasás"
 
-#: sui_menu.lua:353
+#: sui_menu.lua:360
 msgid "Minimum 1 tab required in navpager mode."
 msgstr "Legalább 1 oldal szükséges oldal lapozó módban."
 
-#: sui_menu.lua:354
+#: sui_menu.lua:361
 msgid "Minimum 2 tabs required. Select another tab first."
 msgstr "Legalább 2 oldal szükséges. Válassz ki egy másik oldalt előbb."
 
@@ -1644,31 +1745,31 @@ msgstr "Legalább 2 oldal szükséges. Válassz ki egy másik oldalt előbb."
 msgid "Minutes per day:"
 msgstr "Perc naponta:"
 
-#: sui_menu.lua:441
+#: sui_menu.lua:448
 msgid "Mode"
 msgstr "Mód"
 
-#: sui_menu.lua:2387
+#: sui_menu.lua:2407
 msgid "Module Scale"
 msgstr "Modul méretezés"
 
-#: sui_menu.lua:2146
+#: sui_menu.lua:2153
 msgid "Module Settings"
 msgstr "Modulbeállítások"
 
-#: sui_menu.lua:3494
+#: sui_menu.lua:3612
 msgid "Module unavailable"
 msgstr "Modul nem elérhető"
 
-#: sui_menu.lua:2380 sui_menu.lua:2549
+#: sui_menu.lua:2400 sui_menu.lua:2600
 msgid "Modules"
 msgstr "Modulok"
 
-#: sui_menu.lua:2134
+#: sui_menu.lua:2141
 msgid "Modules  (%d)"
 msgstr "Modulok (%d)"
 
-#: sui_homescreen.lua:2415
+#: sui_homescreen.lua:2506
 msgid ""
 "Modules exceed the visible area.\n"
 "Move some to another page or adjust the scale."
@@ -1676,7 +1777,7 @@ msgstr ""
 "A modulok átlépték a látható terület határait.\n"
 "Helyezz át párat másik lapra, vagy állíts a méretezésen."
 
-#: sui_presets.lua:200
+#: sui_presets.lua:206
 msgid "Momentum"
 msgstr "Momentum"
 
@@ -1684,10 +1785,10 @@ msgstr "Momentum"
 msgid "Monday"
 msgstr "Hétfő"
 
-#: desktop_modules/module_reading_goals.lua:841
-#: desktop_modules/module_reading_goals.lua:888
-#: desktop_modules/module_reading_goals.lua:925
-#: desktop_modules/module_reading_goals.lua:956
+#: desktop_modules/module_reading_goals.lua:855
+#: desktop_modules/module_reading_goals.lua:902
+#: desktop_modules/module_reading_goals.lua:939
+#: desktop_modules/module_reading_goals.lua:970
 msgid "Monthly Goal"
 msgstr "Havi cél"
 
@@ -1695,19 +1796,19 @@ msgstr "Havi cél"
 msgid "Monthly Reading Goal"
 msgstr "Havi olvasási cél"
 
-#: main.lua:935
+#: main.lua:1059
 msgid "More by %s (%d)"
 msgstr "Több tőle: %s (%d)"
 
-#: sui_window.lua:2334
+#: sui_window.lua:2430
 msgid "Move down"
 msgstr "Mozgatás le"
 
-#: sui_window.lua:2328 sui_settings_window.lua:479 sui_settings_window.lua:515
+#: sui_window.lua:2424 sui_settings_window.lua:487 sui_settings_window.lua:523
 msgid "Move to page"
 msgstr "Mozgatás oldalra"
 
-#: sui_window.lua:2331
+#: sui_window.lua:2427
 msgid "Move up"
 msgstr "Mozgatás fel"
 
@@ -1715,32 +1816,32 @@ msgstr "Mozgatás fel"
 msgid "My Action"
 msgstr "Saját műveletem"
 
-#: desktop_modules/module_quote.lua:1283
+#: desktop_modules/module_quote.lua:1319
 msgid "My Highlights"
 msgstr "Kiemeléseim"
 
-#: sui_presets.lua:757 sui_presets.lua:762
+#: sui_presets.lua:765 sui_presets.lua:770
 msgid "My Presets"
 msgstr "Saját sablonom"
 
-#: sui_quickactions.lua:1636
+#: sui_quickactions.lua:2111
 msgid "Name"
 msgstr "Név"
 
-#: sui_foldercovers.lua:264 sui_menu.lua:2945 sui_menu.lua:2954
-#: sui_menu.lua:2966
+#: sui_foldercovers.lua:298 sui_menu.lua:2996 sui_menu.lua:3005
+#: sui_menu.lua:3017
 msgid "Native"
 msgstr "Beépített"
 
-#: sui_menu.lua:2583
+#: sui_menu.lua:2634
 msgid "Navigation Bar"
 msgstr "Navigációs sáv"
 
-#: sui_menu.lua:1299
+#: sui_menu.lua:1306
 msgid "Navigation Bar Size"
 msgstr "Navigációs sáv méret"
 
-#: sui_menu.lua:1101
+#: sui_menu.lua:1108
 msgid ""
 "Navigation Bar will be %s after restart.\n"
 "\n"
@@ -1750,11 +1851,11 @@ msgstr ""
 "\n"
 "Újraindítás most?"
 
-#: sui_menu.lua:454 sui_style.lua:1083
+#: sui_menu.lua:461 sui_style.lua:1089
 msgid "Navpager"
 msgstr "Oldal lapozó"
 
-#: sui_menu.lua:461
+#: sui_menu.lua:468
 msgid ""
 "Navpager enabled.\n"
 "\n"
@@ -1772,54 +1873,30 @@ msgstr "Oldal lapozó: Következő"
 msgid "Navpager: Previous"
 msgstr "Oldal lapozó: Előző"
 
-#: sui_quickactions.lua:1283
+#: sui_quickactions.lua:1748
 msgid "Nerd Font Icon"
 msgstr "Nerd Font ikon"
 
-#: sui_quickactions.lua:1354
+#: sui_quickactions.lua:1819
 msgid "Nerd Font symbol…"
 msgstr "Nerd Font szimbólum…"
 
-#: sui_bottombar.lua:1722
+#: sui_quickactions.lua:204
 msgid "Network manager unavailable."
 msgstr "Hálózat kezelő nem elérhető."
 
-#: sui_menu.lua:2503
+#: sui_menu.lua:2527
 msgid "Never"
 msgstr "Soha"
 
-#: sui_foldercovers.lua:2399 sui_foldercovers.lua:3047
+#: sui_foldercovers.lua:2436 sui_foldercovers.lua:3115
 #: desktop_modules/module_new_books.lua:216
 msgid "New"
 msgstr "Új"
 
-#: sui_menu.lua:3008
+#: sui_menu.lua:3059
 msgid "New Book"
 msgstr "Új könyv"
-
-#: sui_menu.lua:3088
-msgid "Finished Books"
-msgstr "Befejezett könyvek"
-
-#: sui_menu.lua:3095
-msgid "Fade Finished Books"
-msgstr "Befejezett könyvek elhalványítása"
-
-#: sui_menu.lua:3104
-msgid "Intensity"
-msgstr "Erősség"
-
-#: sui_menu.lua:3110
-msgid "Fade Intensity"
-msgstr "Elhalványítás erőssége"
-
-#: sui_menu.lua:3111
-msgid ""
-"Fades finished book covers towards white.\n"
-"50% is the default."
-msgstr ""
-"Befejezett könyvek elhalványításának mértéke.\n"
-"100% az alapértelmezett."
 
 #: desktop_modules/module_new_books.lua:50
 #: desktop_modules/module_new_books.lua:51
@@ -1828,19 +1905,19 @@ msgstr ""
 msgid "New Books"
 msgstr "Új könyvek"
 
-#: sui_quickactions.lua:1527
+#: sui_quickactions.lua:1992
 msgid "New Quick Action"
 msgstr "Új Gyors művelet"
 
-#: sui_foldercovers.lua:709 sui_browsemeta.lua:893
+#: sui_foldercovers.lua:743 sui_browsemeta.lua:1081
 msgid "New collection name"
 msgstr "Új Gyűjtemény név"
 
-#: sui_bottombar.lua:566
+#: sui_bottombar.lua:569
 msgid "Next"
 msgstr "Következő"
 
-#: sui_quickactions.lua:352 sui_config.lua:121
+#: sui_quickactions.lua:721 sui_config.lua:125
 msgid "Night Mode"
 msgstr "Éjszakai mód"
 
@@ -1852,11 +1929,11 @@ msgstr "Kilenc"
 msgid "Nineteen"
 msgstr "Tizenkilenc"
 
-#: desktop_modules/module_quote.lua:1340
+#: desktop_modules/module_quote.lua:1376
 msgid "No .lua files found in sui_quotes/"
 msgstr "Nem található .lua fájl a sui_quotes/ mappában"
 
-#: sui_menu.lua:3582
+#: sui_menu.lua:3700
 msgid ""
 "No .zip files found.\n"
 "Place .zip files in:\n"
@@ -1866,11 +1943,11 @@ msgstr ""
 ".zip fájlok helye:\n"
 "%1"
 
-#: sui_quicksettings_bar.lua:1149 sui_quicksettings_bar.lua:1169
+#: sui_quicksettings_bar.lua:1183 sui_quicksettings_bar.lua:1203
 msgid "No actions active yet."
 msgstr "Még nincs aktív művelet."
 
-#: sui_quickactions.lua:898 sui_settings_window.lua:445
+#: sui_quickactions.lua:1356 sui_settings_window.lua:453
 #: desktop_modules/module_action_list.lua:108
 #: desktop_modules/module_action_list.lua:135
 #: desktop_modules/module_quick_actions.lua:90
@@ -1883,7 +1960,7 @@ msgstr "Nincs művelet beállítva"
 msgid "No actions configured  —  long press to configure"
 msgstr "Nincs művelet kiválasztva  —  hosszan érintéssel beállítható"
 
-#: sui_quicksettings_bar.lua:351
+#: sui_quicksettings_bar.lua:355
 msgid ""
 "No actions configured.\n"
 "Go to Bars → Quick Settings Bar."
@@ -1891,23 +1968,23 @@ msgstr ""
 "Nincsenek műveletek kiválasztva.\n"
 "Sávok → Gyorsmenü sáv."
 
-#: sui_quickactions.lua:282
+#: sui_quickactions.lua:655
 msgid "No book in history."
 msgstr "Nincs könyv az előzményekben."
 
-#: sui_stats_windows.lua:425
+#: sui_stats_windows.lua:729
 msgid "No books finished in %s"
 msgstr "Nincs befejezett könyv ekkor: %s"
 
-#: sui_foldercovers.lua:816
+#: sui_foldercovers.lua:850
 msgid "No books found in this folder."
 msgstr "Nem található könyv ebben a mappában."
 
-#: sui_foldercovers.lua:702 sui_foldercovers.lua:759
+#: sui_foldercovers.lua:736 sui_foldercovers.lua:793
 msgid "No books found in this series."
 msgstr "Nem található könyv ebben a sorozatban."
 
-#: sui_browsemeta.lua:962
+#: sui_browsemeta.lua:1150
 msgid "No books found."
 msgstr "Nem található könyv."
 
@@ -1920,7 +1997,7 @@ msgstr "Nem található könyv az Olvasandó listán."
 msgid "No books opened yet"
 msgstr "Még nem volt könyv megnyitva"
 
-#: desktop_modules/module_collections.lua:960
+#: desktop_modules/module_collections.lua:976
 msgid "No collections found."
 msgstr "Nem található gyűjtemény."
 
@@ -1932,7 +2009,7 @@ msgstr "Nincs gyűjtemény kiválasztva"
 msgid "No collections selected  —  long press to configure"
 msgstr "Nincs gyűjtemény kiválasztva  —  hosszan érintéssel beállítható"
 
-#: desktop_modules/module_quote.lua:854
+#: desktop_modules/module_quote.lua:876
 msgid ""
 "No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder "
 "and select it in Settings."
@@ -1950,15 +2027,15 @@ msgstr ""
 "\n"
 "Kiadási oldal megnyitása?"
 
-#: sui_presets.lua:381 sui_presets.lua:561
+#: sui_presets.lua:389 sui_presets.lua:569
 msgid "No export directory"
 msgstr "Nincs export mappa"
 
-#: sui_stats_windows.lua:132
+#: sui_stats_windows.lua:133
 msgid "No filepath."
 msgstr "Nincs elérési útvonal."
 
-#: sui_quickactions.lua:2141
+#: sui_quickactions.lua:2713
 msgid ""
 "No folder, collection or plugin configured.\n"
 "Go to Simple UI → Settings → Quick Actions to set one."
@@ -1966,61 +2043,61 @@ msgstr ""
 "Nincs beállítva mappa, gyűjtemény vagy bővítmény.\n"
 "Simple UI → Beállítások → Gyors műveletek menüben beállítható."
 
-#: sui_style.lua:1473
+#: sui_style.lua:1487
 msgid "No fonts found."
 msgstr "Nem található betűtípus."
 
-#: desktop_modules/module_quote.lua:926
+#: desktop_modules/module_quote.lua:948
 msgid "No highlights found. Open a book and highlight some passages."
 msgstr ""
 "Nem található kiemelés. Nyiss meg egy könyvet és emelj ki néhány részt."
 
-#: sui_quickactions.lua:1367
+#: sui_quickactions.lua:1832
 msgid "No icons found in:"
 msgstr "Nem található ikon itt:"
 
-#: sui_window.lua:2028 sui_window.lua:2624
+#: sui_window.lua:2124 sui_window.lua:2723
 msgid "No items available."
 msgstr "Nincs elérhető elem."
 
-#: sui_menu.lua:864 sui_menu.lua:942 sui_menu.lua:1128 sui_menu.lua:1179
-#: sui_menu.lua:1541 sui_menu.lua:1648 sui_menu.lua:1950 sui_menu.lua:1975
-#: sui_window.lua:2535 desktop_modules/module_collections.lua:802
-#: desktop_modules/module_collections.lua:827
+#: sui_menu.lua:871 sui_menu.lua:949 sui_menu.lua:1135 sui_menu.lua:1186
+#: sui_menu.lua:1548 sui_menu.lua:1655 sui_menu.lua:1957 sui_menu.lua:1982
+#: sui_window.lua:2633 desktop_modules/module_collections.lua:818
+#: desktop_modules/module_collections.lua:843
 #: desktop_modules/module_action_list.lua:478
 #: desktop_modules/module_action_list.lua:503
-#: desktop_modules/module_reading_stats.lua:577
-#: desktop_modules/module_reading_stats.lua:598
-#: desktop_modules/module_reading_goals.lua:891
-#: desktop_modules/module_reading_goals.lua:898
-#: desktop_modules/module_coverdeck.lua:946
-#: desktop_modules/module_coverdeck.lua:961
-#: desktop_modules/module_currently.lua:1189
-#: desktop_modules/module_currently.lua:1273
-#: desktop_modules/module_currently.lua:1405
-#: desktop_modules/module_currently.lua:1448
+#: desktop_modules/module_reading_stats.lua:615
+#: desktop_modules/module_reading_stats.lua:636
+#: desktop_modules/module_reading_goals.lua:905
+#: desktop_modules/module_reading_goals.lua:912
+#: desktop_modules/module_coverdeck.lua:1225
+#: desktop_modules/module_coverdeck.lua:1233
+#: desktop_modules/module_currently.lua:1200
+#: desktop_modules/module_currently.lua:1284
+#: desktop_modules/module_currently.lua:1416
+#: desktop_modules/module_currently.lua:1459
 #: desktop_modules/module_quick_actions.lua:405
 #: desktop_modules/module_quick_actions.lua:430
 msgid "No items selected."
 msgstr "Nincsenek elemek kiválasztva."
 
-#: sui_settings_window.lua:364 sui_settings_window.lua:526
+#: sui_settings_window.lua:372 sui_settings_window.lua:534
 msgid "No modules"
 msgstr "Nincs modul"
 
-#: sui_settings_window.lua:512
+#: sui_settings_window.lua:520
 msgid "No other pages available."
 msgstr "Nem elérhető más oldal."
 
-#: sui_menu.lua:3618
+#: sui_menu.lua:3736
 msgid "No packs found."
 msgstr "Nem található csomag."
 
-#: sui_quickactions.lua:1730
+#: sui_quickactions.lua:2206
 msgid "No plugins found."
 msgstr "Nem található bővítmény."
 
-#: sui_menu.lua:4008 sui_presets.lua:1049
+#: sui_menu.lua:4126 sui_presets.lua:1057
 msgid ""
 "No preset files found.\n"
 "Place .lua files in:\n"
@@ -2030,37 +2107,46 @@ msgstr ""
 "Helyezz .lua fájlokat ide:\n"
 "%1"
 
-#: sui_menu.lua:3984 sui_presets.lua:1026
+#: sui_menu.lua:4102 sui_presets.lua:1034
 msgid "No presets found."
 msgstr "Nem található sablon."
 
-#: desktop_modules/module_quote.lua:888
+#: desktop_modules/module_quote.lua:910
 msgid "No quotes found."
 msgstr "Nem található idézet."
 
-#: sui_stats_windows.lua:141 sui_stats_windows.lua:176
+#: sui_quickactions.lua:3028
+msgid "No recent books."
+msgstr "Nincsenek mostanában megnyitott könyvek."
+
+#: sui_stats_windows.lua:142 sui_stats_windows.lua:177
+#: sui_stats_windows.lua:2528
 msgid "No statistics found for this book."
 msgstr "Nem található statisztika ehhez a könyvhöz."
 
-#: desktop_modules/module_reading_stats.lua:332
+#: desktop_modules/module_coverdeck.lua:1087
+msgid "No statistics selected."
+msgstr "Nincsenek statisztikák kiválasztva."
+
+#: desktop_modules/module_reading_stats.lua:352
 msgid "No stats selected"
 msgstr "Nincsenek statisztikák kiválasztva"
 
-#: desktop_modules/module_reading_stats.lua:331
+#: desktop_modules/module_reading_stats.lua:351
 msgid "No stats selected  —  long press to configure"
 msgstr "Nincs statisztika kiválasztva  —  hosszan érintéssel beállítható"
 
-#: sui_quickactions.lua:1756
+#: sui_quickactions.lua:2232
 msgid "No system actions found."
 msgstr "Nem találhatók rendszer műveletek."
 
-#: sui_menu.lua:2218
+#: sui_menu.lua:2225
 msgid "No wallpapers found."
 msgstr "Nem található háttérkép."
 
-#: sui_quickactions.lua:1629 sui_foldercovers.lua:269 sui_menu.lua:2946
-#: sui_menu.lua:2955 sui_menu.lua:2973 sui_menu.lua:3013 sui_menu.lua:3022
-#: sui_menu.lua:3040
+#: sui_quickactions.lua:2104 sui_foldercovers.lua:303 sui_menu.lua:2997
+#: sui_menu.lua:3006 sui_menu.lua:3024 sui_menu.lua:3064 sui_menu.lua:3073
+#: sui_menu.lua:3091
 msgid "None"
 msgstr "Semelyik"
 
@@ -2068,13 +2154,13 @@ msgstr "Semelyik"
 msgid "Noon"
 msgstr "Tizenkettő"
 
-#: desktop_modules/module_reading_goals.lua:939
-#: desktop_modules/module_reading_goals.lua:954
-#: desktop_modules/module_reading_goals.lua:969
+#: desktop_modules/module_reading_goals.lua:953
+#: desktop_modules/module_reading_goals.lua:968
+#: desktop_modules/module_reading_goals.lua:983
 msgid "Not set"
 msgstr "Nincs beállítva"
 
-#: sui_stats_windows.lua:748
+#: sui_stats_windows.lua:1066 sui_stats_windows.lua:2769
 msgid "Notes"
 msgstr "Jegyzetek"
 
@@ -2082,11 +2168,11 @@ msgstr "Jegyzetek"
 msgid "November"
 msgstr "November"
 
-#: sui_menu.lua:2759
+#: sui_menu.lua:2810
 msgid "Number of Books in Folder"
 msgstr "Könyvek száma a mappában"
 
-#: sui_menu.lua:2833
+#: sui_menu.lua:2884
 msgid "Number of Pages"
 msgstr "Oldalak száma"
 
@@ -2094,7 +2180,7 @@ msgstr "Oldalak száma"
 msgid "O'Clock"
 msgstr "Óra"
 
-#: sui_quickactions.lua:1296
+#: sui_quickactions.lua:1761
 msgid "OK"
 msgstr "Oké"
 
@@ -2102,8 +2188,8 @@ msgstr "Oké"
 msgid "October"
 msgstr "Október"
 
-#: sui_quickactions.lua:995 sui_quickactions.lua:1885 sui_menu.lua:1394
-#: sui_menu.lua:1599 sui_menu.lua:3177 sui_menu.lua:4274
+#: sui_quickactions.lua:1453 sui_quickactions.lua:2445 sui_menu.lua:1401
+#: sui_menu.lua:1606 sui_menu.lua:3130 sui_menu.lua:3295 sui_menu.lua:4435
 msgid "Off"
 msgstr "Ki"
 
@@ -2111,8 +2197,8 @@ msgstr "Ki"
 msgid "Oh"
 msgstr "​"
 
-#: sui_quickactions.lua:994 sui_quickactions.lua:1884 sui_menu.lua:1394
-#: sui_menu.lua:1599 sui_menu.lua:4274
+#: sui_quickactions.lua:1452 sui_quickactions.lua:2444 sui_menu.lua:1401
+#: sui_menu.lua:1606 sui_menu.lua:4435
 msgid "On"
 msgstr "Be"
 
@@ -2120,8 +2206,8 @@ msgstr "Be"
 msgid "One"
 msgstr "Egy"
 
-#: sui_homescreen.lua:693 sui_stats_windows.lua:409
-#: desktop_modules/module_quote.lua:1179
+#: sui_quickactions.lua:2983 sui_homescreen.lua:738 sui_stats_windows.lua:713
+#: desktop_modules/module_quote.lua:1212
 msgid "Open"
 msgstr "Megnyitás"
 
@@ -2133,33 +2219,33 @@ msgstr "Nyiss meg egy könyvet a kezdéshez"
 msgid "Open in browser"
 msgstr "Megnyitás böngészőben"
 
-#: sui_homescreen.lua:692 sui_stats_windows.lua:407
-#: desktop_modules/module_quote.lua:1178
+#: sui_quickactions.lua:2982 sui_homescreen.lua:737 sui_stats_windows.lua:711
+#: desktop_modules/module_quote.lua:1211
 msgid "Open this file?"
 msgstr "Fájl megnyitása?"
 
-#: sui_menu.lua:2518
+#: sui_menu.lua:2554
 msgid "Overflow Warning"
 msgstr "Túlcsordulás figyelmeztetés"
 
-#: sui_menu.lua:2723
+#: sui_menu.lua:2774
 msgid "Overlays"
 msgstr "Átfedések"
 
-#: sui_menu.lua:3810 sui_menu.lua:3839 sui_menu.lua:3968 sui_presets.lua:848
-#: sui_presets.lua:878 sui_presets.lua:1010
+#: sui_menu.lua:3928 sui_menu.lua:3957 sui_menu.lua:4086 sui_presets.lua:856
+#: sui_presets.lua:886 sui_presets.lua:1018
 msgid "Overwrite"
 msgstr "Felülírás"
 
-#: sui_presets.lua:877 sui_presets.lua:1009
+#: sui_presets.lua:885 sui_presets.lua:1017
 msgid "Overwrite preset \"%s\" with the current homescreen settings?"
 msgstr "„%s” sablon felülírása a jelenlegi Kezdőoldal beállításokkal?"
 
-#: sui_menu.lua:3838 sui_menu.lua:3967
+#: sui_menu.lua:3956 sui_menu.lua:4085
 msgid "Overwrite preset \"%s\" with the current icon settings?"
 msgstr "„%s” sablon felülírása a jelenlegi ikon beállításokkal?"
 
-#: sui_menu.lua:3634
+#: sui_menu.lua:3752
 msgid ""
 "Pack \"%s\" applied.\n"
 "%d icons replaced."
@@ -2167,7 +2253,7 @@ msgstr ""
 "„%s” csomag alkalmazva.\n"
 "%d ikon lecserélve."
 
-#: sui_menu.lua:3595
+#: sui_menu.lua:3713
 msgid ""
 "Pack \"%s\" installed.\n"
 "You can now apply it from the list."
@@ -2175,42 +2261,42 @@ msgstr ""
 "„%s” csomag telepítve.\n"
 "Most már alkalmazhatod a listából."
 
-#: sui_style.lua:2089
+#: sui_style.lua:2103
 msgid "Pack folder not accessible: "
 msgstr "Csomag mappa nem elérhető: "
 
-#: sui_homescreen.lua:1742 sui_patches.lua:1486 sui_patches.lua:1951
-#: sui_window.lua:1043
+#: sui_homescreen.lua:1793 sui_patches.lua:1568 sui_patches.lua:2074
+#: sui_window.lua:1114
 msgid "Page %1 of %2"
 msgstr "Oldal: %1/%2"
 
-#: sui_settings_window.lua:338 sui_settings_window.lua:488
-#: sui_settings_window.lua:862
+#: sui_settings_window.lua:346 sui_settings_window.lua:496
+#: sui_settings_window.lua:870
 msgid "Page %d"
 msgstr "Oldal: %d"
 
-#: sui_settings_window.lua:337 sui_settings_window.lua:487
-#: sui_settings_window.lua:861
+#: sui_settings_window.lua:345 sui_settings_window.lua:495
+#: sui_settings_window.lua:869
 msgid "Page 1 (Home)"
 msgstr "1. Oldal (Kezdőoldal)"
 
-#: sui_stats_windows.lua:567
+#: sui_stats_windows.lua:882 sui_stats_windows.lua:2614
 msgid "Pages"
 msgstr "Oldal"
 
-#: sui_stats_windows.lua:1789
+#: sui_stats_windows.lua:2091
 msgid "Pages per day"
 msgstr "Oldal naponta"
 
-#: sui_stats_windows.lua:1806 sui_stats_windows.lua:1822
+#: sui_stats_windows.lua:2108 sui_stats_windows.lua:2124
 msgid "Pages read"
 msgstr "Oldal olvasva"
 
-#: sui_menu.lua:2585 sui_style.lua:1082
+#: sui_menu.lua:2636 sui_style.lua:1088
 msgid "Pagination Bar"
 msgstr "Lapozó sáv"
 
-#: sui_menu.lua:471
+#: sui_menu.lua:478
 msgid ""
 "Pagination bar hidden.\n"
 "\n"
@@ -2220,7 +2306,7 @@ msgstr ""
 "\n"
 "Újraindítás most?"
 
-#: sui_menu.lua:450
+#: sui_menu.lua:457
 msgid ""
 "Pagination bar set to Default.\n"
 "\n"
@@ -2230,7 +2316,7 @@ msgstr ""
 "\n"
 "Újraindítás most?"
 
-#: sui_menu.lua:557 sui_menu.lua:569 sui_menu.lua:581
+#: sui_menu.lua:564 sui_menu.lua:576 sui_menu.lua:588
 msgid ""
 "Pagination bar size will change after restart.\n"
 "\n"
@@ -2256,11 +2342,11 @@ msgstr "Lapozó: Következő oldal"
 msgid "Pagination: Previous Page"
 msgstr "Lapozó: Előző oldal"
 
-#: sui_quickactions.lua:1684
+#: sui_quickactions.lua:2160
 msgid "Path chooser not available."
 msgstr "Útvonal választó nem elérhető."
 
-#: sui_style.lua:2078
+#: sui_style.lua:2092
 msgid "Path does not exist: "
 msgstr "Elérési útvonal nem létezik: "
 
@@ -2272,17 +2358,17 @@ msgstr "Százalék a borítón"
 msgid "Percentage Text"
 msgstr "Százalék szöveg"
 
-#: desktop_modules/module_recent.lua:388
+#: desktop_modules/module_recent.lua:581
 msgid "Percentage overlay on cover"
 msgstr "Százalék a borítón"
 
-#: desktop_modules/module_coverdeck.lua:77
+#: desktop_modules/module_coverdeck.lua:78
 #: desktop_modules/module_currently.lua:249
-#: desktop_modules/module_currently.lua:1148
+#: desktop_modules/module_currently.lua:1159
 msgid "Percentage read"
 msgstr "Százalék olvasva"
 
-#: desktop_modules/module_recent.lua:378
+#: desktop_modules/module_recent.lua:571
 msgid "Percentage text"
 msgstr "Százalék szöveg"
 
@@ -2294,15 +2380,15 @@ msgstr "Fizikai könyvek — %s"
 msgid "Physical books read this year:"
 msgstr "Fizikai könyvek elolvasva ebben az évben:"
 
-#: desktop_modules/module_quote.lua:1365
+#: desktop_modules/module_quote.lua:1401
 msgid "Place .lua files in the plugin's sui_quotes/ folder"
 msgstr "Helyezz .lua fájlokat a bővítmény sui_quotes/ mappájába"
 
-#: sui_menu.lua:3619
+#: sui_menu.lua:3737
 msgid "Place a folder or .zip in:"
 msgstr "Helyezz mappát vagy .zip-et ide:"
 
-#: sui_menu.lua:2220
+#: sui_menu.lua:2227
 msgid "Place images in:"
 msgstr "Képek helye:"
 
@@ -2312,56 +2398,64 @@ msgid ""
 msgstr ""
 "A fájlok helye koreader/settings/simpleui/sui_wallpapers vagy sui_icons."
 
-#: sui_menu.lua:3275
+#: sui_menu.lua:3393
 msgid "Placeholder Cover for Bookless Folders"
 msgstr "Helyettesítő borító könyv nélküli mappákhoz"
 
-#: sui_menu.lua:3789 sui_presets.lua:822
+#: sui_stats_windows.lua:611
+msgid "Please enter a date in YYYY-MM-DD format."
+msgstr "Kérlek ÉÉÉÉ-HH-NN formátumban add meg a dátumot."
+
+#: sui_menu.lua:3907 sui_presets.lua:830
 msgid "Please enter a name for the preset."
 msgstr "Adj nevet a sablonnak."
 
-#: sui_quickactions.lua:1656
+#: sui_quickactions.lua:2131
 msgid "Please select an action."
 msgstr "Művelet kiválasztása."
 
-#: sui_quickactions.lua:1749 sui_quickactions.lua:1786
+#: sui_quickactions.lua:2225 sui_quickactions.lua:2344
 msgid "Plugin"
 msgstr "Bővítmény"
 
-#: sui_quickactions.lua:2126
+#: sui_quickactions.lua:2698
 msgid "Plugin error: %s"
 msgstr "Bővítmény hiba: %s"
 
-#: sui_quickactions.lua:2128
+#: sui_quickactions.lua:2700
 msgid "Plugin not available: %s"
 msgstr "Bővítmény nem elérhető: %s"
 
-#: sui_menu.lua:2766 sui_menu.lua:3126
+#: sui_menu.lua:2817 sui_menu.lua:3221
 msgid "Position"
 msgstr "Pozíció"
 
-#: sui_quickactions.lua:379 sui_config.lua:123
+#: sui_quickactions.lua:751 sui_config.lua:127
 msgid "Power"
 msgstr "Főkapcsoló"
 
-#: sui_menu.lua:4020 sui_presets.lua:1063
+#: sui_menu.lua:2579
+msgid "Preserve Deleted Books in Statistics"
+msgstr "Törölt könyvek megtartása a statisztikában"
+
+#: sui_menu.lua:4138 sui_presets.lua:1071
 msgid "Preset \"%s\" imported."
 msgstr "„%s” sablon importálva."
 
 # ── Presets ────────────────────────────────────────────────────────────────
-#: sui_menu.lua:3749 sui_presets.lua:704 sui_presets.lua:782
+#: sui_menu.lua:3867 sui_presets.lua:712 sui_presets.lua:790
 msgid "Preset \"%s\" not found."
 msgstr "„%s” sablon nem található."
 
-#: sui_menu.lua:3799 sui_presets.lua:839
+#: sui_menu.lua:3917 sui_presets.lua:847
 msgid "Preset \"%s\" saved."
 msgstr "„%s” sablon elmentve."
 
-#: sui_menu.lua:3845 sui_menu.lua:3974 sui_presets.lua:884 sui_presets.lua:1016
+#: sui_menu.lua:3963 sui_menu.lua:4092 sui_presets.lua:892 sui_presets.lua:1024
 msgid "Preset \"%s\" updated."
 msgstr "„%s” sablon frissítve."
 
-#: sui_menu.lua:4056 sui_presets.lua:1096
+#: sui_menu.lua:4174 sui_presets.lua:1104
 msgid ""
 "Preset exported to:\n"
 "%s"
@@ -2369,19 +2463,19 @@ msgstr ""
 "Sablon exportálva:\n"
 "%s"
 
-#: sui_menu.lua:3774 sui_presets.lua:807
+#: sui_menu.lua:3892 sui_presets.lua:815
 msgid "Preset name"
 msgstr "Sablon neve"
 
-#: sui_presets.lua:383 sui_presets.lua:563
+#: sui_presets.lua:391 sui_presets.lua:571
 msgid "Preset not found"
 msgstr "Sablon nem található"
 
-#: sui_menu.lua:2557 sui_settings_window.lua:316
+#: sui_menu.lua:2608 sui_settings_window.lua:324
 msgid "Presets"
 msgstr "Sablonok"
 
-#: sui_settings_window.lua:676
+#: sui_settings_window.lua:684
 msgid "Presets module unavailable."
 msgstr "Sablonok modul nem elérhető."
 
@@ -2393,11 +2487,11 @@ msgstr ""
 "A képernyő bármely elemének (például moduloknak vagy sávoknak) hosszan "
 "érintésével gyorsan elérhetők a beállításai."
 
-#: sui_bottombar.lua:566
+#: sui_bottombar.lua:569
 msgid "Prev"
 msgstr "Előző"
 
-#: sui_menu.lua:2941
+#: sui_menu.lua:2992
 msgid "Progress"
 msgstr "Haladás"
 
@@ -2405,23 +2499,24 @@ msgstr "Haladás"
 msgid "Progress Bar"
 msgstr "Haladási sáv"
 
-#: sui_menu.lua:4101
+#: sui_menu.lua:4262
 msgid "Progress Bar Type"
 msgstr "Haladási sáv stílus"
 
-#: desktop_modules/module_recent.lua:368
+#: desktop_modules/module_recent.lua:561
+#: desktop_modules/module_coverdeck.lua:92
 #: desktop_modules/module_currently.lua:248
 msgid "Progress bar"
 msgstr "Haladási sáv"
 
-#: desktop_modules/module_currently.lua:1486
+#: desktop_modules/module_currently.lua:1497
 msgid "Progress bar style"
 msgstr "Haladási sáv stílusa"
 
-#: sui_quickactions.lua:896 sui_menu.lua:2123 sui_menu.lua:4329
-#: sui_quicksettings_bar.lua:1141 sui_quicksettings_bar.lua:1146
-#: sui_quicksettings_bar.lua:1167 sui_settings_window.lua:271
-#: desktop_modules/module_action_list.lua:470
+#: sui_quickactions.lua:1354 sui_quickactions.lua:2926 sui_menu.lua:2130
+#: sui_menu.lua:4490 sui_quicksettings_bar.lua:1175
+#: sui_quicksettings_bar.lua:1180 sui_quicksettings_bar.lua:1201
+#: sui_settings_window.lua:279 desktop_modules/module_action_list.lua:470
 #: desktop_modules/module_action_list.lua:475
 #: desktop_modules/module_action_list.lua:501
 #: desktop_modules/module_quick_actions.lua:397
@@ -2431,25 +2526,25 @@ msgstr "Haladási sáv stílusa"
 msgid "Quick Actions"
 msgstr "Gyors műveletek"
 
-#: sui_menu.lua:4333
+#: sui_menu.lua:4494
 msgid "Quick Actions  (%d/%d — %d left)"
 msgstr "Gyors műveletek  (%d/%d — %d maradt)"
 
-#: sui_menu.lua:4331
+#: sui_menu.lua:4492
 msgid "Quick Actions  (%d/%d — at limit)"
 msgstr "Gyors műveletek  (%d/%d — tele)"
 
-#: sui_quickactions.lua:1137 sui_menu.lua:3468
+#: sui_quickactions.lua:1599 sui_menu.lua:3586
 msgid "Quick Actions Icons"
 msgstr "Gyors művelet ikonok"
 
-#: sui_menu.lua:1875 desktop_modules/module_quick_actions.lua:251
+#: sui_menu.lua:1882 desktop_modules/module_quick_actions.lua:251
 #: desktop_modules/module_quick_actions.lua:301
 #: desktop_modules/module_quick_actions.lua:654
 msgid "Quick Actions Row"
 msgstr "Gyors műveletek sor"
 
-#: sui_menu.lua:2587 sui_quicksettings_bar.lua:994
+#: sui_menu.lua:2638 sui_quicksettings_bar.lua:1028
 msgid "Quick Settings Bar"
 msgstr "Gyorsmenü sáv"
 
@@ -2457,49 +2552,53 @@ msgstr "Gyorsmenü sáv"
 msgid "Quick Tips"
 msgstr "Gyorstippek"
 
-#: sui_window.lua:1797
+#: sui_window.lua:1893
 msgid "Quick toggles"
 msgstr "Gyors kapcsolók"
 
-#: sui_bottombar.lua:2051
+#: sui_quickactions.lua:491
 msgid "Quit"
 msgstr "Kilépés"
 
-#: sui_presets.lua:166 desktop_modules/module_quote.lua:1008
+#: sui_presets.lua:172 desktop_modules/module_quote.lua:1030
 msgid "Quote of the Day"
 msgstr "Nap idézete"
 
-#: desktop_modules/module_quote.lua:1305
+#: desktop_modules/module_quote.lua:1341
 msgid "Quotes + My Highlights"
 msgstr "Idézetek + Kiemeléseim"
 
-#: sui_config.lua:163
+#: sui_config.lua:169
 msgid "RAM Usage"
 msgstr "RAM használat"
 
-#: sui_presets.lua:201 desktop_modules/module_reading_goals.lua:540
+#: sui_presets.lua:207 desktop_modules/module_reading_goals.lua:540
 #: desktop_modules/module_reading_goals.lua:541
 #: desktop_modules/module_reading_goals.lua:567
-#: desktop_modules/module_reading_goals.lua:1055
+#: desktop_modules/module_reading_goals.lua:1069
 msgid "Reading Goals"
 msgstr "Olvasási cél"
 
-#: sui_stats_windows.lua:2128
+#: sui_stats_windows.lua:2454
 msgid "Reading Insights"
 msgstr "Olvasási statisztika"
 
-#: sui_presets.lua:201 desktop_modules/module_reading_stats.lua:258
+#: sui_presets.lua:207 desktop_modules/module_reading_stats.lua:278
 msgid "Reading Stats"
 msgstr "Olvasási statisztika"
 
-#: sui_bottombar.lua:2028
+#: sui_quickactions.lua:479
 msgid "Reboot"
 msgstr "Újraindítás"
 
-#: sui_presets.lua:131 sui_presets.lua:166 sui_presets.lua:223
+#: sui_quickactions.lua:634 sui_quickactions.lua:3089 sui_config.lua:119
+msgid "Recent"
+msgstr "Mostanában"
+
+#: sui_presets.lua:137 sui_presets.lua:172 sui_presets.lua:230
 #: desktop_modules/module_recent.lua:69 desktop_modules/module_recent.lua:70
-#: desktop_modules/module_recent.lua:81 desktop_modules/module_recent.lua:348
-#: desktop_modules/module_coverdeck.lua:846
+#: desktop_modules/module_recent.lua:81 desktop_modules/module_recent.lua:541
+#: desktop_modules/module_coverdeck.lua:1038
 msgid "Recent Books"
 msgstr "Legutóbbi könyvek"
 
@@ -2507,17 +2606,17 @@ msgstr "Legutóbbi könyvek"
 msgid "Remove from To Be Read"
 msgstr "Eltávolítás Olvasandókból"
 
-#: sui_menu.lua:3851 sui_menu.lua:3858 sui_menu.lua:3943 sui_window.lua:1504
-#: sui_window.lua:2340 sui_presets.lua:890 sui_presets.lua:897
-#: sui_presets.lua:983
+#: sui_menu.lua:3969 sui_menu.lua:3976 sui_menu.lua:4061 sui_window.lua:1600
+#: sui_window.lua:2436 sui_presets.lua:898 sui_presets.lua:905
+#: sui_presets.lua:991
 msgid "Rename"
 msgstr "Átnevezés"
 
-#: sui_menu.lua:3854 sui_menu.lua:3939 sui_presets.lua:893 sui_presets.lua:979
+#: sui_menu.lua:3972 sui_menu.lua:4057 sui_presets.lua:901 sui_presets.lua:987
 msgid "Rename \"%s\""
 msgstr "„%s” átnevezése"
 
-#: sui_menu.lua:457
+#: sui_menu.lua:464
 msgid ""
 "Replaces the pagination bar with Prev/Next arrows at the edges of the bottom "
 "bar.\n"
@@ -2529,76 +2628,81 @@ msgstr ""
 "A nyilak elhalványulnak, ha nincs előző vagy következő oldal.\n"
 "Oldal lapozó esetén legalább 1, legfeljebb 4 oldal konfigurálható."
 
-#: sui_quickactions.lua:1145 sui_menu.lua:2450 sui_style.lua:1097
+#: sui_quickactions.lua:1607 sui_menu.lua:2473 sui_stats_windows.lua:595
+#: sui_style.lua:1103
 msgid "Reset"
 msgstr "Visszaállítás"
 
-#: sui_quickactions.lua:1139 sui_style.lua:1091
+#: sui_quickactions.lua:1601 sui_style.lua:1097
 msgid "Reset All"
 msgstr "Minden visszaállítása"
 
-#: sui_quickactions.lua:1811
+#: sui_quickactions.lua:2371
 msgid "Reset All Quick Action Icons"
 msgstr "Minden gyors művelet ikon visszaállítása"
 
-#: sui_style.lua:864
+#: sui_style.lua:870
 msgid "Reset All System Icons"
 msgstr "Minden rendszer ikon visszaállítása"
 
-#: sui_style.lua:1878
+#: sui_style.lua:1892
 msgid "Reset All Theme Colors"
 msgstr "Minden téma szín visszaállítása"
 
-#: sui_quickactions.lua:1144
+#: sui_quickactions.lua:1606
 msgid "Reset all Quick Actions icons to default?"
 msgstr "Minden gyors művelet ikon visszaállítása?"
 
-#: sui_menu.lua:2449
+#: sui_menu.lua:2472
 msgid "Reset all scales to default (100%)? This cannot be undone."
 msgstr "Minden méretezés visszaállítása 100%-ra? Nem lehet visszavonni."
 
-#: sui_style.lua:1096
+#: sui_style.lua:1102
 msgid "Reset all system icons to default?"
 msgstr "Minden rendszer ikon visszaállítása?"
 
-#: sui_menu.lua:2444
+#: sui_menu.lua:2467
 msgid "Reset to Default Scale"
 msgstr "Alap méretezés visszaállítása"
 
-#: sui_menu.lua:429 sui_menu.lua:836 sui_menu.lua:1040 sui_menu.lua:1102
-#: sui_menu.lua:1317 sui_menu.lua:1743 sui_menu.lua:3191 sui_menu.lua:3214
-#: sui_menu.lua:3236 sui_menu.lua:4292 sui_bottombar.lua:2017
-#: sui_quicksettings_bar.lua:1131 sui_window.lua:1733 sui_updater.lua:431
+#: sui_quickactions.lua:472 sui_menu.lua:436 sui_menu.lua:843 sui_menu.lua:1047
+#: sui_menu.lua:1109 sui_menu.lua:1324 sui_menu.lua:1750 sui_menu.lua:3309
+#: sui_menu.lua:3332 sui_menu.lua:3354 sui_menu.lua:4250 sui_menu.lua:4453
+#: sui_quicksettings_bar.lua:1165 sui_window.lua:1829 sui_updater.lua:431
 msgid "Restart"
 msgstr "Újraindítás"
 
-#: sui_style.lua:1465 sui_style.lua:1509
+#: sui_style.lua:1479 sui_style.lua:1523
 msgid "Restart to fully apply the UI font change."
 msgstr "Indítsd újra az új betűtípus alkalmazásához."
 
-#: sui_menu.lua:2463
+#: sui_menu.lua:2487
 msgid "Return to Book Folder"
 msgstr "Visszatérés a könyv mappába"
 
-#: sui_menu.lua:3012 sui_menu.lua:3021 sui_menu.lua:3033
+#: sui_menu.lua:2373
+msgid "Return to Home Screen on Wakeup"
+msgstr "Kezdőképernyőre visszatérés felébresztéskor"
+
+#: sui_menu.lua:3063 sui_menu.lua:3072 sui_menu.lua:3084
 msgid "Ribbon"
 msgstr "Szalag"
 
-#: sui_menu.lua:701 sui_menu.lua:934 sui_menu.lua:1438 sui_menu.lua:1638
-#: desktop_modules/module_quote.lua:122 desktop_modules/module_quote.lua:1397
+#: sui_menu.lua:708 sui_menu.lua:941 sui_menu.lua:1445 sui_menu.lua:1645
+#: desktop_modules/module_quote.lua:125 desktop_modules/module_quote.lua:1433
 #: desktop_modules/module_action_list.lua:74
 #: desktop_modules/module_action_list.lua:603
 #: desktop_modules/module_reading_stats.lua:66
-#: desktop_modules/module_reading_stats.lua:737
+#: desktop_modules/module_reading_stats.lua:775
 #: desktop_modules/module_clock.lua:116 desktop_modules/module_clock.lua:870
 msgid "Right"
 msgstr "Jobbra"
 
-#: sui_quicksettings_bar.lua:1263 desktop_modules/module_quick_actions.lua:575
+#: sui_quicksettings_bar.lua:1297 desktop_modules/module_quick_actions.lua:575
 msgid "Round"
 msgstr "Kerek"
 
-#: sui_quicksettings_bar.lua:1273 desktop_modules/module_quick_actions.lua:585
+#: sui_quicksettings_bar.lua:1307 desktop_modules/module_quick_actions.lua:585
 msgid "Rounded Square"
 msgstr "Lekerekített négyzet"
 
@@ -2606,51 +2710,51 @@ msgstr "Lekerekített négyzet"
 msgid "Saturday"
 msgstr "Szombat"
 
-#: sui_quickactions.lua:1653 sui_menu.lua:3782 sui_presets.lua:815
-#: desktop_modules/module_reading_goals.lua:391
+#: sui_quickactions.lua:2128 sui_menu.lua:3900 sui_stats_windows.lua:604
+#: sui_presets.lua:823 desktop_modules/module_reading_goals.lua:391
 #: desktop_modules/module_reading_goals.lua:407
 #: desktop_modules/module_reading_goals.lua:424
 #: desktop_modules/module_reading_goals.lua:442
 msgid "Save"
 msgstr "Mentés"
 
-#: sui_menu.lua:3767 sui_presets.lua:800
+#: sui_menu.lua:3885 sui_presets.lua:808
 msgid "Save as new preset"
 msgstr "Mentés új sablonként"
 
-#: sui_menu.lua:3772
+#: sui_menu.lua:3890
 msgid "Save icon preset"
 msgstr "Ikon sablon mentése"
 
-#: sui_presets.lua:805
+#: sui_presets.lua:813
 msgid "Save preset"
 msgstr "Sablon mentése"
 
-#: sui_menu.lua:2365 desktop_modules/module_quote.lua:1225
-#: desktop_modules/module_quote.lua:1229
-#: desktop_modules/module_collections.lua:641
-#: desktop_modules/module_collections.lua:643
+#: sui_menu.lua:2385 desktop_modules/module_quote.lua:1261
+#: desktop_modules/module_quote.lua:1265
+#: desktop_modules/module_collections.lua:657
+#: desktop_modules/module_collections.lua:659
 #: desktop_modules/module_action_list.lua:560
 #: desktop_modules/module_action_list.lua:562
-#: desktop_modules/module_recent.lua:308 desktop_modules/module_recent.lua:310
+#: desktop_modules/module_recent.lua:501 desktop_modules/module_recent.lua:503
 #: desktop_modules/module_tbr.lua:533 desktop_modules/module_tbr.lua:535
-#: desktop_modules/module_reading_stats.lua:512
-#: desktop_modules/module_reading_stats.lua:514
-#: desktop_modules/module_reading_goals.lua:800
-#: desktop_modules/module_reading_goals.lua:802
+#: desktop_modules/module_reading_stats.lua:550
+#: desktop_modules/module_reading_stats.lua:552
+#: desktop_modules/module_reading_goals.lua:814
+#: desktop_modules/module_reading_goals.lua:816
 #: desktop_modules/module_clock.lua:787 desktop_modules/module_clock.lua:789
-#: desktop_modules/module_coverdeck.lua:816
-#: desktop_modules/module_coverdeck.lua:818
+#: desktop_modules/module_coverdeck.lua:1008
+#: desktop_modules/module_coverdeck.lua:1010
 #: desktop_modules/module_new_books.lua:325
 #: desktop_modules/module_new_books.lua:327
-#: desktop_modules/module_currently.lua:986
-#: desktop_modules/module_currently.lua:988
+#: desktop_modules/module_currently.lua:997
+#: desktop_modules/module_currently.lua:999
 #: desktop_modules/module_quick_actions.lua:545
 #: desktop_modules/module_quick_actions.lua:547
 msgid "Scale"
 msgstr "Méretezés"
 
-#: desktop_modules/module_currently.lua:1015
+#: desktop_modules/module_currently.lua:1026
 msgid ""
 "Scale for all text elements (title, author, progress, time).\n"
 "100% is the default size."
@@ -2666,7 +2770,7 @@ msgstr ""
 "Gomb felirat méretezése.\n"
 "100% az alapértelmezett."
 
-#: desktop_modules/module_collections.lua:657
+#: desktop_modules/module_collections.lua:673
 msgid ""
 "Scale for the collection name text.\n"
 "100% is the default size."
@@ -2674,7 +2778,7 @@ msgstr ""
 "Gyűjtemény név szövegének a méretezése.\n"
 "100% az alapértelmezett."
 
-#: desktop_modules/module_collections.lua:887
+#: desktop_modules/module_collections.lua:903
 msgid ""
 "Scale for the collection thumbnails only.\n"
 "The label text follows the module scale.\n"
@@ -2684,7 +2788,7 @@ msgstr ""
 "A címke szöveg a modul méretezést követi.\n"
 "100% az alapértelmezett."
 
-#: desktop_modules/module_currently.lua:1002
+#: desktop_modules/module_currently.lua:1013
 msgid ""
 "Scale for the cover thumbnail only.\n"
 "100% is the default size."
@@ -2692,7 +2796,7 @@ msgstr ""
 "Csak a borító bélyegkép méretezése.\n"
 "100% az alapértelmezett."
 
-#: desktop_modules/module_coverdeck.lua:827
+#: desktop_modules/module_coverdeck.lua:1019
 msgid ""
 "Scale for the cover thumbnails only.\n"
 "100% is the default size."
@@ -2700,7 +2804,7 @@ msgstr ""
 "Csak a borító bélyegképek méretezése.\n"
 "100% az alapértelmezett."
 
-#: desktop_modules/module_recent.lua:325 desktop_modules/module_tbr.lua:749
+#: desktop_modules/module_recent.lua:518 desktop_modules/module_tbr.lua:749
 #: desktop_modules/module_new_books.lua:342
 msgid ""
 "Scale for the cover thumbnails only.\n"
@@ -2711,7 +2815,7 @@ msgstr ""
 "A szöveg és a haladás a modul méretezést követi.\n"
 "100% az alapértelmezett."
 
-#: sui_menu.lua:3164
+#: sui_menu.lua:3282
 msgid ""
 "Scale for the folder name overlay text.\n"
 "100% is the default size."
@@ -2719,7 +2823,7 @@ msgstr ""
 "Mappa név átfedő szövegének méretezése.\n"
 "100% az alapértelmezett."
 
-#: sui_quicksettings_bar.lua:1242 desktop_modules/module_action_list.lua:571
+#: sui_quicksettings_bar.lua:1276 desktop_modules/module_action_list.lua:571
 #: desktop_modules/module_new_books.lua:354
 msgid ""
 "Scale for the label text.\n"
@@ -2728,7 +2832,7 @@ msgstr ""
 "Címke szövegének a méretezése.\n"
 "100% az alapértelmezett."
 
-#: sui_menu.lua:2740
+#: sui_menu.lua:2791
 msgid ""
 "Scale for the library badges (progress, pages, etc.).\n"
 "100% is the default size."
@@ -2736,7 +2840,7 @@ msgstr ""
 "Könyvtár jelvények méretezése (haladási sáv, oldalak, stb.)\n"
 "100% az alapértelmezett."
 
-#: desktop_modules/module_recent.lua:339 desktop_modules/module_tbr.lua:740
+#: desktop_modules/module_recent.lua:532 desktop_modules/module_tbr.lua:740
 msgid ""
 "Scale for the percentage read text.\n"
 "100% is the default size."
@@ -2744,19 +2848,19 @@ msgstr ""
 "Elolvasott százalék szövegének a méretezése.\n"
 "100% az alapértelmezett."
 
-#: desktop_modules/module_coverdeck.lua:819
+#: desktop_modules/module_coverdeck.lua:1011
 msgid "Scale for this module."
 msgstr "Ennek a modulnak a méretezése."
 
-#: desktop_modules/module_quote.lua:1231
-#: desktop_modules/module_collections.lua:644
+#: desktop_modules/module_quote.lua:1267
+#: desktop_modules/module_collections.lua:660
 #: desktop_modules/module_action_list.lua:563
-#: desktop_modules/module_recent.lua:311 desktop_modules/module_tbr.lua:536
-#: desktop_modules/module_reading_stats.lua:515
-#: desktop_modules/module_reading_goals.lua:803
+#: desktop_modules/module_recent.lua:504 desktop_modules/module_tbr.lua:536
+#: desktop_modules/module_reading_stats.lua:553
+#: desktop_modules/module_reading_goals.lua:817
 #: desktop_modules/module_clock.lua:790
 #: desktop_modules/module_new_books.lua:328
-#: desktop_modules/module_currently.lua:989
+#: desktop_modules/module_currently.lua:1000
 #: desktop_modules/module_quick_actions.lua:548
 msgid ""
 "Scale for this module.\n"
@@ -2765,7 +2869,7 @@ msgstr ""
 "Ennek a modulnak a méretezése.\n"
 "100% az alapértelmezett."
 
-#: desktop_modules/module_coverdeck.lua:835
+#: desktop_modules/module_coverdeck.lua:1027
 msgid ""
 "Scale for title and statistics text.\n"
 "100% is the default size."
@@ -2773,7 +2877,7 @@ msgstr ""
 "Cím és statisztika szövegének a méretezése.\n"
 "100% az alapértelmezett."
 
-#: sui_menu.lua:2389
+#: sui_menu.lua:2409
 msgid ""
 "Scales all modules and labels together.\n"
 "100% is the default size."
@@ -2781,7 +2885,7 @@ msgstr ""
 "Minden modul és címke méretezése együttesen.\n"
 "100% az alapértelmezett."
 
-#: sui_menu.lua:2425
+#: sui_menu.lua:2447
 msgid ""
 "Scales the section label text above each module.\n"
 "100% is the default size."
@@ -2789,7 +2893,7 @@ msgstr ""
 "Átméretezi a szekció címkét minden modul felett.\n"
 "100% az alapértelmezett."
 
-#: sui_menu.lua:3288
+#: sui_menu.lua:3406
 msgid "Scan Subfolders for Covers"
 msgstr "Almappák átnézése borítókért"
 
@@ -2801,32 +2905,32 @@ msgstr "Keresés"
 msgid "Search Button"
 msgstr "Kereső gomb"
 
-#: sui_style.lua:1772
+#: sui_style.lua:1786
 msgid "Secondary / Dim Text"
 msgstr "Másodlagos / Halvány szöveg"
 
-#: sui_window.lua:1493 sui_window.lua:2325
+#: sui_window.lua:1589 sui_window.lua:2421
 msgid "Select"
 msgstr "Kiválasztás"
 
-#: sui_menu.lua:3758 sui_presets.lua:713 sui_presets.lua:721
-#: sui_presets.lua:726
+#: sui_menu.lua:3876 sui_presets.lua:721 sui_presets.lua:729
+#: sui_presets.lua:734
 msgid "Select Preset"
 msgstr "Sablon kiválasztása"
 
-#: sui_menu.lua:2198
+#: sui_menu.lua:2205
 msgid "Select Wallpaper"
 msgstr "Háttérkép kiválasztása"
 
-#: desktop_modules/module_collections.lua:775
+#: desktop_modules/module_collections.lua:791
 msgid "Select at least 2 collections to arrange."
 msgstr "Válassz ki legalább 2 gyűjteményt az elrendezéshez."
 
-#: sui_style.lua:1773
+#: sui_style.lua:1787
 msgid "Separator Line"
 msgstr "Elválasztó vonal"
 
-#: sui_style.lua:1737
+#: sui_style.lua:1751
 msgid "Sepia Classic"
 msgstr "Klasszikus szépia"
 
@@ -2834,25 +2938,25 @@ msgstr "Klasszikus szépia"
 msgid "September"
 msgstr "Szeptember"
 
-#: sui_quickactions.lua:417 sui_config.lua:127 sui_browsemeta.lua:71
+#: sui_quickactions.lua:791 sui_config.lua:131 sui_browsemeta.lua:78
 msgid "Series"
 msgstr "Sorozatok"
 
-#: sui_menu.lua:2887
+#: sui_menu.lua:2938
 msgid "Series Index"
 msgstr "Sorozat sorszám"
 
-#: sui_menu.lua:640 sui_menu.lua:901
+#: sui_menu.lua:647 sui_menu.lua:908
 msgid "Set"
 msgstr "Beállít"
 
-#: desktop_modules/module_reading_goals.lua:945
-#: desktop_modules/module_reading_goals.lua:960
-#: desktop_modules/module_reading_goals.lua:975
+#: desktop_modules/module_reading_goals.lua:959
+#: desktop_modules/module_reading_goals.lua:974
+#: desktop_modules/module_reading_goals.lua:989
 msgid "Set Goal"
 msgstr "Cél beállítása"
 
-#: sui_foldercovers.lua:890 sui_foldercovers.lua:1203 sui_browsemeta.lua:1198
+#: sui_foldercovers.lua:924 sui_foldercovers.lua:1237 sui_browsemeta.lua:1386
 msgid "Set folder cover"
 msgstr "Borítókép beállítása"
 
@@ -2860,36 +2964,18 @@ msgstr "Borítókép beállítása"
 msgid "Set your reading goal"
 msgstr "Állítsd be az olvasási célodat"
 
-#: sui_quickactions.lua:388 sui_config.lua:124
+#: sui_quickactions.lua:760 sui_config.lua:128
 msgid "Settings"
 msgstr "Beállítások"
 
-#: sui_settings_window.lua:228 sui_settings_window.lua:233
+#: sui_settings_window.lua:236 sui_settings_window.lua:241
 msgid "Settings not found."
 msgstr "Beállítások nem található."
 
-#: sui_menu.lua:1071 sui_menu.lua:1363 sui_menu.lua:2530
-#: sui_quicksettings_bar.lua:1333
+#: sui_menu.lua:1078 sui_menu.lua:1370 sui_menu.lua:2566
+#: sui_quicksettings_bar.lua:1367
 msgid "Settings on Long Tap"
 msgstr "Beállítások hosszan érintéskor"
-
-#: sui_menu.lua:2541
-msgid "Preserve Deleted Books in Statistics"
-msgstr "Törölt könyvek megtartása a statisztikában"
-
-#: sui_menu.lua:2541
-msgid ""
-"When a finished book is deleted from the device, keep it counted in the "
-"Books Read statistics on the Home Screen.\n"
-"\n"
-"Books changed back to Reading or Abandoned are automatically removed from "
-"this list."
-msgstr ""
-"Amikor egy befejezett könyv törölve lesz a készülékről, az Elolvasott "
-"könyvek statisztikában benne marad a kezdőképernyőn.\n"
-"\n"
-"A könyvek amik újra Olvasás vagy Félretéve állapotba kerülnek törlődnek "
-"erről a listáról."
 
 #: desktop_modules/module_clock.lua:198 desktop_modules/module_clock.lua:248
 msgid "Seven"
@@ -2915,11 +3001,11 @@ msgstr "Dátum mutatása"
 msgid "Show Icon"
 msgstr "Ikon mutatása"
 
-#: sui_menu.lua:588
+#: sui_menu.lua:595
 msgid "Show Page Count in Title Bar"
 msgstr "Oldalak száma mutatása a címsávban"
 
-#: sui_menu.lua:2476
+#: sui_menu.lua:2500
 msgid ""
 "Show a brief \"Closing book…\" notice when closing a book, preventing "
 "accidental double-taps while e-ink refreshes."
@@ -2927,29 +3013,29 @@ msgstr ""
 "Rövid „Könyv bezárása…” értesítés megjelenítése könyv bezárásakor, az e-ink "
 "frissülése közben történő véletlen dupla érintések megelőzésére."
 
-#: sui_menu.lua
+#: sui_menu.lua:2543
 msgid ""
-"Show a brief \"Loading statistics…\" notice when opening a statistics "
-"window, preventing accidental double-taps while e-ink refreshes."
+"Show a brief \"Loading statistics\\xe2\\x80\\xa6\" notice when opening a "
+"statistics window, preventing accidental double-taps while e-ink refreshes."
 msgstr ""
-"Rövid „Statisztikák betöltése…” értesítés megjelenítése a statisztika ablak "
-"megnyitásakor, az e-ink frissülése közben történő véletlen dupla érintések "
-"megelőzésére."
+"Rövid „Statisztikák betöltése\\xe2\\x80\\xa6” értesítés megjelenítése a "
+"statisztika ablak megnyitásakor, az e-ink frissülése közben történő véletlen "
+"dupla érintések megelőzésére."
 
-#: desktop_modules/module_recent.lua:397
-#: desktop_modules/module_coverdeck.lua:1038
+#: desktop_modules/module_recent.lua:590
+#: desktop_modules/module_coverdeck.lua:1283
 msgid "Show finished books"
 msgstr "Befejezett könyvek megjelenítése"
 
-#: sui_config.lua:921
+#: sui_config.lua:954
 msgid "Show section label"
 msgstr "Szekció címke mutatása"
 
-#: sui_menu.lua:2265
+#: sui_menu.lua:2272
 msgid "Show wallpaper on all screens"
 msgstr "Háttérkép mutatása minden oldalon"
 
-#: sui_menu.lua:593
+#: sui_menu.lua:600
 msgid ""
 "Shows \"Page X of Y\" in the title bar subtitle when browsing the library, "
 "history or collections.\n"
@@ -2961,7 +3047,7 @@ msgstr ""
 "A Oldal lapozó ezt automatikusan engedélyezi.\n"
 "Oldal lapozó használata esetén nem érhető el."
 
-#: sui_menu.lua:489
+#: sui_menu.lua:496
 msgid ""
 "Shows a row of dots at the bottom of the homescreen.\n"
 "The active page dot is filled; the others are dimmed.\n"
@@ -2971,11 +3057,11 @@ msgstr ""
 "Az aktív oldal pontja kitöltött, a többi halvány.\n"
 "Oldal lapozó kiválasztásakor mindig aktív."
 
-#: desktop_modules/module_currently.lua:1489
+#: desktop_modules/module_currently.lua:1500
 msgid "Simple"
 msgstr "Egyszerű"
 
-#: sui_menu.lua:4269 sui_menu.lua:4274 main.lua:1868 main.lua:1881
+#: sui_menu.lua:4430 sui_menu.lua:4435 main.lua:2156 main.lua:2169
 msgid "Simple UI"
 msgstr "Simple UI"
 
@@ -2997,7 +3083,7 @@ msgstr ""
 "Simple UI %s elérhető!\n"
 "Aktuális verzió %s."
 
-#: sui_settings_window.lua:842
+#: sui_settings_window.lua:850
 msgid "Simple UI Settings"
 msgstr "Simple UI beállítások"
 
@@ -3013,7 +3099,7 @@ msgstr ""
 msgid "Simple UI is up to date (%s)."
 msgstr "Simple UI legfrissebb verzión (%s)."
 
-#: sui_menu.lua:4291
+#: sui_menu.lua:4452
 msgid ""
 "Simple UI will be %s after restart.\n"
 "\n"
@@ -3023,23 +3109,27 @@ msgstr ""
 "\n"
 "Újraindítás most?"
 
-#: main.lua:751
+#: main.lua:869
 msgid "Simple UI: Go to Homescreen"
 msgstr "Simple UI: Ugrás kezdőoldalra"
 
-#: main.lua:757
+#: main.lua:875
 msgid "Simple UI: Go to Library"
 msgstr "Simple UI: Ugrás könyvtárra"
 
-#: main.lua:769
+#: main.lua:893
+msgid "Simple UI: Recent"
+msgstr "Simple UI: Mostanában"
+
+#: main.lua:887
 msgid "Simple UI: Settings"
 msgstr "Simple UI: Beállítások"
 
-#: main.lua:763
+#: main.lua:881
 msgid "Simple UI: Toggle Homescreen / Library"
 msgstr "Simple UI: Kezdőoldal / könyvtár váltás"
 
-#: sui_menu.lua:2687
+#: sui_menu.lua:2738
 msgid "Single Cover"
 msgstr "Egy könyv"
 
@@ -3051,14 +3141,14 @@ msgstr "Hat"
 msgid "Sixteen"
 msgstr "Tizenhat"
 
-#: sui_menu.lua:1015 sui_menu.lua:2731 sui_quicksettings_bar.lua:1240
-#: sui_quicksettings_bar.lua:1241 sui_window.lua:1818 sui_window.lua:1825
+#: sui_menu.lua:1022 sui_menu.lua:2782 sui_quicksettings_bar.lua:1274
+#: sui_quicksettings_bar.lua:1275 sui_window.lua:1914 sui_window.lua:1921
 #: desktop_modules/module_quick_actions.lua:560
 #: desktop_modules/module_quick_actions.lua:561
 msgid "Size"
 msgstr "Méret"
 
-#: sui_menu.lua:1331
+#: sui_menu.lua:1338
 msgid ""
 "Size of the tab icons.\n"
 "100% is the default size."
@@ -3066,7 +3156,7 @@ msgstr ""
 "Az oldal ikonok mérete.\n"
 "100% az alapértelmezett."
 
-#: sui_menu.lua:1341
+#: sui_menu.lua:1348
 msgid ""
 "Size of the tab label text.\n"
 "100% is the default size."
@@ -3074,7 +3164,7 @@ msgstr ""
 "Az oldal címke szövegének a mérete.\n"
 "100% az alapértelmezett."
 
-#: desktop_modules/module_reading_stats.lua:658
+#: desktop_modules/module_reading_stats.lua:696
 msgid ""
 "Size of the text inside the stat cards.\n"
 "Does not affect card size or padding.\n"
@@ -3084,33 +3174,33 @@ msgstr ""
 "Nem befolyásolja a kártya méretét vagy belső margóit.\n"
 "100% az alapértelmezett."
 
-#: sui_bottombar.lua:2041
+#: sui_quickactions.lua:485
 msgid "Sleep"
 msgstr "Altatás"
 
-#: sui_menu.lua:561
+#: sui_menu.lua:568
 msgid "Small"
 msgstr "Kicsi"
 
-#: sui_menu.lua:3084 sui_menu.lua:3088 sui_quicksettings_bar.lua:1310
+#: sui_menu.lua:3179 sui_menu.lua:3183 sui_quicksettings_bar.lua:1344
 #: desktop_modules/module_quick_actions.lua:622
 msgid "Solid"
 msgstr "Egyszínű"
 
-#: desktop_modules/module_collections.lua:904
-#: desktop_modules/module_recent.lua:359 desktop_modules/module_tbr.lua:766
-#: desktop_modules/module_reading_goals.lua:1066
+#: desktop_modules/module_collections.lua:920
+#: desktop_modules/module_recent.lua:552 desktop_modules/module_tbr.lua:766
+#: desktop_modules/module_reading_goals.lua:1080
 #: desktop_modules/module_new_books.lua:369
-#: desktop_modules/module_currently.lua:1477
+#: desktop_modules/module_currently.lua:1488
 msgid "Solid Background"
 msgstr "Nem átlátszó háttér"
 
-#: desktop_modules/module_quote.lua:1257
-#: desktop_modules/module_coverdeck.lua:843
+#: desktop_modules/module_quote.lua:1293
+#: desktop_modules/module_coverdeck.lua:1035
 msgid "Source"
 msgstr "Forrás"
 
-#: sui_menu.lua:1351
+#: sui_menu.lua:1358
 msgid ""
 "Space below the bottom navigation bar.\n"
 "100% is the default spacing."
@@ -3130,11 +3220,11 @@ msgstr "Térkitöltő méret"
 msgid "Start using Simple UI"
 msgstr "Simple UI indítása"
 
-#: sui_patches.lua:817 sui_patches.lua:819
+#: sui_patches.lua:870 sui_patches.lua:872
 msgid "Start with"
 msgstr "Indítás ezzel"
 
-#: sui_menu.lua:2354
+#: sui_menu.lua:2362
 msgid "Start with Home Screen"
 msgstr "Kezdőképernyővel indulás"
 
@@ -3143,45 +3233,52 @@ msgid "Start with a ready-made layout. You can change everything later."
 msgstr ""
 "Indulás egy előre elkészített elrendezéssel. Később személyre szabható."
 
-#: sui_stats_windows.lua:136
-msgid "Statistics database library not available."
-msgstr "Statisztika adatbázis könyvtár nem elérhető."
+#: desktop_modules/module_coverdeck.lua:93
+#: desktop_modules/module_coverdeck.lua:1085
+#: desktop_modules/module_coverdeck.lua:1132
+#: desktop_modules/module_coverdeck.lua:1198
+msgid "Statistics"
+msgstr "Statisztikák"
 
-#: sui_menu.lua
+#: sui_menu.lua:2542
 msgid "Statistics Loading Notice"
 msgstr "Statisztika betöltése értesítő"
 
-#: sui_quickactions.lua:373
+#: sui_stats_windows.lua:137
+msgid "Statistics database library not available."
+msgstr "Statisztika adatbázis könyvtár nem elérhető."
+
+#: sui_quickactions.lua:745
 msgid "Statistics plugin not available."
 msgstr "Statisztika bővítmény nem elérhető."
 
-#: sui_quickactions.lua:361 sui_config.lua:122
-#: desktop_modules/module_currently.lua:1183
-#: desktop_modules/module_currently.lua:1265
-#: desktop_modules/module_currently.lua:1326
+#: sui_quickactions.lua:730 sui_config.lua:126
+#: desktop_modules/module_currently.lua:1194
+#: desktop_modules/module_currently.lua:1276
+#: desktop_modules/module_currently.lua:1337
 msgid "Stats"
 msgstr "Statisztikák"
 
-#: desktop_modules/module_currently.lua:1511
+#: desktop_modules/module_currently.lua:1522
 msgid "Stats layout"
 msgstr "Statisztika elrendezés"
 
-#: desktop_modules/module_reading_stats.lua:791
-#: desktop_modules/module_reading_goals.lua:1099
-#: desktop_modules/module_coverdeck.lua:1071
-#: desktop_modules/module_currently.lua:1560
+#: desktop_modules/module_reading_stats.lua:829
+#: desktop_modules/module_reading_goals.lua:1113
+#: desktop_modules/module_coverdeck.lua:1316
+#: desktop_modules/module_currently.lua:1571
 msgid "Stats updated successfully."
 msgstr "Statisztikák sikeresen frissítve."
 
-#: sui_menu.lua:2582
+#: sui_menu.lua:2633
 msgid "Status Bar"
 msgstr "Állapotsáv"
 
-#: sui_menu.lua:1022
+#: sui_menu.lua:1029
 msgid "Status Bar Size"
 msgstr "Állapotsáv méret"
 
-#: sui_menu.lua:835
+#: sui_menu.lua:842
 msgid ""
 "Status Bar will be %s after restart.\n"
 "\n"
@@ -3191,15 +3288,15 @@ msgstr ""
 "\n"
 "Újraindítás most?"
 
-#: sui_style.lua:1768
+#: sui_style.lua:1782
 msgid "Status Bar — Background"
 msgstr "Állapotsáv — Háttér"
 
-#: sui_style.lua:1771
+#: sui_style.lua:1785
 msgid "Status Bar — Text"
 msgstr "Állapotsáv — Szöveg"
 
-#: sui_settings_window.lua:251
+#: sui_settings_window.lua:259
 msgid "Status, title, navigation and pagination"
 msgstr "Állapot, cím, navigáció és lapozás"
 
@@ -3207,16 +3304,16 @@ msgstr "Állapot, cím, navigáció és lapozás"
 msgid "Streak"
 msgstr "Széria"
 
-#: sui_menu.lua:2283
+#: sui_menu.lua:2290
 msgid "Stretch to fill screen"
 msgstr "Képernyőhöz nyújtás"
 
-#: sui_menu.lua:4320 sui_settings_window.lua:264 sui_settings_window.lua:846
-#: desktop_modules/module_reading_stats.lua:668
+#: sui_menu.lua:4481 sui_settings_window.lua:272 sui_settings_window.lua:854
+#: desktop_modules/module_reading_stats.lua:706
 msgid "Style"
 msgstr "Stílus"
 
-#: sui_menu.lua:1758 sui_menu.lua:1761
+#: sui_menu.lua:1765 sui_menu.lua:1768
 msgid "Sub-page Buttons"
 msgstr "Aloldal gombok"
 
@@ -3224,56 +3321,56 @@ msgstr "Aloldal gombok"
 msgid "Sunday"
 msgstr "Vasárnap"
 
-#: sui_menu.lua:1052
+#: sui_menu.lua:1059
 msgid "Swipe Indicator"
 msgstr "Menü lenyitás jelző"
 
-#: sui_quickactions.lua:1115 sui_quickactions.lua:1118
-#: sui_quickactions.lua:1774 sui_quickactions.lua:1788
+#: sui_quickactions.lua:1577 sui_quickactions.lua:1580
+#: sui_quickactions.lua:2250 sui_quickactions.lua:2346
 msgid "System Actions"
 msgstr "Rendszer műveletek"
 
-#: sui_menu.lua:3400 sui_menu.lua:3408 sui_style.lua:1089
+#: sui_menu.lua:3518 sui_menu.lua:3526 sui_style.lua:1095
 msgid "System Icons"
 msgstr "Rendszer ikonok"
 
-#: sui_quickactions.lua:2099
+#: sui_quickactions.lua:2671
 msgid "System action error: %s"
 msgstr "Rendszer művelet hiba: %s"
 
-#: sui_stats_windows.lua:2084
+#: sui_stats_windows.lua:2410
 msgid "THIS MONTH"
 msgstr "EZ A HÓNAP"
 
-#: sui_stats_windows.lua:2080
+#: sui_stats_windows.lua:2406
 msgid "THIS WEEK"
 msgstr "EZ A HÉT"
 
-#: sui_stats_windows.lua:2060
+#: sui_stats_windows.lua:2386
 msgid "TODAY'S SUMMARY"
 msgstr "MAI ÖSSZEFOGLALÓ"
 
-#: sui_menu.lua:1246
+#: sui_menu.lua:1253
 msgid "Tab Style"
 msgstr "Lap stílus"
 
-#: sui_window.lua:1782
+#: sui_window.lua:1878
 msgid "Tab order"
 msgstr "Lap sorrend"
 
-#: sui_menu.lua:1125 sui_menu.lua:1177
+#: sui_menu.lua:1132 sui_menu.lua:1184
 msgid "Tabs"
 msgstr "Lapok"
 
-#: sui_menu.lua:1119
+#: sui_menu.lua:1126
 msgid "Tabs  (%d/%d — %d left)"
 msgstr "Lapok  (%d/%d — %d maradt)"
 
-#: sui_menu.lua:1117
+#: sui_menu.lua:1124
 msgid "Tabs  (%d/%d — at limit)"
 msgstr "Oldalak  (%d/%d — tele)"
 
-#: sui_quickactions.lua:435 sui_config.lua:129 sui_browsemeta.lua:72
+#: sui_quickactions.lua:809 sui_config.lua:133 sui_browsemeta.lua:79
 msgid "Tags"
 msgstr "Címkék"
 
@@ -3281,39 +3378,39 @@ msgstr "Címkék"
 msgid "Ten"
 msgstr "Tíz"
 
-#: sui_menu.lua:194
+#: sui_menu.lua:201
 msgid "Text"
 msgstr "Szöveg"
 
-#: sui_menu.lua:3161 desktop_modules/module_collections.lua:655
-#: desktop_modules/module_collections.lua:656
+#: sui_menu.lua:3279 desktop_modules/module_collections.lua:671
+#: desktop_modules/module_collections.lua:672
 #: desktop_modules/module_action_list.lua:569
 #: desktop_modules/module_action_list.lua:570
-#: desktop_modules/module_recent.lua:337 desktop_modules/module_recent.lua:338
+#: desktop_modules/module_recent.lua:530 desktop_modules/module_recent.lua:531
 #: desktop_modules/module_tbr.lua:738 desktop_modules/module_tbr.lua:739
-#: desktop_modules/module_reading_stats.lua:654
-#: desktop_modules/module_reading_stats.lua:657
+#: desktop_modules/module_reading_stats.lua:692
+#: desktop_modules/module_reading_stats.lua:695
 #: desktop_modules/module_new_books.lua:352
 #: desktop_modules/module_new_books.lua:353
-#: desktop_modules/module_currently.lua:1013
-#: desktop_modules/module_currently.lua:1014
+#: desktop_modules/module_currently.lua:1024
+#: desktop_modules/module_currently.lua:1025
 msgid "Text Size"
 msgstr "Szöveg méret"
 
-#: desktop_modules/module_reading_stats.lua:655
+#: desktop_modules/module_reading_stats.lua:693
 msgid "Text Size — %d%%"
 msgstr "Szöveg méret — %d%%"
 
-#: sui_menu.lua:196
+#: sui_menu.lua:203
 msgid "Text only"
 msgstr "Csak szöveg"
 
-#: desktop_modules/module_coverdeck.lua:833
-#: desktop_modules/module_coverdeck.lua:834
+#: desktop_modules/module_coverdeck.lua:1025
+#: desktop_modules/module_coverdeck.lua:1026
 msgid "Text size"
 msgstr "Szöveg méret"
 
-#: sui_quicksettings_bar.lua:1128
+#: sui_quicksettings_bar.lua:1162
 msgid ""
 "The Quick Settings Bar will be %s after restart.\n"
 "\n"
@@ -3323,11 +3420,11 @@ msgstr ""
 "\n"
 "Újraindítás most?"
 
-#: sui_patches.lua:963
+#: sui_patches.lua:1016
 msgid "The «To Be Read» collection cannot be renamed."
 msgstr "Az „Olvasandó” gyűjtemény nem átnevezhető."
 
-#: sui_menu.lua:4142
+#: sui_menu.lua:4303
 msgid "Theme Colors"
 msgstr "Téma színek"
 
@@ -3339,6 +3436,14 @@ msgstr "Tizenhárom"
 msgid "Thirty"
 msgstr "Harminc"
 
+#: sui_quickactions.lua:2827 sui_quickactions.lua:2910
+msgid ""
+"This group is empty.\n"
+"Add actions to it from Settings → Quick Actions."
+msgstr ""
+"Ez a csoport üres.\n"
+"Művelet hozzáadása Beállítások → Gyors műveletek menüben."
+
 #: desktop_modules/module_reading_stats.lua:90
 msgid "This month — Pages"
 msgstr "Ez a hónap — Oldalak"
@@ -3347,7 +3452,7 @@ msgstr "Ez a hónap — Oldalak"
 msgid "This month — Time"
 msgstr "Ez a hónap — Idő"
 
-#: sui_presets.lua:829 sui_presets.lua:902 sui_presets.lua:988
+#: sui_presets.lua:837 sui_presets.lua:910 sui_presets.lua:996
 msgid "This name is reserved by a built-in preset."
 msgstr "Ez a név már foglalt egy beépített sablon számára."
 
@@ -3359,7 +3464,7 @@ msgstr "Ez a hét — Oldalak"
 msgid "This week — Time"
 msgstr "Ez a hét — Idő"
 
-#: sui_menu.lua:4208
+#: sui_menu.lua:4369
 msgid ""
 "This will delete all Simple UI settings and restart KOReader.\n"
 "Are you sure?"
@@ -3375,25 +3480,26 @@ msgstr "Három"
 msgid "Thursday"
 msgstr "Csütörtök"
 
-#: desktop_modules/module_coverdeck.lua:79
+#: desktop_modules/module_coverdeck.lua:80
 #: desktop_modules/module_currently.lua:251
 msgid "Time read"
 msgstr "Ideig olvasva"
 
-#: desktop_modules/module_coverdeck.lua:80
+#: desktop_modules/module_coverdeck.lua:81
 #: desktop_modules/module_currently.lua:252
 msgid "Time remaining"
 msgstr "Idő hátra"
 
-#: sui_titlebar.lua:106 desktop_modules/module_currently.lua:246
+#: sui_titlebar.lua:106 desktop_modules/module_coverdeck.lua:90
+#: desktop_modules/module_currently.lua:246
 msgid "Title"
 msgstr "Cím"
 
-#: sui_menu.lua:2584 sui_style.lua:1080
+#: sui_menu.lua:2635 sui_style.lua:1086
 msgid "Title Bar"
 msgstr "Címsor"
 
-#: sui_menu.lua:1740
+#: sui_menu.lua:1747
 msgid ""
 "Title Bar will be %s after restart.\n"
 "\n"
@@ -3403,19 +3509,15 @@ msgstr ""
 "\n"
 "Újraindítás most?"
 
-#: desktop_modules/module_coverdeck.lua:867
-msgid "Title Position"
-msgstr "Cím pozíció"
-
-#: sui_menu.lua:3223
+#: sui_menu.lua:3341
 msgid "Title and Author"
 msgstr "Cím és Szerző"
 
-#: sui_menu.lua:3174
+#: sui_menu.lua:3292
 msgid "Title and Author Below Covers"
 msgstr "Cím és szerző a borító alatt"
 
-#: sui_menu.lua:3235
+#: sui_menu.lua:3353
 msgid ""
 "Title and author strip enabled.\n"
 "\n"
@@ -3425,11 +3527,11 @@ msgstr ""
 "\n"
 "Újraindítás most?"
 
-#: sui_menu.lua:3201
+#: sui_menu.lua:3319
 msgid "Title only"
 msgstr "Csak cím"
 
-#: sui_menu.lua:3190
+#: sui_menu.lua:3308
 msgid ""
 "Title strip disabled.\n"
 "\n"
@@ -3439,7 +3541,7 @@ msgstr ""
 "\n"
 "Újraindítás most?"
 
-#: sui_menu.lua:3213
+#: sui_menu.lua:3331
 msgid ""
 "Title strip enabled.\n"
 "\n"
@@ -3451,7 +3553,7 @@ msgstr ""
 
 #: desktop_modules/module_tbr.lua:257 desktop_modules/module_tbr.lua:258
 #: desktop_modules/module_tbr.lua:273 desktop_modules/module_tbr.lua:309
-#: desktop_modules/module_tbr.lua:755 desktop_modules/module_coverdeck.lua:855
+#: desktop_modules/module_tbr.lua:755 desktop_modules/module_coverdeck.lua:1047
 msgid "To Be Read"
 msgstr "Olvasandó"
 
@@ -3459,14 +3561,14 @@ msgstr "Olvasandó"
 msgid "To Be Read Books"
 msgstr "Olvasandó könyvek"
 
-#: sui_patches.lua:1005
+#: sui_patches.lua:1058
 msgid "To Be Read list is full (max. 5 books)."
 msgstr "Olvasandó lista megtelt (max. 5 könyv)."
 
-#: desktop_modules/module_reading_goals.lua:651
-#: desktop_modules/module_reading_goals.lua:653
-#: desktop_modules/module_reading_goals.lua:706
-#: desktop_modules/module_reading_goals.lua:709
+#: desktop_modules/module_reading_goals.lua:652
+#: desktop_modules/module_reading_goals.lua:654
+#: desktop_modules/module_reading_goals.lua:708
+#: desktop_modules/module_reading_goals.lua:711
 msgid "Today"
 msgstr "Ma"
 
@@ -3478,8 +3580,8 @@ msgstr "Ma — Oldalak"
 msgid "Today — Time"
 msgstr "Ma — Idő"
 
-#: sui_menu.lua:2762 sui_menu.lua:2769 sui_menu.lua:2773 sui_menu.lua:3129
-#: sui_menu.lua:3136 desktop_modules/module_collections.lua:926
+#: sui_menu.lua:2813 sui_menu.lua:2820 sui_menu.lua:2824 sui_menu.lua:3224
+#: sui_menu.lua:3231 desktop_modules/module_collections.lua:942
 msgid "Top"
 msgstr "Felül"
 
@@ -3487,28 +3589,28 @@ msgstr "Felül"
 msgid "Top Bar"
 msgstr "Felső sáv"
 
-#: sui_homescreen.lua:1817
+#: sui_homescreen.lua:1868
 msgid "Top Margin"
 msgstr "Felső margó"
 
-#: sui_stats_windows.lua:563
+#: sui_stats_windows.lua:878 sui_stats_windows.lua:2610
 msgid "Total"
 msgstr "Összesen"
 
-#: sui_stats_windows.lua:1804 sui_stats_windows.lua:1820
+#: sui_stats_windows.lua:2106 sui_stats_windows.lua:2122
 msgid "Total time"
 msgstr "Összes idő"
 
-#: sui_menu.lua:3084 sui_menu.lua:3101 sui_quicksettings_bar.lua:1300
+#: sui_menu.lua:3179 sui_menu.lua:3196 sui_quicksettings_bar.lua:1334
 #: desktop_modules/module_quick_actions.lua:612
 msgid "Transparent"
 msgstr "Átlátszó"
 
-#: sui_menu.lua:2245
+#: sui_menu.lua:2252
 msgid "Transparent navigation bar"
 msgstr "Átlátszó navigációs sáv"
 
-#: sui_menu.lua:2227
+#: sui_menu.lua:2234
 msgid "Transparent status bar"
 msgstr "Átlátszó állapotsáv"
 
@@ -3528,36 +3630,36 @@ msgstr "Húsz"
 msgid "Two"
 msgstr "Kettő"
 
-#: sui_menu.lua:2950 sui_menu.lua:3017
+#: sui_menu.lua:3001 sui_menu.lua:3068
 msgid "Type"
 msgstr "Típus"
 
-#: sui_menu.lua:4081 sui_menu.lua:4084
+#: sui_menu.lua:4199 sui_menu.lua:4202
 msgid "UI Font"
 msgstr "Felület betűtípus"
 
-#: sui_menu.lua:4088
+#: sui_menu.lua:4206
 msgid "UI Font  (default)"
 msgstr "Felület betűtípus  (Alap)"
 
-#: sui_menu.lua:4090
+#: sui_menu.lua:4208
 msgid "UI Font  [%s]"
 msgstr "Felület betűtípus  [%s]"
 
-#: sui_menu.lua:3250
+#: sui_menu.lua:3368
 msgid "Uniformize Covers (2:3)"
 msgstr "Egységes borítóméret (2:3)"
 
-#: sui_stats_windows.lua:489
+#: sui_stats_windows.lua:793
 msgid "Unknown error."
 msgstr "Ismeretlen hiba."
 
-#: sui_style.lua:2087
+#: sui_style.lua:2101
 msgid "Unsupported format (use a folder or a .zip file)"
 msgstr "Nem támogatott formátum (mappa vagy .zip fájl szükséges)"
 
-#: sui_quickactions.lua:73 sui_quickactions.lua:1073 sui_style.lua:845
-#: sui_style.lua:1047
+#: sui_quickactions.lua:75 sui_quickactions.lua:1534 sui_style.lua:851
+#: sui_style.lua:1053
 msgid ""
 "Unsupported icon format.\n"
 "Please use a PNG or SVG file."
@@ -3565,14 +3667,14 @@ msgstr ""
 "Nem támogatott ikon formátum.\n"
 "PNG vagy SVG szükséges."
 
-#: sui_window.lua:1501 sui_window.lua:2337
+#: sui_window.lua:1597 sui_window.lua:2433
 msgid "Update"
 msgstr "Frissítés"
 
-#: desktop_modules/module_reading_stats.lua:767
-#: desktop_modules/module_reading_goals.lua:1075
-#: desktop_modules/module_coverdeck.lua:1047
-#: desktop_modules/module_currently.lua:1536
+#: desktop_modules/module_reading_stats.lua:805
+#: desktop_modules/module_reading_goals.lua:1089
+#: desktop_modules/module_coverdeck.lua:1292
+#: desktop_modules/module_currently.lua:1547
 msgid "Update Stats Now"
 msgstr "Statisztikák frissítése most"
 
@@ -3584,19 +3686,19 @@ msgstr "Frissítés leállítva."
 msgid "Update check cancelled."
 msgstr "Frissítés keresés leállítva."
 
-#: sui_menu.lua:3836 sui_presets.lua:875
+#: sui_menu.lua:3954 sui_presets.lua:883
 msgid "Update with current settings"
 msgstr "Felülírás jelenlegi beállításokkal"
 
-#: sui_menu.lua:4193
+#: sui_menu.lua:4354
 msgid "Updater module not found."
 msgstr "Frissítő modul nem található."
 
-#: sui_quickactions.lua:1265
+#: sui_quickactions.lua:1730
 msgid "Use this Nerd Font icon?"
 msgstr "Ennek a Nerd Font ikonnak a használata?"
 
-#: sui_menu.lua:511
+#: sui_menu.lua:518
 msgid ""
 "Uses the standard KOReader pagination bar on the homescreen.\n"
 "Not available when Navpager is active."
@@ -3604,15 +3706,15 @@ msgstr ""
 "A beépített KOReader lapozót használja a kezdőoldalon.\n"
 "Nem elérhető ha az Oldal lapozó aktív."
 
-#: sui_settings_window.lua:291
+#: sui_settings_window.lua:299
 msgid "Version, author and updates"
 msgstr "Verzió, készítő és frissítés"
 
-#: sui_menu.lua:4165
+#: sui_menu.lua:4326
 msgid "Version: %s"
 msgstr "Verzió: %s"
 
-#: sui_homescreen.lua:1820
+#: sui_homescreen.lua:1871
 msgid ""
 "Vertical space above this module.\n"
 "100% is the default spacing."
@@ -3636,16 +3738,16 @@ msgstr ""
 "Függőlegesen kihagyott hely a dátum (vagy óra) és az akkumulátor között.\n"
 "100% az alapértelmezett."
 
-#: sui_menu.lua:2839 sui_menu.lua:2893 sui_menu.lua:3081
+#: sui_menu.lua:2890 sui_menu.lua:2944 sui_menu.lua:3176
 msgid "Visibility"
 msgstr "Láthatóság"
 
-#: sui_menu.lua:2835 sui_menu.lua:2841 sui_menu.lua:2845 sui_menu.lua:2889
-#: sui_menu.lua:2895 sui_menu.lua:2899
+#: sui_menu.lua:2886 sui_menu.lua:2892 sui_menu.lua:2896 sui_menu.lua:2940
+#: sui_menu.lua:2946 sui_menu.lua:2950
 msgid "Visible"
 msgstr "Látható"
 
-#: sui_stats_windows.lua:2068
+#: sui_stats_windows.lua:2394
 msgid "WEEK STREAK"
 msgstr "HETI SZÉRIA"
 
@@ -3653,24 +3755,24 @@ msgstr "HETI SZÉRIA"
 msgid "WORD_CLOCK_TENS_SEP"
 msgstr "​"
 
-#: sui_menu.lua:2553 sui_settings_window.lua:310 sui_settings_window.lua:854
+#: sui_menu.lua:2604 sui_settings_window.lua:318 sui_settings_window.lua:862
 msgid "Wallpaper"
 msgstr "Háttérkép"
 
-#: sui_style.lua:1695
+#: sui_style.lua:1709
 msgid "Warm Paper"
 msgstr "Meleg papír"
 
-#: sui_quicksettings_bar.lua:496 sui_quicksettings_bar.lua:517
-#: sui_quicksettings_bar.lua:528
+#: sui_quicksettings_bar.lua:500 sui_quicksettings_bar.lua:521
+#: sui_quicksettings_bar.lua:532
 msgid "Warmth"
 msgstr "Színhőmérséklet"
 
-#: sui_quicksettings_bar.lua:1226
+#: sui_quicksettings_bar.lua:1260
 msgid "Warmth Slider"
 msgstr "Színhőmérséklet csúszka"
 
-#: sui_menu.lua:2519
+#: sui_menu.lua:2555
 msgid "Warn when modules on a page exceed the available screen height."
 msgstr ""
 "Figyelmeztetés amikor a modulok túlnyúlnak a rendelkezésre álló képernyő "
@@ -3688,7 +3790,21 @@ msgstr "Üdvözöl a Simple UI!"
 msgid "What's new:"
 msgstr "Újdonságok:"
 
-#: sui_menu.lua:2464
+#: sui_menu.lua:2580
+msgid ""
+"When a finished book is deleted from the device, keep it counted in the "
+"Books Read statistics on the Home Screen.\n"
+"\n"
+"Books changed back to Reading or Abandoned are automatically removed from "
+"this list."
+msgstr ""
+"Amikor egy befejezett könyv törölve lesz a készülékről, az Elolvasott "
+"könyvek statisztikában benne marad a kezdőképernyőn.\n"
+"\n"
+"A könyvek amik újra Olvasás vagy Félretéve állapotba kerülnek törlődnek "
+"erről a listáról."
+
+#: sui_menu.lua:2488
 msgid ""
 "When closing a book from the Home Screen, go back to the folder where the "
 "book is located instead of the Library home folder."
@@ -3696,7 +3812,7 @@ msgstr ""
 "Kezdőképernyőről megnyitott könyv bezárásakor a könyv mappájába térjen "
 "vissza a könyvtár fő mappája helyett."
 
-#: sui_menu.lua:2531
+#: sui_menu.lua:2567
 msgid ""
 "When enabled, long-pressing a module on the home screen opens its settings "
 "menu.\n"
@@ -3707,7 +3823,7 @@ msgstr ""
 "Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan érintésre "
 "megjelenjen."
 
-#: sui_quicksettings_bar.lua:1334
+#: sui_quicksettings_bar.lua:1368
 msgid ""
 "When enabled, long-pressing the Quick Settings Bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
@@ -3717,7 +3833,7 @@ msgstr ""
 "Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan érintésre "
 "megjelenjen."
 
-#: sui_menu.lua:1364
+#: sui_menu.lua:1371
 msgid ""
 "When enabled, long-pressing the bottom bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
@@ -3727,7 +3843,7 @@ msgstr ""
 "Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra "
 "megjelenjen."
 
-#: sui_menu.lua:1072
+#: sui_menu.lua:1079
 msgid ""
 "When enabled, long-pressing the top bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
@@ -3737,27 +3853,35 @@ msgstr ""
 "Kapcsold ki, ha nem szeretnéd, hogy a beállítási menü hosszan nyomásra "
 "megjelenjen."
 
-#: sui_quickactions.lua:327 sui_config.lua:119
+#: sui_menu.lua:2374
+msgid ""
+"When waking the device from sleep/suspend, always return to the Home Screen "
+"— even if a book was open when it went to sleep."
+msgstr ""
+"Amikor az eszköz felébred alvó/felfüggesztett módból, a kezdőképernyőre tér "
+"vissza — még akkor is ha altatáskor egy könyv volt megnyitva."
+
+#: sui_quickactions.lua:696 sui_config.lua:123
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
-#: sui_bottombar.lua:1730
+#: sui_quickactions.lua:212
 msgid "Wi-Fi off"
 msgstr "Wi-Fi ki"
 
-#: sui_config.lua:159
+#: sui_config.lua:165
 msgid "WiFi"
 msgstr "WiFi"
 
-#: sui_bottombar.lua:1717
+#: sui_quickactions.lua:199
 msgid "WiFi not available on this device."
 msgstr "WiFi nem elérhető ezen az eszközön."
 
-#: sui_quickactions.lua:1409
+#: sui_quickactions.lua:1874
 msgid "Wikipedia Lookup"
 msgstr "Wikipédia keresés"
 
-#: desktop_modules/module_currently.lua:1499
+#: desktop_modules/module_currently.lua:1510
 msgid "With percentage"
 msgstr "Százalékkal"
 
@@ -3765,19 +3889,19 @@ msgstr "Százalékkal"
 msgid "Word"
 msgstr "Szavak"
 
-#: desktop_modules/module_quote.lua:928
+#: desktop_modules/module_quote.lua:950
 msgid "Your highlights"
 msgstr "Kiemeléseid"
 
-#: sui_stats_windows.lua:340
+#: sui_stats_windows.lua:391
 msgid "apr"
 msgstr "ápr."
 
-#: sui_stats_windows.lua:341
+#: sui_stats_windows.lua:392
 msgid "aug"
 msgstr "aug."
 
-#: sui_stats_windows.lua:1678 desktop_modules/module_reading_stats.lua:92
+#: sui_stats_windows.lua:1980 desktop_modules/module_reading_stats.lua:92
 msgid "books finished"
 msgstr "könyv befejezve"
 
@@ -3793,53 +3917,53 @@ msgstr "napos sorozat"
 msgid "days streak"
 msgstr "napos sorozat"
 
-#: sui_stats_windows.lua:341
+#: sui_stats_windows.lua:392
 msgid "dec"
 msgstr "dec."
 
-#: sui_quickactions.lua:1065 sui_quickactions.lua:1923
+#: sui_quickactions.lua:1526 sui_quickactions.lua:2484
 msgid "default"
 msgstr "alap"
 
-#: sui_menu.lua:835 sui_menu.lua:1101 sui_menu.lua:1741 sui_menu.lua:4291
-#: sui_quicksettings_bar.lua:1129
+#: sui_menu.lua:842 sui_menu.lua:1108 sui_menu.lua:1748 sui_menu.lua:4452
+#: sui_quicksettings_bar.lua:1163
 msgid "disabled"
 msgstr "letiltva"
 
-#: sui_style.lua:1790
+#: sui_style.lua:1804
 msgid "e.g. #F5F0E8  or #1C1C1E  (empty = reset)"
 msgstr "pl. #F5F0E8  vagy #1C1C1E  (üres = visszaállítás)"
 
-#: sui_menu.lua:835 sui_menu.lua:1101 sui_menu.lua:1741 sui_menu.lua:4291
-#: sui_quicksettings_bar.lua:1129
+#: sui_menu.lua:842 sui_menu.lua:1108 sui_menu.lua:1748 sui_menu.lua:4452
+#: sui_quicksettings_bar.lua:1163
 msgid "enabled"
 msgstr "engedélyezve"
 
-#: sui_stats_windows.lua:340
+#: sui_stats_windows.lua:391
 msgid "feb"
 msgstr "febr."
 
-#: sui_style.lua:2033
+#: sui_style.lua:2047
 msgid "ffi/archiver not available in this KOReader version"
 msgstr "ffi/archiver nem elérhető ebben a KOReader verzióban"
 
-#: sui_quickactions.lua:1285
+#: sui_quickactions.lua:1750
 msgid "hex code, e.g. E001"
 msgstr "hex kód, pl. E001"
 
-#: sui_stats_windows.lua:1457 sui_stats_windows.lua:1676
+#: sui_stats_windows.lua:1759 sui_stats_windows.lua:1978
 msgid "hours read"
 msgstr "óra olvasva"
 
-#: sui_stats_windows.lua:340
+#: sui_stats_windows.lua:391
 msgid "jan"
 msgstr "jan."
 
-#: sui_stats_windows.lua:341
+#: sui_stats_windows.lua:392
 msgid "jul"
 msgstr "júl."
 
-#: sui_stats_windows.lua:340
+#: sui_stats_windows.lua:391
 msgid "jun"
 msgstr "jún."
 
@@ -3847,11 +3971,11 @@ msgstr "jún."
 msgid "latest"
 msgstr "legutóbbi"
 
-#: sui_stats_windows.lua:340
+#: sui_stats_windows.lua:391
 msgid "mar"
 msgstr "márc."
 
-#: sui_stats_windows.lua:340
+#: sui_stats_windows.lua:391
 msgid "may"
 msgstr "máj."
 
@@ -3859,15 +3983,16 @@ msgstr "máj."
 msgid "no streak"
 msgstr "nincs széria"
 
-#: sui_quickactions.lua:847 sui_quickactions.lua:2015 sui_quickactions.lua:2031
+#: sui_quickactions.lua:1305 sui_quickactions.lua:2581
+#: sui_quickactions.lua:2600
 msgid "not configured"
 msgstr "nincs beállítva"
 
-#: sui_stats_windows.lua:341
+#: sui_stats_windows.lua:392
 msgid "nov"
 msgstr "nov."
 
-#: sui_stats_windows.lua:341
+#: sui_stats_windows.lua:392
 msgid "oct"
 msgstr "okt."
 
@@ -3887,11 +4012,11 @@ msgstr "ma olvasott idő"
 msgid "of reading, all time"
 msgstr "teljes időszakban olvasva"
 
-#: sui_style.lua:2076
+#: sui_style.lua:2090
 msgid "pack_path not provided"
 msgstr "csomag útvonal nincs megadva"
 
-#: sui_stats_windows.lua:1677 sui_stats_windows.lua:2019
+#: sui_stats_windows.lua:1979 sui_stats_windows.lua:2345
 msgid "pages read"
 msgstr "olvasott oldalak"
 
@@ -3911,11 +4036,11 @@ msgstr "ma olvasott oldalak"
 msgid "pages/day (7 days)"
 msgstr "oldal/nap (7 nap)"
 
-#: sui_stats_windows.lua:2017
+#: sui_stats_windows.lua:2343
 msgid "reading time"
 msgstr "olvasási idő"
 
-#: sui_stats_windows.lua:341
+#: sui_stats_windows.lua:392
 msgid "sep"
 msgstr "szept."
 
@@ -3923,17 +4048,17 @@ msgstr "szept."
 msgid "⬆ Update available: %s"
 msgstr "⬆ Frissítés elérhető: %s"
 
-#: sui_menu.lua:330 sui_menu.lua:1922
-#: desktop_modules/module_collections.lua:976
+#: sui_menu.lua:337 sui_menu.lua:1929
+#: desktop_modules/module_collections.lua:992
 #: desktop_modules/module_action_list.lua:459
-#: desktop_modules/module_reading_stats.lua:756
+#: desktop_modules/module_reading_stats.lua:794
 #: desktop_modules/module_quick_actions.lua:377
 msgid "  (%d left)"
 msgid_plural "  (%d left)"
 msgstr[0] "  (%d maradt)"
 msgstr[1] "  (%d maradt)"
 
-#: desktop_modules/module_reading_goals.lua:833
+#: desktop_modules/module_reading_goals.lua:847
 msgid "  Set Goal  (%d book in %s)"
 msgid_plural "  Set Goal  (%d books in %s)"
 msgstr[0] "  Cél beállítása  (%d db, %s)"
@@ -3945,40 +4070,47 @@ msgid_plural "%d books"
 msgstr[0] "%d könyv"
 msgstr[1] "%d könyv"
 
-#: desktop_modules/module_reading_goals.lua:938
+#: desktop_modules/module_reading_goals.lua:952
 msgid "%d book in %s"
 msgid_plural "%d books in %s"
 msgstr[0] "%d könyv, %s"
 msgstr[1] "%d könyv, %s"
 
-#: sui_stats_windows.lua:814
+#: sui_stats_windows.lua:1116
 msgid "%d book read in %s"
 msgid_plural "%d books read in %s"
 msgstr[0] "%d könyv elolvasva ekkor: %s"
 msgstr[1] "%d könyv elolvasva ekkor: %s"
 
-#: sui_stats_windows.lua:1827 sui_stats_windows.lua:1830
+#: sui_stats_windows.lua:2129 sui_stats_windows.lua:2132
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d nap"
 msgstr[1] "%d nap"
 
-#: desktop_modules/module_coverdeck.lua:636
-#: desktop_modules/module_currently.lua:647
-#: desktop_modules/module_currently.lua:648
-#: desktop_modules/module_currently.lua:726
+#: desktop_modules/module_coverdeck.lua:761
+#: desktop_modules/module_currently.lua:653
+#: desktop_modules/module_currently.lua:654
+#: desktop_modules/module_currently.lua:732
 msgid "%d day of reading"
 msgid_plural "%d days of reading"
 msgstr[0] "%d nap olvasva"
 msgstr[1] "%d nap olvasva"
 
-#: desktop_modules/module_reading_goals.lua:1024
+#: desktop_modules/module_reading_goals.lua:1038
 msgid "%d in %s"
 msgid_plural "%d in %s"
 msgstr[0] "%d db, %s"
 msgstr[1] "%d db, %s"
 
-#: sui_stats_windows.lua:1850 sui_stats_windows.lua:1853
+#: sui_quickactions.lua:1297 sui_quickactions.lua:2573
+#: sui_quickactions.lua:2594
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] "%d elem"
+msgstr[1] "%d elem"
+
+#: sui_stats_windows.lua:2152 sui_stats_windows.lua:2155
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d hét"
@@ -3991,26 +4123,32 @@ msgstr[0] "%d/%d könyv"
 msgstr[1] "%d/%d könyv"
 
 #: desktop_modules/module_collections.lua:355
-#: desktop_modules/module_reading_stats.lua:277
+#: desktop_modules/module_reading_stats.lua:297
 #: desktop_modules/module_quick_actions.lua:493
 msgid "(%d/%d — %d left)"
 msgid_plural "(%d/%d — %d left)"
 msgstr[0] "(%d/%d — %d maradt)"
 msgstr[1] "(%d/%d — %d maradt)"
 
-#: desktop_modules/module_reading_goals.lua:1015
+#: sui_quickactions.lua:2101
+msgid "Group (%d item)"
+msgid_plural "Group (%d items)"
+msgstr[0] "Csoport (%d elem)"
+msgstr[1] "Csoport (%d elem)"
+
+#: desktop_modules/module_reading_goals.lua:1029
 msgid "Manually Tracked Books  (%d in %s)"
 msgid_plural "Manually Tracked Books  (%d in %s)"
 msgstr[0] "Kézzel követett könyvek  (%d db, %s)"
 msgstr[1] "Kézzel követett könyvek  (%d db, %s)"
 
-#: sui_quicksettings_bar.lua:1103
+#: sui_quicksettings_bar.lua:1137
 msgid "Maximum of %d slot reached. Remove one first."
 msgid_plural "Maximum of %d slots reached. Remove one first."
 msgstr[0] "A legfeljebb %d hely elérve. Távolíts el előbb egyet."
 msgstr[1] "A legfeljebb %d hely elérve. Távolíts el előbb egyet."
 
-#: sui_menu.lua:629 sui_menu.lua:895
+#: sui_menu.lua:636 sui_menu.lua:902
 msgid ""
 "Text shown in the top bar.\n"
 "Maximum %d character."
@@ -4024,7 +4162,7 @@ msgstr[1] ""
 "A felső sávban mutatott szöveg.\r\n"
 "Legfeljebb %d karakter."
 
-#: sui_menu.lua:1886 sui_menu.lua:2005
+#: sui_menu.lua:1893 sui_menu.lua:2012
 #: desktop_modules/module_action_list.lua:396
 #: desktop_modules/module_action_list.lua:533
 #: desktop_modules/module_quick_actions.lua:319
@@ -4037,15 +4175,15 @@ msgstr[0] ""
 msgstr[1] ""
 "A legfeljebb %d művelet modulonként elérve. Távolíts el előbb egyet."
 
-#: sui_quickactions.lua:905 sui_quickactions.lua:1974
+#: sui_quickactions.lua:1363 sui_quickactions.lua:2537
 msgid "The maximum of %d quick action has been reached. Delete one first."
 msgid_plural ""
 "The maximum of %d quick actions has been reached. Delete one first."
 msgstr[0] "A legfeljebb %d gyors művelet elérve. Távolíts el előbb egyet."
 msgstr[1] "A legfeljebb %d gyors művelet elérve. Távolíts el előbb egyet."
 
-#: desktop_modules/module_reading_stats.lua:542
-#: desktop_modules/module_reading_stats.lua:624
+#: desktop_modules/module_reading_stats.lua:580
+#: desktop_modules/module_reading_stats.lua:662
 msgid "The maximum of %d stat per row has been reached. Remove one first."
 msgid_plural ""
 "The maximum of %d stats per row has been reached. Remove one first."
@@ -4054,31 +4192,32 @@ msgstr[0] ""
 msgstr[1] ""
 "A legfeljebb %d statisztika soronként elérve. Távolíts el előbb egyet."
 
-#: sui_menu.lua:363 sui_menu.lua:1216
+#: sui_menu.lua:370 sui_menu.lua:1223
 msgid "The maximum of %d tab has been reached. Remove one first."
 msgid_plural "The maximum of %d tabs has been reached. Remove one first."
 msgstr[0] "A legfeljebb %d oldal elérve. Távolíts el előbb egyet."
 msgstr[1] "A legfeljebb %d oldal elérve. Távolíts el előbb egyet."
 
-#: sui_stats_windows.lua:1460
+#: sui_stats_windows.lua:1762
 msgid "day read"
 msgid_plural "days read"
 msgstr[0] "nap olvasva"
 msgstr[1] "nap olvasva"
 
-#: sui_stats_windows.lua:1475
+#: sui_stats_windows.lua:1777
 msgid "page read"
 msgid_plural "pages read"
 msgstr[0] "olvasott oldal"
 msgstr[1] "olvasott oldalak"
 
-#: main.lua:986
-msgid "Book statistics"
-msgstr "Könyv statisztikák"
+#~ msgid "Above"
+#~ msgstr "Felette"
 
-#: desktop_modules/module_quote.lua:1440
-msgid "Fixed Height"
-msgstr "Fix magasság"
+#~ msgid "Below"
+#~ msgstr "Alatta"
+
+#~ msgid "Title Position"
+#~ msgstr "Cím pozíció"
 
 #~ msgid "Arrange Collections"
 #~ msgstr "Gyűjtemények elrendezése"
