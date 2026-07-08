@@ -1,872 +1,1873 @@
-# Simple UI — KOReader plugin
-# Translation template
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-04-14 21:00\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2026-07-05 22:29\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Ілля Пишняк <il.pyshniak@gmail.com>\n"
+"Language-Team: \n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: uk\n"
-"X-Generator: Poedit 1.7.5\n"
+"Plural-Forms: nplurals=3; plural=((n%10==1) && (n%100!=11)) ? 0 : ((n%10>=2 "
+"&& n%10<=4) && ((n%100<12 || n%100>14))) ? 1 : 2;\n"
+"X-Generator: Poedit 3.9\n"
 
-#: desktop_modules/module_reading_goals.lua:626
-msgid "  Physical Books  (%d in %s)"
-msgstr " Фізичні книги  (%d у %s)"
+#: desktop_modules/module_reading_goals.lua:868
+msgid "  Set Goal  (%d hr/month)"
+msgstr "  Встановити ціль  (%d год/міс)"
 
-#: desktop_modules/module_reading_goals.lua:641
+#: desktop_modules/module_reading_goals.lua:888
 msgid "  Set Goal  (%d min/day)"
-msgstr "Встановити ціль  (%d хв/день)"
+msgstr "  Встановити ціль  (%d хв/день)"
 
-#: desktop_modules/module_reading_goals.lua:620
+#: desktop_modules/module_reading_goals.lua:848
 msgid "  Set Goal  (%s)"
-msgstr "Встановити ціль  (%s)"
+msgstr "  Встановити ціль  (%s)"
 
-#: desktop_modules/module_reading_goals.lua:640
+#: desktop_modules/module_reading_goals.lua:867
+#: desktop_modules/module_reading_goals.lua:887
 msgid "  Set Goal  (disabled)"
-msgstr "Встановити ціль  (вимкнено)"
+msgstr "  Встановити ціль  (вимкнено)"
 
-#: desktop_modules/module_recent.lua:125
+#: sui_foldercovers.lua:2395
+msgid " p."
+msgstr " ст."
+
+#: desktop_modules/module_reading_goals.lua:967
+msgid "%d hr/month"
+msgstr "%d год/міс"
+
+#: desktop_modules/module_reading_goals.lua:982
+msgid "%d min/day"
+msgstr "%d хв/день"
+
+#: desktop_modules/module_recent.lua:162 desktop_modules/module_recent.lua:434
+#: desktop_modules/module_tbr.lua:372
 msgid "%d%%"
 msgstr "%d%%"
 
-#: desktop_modules/module_currently.lua:529 desktop_modules/module_new_books.lua:182 desktop_modules/module_coverdeck.lua:571
-#: desktop_modules/module_recent.lua:159
+#: desktop_modules/module_recent.lua:196 desktop_modules/module_recent.lua:456
+#: desktop_modules/module_tbr.lua:402 desktop_modules/module_coverdeck.lua:758
+#: desktop_modules/module_new_books.lua:218
+#: desktop_modules/module_currently.lua:627
+#: desktop_modules/module_currently.lua:636
 msgid "%d%% Read"
-msgstr ""
+msgstr "Прочитано %d%%"
 
-#: desktop_modules/module_currently.lua:605
+#: desktop_modules/module_currently.lua:730
 msgid "%s left"
-msgstr "%d залишилось"
+msgstr "Лишилося %s"
 
-#: desktop_modules/module_currently.lua:553 desktop_modules/module_currently.lua:603 desktop_modules/module_reading_goals.lua:434
-#: desktop_modules/module_coverdeck.lua:576
+#: desktop_modules/module_reading_goals.lua:496
+#: desktop_modules/module_reading_goals.lua:524
+#: desktop_modules/module_coverdeck.lua:763
+#: desktop_modules/module_currently.lua:670
+#: desktop_modules/module_currently.lua:671
+#: desktop_modules/module_currently.lua:728
+#: desktop_modules/module_currently.lua:739
 msgid "%s read"
-msgstr ""
+msgstr "Читали %s"
 
-#: desktop_modules/module_currently.lua:572 desktop_modules/module_coverdeck.lua:582
+#: desktop_modules/module_coverdeck.lua:769
+#: desktop_modules/module_currently.lua:693
+#: desktop_modules/module_currently.lua:697
 msgid "%s remaining"
-msgstr ""
+msgstr "Лишилося %s"
 
-#: sui_menu.lua:849
+#: desktop_modules/module_collections.lua:354
+#: desktop_modules/module_reading_stats.lua:296
+#: desktop_modules/module_quick_actions.lua:492
+msgid "(%d/%d — at limit)"
+msgstr "(%d/%d — максимум)"
+
+#: sui_menu.lua:2778
+msgid "4-Cover Grid (Mosaic View Only)"
+msgstr "Сітка з 4 обкладинок (лиш у мозаїці)"
+
+#: sui_menu.lua:4010 sui_menu.lua:4095 sui_presets.lua:914 sui_presets.lua:1000
+msgid "A preset named \"%s\" already exists."
+msgstr "Пресет із назвою «%s» вже існує."
+
+#: sui_menu.lua:3956 sui_presets.lua:855
+msgid ""
+"A preset named \"%s\" already exists.\n"
+"Overwrite it?"
+msgstr ""
+"Пресет із назвою «%s» вже існує.\n"
+"Перезаписати його?"
+
+#: sui_menu.lua:1046 sui_menu.lua:1323
 msgid ""
 "A restart is required to apply the new bar size across all layouts.\n"
 "\n"
 "Restart now?"
 msgstr ""
-"Щоб застосувати новий розмір панелі до всіх макетів, потрібен перезапуск.\n"
+"Щоб застосувати новий розмір панелі усюди, потрібно перезапустити програму.\n"
 "\n"
 "Перезапустити зараз?"
 
-#: sui_menu.lua:2221
+#: sui_menu.lua:4278
+msgid ""
+"A restart is required to apply the new text size everywhere.\n"
+"\n"
+"Restart now?"
+msgstr ""
+"Щоб застосувати новий розмір тексту усюди, потрібно перезапустити програму.\n"
+"\n"
+"Перезапустити зараз?"
+
+#: sui_stats_windows.lua:2418
+msgid "ALL TIME"
+msgstr "ЗА ВЕСЬ ЧАС"
+
+#: sui_menu.lua:4531 sui_settings_window.lua:298 sui_settings_window.lua:855
 msgid "About"
-msgstr "Про плагін"
+msgstr "Про"
 
-#: desktop_modules/module_coverdeck.lua:750
-msgid "Above"
-msgstr "Вище"
+#: sui_style.lua:2085
+msgid "Accent / Active Color"
+msgstr "Акцентний/Активний колір"
 
-#: sui_menu.lua:1323 desktop_modules/module_quick_actions.lua:293
+#: sui_quickactions.lua:2089 sui_quickactions.lua:2135
+msgid "Action"
+msgstr "Дія"
+
+#: desktop_modules/module_action_list.lua:329
+msgid "Action List"
+msgstr "Список дій"
+
+#: sui_quickactions.lua:2339
+msgid "Action Type"
+msgstr "Тип дії"
+
+#: sui_quickactions.lua:955
+msgid "Action error: %s"
+msgstr "Помилка дії: %s"
+
+#: sui_quickactions.lua:2111
+msgid "Action name…"
+msgstr "Назва дії…"
+
+#: sui_quickactions.lua:948
+msgid "Action not available: %s"
+msgstr "Дія недоступна: %s"
+
+#: sui_quicksettings_bar.lua:1234 sui_quicksettings_bar.lua:1261
+msgid "Add Action"
+msgstr "Додати дію"
+
+#: sui_menu.lua:1555 sui_menu.lua:1593
+msgid "Add Button"
+msgstr "Додати кнопку"
+
+#: desktop_modules/module_collections.lua:853
+#: desktop_modules/module_collections.lua:887
+msgid "Add Collection"
+msgstr "Додати колекцію"
+
+#: sui_homescreen.lua:1899 sui_menu.lua:974 sui_menu.lua:1011 sui_menu.lua:1197
+#: sui_menu.lua:1243 sui_menu.lua:1992 sui_menu.lua:2028
+#: sui_quicksettings_bar.lua:1048 sui_window.lua:673
+#: sui_settings_window.lua:860 desktop_modules/module_action_list.lua:513
+#: desktop_modules/module_action_list.lua:549
+#: desktop_modules/module_reading_stats.lua:646
+#: desktop_modules/module_reading_stats.lua:678
+#: desktop_modules/module_reading_goals.lua:913
+#: desktop_modules/module_reading_goals.lua:942
+#: desktop_modules/module_coverdeck.lua:1090
+#: desktop_modules/module_coverdeck.lua:1126
+#: desktop_modules/module_coverdeck.lua:1240
+#: desktop_modules/module_coverdeck.lua:1270
+#: desktop_modules/module_currently.lua:1207
+#: desktop_modules/module_currently.lua:1254
+#: desktop_modules/module_quick_actions.lua:440
+#: desktop_modules/module_quick_actions.lua:476
+msgid "Add Item"
+msgstr "Додати елемент"
+
+#: sui_settings_window.lua:857 sui_settings_window.lua:954
+msgid "Add Module"
+msgstr "Додати модуль"
+
+#: sui_settings_window.lua:920
+msgid "Add Page"
+msgstr "Додати сторінку"
+
+#: sui_menu.lua:1912 sui_quicksettings_bar.lua:1107
+#: desktop_modules/module_action_list.lua:424
+#: desktop_modules/module_quick_actions.lua:345
 msgid "Add at least 2 actions to arrange."
-msgstr "Додайте принаймні 2 дії для впорядкування."
+msgstr "Додайте щонайменше 2 дії для упорядкування."
 
-#: desktop_modules/module_tbr.lua:409
+#: desktop_modules/module_tbr.lua:582
 msgid "Add at least 2 books to arrange."
-msgstr "Додайте принаймні 2 книги, щоб упорядкувати."
+msgstr "Додайте щонайменше 2 книги для упорядкування."
 
-#: desktop_modules/module_reading_stats.lua:485
+#: desktop_modules/module_reading_stats.lua:595
 msgid "Add at least 2 stats to arrange."
-msgstr "Додайте принаймні 2 статистичні дані для впорядкування."
+msgstr "Додайте щонайменше 2 статистики для упорядкування."
 
-#: desktop_modules/module_tbr.lua:265
+#: desktop_modules/module_tbr.lua:294
 msgid "Add to To Be Read"
-msgstr "Додати до Для читання"
+msgstr "Додати до списку «До прочитання»"
 
-#: desktop_modules/module_reading_stats.lua:66
+#: sui_window.lua:1928
+msgid "Advanced"
+msgstr "Розширені налаштування"
+
+#: sui_window.lua:1837
+msgid "Advanced option"
+msgstr "Розширені налаштування"
+
+#: desktop_modules/module_quote.lua:1417
+#: desktop_modules/module_action_list.lua:587
+#: desktop_modules/module_reading_stats.lua:751
+#: desktop_modules/module_clock.lua:851
+msgid "Alignment"
+msgstr "Вирівнювання"
+
+#: sui_window.lua:2961 sui_settings_window.lua:633
+msgid "All items have already been added."
+msgstr "Усі елементи вже додано."
+
+#: sui_settings_window.lua:611
+msgid "All modules have already been added."
+msgstr "Усі модулі вже додано."
+
+#: sui_quickactions.lua:3046
+msgid "All recent books are finished."
+msgstr "Усі останні книги прочитані."
+
+#: desktop_modules/module_reading_stats.lua:92
 msgid "All time — Books"
-msgstr ""
+msgstr "За весь час — Книги"
 
-#: desktop_modules/module_reading_stats.lua:65
+#: desktop_modules/module_reading_stats.lua:91
 msgid "All time — Time"
-msgstr ""
+msgstr "За весь час — Час"
 
-#: desktop_modules/module_reading_goals.lua:609
+#: sui_menu.lua:2503
+msgid "Always"
+msgstr "Завжди"
+
+#: desktop_modules/module_reading_goals.lua:835
+#: desktop_modules/module_reading_goals.lua:901
+#: desktop_modules/module_reading_goals.lua:938
+#: desktop_modules/module_reading_goals.lua:955
 msgid "Annual Goal"
-msgstr "Річна мета"
+msgstr "Річна ціль"
 
-#: sui_menu.lua:1233 desktop_modules/module_reading_goals.lua:354
+#: desktop_modules/module_reading_goals.lua:387
 msgid "Annual Reading Goal"
-msgstr "Щорічна мета читання"
+msgstr "Річна ціль читання"
 
-#: sui_config.lua:1653 sui_config.lua:1734 sui_menu.lua:769 sui_menu.lua:839 sui_menu.lua:1740 sui_menu.lua:1775
+#: sui_menu.lua:1771 sui_menu.lua:1774
+msgid "Appearance"
+msgstr "Вигляд"
+
+#: sui_config.lua:851 sui_config.lua:923 sui_menu.lua:1036 sui_menu.lua:1313
+#: sui_menu.lua:2344 sui_menu.lua:2416 sui_menu.lua:2453 sui_menu.lua:2826
+#: sui_menu.lua:3187 sui_menu.lua:4272 sui_style.lua:2109
+#: desktop_modules/module_clock.lua:894 desktop_modules/module_clock.lua:920
 msgid "Apply"
 msgstr "Застосувати"
 
-#: desktop_modules/module_clock.lua:54
+#: sui_style.lua:2159
+msgid "Apply Palette…"
+msgstr "Застосувати палітру…"
+
+#: desktop_modules/module_clock.lua:60
 msgid "April"
 msgstr "Квітень"
 
-#: desktop_modules/module_reading_stats.lua:482
+#: desktop_modules/module_tbr.lua:570 desktop_modules/module_tbr.lua:643
+#: desktop_modules/module_tbr.lua:666
 msgid "Arrange"
-msgstr "Впорядкувати"
+msgstr "Упорядкувати"
 
-#: sui_menu.lua:1327 desktop_modules/module_quick_actions.lua:305
+#: sui_menu.lua:1916 desktop_modules/module_action_list.lua:444
+#: desktop_modules/module_quick_actions.lua:363
 msgid "Arrange %s"
-msgstr "Впорядкувати %s"
+msgstr "Упорядкувати %s"
 
-#: sui_menu.lua:1049 sui_menu.lua:1100 sui_menu.lua:1115
+#: sui_menu.lua:1499 sui_menu.lua:1506 sui_menu.lua:1695 sui_menu.lua:1710
 msgid "Arrange Buttons"
-msgstr "Впорядкування кнопок"
+msgstr "Упорядкувати кнопки"
 
-#: desktop_modules/module_collections.lua:622 desktop_modules/module_collections.lua:635
-msgid "Arrange Collections"
-msgstr "Впорядкувати колекції"
-
-#: sui_menu.lua:604 sui_menu.lua:633 sui_menu.lua:1317 desktop_modules/module_currently.lua:863
-#: desktop_modules/module_currently.lua:887 desktop_modules/module_quick_actions.lua:284
+#: sui_homescreen.lua:1898 sui_menu.lua:686 sui_menu.lua:757 sui_menu.lua:764
+#: sui_menu.lua:1906 sui_topbar.lua:514 sui_bottombar.lua:889
+#: sui_quicksettings_bar.lua:1047 sui_quicksettings_bar.lua:1098
+#: sui_settings_window.lua:41 sui_settings_window.lua:882
+#: desktop_modules/module_action_list.lua:415
+#: desktop_modules/module_coverdeck.lua:1180
+#: desktop_modules/module_coverdeck.lua:1186
+#: desktop_modules/module_currently.lua:1081
+#: desktop_modules/module_currently.lua:1124
+#: desktop_modules/module_quick_actions.lua:336
 msgid "Arrange Items"
-msgstr ""
+msgstr "Упорядкувати елементи"
 
-#: sui_menu.lua:1582
-msgid "Arrange Modules"
-msgstr "Впорядкувати модулі"
+#: sui_quicksettings_bar.lua:1123
+msgid "Arrange Quick Settings"
+msgstr "Упорядкувати швидкі налаштування"
 
-#: desktop_modules/module_reading_stats.lua:491
+#: desktop_modules/module_reading_stats.lua:606
 msgid "Arrange Reading Stats"
-msgstr "Впорядкувати статистику читання"
+msgstr "Упорядкувати статистику читання"
 
-#: desktop_modules/module_coverdeck.lua:774 desktop_modules/module_coverdeck.lua:787
+#: desktop_modules/module_coverdeck.lua:1201
 msgid "Arrange Statistics"
-msgstr "Впорядкувати статистику"
+msgstr "Упорядкувати статистику"
 
-#: desktop_modules/module_tbr.lua:402 desktop_modules/module_tbr.lua:421
-msgid "Arrange To Be Read list"
-msgstr "Впорядкувати список Для читання"
+#: sui_menu.lua:293 sui_menu.lua:311
+msgid "Arrange Tabs"
+msgstr "Упорядкувати вкладки"
 
-#: sui_menu.lua:199 sui_menu.lua:209
-msgid "Arrange tabs"
-msgstr "Впорядкувати вкладки"
+#: desktop_modules/module_tbr.lua:575 desktop_modules/module_tbr.lua:613
+msgid "Arrange To Be Read List"
+msgstr "Упорядкувати список «До прочитання»"
 
-#: desktop_modules/module_clock.lua:55
+#: sui_presets.lua:136
+msgid "At a Glance"
+msgstr "На виду"
+
+#: desktop_modules/module_clock.lua:61
 msgid "August"
 msgstr "Серпень"
 
-#: desktop_modules/module_currently.lua:266
+#: desktop_modules/module_coverdeck.lua:91
+#: desktop_modules/module_currently.lua:247
 msgid "Author"
 msgstr "Автор"
 
-#: sui_menu.lua:2237
+#: sui_menu.lua:4360
 msgid "Author: %s"
 msgstr "Автор: %s"
 
-#: sui_config.lua:144 sui_browsemeta.lua:57
+#: sui_quickactions.lua:773 sui_config.lua:129 sui_browsemeta.lua:77
 msgid "Authors"
 msgstr "Автори"
 
-#: sui_browsemeta.lua:742 sui_foldercovers.lua:555 sui_foldercovers.lua:620 desktop_modules/module_collections.lua:583
-msgid "Auto (first book)"
-msgstr ""
+#: sui_menu.lua:2789
+msgid "Auto (Single ↔ 4-Cover Grid)"
+msgstr "Автоматично (Одинарна ↔ Сітка з 4 обкладинками)"
 
-#: sui_titlebar.lua:55
+#: sui_foldercovers.lua:803 sui_foldercovers.lua:860 sui_browsemeta.lua:1161
+#: desktop_modules/module_collections.lua:748
+msgid "Auto (first book)"
+msgstr "Автоматично (перша книга)"
+
+#: sui_menu.lua:2301
+msgid "Auto-rotate"
+msgstr "Автообертання"
+
+#: sui_menu.lua:4365
+msgid "Automatic Update Check"
+msgstr "Автоматична перевірка оновлень"
+
+#: sui_stats_windows.lua:1060 sui_stats_windows.lua:2089
+#: sui_stats_windows.lua:2763
+msgid "Average per day"
+msgstr "В середньому за день"
+
+#: sui_stats_windows.lua:1062 sui_stats_windows.lua:2765
+msgid "Average per page"
+msgstr "В середньому на сторінку"
+
+#: sui_titlebar.lua:103 sui_titlebar.lua:109
 msgid "Back"
 msgstr "Назад"
 
-#: desktop_modules/module_collections.lua:662
-msgid "Badge position: Bottom"
-msgstr "Розташування значка: знизу"
+#: sui_style.lua:100
+msgid "Back Button"
+msgstr "Кнопка «Назад»"
 
-#: desktop_modules/module_collections.lua:663
-msgid "Badge position: Top"
-msgstr "Розташування значка: зверху"
+#: sui_menu.lua:3091 sui_menu.lua:3100 sui_menu.lua:3106
+#: desktop_modules/module_collections.lua:929
+msgid "Badge"
+msgstr "Значок"
 
-#: sui_config.lua:168
+#: sui_menu.lua:2819
+msgid "Badge Size"
+msgstr "Розмір значка"
+
+#: sui_menu.lua:2807
+msgid "Badges"
+msgstr "Значки"
+
+#: sui_foldercovers.lua:293 sui_menu.lua:3024 sui_menu.lua:3033
+#: sui_menu.lua:3039
+msgid "Banner"
+msgstr "Банер"
+
+#: sui_menu.lua:552 sui_menu.lua:1299
+msgid "Bar Size"
+msgstr "Розмір панелі"
+
+#: sui_menu.lua:1257
+msgid "Bar Style"
+msgstr "Стиль панелі"
+
+#: sui_menu.lua:1284 sui_quicksettings_bar.lua:1338
+#: desktop_modules/module_quick_actions.lua:595
+msgid "Bare"
+msgstr "Простий"
+
+#: sui_menu.lua:4493 sui_settings_window.lua:258 sui_settings_window.lua:852
+msgid "Bars"
+msgstr "Панелі"
+
+#: sui_config.lua:167
 msgid "Battery"
 msgstr "Акумулятор"
 
-#: desktop_modules/module_coverdeck.lua:758
-msgid "Below"
-msgstr "Нижче"
+#: desktop_modules/module_clock.lua:905 desktop_modules/module_clock.lua:913
+msgid "Battery Spacing"
+msgstr "Відстань до акумулятора"
 
-#: sui_quickactions.lua:619
+#: sui_menu.lua:2654 sui_settings_window.lua:330 sui_settings_window.lua:863
+msgid "Behaviour"
+msgstr "Поведінка"
+
+#: sui_stats_windows.lua:2147 sui_stats_windows.lua:2170
+msgid "Best streak"
+msgstr "Найдовша послідовність"
+
+#: sui_menu.lua:2542
+msgid "Book Cover Transition"
+msgstr "Перехід обкладинок"
+
+#: sui_quickactions.lua:1868
 msgid "Book Info"
-msgstr "Інформація про книгу"
+msgstr "Про книгу"
 
-#: sui_bottombar.lua:1029
+#: sui_stats_windows.lua:2814
+msgid "Book Statistics"
+msgstr "Статистика книг"
+
+#: main.lua:1110
+msgid "Book statistics"
+msgstr "Статистика книг"
+
+#: sui_settings_window.lua:266
+msgid "Book-browser settings"
+msgstr "Налаштування переглядача книг"
+
+#: sui_quickactions.lua:413
 msgid "Bookmark browser"
-msgstr "Браузер закладок"
+msgstr "Перегляд закладок"
 
-#: sui_bottombar.lua:961
+#: sui_quickactions.lua:352
 msgid "Bookmark browser not available."
-msgstr "Браузер закладок недоступний."
+msgstr "Перегляд закладок недоступний."
 
-#: sui_config.lua:139
+#: sui_quickactions.lua:674 sui_config.lua:122
 msgid "Bookmarks"
 msgstr "Закладки"
 
-#: desktop_modules/module_reading_goals.lua:355
+#: desktop_modules/module_reading_goals.lua:388
 msgid "Books to read in %s:"
-msgstr ""
+msgstr "Прочитати книг у %s:"
 
-#: sui_menu.lua:1945 sui_menu.lua:2080 sui_menu.lua:2142
+#: sui_menu.lua:2842 sui_menu.lua:2849 sui_menu.lua:2864 sui_menu.lua:3255
+#: sui_menu.lua:3274 desktop_modules/module_collections.lua:950
 msgid "Bottom"
-msgstr ""
+msgstr "Унизу"
 
-#: sui_menu.lua:806 sui_bottombar.lua:837
+#: sui_bottombar.lua:890
 msgid "Bottom Bar"
-msgstr ""
+msgstr "Нижня панель"
 
-#: sui_menu.lua:832
-msgid "Bottom Bar Size"
-msgstr "Розмір нижньої панелі"
+#: sui_style.lua:2078
+msgid "Bottom Bar — Background"
+msgstr "Нижня панель — Тло"
 
-#: sui_menu.lua:814
-msgid ""
-"Bottom Bar will be %s after restart.\n"
-"\n"
-"Restart now?"
-msgstr ""
-"Нижня панель буде %s після перезапуску.\n"
-"\n"
-"Перезапустити зараз?"
+#: sui_style.lua:2081
+msgid "Bottom Bar — Text and Icons"
+msgstr "Нижня панель — Текст і значки"
 
-#: sui_menu.lua:865 sui_menu.lua:868
+#: sui_menu.lua:1356 sui_menu.lua:1357
 msgid "Bottom Margin"
 msgstr "Нижнє поле"
 
-#: sui_menu.lua:866
-msgid "Bottom Margin — %d%%"
+#: sui_menu.lua:2543
+msgid ""
+"Briefly show the book cover full-screen when opening or closing a book, "
+"masking the page-layout flash. Requires the book to already be indexed by "
+"the cover browser (its cover must have been seen at least once in a grid/"
+"list view)."
 msgstr ""
+"Недовго показувати обкладинку книги на весь екран під час відкриття або "
+"закриття книги, маскуючи спалах макета сторінки. Потрібно, щоб книга вже "
+"була проіндексована браузером обкладинок (її обкладинка мала бути "
+"переглянута принаймні один раз у вигляді сітки/списку)."
 
-#: sui_config.lua:141 sui_config.lua:167
+#: sui_quickactions.lua:712 sui_config.lua:124 sui_config.lua:166
 msgid "Brightness"
 msgstr "Яскравість"
 
-#: sui_titlebar.lua:57
+#: sui_titlebar.lua:105
 msgid "Browse"
-msgstr "Огляд"
+msgstr "Переглянути"
 
-#: sui_browsemeta.lua:421
+#: sui_style.lua:115
+msgid "Browse Button (author)"
+msgstr "Кнопка «Переглянути» (автор)"
+
+#: sui_style.lua:109
+msgid "Browse Button (default)"
+msgstr "Кнопка «Переглянути» (за замовчуванням)"
+
+#: sui_style.lua:121
+msgid "Browse Button (series)"
+msgstr "Кнопка «Перегляд» (серія)"
+
+#: sui_style.lua:127
+msgid "Browse Button (tags)"
+msgstr "Кнопка «Переглянути» (теги)"
+
+#: sui_style.lua:1383
+msgid "Browse Icons"
+msgstr "Перегляд іконок"
+
+#: sui_browsemeta.lua:630
 msgid "Browse by"
-msgstr "Переглянути за"
+msgstr "Перегляд за"
 
-#: sui_menu.lua:1983
-msgid "Browse by Author / Series"
-msgstr "Перегляд за автором / серією"
+#: sui_quickactions.lua:780 sui_quickactions.lua:798 sui_quickactions.lua:816
+msgid "Browse by Authors/Series/Tags not available."
+msgstr "Перегляд за авторами/серіями/тегами недоступний."
 
-#: sui_bottombar.lua:1412
-msgid "Browse by Authors/Series not available."
-msgstr "Перегляд за авторами/серіями недоступний."
-
-#: sui_titlebar.lua:817
+#: sui_titlebar.lua:993
 msgid "Browse library"
 msgstr "Переглянути бібліотеку"
 
-#: sui_menu.lua:1165
+#: sui_quicksettings_bar.lua:1351 desktop_modules/module_quick_actions.lua:608
+msgid "Button Background"
+msgstr "Тло кнопки"
+
+#: sui_menu.lua:1782
 msgid "Button Size"
 msgstr "Розмір кнопки"
 
-#: sui_titlebar.lua:835
+#: sui_quicksettings_bar.lua:1315 desktop_modules/module_quick_actions.lua:572
+msgid "Button Type"
+msgstr "Тип кнопки"
+
+#: sui_titlebar.lua:997
 msgid "By author"
-msgstr "За автором"
+msgstr "Автор"
 
-#: sui_titlebar.lua:848
+#: sui_titlebar.lua:998
 msgid "By series"
-msgstr "За серіями"
+msgstr "За серією"
 
-#: sui_quickactions.lua:408 sui_quickactions.lua:494 sui_quickactions.lua:602 sui_quickactions.lua:806 sui_quickactions.lua:877
-#: sui_quickactions.lua:905 sui_quickactions.lua:933 sui_quickactions.lua:949 sui_quickactions.lua:1061 sui_quickactions.lua:1203
-#: sui_config.lua:1654 sui_config.lua:1735 sui_browsemeta.lua:774 sui_menu.lua:566 sui_menu.lua:770 sui_menu.lua:840
-#: sui_menu.lua:1741 sui_menu.lua:1776 sui_bottombar.lua:1054 sui_bottombar.lua:1765 sui_updater.lua:421 sui_updater.lua:438
-#: sui_foldercovers.lua:584 sui_foldercovers.lua:651 sui_titlebar.lua:861 desktop_modules/module_collections.lua:609
-#: desktop_modules/module_reading_goals.lua:358 desktop_modules/module_reading_goals.lua:374
-#: desktop_modules/module_reading_goals.lua:391 desktop_modules/module_quote.lua:1115
+#: sui_titlebar.lua:999
+msgid "By tags"
+msgstr "За тегами"
+
+#: sui_quickactions.lua:438 sui_quickactions.lua:1325 sui_quickactions.lua:1608
+#: sui_quickactions.lua:1732 sui_quickactions.lua:1754
+#: sui_quickactions.lua:1848 sui_quickactions.lua:2126
+#: sui_quickactions.lua:2197 sui_quickactions.lua:2223
+#: sui_quickactions.lua:2248 sui_quickactions.lua:2326
+#: sui_quickactions.lua:2350 sui_quickactions.lua:2625
+#: sui_quickactions.lua:2984 sui_titlebar.lua:1000 sui_foldercovers.lua:747
+#: sui_foldercovers.lua:831 sui_foldercovers.lua:888 sui_foldercovers.lua:1257
+#: sui_config.lua:852 sui_config.lua:924 sui_menu.lua:642 sui_menu.lua:907
+#: sui_menu.lua:1037 sui_menu.lua:1314 sui_menu.lua:2345 sui_menu.lua:2417
+#: sui_menu.lua:2454 sui_menu.lua:2827 sui_menu.lua:3188 sui_menu.lua:3924
+#: sui_menu.lua:3958 sui_menu.lua:3987 sui_menu.lua:4004 sui_menu.lua:4030
+#: sui_menu.lua:4071 sui_menu.lua:4089 sui_menu.lua:4116 sui_menu.lua:4273
+#: sui_menu.lua:4400 sui_stats_windows.lua:591 sui_stats_windows.lua:714
+#: sui_browsemeta.lua:1085 sui_browsemeta.lua:1193 sui_browsemeta.lua:1403
+#: sui_style.lua:1401 sui_style.lua:2105 sui_updater.lua:483
+#: sui_updater.lua:500 sui_presets.lua:818 sui_presets.lua:857
+#: sui_presets.lua:887 sui_presets.lua:904 sui_presets.lua:932
+#: sui_presets.lua:972 sui_presets.lua:990 sui_presets.lua:1019
+#: desktop_modules/module_quote.lua:1213
+#: desktop_modules/module_collections.lua:774
+#: desktop_modules/module_reading_goals.lua:391
+#: desktop_modules/module_reading_goals.lua:407
+#: desktop_modules/module_reading_goals.lua:424
+#: desktop_modules/module_reading_goals.lua:442
+#: desktop_modules/module_clock.lua:895 desktop_modules/module_clock.lua:921
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: desktop_modules/module_reading_stats.lua:433
+#: desktop_modules/module_reading_stats.lua:709
 msgid "Cards"
 msgstr "Картки"
 
-#: sui_menu.lua:620 sui_menu.lua:2134
+#: desktop_modules/module_reading_stats.lua:719
+msgid "Cards - Transparent"
+msgstr "Картки — Прозорі"
+
+#: sui_menu.lua:702 sui_menu.lua:937 sui_menu.lua:3254 sui_menu.lua:3267
+#: desktop_modules/module_quote.lua:126 desktop_modules/module_quote.lua:1427
+#: desktop_modules/module_action_list.lua:75
+#: desktop_modules/module_action_list.lua:597
+#: desktop_modules/module_reading_stats.lua:67
+#: desktop_modules/module_reading_stats.lua:765
+#: desktop_modules/module_clock.lua:117 desktop_modules/module_clock.lua:863
 msgid "Center"
 msgstr "По центру"
 
-#: sui_quickactions.lua:1110
-msgid "Change Icons"
-msgstr "Зміна значків"
-
-#: sui_menu.lua:2242
+#: sui_menu.lua:4376
 msgid "Check for Updates"
-msgstr "Перевірити оновлення"
+msgstr "Перевірити наявність оновлень"
 
-#: sui_updater.lua:460
+#: sui_updater.lua:616
 msgid "Checking for updates…"
-msgstr "Перевірка оновлень…"
+msgstr "Перевірка наявності оновлень…"
 
-#: sui_config.lua:165 desktop_modules/module_clock.lua:227
+#: sui_onboarding.lua:51
+msgid "Choose your initial layout"
+msgstr "Виберіть початковий макет"
+
+#: sui_config.lua:164 sui_presets.lua:137 desktop_modules/module_clock.lua:534
 msgid "Clock"
 msgstr "Годинник"
 
-#: sui_titlebar.lua:60
+#: desktop_modules/module_clock.lua:829
+msgid "Clock Style"
+msgstr "Стиль годинника"
+
+#: sui_titlebar.lua:108
 msgid "Close"
 msgstr "Закрити"
 
-#: sui_quickactions.lua:527
+#: sui_menu.lua:2499
+msgid "Closing Book Notice"
+msgstr "Повідомлення про закриття книги"
+
+#: main.lua:1734
+msgid "Closing book…"
+msgstr "Закриття книги…"
+
+#: sui_quickactions.lua:1780
 msgid "Codepoint out of valid Unicode range (0–10FFFF)."
-msgstr "Кодова точка поза дійсним діапазоном Unicode (0–10FFFF)."
+msgstr "Кодовий пункт поза межами допустимого діапазону Unicode (0–10FFFF)."
 
-#: sui_quickactions.lua:943
+#: sui_quickactions.lua:2199 sui_quickactions.lua:2342
 msgid "Collection"
-msgstr "Колекція"
+msgstr "Добірка"
 
-#: desktop_modules/module_collections.lua:570 desktop_modules/module_collections.lua:576
+#: sui_foldercovers.lua:774 sui_browsemeta.lua:1125
+msgid "Collection \"%1\" created with %2 books."
+msgstr "Створено добірку «%1». Книг: %2."
+
+#: sui_foldercovers.lua:759 sui_browsemeta.lua:1100
+msgid "Collection already exists: %1"
+msgstr "Добірка вже існує: %1"
+
+#: desktop_modules/module_collections.lua:735
+#: desktop_modules/module_collections.lua:741
 msgid "Collection is empty."
-msgstr "Колекція порожня."
+msgstr "Добірка порожня."
 
-#: sui_quickactions.lua:1295
+#: sui_quickactions.lua:2706
 msgid "Collection not available: %s"
-msgstr "Колекція недоступна: %s"
+msgstr "Добірка недоступна: %s"
 
-#: sui_quickactions.lua:621 sui_config.lua:135 sui_bottombar.lua:1040 desktop_modules/module_collections.lua:298
-#: desktop_modules/module_collections.lua:299 desktop_modules/module_collections.lua:318
-#: desktop_modules/module_collections.lua:620
+#: sui_quickactions.lua:424 sui_quickactions.lua:610 sui_quickactions.lua:1870
+#: sui_config.lua:117 desktop_modules/module_collections.lua:338
+#: desktop_modules/module_collections.lua:339
+#: desktop_modules/module_collections.lua:359
+#: desktop_modules/module_collections.lua:786
+#: desktop_modules/module_collections.lua:806
+#: desktop_modules/module_collections.lua:815
+#: desktop_modules/module_collections.lua:841
+#: desktop_modules/module_collections.lua:909
 msgid "Collections"
-msgstr "Колекції"
+msgstr "Добірки"
 
-#: sui_patches.lua:1062
+#: sui_patches.lua:1127
 msgid "Collections (%1)"
-msgstr "Колекції (%1)"
+msgstr "Добірки (%1)"
 
-#: sui_bottombar.lua:1317
+#: sui_quickactions.lua:617
 msgid "Collections not available."
-msgstr "Колекції недоступні."
+msgstr "Добірки недоступні."
 
-#: sui_menu.lua:1169 desktop_modules/module_currently.lua:964 desktop_modules/module_reading_goals.lua:596
+#: sui_style.lua:177
+msgid "Collections: Back Button"
+msgstr "Добірки: Кнопка «Назад»"
+
+#: sui_menu.lua:2887 sui_menu.lua:2941 sui_menu.lua:2995 sui_menu.lua:3062
+#: sui_menu.lua:3129 sui_menu.lua:3283
+msgid "Color"
+msgstr "Колір"
+
+#: sui_menu.lua:1785 desktop_modules/module_reading_goals.lua:1059
+#: desktop_modules/module_currently.lua:1535
 msgid "Compact"
 msgstr "Компактний"
 
-#: sui_quickactions.lua:417
+#: sui_quickactions.lua:1731
 msgid "Confirm"
 msgstr "Підтвердити"
 
-#: sui_config.lua:137
+#: sui_quickactions.lua:643 sui_config.lua:120 sui_onboarding.lua:249
+#: sui_onboarding.lua:255 sui_onboarding.lua:261
 msgid "Continue"
 msgstr "Продовжити"
 
-#: desktop_modules/module_coverdeck.lua:325
+#: sui_style.lua:2034
+msgid "Cool Mist"
+msgstr "Зимна імла"
+
+#: sui_style.lua:2346
+msgid "Could not determine packs folder"
+msgstr "Не вдалося визначити папку з пакетами"
+
+#: sui_stats_windows.lua:146
+msgid "Could not open statistics database."
+msgstr "Не вдалося відкрити базу даних статистики."
+
+#: sui_style.lua:2348
+msgid "Could not open zip (invalid format or corrupted)"
+msgstr "Не вдалося відкрити архів zip (неправильний формат або пошкоджений)"
+
+#: sui_presets.lua:207 sui_presets.lua:230
+#: desktop_modules/module_coverdeck.lua:371
 msgid "Cover Deck"
-msgstr "Обкладинка"
+msgstr "Стос обкладинок"
 
-#: desktop_modules/module_collections.lua:613
+#: sui_menu.lua:2759
+msgid "Cover Settings"
+msgstr "Налаштування обкладинки"
+
+#: desktop_modules/module_collections.lua:900
+#: desktop_modules/module_collections.lua:902
+#: desktop_modules/module_tbr.lua:746 desktop_modules/module_tbr.lua:748
+msgid "Cover Size"
+msgstr "Розмір обкладинки"
+
+#: desktop_modules/module_currently.lua:1038
+#: desktop_modules/module_currently.lua:1040
+msgid "Cover Spacing"
+msgstr "Відстань між обкладинками"
+
+#: desktop_modules/module_collections.lua:778
 msgid "Cover for \"%s\""
-msgstr ""
+msgstr "Обкладинка для «%s»"
 
-#: desktop_modules/module_collections.lua:651 desktop_modules/module_collections.lua:653 desktop_modules/module_currently.lua:811
-#: desktop_modules/module_currently.lua:813 desktop_modules/module_new_books.lua:260 desktop_modules/module_new_books.lua:262
-#: desktop_modules/module_coverdeck.lua:707 desktop_modules/module_coverdeck.lua:708 desktop_modules/module_recent.lua:256
-#: desktop_modules/module_recent.lua:258
+#: desktop_modules/module_recent.lua:515 desktop_modules/module_recent.lua:517
+#: desktop_modules/module_coverdeck.lua:1017
+#: desktop_modules/module_coverdeck.lua:1018
+#: desktop_modules/module_new_books.lua:339
+#: desktop_modules/module_new_books.lua:341
+#: desktop_modules/module_currently.lua:1011
+#: desktop_modules/module_currently.lua:1012
 msgid "Cover size"
 msgstr "Розмір обкладинки"
 
-#: sui_quickactions.lua:1119
-msgid "Create Quick Action"
-msgstr "Створити Швидку дію"
+#: desktop_modules/module_coverdeck.lua:89
+msgid "Covers"
+msgstr "Обкладинки"
 
-#: sui_config.lua:1762 desktop_modules/module_currently.lua:296 desktop_modules/module_currently.lua:297
-#: desktop_modules/module_currently.lua:402 desktop_modules/module_currently.lua:981
+#: sui_foldercovers.lua:752 sui_browsemeta.lua:1092
+msgid "Create"
+msgstr "Створити"
+
+#: sui_quickactions.lua:1357 sui_quickactions.lua:2532
+msgid "Create Quick Action"
+msgstr "Створити швидку дію"
+
+#: sui_foldercovers.lua:965 sui_foldercovers.lua:1249 sui_browsemeta.lua:1395
+msgid "Create collection"
+msgstr "Створити добірку"
+
+#: sui_stats_windows.lua:2145 sui_stats_windows.lua:2168
+msgid "Current streak"
+msgstr "Поточна послідовність"
+
+#: sui_presets.lua:137 sui_presets.lua:172
+#: desktop_modules/module_currently.lua:285
+#: desktop_modules/module_currently.lua:286
+#: desktop_modules/module_currently.lua:408
+#: desktop_modules/module_currently.lua:1477
 msgid "Currently Reading"
 msgstr "Зараз читаю"
 
-#: sui_config.lua:561
+#: sui_config.lua:1302
 msgid "Custom"
-msgstr "Користувацький"
+msgstr "Налаштування"
 
-#: desktop_modules/module_quote.lua:1262
+#: sui_quickactions.lua:1587 sui_quickactions.lua:1590
+msgid "Custom Actions"
+msgstr "Налаштовані дії"
+
+#: desktop_modules/module_quote.lua:1363
 msgid "Custom File"
-msgstr "Користувацький файл"
+msgstr "Власний файл"
 
-#: sui_config.lua:171 sui_menu.lua:558
+#: sui_config.lua:170 sui_menu.lua:634 sui_menu.lua:900
 msgid "Custom Text"
-msgstr "Користувацький текст"
+msgstr "Власний текст"
 
-#: sui_menu.lua:1142
-msgid "Custom Title Bar"
-msgstr "Користувацький рядок заголовка"
+#: sui_onboarding.lua:168
+msgid "Custom wallpapers and icons"
+msgstr "Налаштовані шпалери та іконки"
 
-#: sui_menu.lua:1153
-msgid ""
-"Custom Title Bar will be %s after restart.\n"
-"\n"
-"Restart now?"
-msgstr ""
-"Користувацький рядок заголовка буде %s після перезавантаження.\n"
-"\n"
-"Перезапустити зараз?"
+#: sui_onboarding.lua:160
+msgid "Customize even more"
+msgstr "Ще більше можливостей для налаштування"
 
-#: desktop_modules/module_reading_goals.lua:630
+#: sui_stats_windows.lua:2390
+msgid "DAY STREAK"
+msgstr "ПОСЛІДОВНІСТЬ ДНІВ"
+
+#: desktop_modules/module_reading_goals.lua:875
+#: desktop_modules/module_reading_goals.lua:903
+#: desktop_modules/module_reading_goals.lua:940
+#: desktop_modules/module_reading_goals.lua:985
 msgid "Daily Goal"
 msgstr "Щоденна ціль"
 
-#: desktop_modules/module_reading_goals.lua:388
+#: desktop_modules/module_reading_goals.lua:439
 msgid "Daily Reading Goal"
-msgstr "Ціль щоденного читання"
+msgstr "Щоденна ціль читання"
 
-#: desktop_modules/module_reading_stats.lua:64
+#: desktop_modules/module_reading_stats.lua:88
 msgid "Daily avg — Pages"
-msgstr "Середнє щоденне - Сторінок"
+msgstr "Середнє щодня — Сторінки"
 
-#: desktop_modules/module_reading_stats.lua:63
+#: desktop_modules/module_reading_stats.lua:87
 msgid "Daily avg — Time"
-msgstr "Середнє щоденне - Час"
+msgstr "Середнє щодня — Час"
 
-#: desktop_modules/module_currently.lua:269 desktop_modules/module_coverdeck.lua:76
+#: sui_menu.lua:2889 sui_menu.lua:2894 sui_menu.lua:2943 sui_menu.lua:2948
+#: sui_menu.lua:2997 sui_menu.lua:3002 sui_menu.lua:3064 sui_menu.lua:3069
+#: sui_menu.lua:3131 sui_menu.lua:3136 sui_menu.lua:3285 sui_menu.lua:3297
+#: desktop_modules/module_collections.lua:959
+msgid "Dark"
+msgstr "Темний"
+
+#: sui_style.lua:2020
+msgid "Dark Slate"
+msgstr "Темний сланець"
+
+#: desktop_modules/module_clock.lua:879 desktop_modules/module_clock.lua:887
+msgid "Date Spacing"
+msgstr "Відстань до дати"
+
+#: sui_stats_windows.lua:669
+msgid "Date finished"
+msgstr "Дата прочитання"
+
+#: sui_stats_windows.lua:662
+msgid "Date started"
+msgstr "Дата початку"
+
+#: sui_stats_windows.lua:880 sui_stats_windows.lua:2612
+msgid "Days"
+msgstr "Дні"
+
+#: desktop_modules/module_coverdeck.lua:79
+#: desktop_modules/module_currently.lua:250
 msgid "Days of reading"
 msgstr "Дні читання"
 
-#: desktop_modules/module_clock.lua:56
+#: desktop_modules/module_clock.lua:62
 msgid "December"
 msgstr "Грудень"
 
-#: sui_quickactions.lua:562 sui_menu.lua:356 sui_menu.lua:485 sui_menu.lua:1170 sui_titlebar.lua:821
-#: desktop_modules/module_currently.lua:954 desktop_modules/module_reading_goals.lua:588
-#: desktop_modules/module_quick_actions.lua:406 desktop_modules/module_quick_actions.lua:411
+#: sui_quickactions.lua:1809 sui_quickactions.lua:2066 sui_titlebar.lua:996
+#: sui_menu.lua:451 sui_menu.lua:580 sui_menu.lua:1260 sui_menu.lua:1786
+#: desktop_modules/module_reading_goals.lua:1051
+#: desktop_modules/module_currently.lua:1525
 msgid "Default"
 msgstr "За замовчуванням"
 
-#: sui_quickactions.lua:851 sui_quickactions.lua:870
+#: sui_quickactions.lua:2067
 msgid "Default (Folder)"
-msgstr "За замовчуванням (папка)"
+msgstr "За замовчуванням (Тека)"
 
-#: sui_quickactions.lua:897
+#: sui_quickactions.lua:2068
 msgid "Default (Plugin)"
-msgstr "За замовчуванням (плагін)"
+msgstr "За замовчуванням (Додаток)"
 
-#: sui_quickactions.lua:925
+#: sui_quickactions.lua:2069
 msgid "Default (System)"
-msgstr "За замовчуванням (система)"
+msgstr "За замовчуванням (Система)"
 
-#: desktop_modules/module_quote.lua:1198
+#: desktop_modules/module_quote.lua:1299
 msgid "Default Quotes"
-msgstr "Цитати за замовчуванням"
+msgstr "Стандартні цитати"
 
-#: sui_quickactions.lua:1197 sui_quickactions.lua:1202
+#: sui_style.lua:184
+msgid "Default: Folder"
+msgstr "За замовчуванням: Папка"
+
+#: sui_style.lua:202
+msgid "Default: Group"
+msgstr "За замовчуванням: Група"
+
+#: sui_style.lua:190
+msgid "Default: Plugin"
+msgstr "За замовчуванням: Додаток"
+
+#: sui_style.lua:196
+msgid "Default: System"
+msgstr "За замовчуванням: Система"
+
+#: sui_quickactions.lua:1324 sui_quickactions.lua:2619
+#: sui_quickactions.lua:2624 sui_menu.lua:4026 sui_menu.lua:4029
+#: sui_menu.lua:4070 sui_window.lua:1603 sui_window.lua:2444
+#: sui_presets.lua:928 sui_presets.lua:931 sui_presets.lua:971
+#: sui_settings_window.lua:352 sui_settings_window.lua:468
 msgid "Delete"
 msgstr "Видалити"
 
-#: sui_quickactions.lua:1201
-msgid "Delete quick action \"%s\"?"
-msgstr "Видалити Швидку дію \\\\\\\"%s\\\\\\\"?"
+#: sui_menu.lua:4399
+msgid "Delete Settings"
+msgstr "Видалити налаштування"
 
-#: sui_quickactions.lua:624
+#: sui_menu.lua:4028 sui_menu.lua:4069 sui_presets.lua:930 sui_presets.lua:970
+msgid "Delete preset \"%s\"?"
+msgstr "Видалити пресет «%s»?"
+
+#: sui_quickactions.lua:1323 sui_quickactions.lua:2623
+msgid "Delete quick action \"%s\"?"
+msgstr "Видалити швидку дію «%s?"
+
+#: sui_quickactions.lua:1873
 msgid "Dictionary Lookup"
 msgstr "Пошук у словнику"
 
-#: sui_menu.lua:1234
-msgid "Digital Goal  (%s)"
-msgstr "Цифрова ціль  (%s)"
+#: desktop_modules/module_clock.lua:831 desktop_modules/module_clock.lua:835
+msgid "Digital"
+msgstr "Цифровий"
 
-#: sui_menu.lua:1760
+#: sui_menu.lua:2438
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
-msgstr "Спочатку вимкніть «Заблокувати масштаб», щоб установити власний масштаб міток."
+msgstr "Спочатку вимкніть «Lock Scale», щоб встановити власний масштаб міток."
 
-#: sui_config.lua:1638
+#: sui_config.lua:836
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
-msgstr "Спочатку вимкніть «Заблокувати масштаб», щоб установити масштаб для кожного модуля."
+msgstr ""
+"Спочатку вимкніть «Lock Scale», щоб встановити масштаб для кожного модуля "
+"окремо."
 
-#: sui_config.lua:169
+#: sui_config.lua:168
 msgid "Disk Usage"
-msgstr ""
+msgstr "Використання дискового простору"
 
-#: sui_quickactions.lua:1256
+#: sui_quickactions.lua:2674
 msgid "Dispatcher not available."
-msgstr ""
+msgstr "Диспетчер недоступний."
 
-#: sui_menu.lua:393
+#: sui_menu.lua:3455
+msgid "Display"
+msgstr "Відображення"
+
+#: sui_window.lua:67
+msgid "Do something"
+msgstr "Зробити щось"
+
+#: sui_quickactions.lua:2317
+msgid "Done"
+msgstr "Готово"
+
+#: sui_menu.lua:488
 msgid "Dot Pager"
-msgstr "Крапкова навігація"
+msgstr "Сторінки-крапки"
 
-#: sui_updater.lua:437
+#: sui_updater.lua:499
 msgid "Download and install"
-msgstr ""
+msgstr "Завантажити та встановити"
 
-#: sui_updater.lua:348
+#: sui_updater.lua:498
+msgid "Download and install now?"
+msgstr "Завантажити та встановити зараз?"
+
+#: sui_updater.lua:420
 msgid "Download error: "
-msgstr "Помилка завантаження:"
+msgstr "Помилка завантаження: "
 
-#: sui_updater.lua:323
+#: sui_updater.lua:394
 msgid "Downloading Simple UI %s…"
 msgstr "Завантаження Simple UI %s…"
 
-#: sui_quickactions.lua:1187
+#: sui_quickactions.lua:2608
 msgid "Edit"
 msgstr "Редагувати"
 
-#: sui_menu.lua:550 sui_menu.lua:552
+#: sui_menu.lua:626 sui_menu.lua:628 sui_menu.lua:894
 msgid "Edit Custom Text"
-msgstr "Редагувати спеціальний текст"
+msgstr "Редагувати власний текст"
 
-#: sui_quickactions.lua:752
+#: sui_menu.lua:2146 sui_settings_window.lua:312
+msgid "Edit Layout"
+msgstr "Редагувати макет"
+
+#: sui_quickactions.lua:1992
 msgid "Edit Quick Action"
 msgstr "Редагувати швидку дію"
 
-#: sui_bottombar.lua:1416
-msgid "Enable 'Browse by Author / Series' in the library menu first."
-msgstr "Спочатку увімкніть \"Перегляд за автором / серією\" в меню бібліотеки."
+#: desktop_modules/module_clock.lua:199 desktop_modules/module_clock.lua:248
+msgid "Eight"
+msgstr "Вісім"
 
-#: sui_quickactions.lua:491
+#: desktop_modules/module_clock.lua:209 desktop_modules/module_clock.lua:251
+msgid "Eighteen"
+msgstr "Вісімнадцять"
+
+#: desktop_modules/module_clock.lua:202 desktop_modules/module_clock.lua:249
+msgid "Eleven"
+msgstr "Одинадцять"
+
+#: sui_menu.lua:887
+msgid "Empty"
+msgstr "Порожньо"
+
+#: sui_quickactions.lua:781 sui_quickactions.lua:799 sui_quickactions.lua:817
+msgid "Enable 'Browse by Author / Series / Tags' in the library menu first."
+msgstr ""
+"Спочатку увімкніть опцію «Перегляд за автором / серією / тегами» у меню "
+"бібліотеки."
+
+#: sui_menu.lua:2710
+msgid "Enable Browse by Author / Series / Tags"
+msgstr "Увімкнути перегляд за автором / серією / тегами"
+
+#: sui_menu.lua:2694
+msgid "Enable Library Custom Covers"
+msgstr "Увімкнути власні обкладинки бібліотек"
+
+#: sui_menu.lua:1100
+msgid "Enable Navigation Bar"
+msgstr "Увімкнути панель навігації"
+
+#: sui_quicksettings_bar.lua:1172
+msgid "Enable Quick Settings Bar"
+msgstr "Увімкнути панель швидких налаштувань"
+
+#: sui_menu.lua:834
+msgid "Enable Status Bar"
+msgstr "Увімкнути рядок стану"
+
+#: sui_menu.lua:1736
+msgid "Enable Title Bar"
+msgstr "Увімкнути рядок заголовка"
+
+#: sui_menu.lua:2194
+msgid "Enable Wallpaper"
+msgstr "Увімкнути фонове зображення"
+
+#: sui_style.lua:1769
+msgid "Enable custom UI font"
+msgstr "Увімкнути власний шрифт інтерфейсу"
+
+#: sui_style.lua:2102
+msgid ""
+"Enter a hex color (#RRGGBB). On greyscale e-ink the perceived brightness is "
+"used."
+msgstr ""
+"Введіть колір у шістнадцятковому форматі (#RRGGBB). На екранах E-Ink у "
+"відтінках сірого використовується сприймана яскравість."
+
+#: sui_quickactions.lua:1751
 msgid ""
 "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\n"
 "You can look up codes with wakamaifondue.com using the file:\n"
 "  /koreader/fonts/nerdfonts/symbols.ttf\n"
 "Leave blank and press OK to remove a Nerd Font icon."
 msgstr ""
-"Введіть кодову точку Unicode (hex) символу Nerd Fonts.\n"
-"Ви можете шукати коди за допомогою wakamaifondue.com у файлі:\n"
+"Введіть код Unicode (у шістнадцятковому форматі) символу шрифту Nerd Fonts.\n"
+"Ви можете знайти коди на сайті wakamaifondue.com, використовуючи файл:\n"
 "  /koreader/fonts/nerdfonts/symbols.ttf\n"
-"Залишити порожнім і натиснути OK, щоб видалити піктограму Nerd Font."
+"Залиште поле порожнім і натисніть «OK», щоб видалити піктограму шрифту Nerd "
+"Fonts."
 
-#: sui_updater.lua:466
+#: sui_menu.lua:3787
+msgid "Error applying pack:"
+msgstr "Помилка під час застосування пакета:"
+
+#: sui_updater.lua:621
 msgid "Error checking for updates."
-msgstr "Помилка перевірки оновлень."
+msgstr "Помилка під час перевірки оновлень."
 
-#: sui_updater.lua:471
+#: sui_updater.lua:626
 msgid "Error checking for updates: "
-msgstr "Помилка перевірки оновлень:"
+msgstr "Помилка під час перевірки оновлень: "
 
-#: sui_menu.lua:461
+#: sui_menu.lua:4208 sui_presets.lua:1109
+msgid "Error exporting preset: "
+msgstr "Помилка під час експорту пресета: "
+
+#: sui_style.lua:2395
+msgid "Error extracting zip: "
+msgstr "Помилка під час розпакування zip-файлу: "
+
+#: sui_menu.lua:4175 sui_presets.lua:1077
+msgid "Error importing preset: "
+msgstr "Помилка під час імпорту пресета: "
+
+#: desktop_modules/module_reading_goals.lua:757
+msgid "Error in Reading Goals: check crash.log"
+msgstr "Помилка у цілях читання: перегляньте crash.log"
+
+#: sui_menu.lua:3748
+msgid "Error installing pack:"
+msgstr "Помилка під час встановлення пакета:"
+
+#: sui_menu.lua:4191 sui_presets.lua:1093
+msgid "Export preset"
+msgstr "Експортувати пресет"
+
+#: sui_menu.lua:556
 msgid "Extra Small"
 msgstr "Дуже малий"
 
-#: sui_updater.lua:350
+#: sui_updater.lua:421
 msgid "Extraction error: "
-msgstr ""
+msgstr "Помилка вилучення: "
 
-#: sui_quickactions.lua:620 sui_config.lua:138
+#: sui_menu.lua:4392
+msgid "Factory Reset"
+msgstr "Скидання до заводських налаштувань"
+
+#: sui_menu.lua:3164
+msgid "Fade Finished Books"
+msgstr "Приховати прочитані книги"
+
+#: sui_menu.lua:3180
+msgid "Fade Intensity"
+msgstr "Інтенсивність затухання"
+
+#: sui_menu.lua:3181
+msgid ""
+"Fades finished book covers towards white.\n"
+"50% is the default."
+msgstr ""
+"Зменшує яскравість обкладинок прочитаних книг до білого кольору.\n"
+"За замовчуванням встановлено значення 50%."
+
+#: sui_menu.lua:2338
+msgid ""
+"Fades the wallpaper towards white to improve text readability.\n"
+"0% is the default (no lightening)."
+msgstr ""
+"Змінює відтінок фонового зображення у білий бік для покращення читабельності "
+"тексту.\n"
+"0% — значення за замовчуванням (без освітлення)."
+
+#: sui_quickactions.lua:661 sui_quickactions.lua:1869 sui_config.lua:121
 msgid "Favorites"
-msgstr "Обране"
+msgstr "Вибране"
 
-#: sui_bottombar.lua:1367
+#: sui_quickactions.lua:668
 msgid "Favorites not available."
-msgstr ""
+msgstr "Вибране недоступне."
 
-#: desktop_modules/module_clock.lua:54
+#: desktop_modules/module_clock.lua:60
 msgid "February"
 msgstr "Лютий"
 
-#: sui_bottombar.lua:983
+#: sui_quickactions.lua:368
 msgid "Fetching bookmarks\\xe2\\x80\\xa6"
-msgstr "Отримання закладок\\\\\\\\xe2\\\\\\\\x80\\\\\\\\xa6"
+msgstr "Завантаження закладок\\xe2\\x80\\xa6"
 
-#: sui_quickactions.lua:622
+#: desktop_modules/module_clock.lua:206 desktop_modules/module_clock.lua:250
+msgid "Fifteen"
+msgstr "П'ятнадцять"
+
+#: desktop_modules/module_clock.lua:218 desktop_modules/module_clock.lua:256
+msgid "Fifty"
+msgstr "П'ятдесят"
+
+#: sui_quickactions.lua:1871
 msgid "File Search"
 msgstr "Пошук файлів"
 
-#: desktop_modules/module_reading_stats.lua:443 desktop_modules/module_quick_actions.lua:406
-#: desktop_modules/module_quick_actions.lua:420
+#: sui_style.lua:2342
+msgid "File not found: "
+msgstr "Файл не знайдено: "
+
+#: sui_menu.lua:3157
+msgid "Finished Books"
+msgstr "Прочитані книги"
+
+#: desktop_modules/module_clock.lua:196 desktop_modules/module_clock.lua:247
+msgid "Five"
+msgstr "П'ять"
+
+#: desktop_modules/module_quote.lua:1442
+msgid "Fixed Height"
+msgstr "Стала висота"
+
+#: sui_menu.lua:4294 sui_quicksettings_bar.lua:1375
+#: desktop_modules/module_reading_stats.lua:729
+#: desktop_modules/module_quick_actions.lua:632
 msgid "Flat"
 msgstr "Плоский"
 
-#: sui_quickactions.lua:941
+#: sui_quickactions.lua:2340
 msgid "Folder"
 msgstr "Папка"
 
-#: sui_menu.lua:2023
-msgid "Folder Covers"
-msgstr ""
+#: sui_menu.lua:2764
+msgid "Folder Cover Type"
+msgstr "Тип обкладинки папки"
 
-#: sui_menu.lua:2102
+#: sui_style.lua:1386
+msgid "Folder Covers"
+msgstr "Обкладинки папок"
+
+#: sui_style.lua:209
+msgid "Folder Covers: Empty Folder"
+msgstr "Обкладинки папок: Порожня папка"
+
+#: sui_menu.lua:3201
 msgid "Folder Name"
 msgstr "Назва папки"
 
-#: sui_menu.lua:2154
+#: sui_menu.lua:3310
 msgid "Folder Name Text Size"
-msgstr "Розмір тексту Назви папки"
+msgstr "Розмір тексту назви папки"
 
-#: sui_quickactions.lua:623
+#: sui_quickactions.lua:1872
 msgid "Folder Shortcuts"
-msgstr ""
+msgstr "Ярлики папок"
 
-#: sui_foldercovers.lua:656
+#: sui_foldercovers.lua:835 sui_foldercovers.lua:892 sui_browsemeta.lua:1197
 msgid "Folder cover"
-msgstr ""
+msgstr "Обкладинка папки"
 
-#: desktop_modules/module_clock.lua:51
+#: sui_window.lua:1860 sui_window.lua:1865
+msgid "Font weight"
+msgstr "Насиченість шрифту"
+
+#: desktop_modules/module_clock.lua:217 desktop_modules/module_clock.lua:256
+msgid "Forty"
+msgstr "Сорок"
+
+#: desktop_modules/module_clock.lua:195 desktop_modules/module_clock.lua:247
+msgid "Four"
+msgstr "Чотири"
+
+#: desktop_modules/module_clock.lua:205 desktop_modules/module_clock.lua:250
+msgid "Fourteen"
+msgstr "Чотирнадцять"
+
+#: desktop_modules/module_collections.lua:911
+#: desktop_modules/module_recent.lua:543 desktop_modules/module_tbr.lua:757
+#: desktop_modules/module_reading_goals.lua:1071
+#: desktop_modules/module_new_books.lua:360
+#: desktop_modules/module_currently.lua:1479
+msgid "Frame"
+msgstr "У рамці"
+
+#: sui_menu.lua:1272 sui_menu.lua:4305
+msgid "Framed"
+msgstr "У рамці"
+
+#: desktop_modules/module_clock.lua:57
 msgid "Friday"
-msgstr "П'ятниця"
+msgstr "П’ятниця"
 
-#: sui_bottombar.lua:1527
+#: sui_quicksettings_bar.lua:396 sui_quicksettings_bar.lua:418
+msgid "Frontlight"
+msgstr "Переднє освітлення"
+
+#: sui_quicksettings_bar.lua:1270
+msgid "Frontlight Slider"
+msgstr "Повзунок підсвічування"
+
+#: sui_quickactions.lua:338
 msgid "Frontlight not available on this device."
-msgstr "Підсівітка недоступна на цьому пристрої."
+msgstr "На цьому пристрої функція підсвічування відсутня."
 
-#: sui_menu.lua:353
-msgid "General"
-msgstr "Загальна"
+#: sui_menu.lua:2516
+msgid "Gesture Only"
+msgstr "Тільки жести"
 
-#: sui_menu.lua:1734
+#: sui_menu.lua:4258 sui_menu.lua:4265
+msgid "Global Text Size"
+msgstr "Глобальний розмір тексту"
+
+#: sui_settings_window.lua:283
+msgid "Global custom quick actions"
+msgstr "Глобальні користувацькі швидкі дії"
+
+#: sui_settings_window.lua:284
+msgid "Global custom quick actions  (%d/%d)"
+msgstr "Глобальні користувацькі швидкі дії  (%d)"
+
+#: sui_menu.lua:4266
+msgid ""
+"Global scale applied to all of KOReader's interface text — menus, dialogs, "
+"titles, and Simple UI. It does not change the book's reading font size, "
+"which has its own setting.\n"
+"100% is the default size. Useful when a chosen UI font (see UI Font above) "
+"renders smaller or larger than usual."
+msgstr ""
+"Глобальний масштаб застосовується до всього тексту інтерфейсу KOReader — "
+"меню, діалогових вікон, заголовків та простого інтерфейсу користувача. Він "
+"не змінює розмір шрифту для читання книги, який має власне налаштування.\n"
+"100% – це розмір за замовчуванням. Корисно, коли вибраний шрифт інтерфейсу "
+"користувача (див. Шрифт інтерфейсу користувача вище) відображається меншим "
+"або більшим, ніж зазвичай."
+
+#: sui_menu.lua:2410
 msgid ""
 "Global scale for all modules.\n"
 "Individual overrides in Module Settings take precedence.\n"
 "100% is the default size."
 msgstr ""
 "Глобальний масштаб для всіх модулів.\n"
-"Індивідуальні перевизначення в налаштуваннях модуля мають пріоритет.\n"
-"\v100%- це розмір за замовчуванням."
+"Індивідуальні налаштування в розділі «Налаштування модуля» мають пріоритет.\n"
+"100% — це розмір за замовчуванням."
 
-#: sui_menu.lua:2043
-msgid "Group Books by Series"
+#: sui_onboarding.lua:161
+msgid "Go to Settings > Home Screen to edit your layout whenever you want."
 msgstr ""
+"Перейдіть до «Налаштування» &gt; «Головний екран», щоб редагувати макет у "
+"будь-який час."
 
-#: sui_menu.lua:833
+#: desktop_modules/module_reading_goals.lua:832
+#: desktop_modules/module_reading_goals.lua:897
+#: desktop_modules/module_reading_goals.lua:911
+msgid "Goals"
+msgstr "Цілі"
+
+#: sui_quickactions.lua:2003 sui_quickactions.lua:2323
+msgid "Group"
+msgstr "Група"
+
+#: sui_menu.lua:2746
+msgid "Group by Book Series"
+msgstr "Групувати за серіями книг"
+
+#: sui_quickactions.lua:2348
+msgid "Group of Quick Actions"
+msgstr "Група швидких дій"
+
+#: sui_quickactions.lua:2330
+msgid "Group: select actions"
+msgstr "Група: оберіть дії"
+
+#: sui_menu.lua:1307
 msgid ""
 "Height of the bottom navigation bar.\n"
 "100% is the default size."
 msgstr ""
 "Висота нижньої навігаційної панелі.\n"
-"\v100%- це розмір за замовчуванням."
+"100% — це розмір за замовчуванням."
 
-#: sui_menu.lua:763
+#: desktop_modules/module_spacer.lua:89
+msgid ""
+"Height of the spacer.\n"
+"100% is the default size."
+msgstr ""
+"Висота роздільника.\n"
+"100% — це розмір за замовчуванням."
+
+#: sui_menu.lua:1030
 msgid ""
 "Height of the top status bar.\n"
 "100% is the default size."
 msgstr ""
-"Висота верхнього рядка стану.\n"
-"\v100%- це розмір за замовчуванням."
+"Висота верхньої панелі стану.\n"
+"100% — це розмір за замовчуванням."
 
-#: sui_menu.lua:377 sui_menu.lua:436 sui_menu.lua:925 sui_menu.lua:2061 sui_menu.lua:2105
+#: sui_menu.lua:472 sui_menu.lua:531 sui_menu.lua:2841 sui_menu.lua:2848
+#: sui_menu.lua:2875 sui_menu.lua:2915 sui_menu.lua:2921 sui_menu.lua:2932
+#: sui_menu.lua:2969 sui_menu.lua:2975 sui_menu.lua:2986 sui_menu.lua:3207
+#: sui_menu.lua:3238 desktop_modules/module_collections.lua:932
 msgid "Hidden"
 msgstr "Прихований"
 
-#: sui_menu.lua:1350 desktop_modules/module_quick_actions.lua:334
-msgid "Hide Text"
-msgstr ""
+#: sui_menu.lua:3412
+msgid "Hide Folder Book Spine"
+msgstr "Приховати корінець папки"
 
-#: sui_menu.lua:532
-msgid "Hide Wi-Fi icon when off"
-msgstr ""
+#: sui_menu.lua:1939 sui_quicksettings_bar.lua:1303
+#: desktop_modules/module_quick_actions.lua:387
+#: desktop_modules/module_quick_actions.lua:540
+msgid "Hide Label"
+msgstr "Приховати назву"
 
-#: sui_menu.lua:2176
-msgid "Hide selection underline"
-msgstr "Приховати підкреслення виділення"
+#: sui_menu.lua:3406
+msgid "Hide Selection Underline"
+msgstr "Приховати підкреслення виділеного тексту"
 
-#: sui_menu.lua:444
+#: sui_menu.lua:1069
+msgid "Hide Wi-Fi Icon When Off"
+msgstr "Приховати значок Wi-Fi, коли мережа вимкнена"
+
+#: sui_menu.lua:539
 msgid ""
 "Hides the pagination bar on the homescreen.\n"
 "Not available when Navpager is active."
 msgstr ""
-"Сховає панель нумерації сторінок на головному екрані.\n"
-"Не доступно, коли Navpager активний."
+"Приховує панель пагінації на головному екрані.\n"
+"Недоступно, коли активний Navpager."
 
-#: sui_quickactions.lua:618 sui_config.lua:136 sui_bottombar.lua:1033
+#: sui_stats_windows.lua:1064 sui_stats_windows.lua:2767
+msgid "Highlights"
+msgstr "Основні моменти"
+
+#: sui_quickactions.lua:417 sui_quickactions.lua:622 sui_quickactions.lua:1867
+#: sui_config.lua:118
 msgid "History"
 msgstr "Історія"
 
-#: sui_bottombar.lua:1321
+#: sui_quickactions.lua:629
 msgid "History not available."
 msgstr "Історія недоступна."
 
-#: sui_config.lua:134
+#: sui_quickactions.lua:573 sui_config.lua:116
 msgid "Home"
-msgstr "Домівка"
+msgstr "Головна"
 
-#: sui_patches.lua:659 sui_patches.lua:682 sui_menu.lua:390 sui_menu.lua:1825 sui_menu.lua:1943
+#: sui_menu.lua:4498 sui_patches.lua:843 sui_patches.lua:870
+#: sui_settings_window.lua:251 sui_settings_window.lua:851
 msgid "Home Screen"
 msgstr "Головний екран"
 
-#: sui_bottombar.lua:1050
+#: sui_settings_window.lua:864
+msgid "Home Screen Presets"
+msgstr "Пресети головного екрану"
+
+#: sui_menu.lua:485
+msgid "Home Screen Style"
+msgstr "Стиль головного екрану"
+
+#: sui_style.lua:2077
+msgid "Home Screen — Background"
+msgstr "Головний екран — Фон"
+
+#: sui_style.lua:2080
+msgid "Home Screen — Text"
+msgstr "Головний екран — Текст"
+
+#: sui_quickactions.lua:434
 msgid "Home folder"
 msgstr "Домашня папка"
 
-#: sui_bottombar.lua:1052
+#: sui_quickactions.lua:436
 msgid "Home folder + subfolders"
-msgstr "Домашня папка + вкладені папки"
+msgstr "Головна папка + підпапки"
 
-#: sui_homescreen.lua:1080
+#: sui_homescreen.lua:1219
 msgid "Homescreen"
 msgstr "Головний екран"
 
-#: sui_bottombar.lua:1362
+#: sui_quickactions.lua:604
 msgid "Homescreen not available."
-msgstr "Домашній екран недоступний."
+msgstr "Головний екран недоступний."
 
-#: sui_quickactions.lua:761 sui_quickactions.lua:765
+#: desktop_modules/module_currently.lua:1041
+msgid ""
+"Horizontal space between the cover and the text.\n"
+"100% is the default spacing."
+msgstr ""
+"Горизонтальна відстань між обкладинкою та текстом.\n"
+"За замовчуванням встановлено значення 100%."
+
+#: desktop_modules/module_reading_goals.lua:422
+msgid "Hours per month:"
+msgstr "Годин на місяць:"
+
+#: sui_quickactions.lua:2028 sui_quickactions.lua:2032
 msgid "Icon"
-msgstr "Значок"
+msgstr "Піктограма"
 
-#: sui_menu.lua:887 sui_menu.lua:890
+#: sui_menu.lua:3637
+msgid "Icon Packs"
+msgstr "Набори іконок"
+
+#: sui_menu.lua:3804
+msgid "Icon Presets"
+msgstr "Пресети іконок"
+
+#: sui_menu.lua:1336 sui_menu.lua:1337
 msgid "Icon Size"
-msgstr "Розмір значка"
+msgstr "Розмір піктограми"
 
-#: sui_menu.lua:888
-msgid "Icon Size — %d%%"
-msgstr "Розмір значка — %d%%"
-
-#: sui_quickactions.lua:756
+#: sui_quickactions.lua:2024
 msgid "Icon: Default"
-msgstr "Значок: за замовчуванням"
+msgstr "Піктограма: За замовчуванням"
 
-#: sui_menu.lua:107
+#: sui_menu.lua:201 sui_menu.lua:3541
 msgid "Icons"
-msgstr "Значки"
+msgstr "Піктограми"
 
-#: sui_menu.lua:108
+#: sui_menu.lua:202
 msgid "Icons only"
-msgstr "Лише значки"
+msgstr "Тільки іконки"
 
-#: sui_menu.lua:1062
+#: sui_settings_window.lua:273
+msgid "Icons, fonts and appearance"
+msgstr "Піктограми, шрифти та зовнішній вигляд"
+
+#: sui_onboarding.lua:165
+msgid ""
+"If you selected the Momentum Preset, long press the Reading Goal module to "
+"choose and set your reading goals."
+msgstr ""
+"Якщо ви вибрали пресет «Momentum», натисніть і утримуйте модуль «Ціль "
+"читання», щоб вибрати та встановити свої цілі читання."
+
+#: sui_menu.lua:4147 sui_presets.lua:1050
+msgid "Import preset"
+msgstr "Імпортувати пресет"
+
+#: sui_menu.lua:3711
+msgid "Install pack from ZIP"
+msgstr "Встановити пакет із ZIP-файлу"
+
+#: sui_menu.lua:3173
+msgid "Intensity"
+msgstr "Інтенсивність"
+
+#: sui_menu.lua:1465
 msgid ""
 "Invalid arrangement.\n"
 "Keep items between the Left and Right separators."
 msgstr ""
-"Недійсне розташування.\n"
-"Зберігайте елементи між лівим і правим роздільниками."
+"Неправильне розташування.\n"
+"Елементи повинні знаходитися між лівим і правим роздільниками."
 
-#: sui_menu.lua:647
+#: sui_menu.lua:727
 msgid ""
 "Invalid arrangement.\n"
 "Keep the Left, Center and Right separators in order."
 msgstr ""
-"Недійсне розташування.\n"
-"Утримуйте лівий, центральний та правий роздільники в порядку."
+"Неправильне розташування.\n"
+"Зберігайте порядок роздільників «Ліворуч», «По центру» та «Праворуч»."
 
-#: sui_quickactions.lua:533
+#: sui_presets.lua:418 sui_presets.lua:598
+msgid "Invalid data"
+msgstr "Неправильні дані"
+
+#: sui_quickactions.lua:1786
 msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
-msgstr "Невірний вхід. Введіть 1–6 шістнадцяткових цифр (0–9, A–F)."
+msgstr "Неправильний ввід. Введіть 1–6 шістнадцяткових цифр (0–9, A–F)."
 
-#: sui_menu.lua:782 sui_menu.lua:1360 desktop_modules/module_currently.lua:983 desktop_modules/module_coverdeck.lua:769
-#: desktop_modules/module_quick_actions.lua:344
+#: sui_presets.lua:414 sui_presets.lua:594
+msgid "Invalid preset file"
+msgstr "Неправильний файл пресетів"
+
+#: sui_menu.lua:2312
+msgid "Invert in Night Mode"
+msgstr "Інвертувати в нічному режимі"
+
+#: sui_menu.lua:853 sui_menu.lua:858 sui_menu.lua:947 sui_menu.lua:1949
+#: sui_menu.lua:1954 sui_menu.lua:1980
+#: desktop_modules/module_reading_stats.lua:591
+#: desktop_modules/module_reading_stats.lua:612
+#: desktop_modules/module_reading_stats.lua:634
+#: desktop_modules/module_coverdeck.lua:1177
+#: desktop_modules/module_coverdeck.lua:1217
+#: desktop_modules/module_coverdeck.lua:1231
+#: desktop_modules/module_currently.lua:1178
+#: desktop_modules/module_currently.lua:1183
+#: desktop_modules/module_currently.lua:1206
 msgid "Items"
 msgstr "Елементи"
 
-#: desktop_modules/module_clock.lua:54
+#: desktop_modules/module_clock.lua:60
 msgid "January"
 msgstr "Січень"
 
-#: desktop_modules/module_clock.lua:55
+#: desktop_modules/module_clock.lua:61
 msgid "July"
 msgstr "Липень"
 
-#: desktop_modules/module_clock.lua:55
+#: desktop_modules/module_clock.lua:61
 msgid "June"
 msgstr "Червень"
 
-#: sui_menu.lua:414
+#: sui_menu.lua:509
 msgid "KOReader"
 msgstr "KOReader"
 
-#: sui_menu.lua:1768
-msgid "Label Scale"
-msgstr "Масштаб мітки"
+#: sui_stats_windows.lua:2402
+msgid "LAST 7 DAYS"
+msgstr "ОСТАННІ 7 ДНІВ"
 
-#: sui_menu.lua:907 sui_menu.lua:910
+#: sui_quicksettings_bar.lua:1292 desktop_modules/module_quick_actions.lua:557
+msgid "Label"
+msgstr "Назва"
+
+#: sui_menu.lua:2446
+msgid "Label Scale"
+msgstr "Шкала міток"
+
+#: sui_menu.lua:1346 sui_menu.lua:1347
 msgid "Label Size"
 msgstr "Розмір мітки"
 
-#: sui_menu.lua:908
-msgid "Label Size — %d%%"
-msgstr "Розмір мітки - %d%%"
-
-#: sui_menu.lua:1753
+#: sui_menu.lua:2430
 msgid "Labels"
 msgstr "Мітки"
 
-#: sui_menu.lua:1171
+#: sui_menu.lua:1787
 msgid "Large"
 msgstr "Великий"
 
-#: sui_menu.lua:341 sui_menu.lua:746 sui_menu.lua:815 sui_menu.lua:851 sui_menu.lua:1157 sui_menu.lua:1924 sui_updater.lua:361
+#: sui_menu.lua:436 sui_menu.lua:843 sui_menu.lua:1048 sui_menu.lua:1109
+#: sui_menu.lua:1325 sui_menu.lua:1751 sui_menu.lua:3338 sui_menu.lua:3361
+#: sui_menu.lua:3383 sui_menu.lua:4280 sui_menu.lua:4482
+#: sui_quicksettings_bar.lua:1186 sui_updater.lua:432
 msgid "Later"
 msgstr "Пізніше"
 
-#: sui_menu.lua:614 sui_menu.lua:1032
+#: desktop_modules/module_reading_goals.lua:1049
+msgid "Layout"
+msgstr "Макет"
+
+#: sui_settings_window.lua:856
+msgid "Layout Editor"
+msgstr "Редактор макетів"
+
+#: sui_settings_window.lua:252
+msgid "Layout, wallpaper and behaviour"
+msgstr "Макет, фонове зображення та поведінка"
+
+#: sui_menu.lua:696 sui_menu.lua:933 sui_menu.lua:1437 sui_menu.lua:1639
+#: desktop_modules/module_quote.lua:124 desktop_modules/module_quote.lua:1421
+#: desktop_modules/module_action_list.lua:73
+#: desktop_modules/module_action_list.lua:591
+#: desktop_modules/module_reading_stats.lua:65
+#: desktop_modules/module_reading_stats.lua:755
+#: desktop_modules/module_clock.lua:115 desktop_modules/module_clock.lua:856
 msgid "Left"
 msgstr "Ліворуч"
 
-#: sui_config.lua:133 sui_config.lua:409 sui_menu.lua:1964 sui_titlebar.lua:967
+#: sui_quickactions.lua:546 sui_titlebar.lua:1078 sui_config.lua:115
+#: sui_config.lua:366 sui_menu.lua:4502 sui_settings_window.lua:265
+#: sui_settings_window.lua:853
 msgid "Library"
 msgstr "Бібліотека"
 
-#: sui_menu.lua:1175
+#: sui_menu.lua:1759 sui_menu.lua:1762
 msgid "Library Buttons"
 msgstr "Кнопки бібліотеки"
 
-#: desktop_modules/module_reading_stats.lua:453
+#: sui_presets.lua:229
+msgid "Library View"
+msgstr "Перегляд бібліотеки"
+
+#: sui_menu.lua:2889 sui_menu.lua:2901 sui_menu.lua:2943 sui_menu.lua:2955
+#: sui_menu.lua:2997 sui_menu.lua:3009 sui_menu.lua:3064 sui_menu.lua:3076
+#: sui_menu.lua:3131 sui_menu.lua:3143 sui_menu.lua:3285 sui_menu.lua:3290
+#: desktop_modules/module_collections.lua:966
+msgid "Light"
+msgstr "Світлий"
+
+#: sui_menu.lua:2324
+msgid "Lighten"
+msgstr "Посвітити"
+
+#: sui_menu.lua:2337
+msgid "Lighten Wallpaper"
+msgstr "Світлі шпалери"
+
+#: desktop_modules/module_reading_stats.lua:739
 msgid "List"
 msgstr "Список"
 
-#: sui_menu.lua:1714
-msgid "Lock Scale"
-msgstr "Шкала блокування"
+#: sui_stats_windows.lua:2217
+msgid "Loading statistics\\xe2\\x80\\xa6"
+msgstr "Завантаження статистики\\xe2\\x80\\xa6"
 
-#: desktop_modules/module_clock.lua:54
+#: sui_menu.lua:2389
+msgid "Lock Scale"
+msgstr "Зафіксувати масштаб"
+
+#: sui_onboarding.lua:156
+msgid "Long press to customize"
+msgstr "Натисніть і утримуйте, щоб налаштувати"
+
+#: sui_presets.lua:397 sui_presets.lua:409 sui_presets.lua:577
+#: sui_presets.lua:589
+msgid "LuaSettings module unavailable"
+msgstr "Модуль LuaSettings недоступний"
+
+#: sui_onboarding.lua:122
+msgid "Make it yours"
+msgstr "Налаштуйте під себе"
+
+#: sui_menu.lua:3975 sui_menu.lua:4049 sui_menu.lua:4054 sui_presets.lua:875
+#: sui_presets.lua:951 sui_presets.lua:956
+msgid "Manage presets"
+msgstr "Керування пресетами"
+
+#: desktop_modules/module_reading_goals.lua:1042
+msgid "Manually Tracked Books"
+msgstr "Книги, що відстежуються вручну"
+
+#: desktop_modules/module_reading_goals.lua:1030
+msgid "Manually Tracked Books  (%s)"
+msgstr "Книги, що відстежуються вручну  (%s)"
+
+#: desktop_modules/module_clock.lua:60
 msgid "March"
 msgstr "Березень"
 
-#: desktop_modules/module_collections.lua:709
-msgid "Maximum 5 collections. Remove one first."
-msgstr "Максимум 5 колекцій. Спочатку видаліть одну."
+#: sui_quicksettings_bar.lua:443 sui_quicksettings_bar.lua:549
+msgid "Max"
+msgstr "Макс"
 
-#: desktop_modules/module_clock.lua:55
+#: desktop_modules/module_collections.lua:872
+#: desktop_modules/module_collections.lua:1012
+msgid "Maximum 5 collections. Remove one first."
+msgstr "Щонайбільше 5 добірок. Спочатку видаліть одну."
+
+#: sui_quicksettings_bar.lua:1248
+msgid "Maximum slots reached."
+msgstr "Досягнуто максимальної кількості слотів."
+
+#: desktop_modules/module_clock.lua:61
 msgid "May"
 msgstr "Травень"
 
-#: sui_titlebar.lua:54 sui_titlebar.lua:59
+#: sui_titlebar.lua:102 sui_titlebar.lua:107
 msgid "Menu"
 msgstr "Меню"
 
-#: sui_menu.lua:265
+#: sui_style.lua:88
+msgid "Menu Button"
+msgstr "Кнопка меню"
+
+#: desktop_modules/module_clock.lua:222 desktop_modules/module_clock.lua:304
+msgid "Midnight"
+msgstr "Північ"
+
+#: sui_presets.lua:171
+msgid "Mindful Reading"
+msgstr "Усвідомлене читання"
+
+#: sui_menu.lua:360
 msgid "Minimum 1 tab required in navpager mode."
-msgstr "У режимі navpager потрібна щонайменше 1 вкладка."
+msgstr "У режимі navpager потрібно мінімум 1 вкладка."
 
-#: sui_menu.lua:266
+#: sui_menu.lua:361
 msgid "Minimum 2 tabs required. Select another tab first."
-msgstr "Необхідно мінімум 2 вкладки. Спочатку виберіть іншу вкладку."
+msgstr "Потрібно мінімум 2 вкладки. Спочатку виберіть іншу вкладку."
 
-#: desktop_modules/module_reading_goals.lua:389
+#: desktop_modules/module_reading_goals.lua:440
 msgid "Minutes per day:"
 msgstr "Хвилин на день:"
 
-#: sui_menu.lua:1731
-msgid "Module Scale"
-msgstr ""
+#: sui_menu.lua:448
+msgid "Mode"
+msgstr "Режим"
 
-#: sui_menu.lua:1706
+#: sui_menu.lua:2407
+msgid "Module Scale"
+msgstr "Масштаб модуля"
+
+#: sui_menu.lua:2153
 msgid "Module Settings"
 msgstr "Налаштування модуля"
 
-#: sui_menu.lua:1725
+#: sui_menu.lua:3641
+msgid "Module unavailable"
+msgstr "Модуль недоступний"
+
+#: sui_menu.lua:2400 sui_menu.lua:2629
 msgid "Modules"
 msgstr "Модулі"
 
-#: sui_menu.lua:1477
+#: sui_menu.lua:2141
 msgid "Modules  (%d)"
 msgstr "Модулі  (%d)"
 
-#: desktop_modules/module_clock.lua:50
+#: sui_homescreen.lua:2506
+msgid ""
+"Modules exceed the visible area.\n"
+"Move some to another page or adjust the scale."
+msgstr ""
+"Модулі виходять за межі видимої області.\n"
+"Перемістіть деякі з них на іншу сторінку або відрегулюйте масштаб."
+
+#: sui_presets.lua:206
+msgid "Momentum"
+msgstr "Імпульс"
+
+#: desktop_modules/module_clock.lua:56
 msgid "Monday"
-msgstr "понеділок"
+msgstr "Понеділок"
 
-#: desktop_modules/module_quote.lua:1218
+#: desktop_modules/module_reading_goals.lua:855
+#: desktop_modules/module_reading_goals.lua:902
+#: desktop_modules/module_reading_goals.lua:939
+#: desktop_modules/module_reading_goals.lua:970
+msgid "Monthly Goal"
+msgstr "Щомісячна ціль"
+
+#: desktop_modules/module_reading_goals.lua:421
+msgid "Monthly Reading Goal"
+msgstr "Щомісячна ціль читання"
+
+#: main.lua:1059
+msgid "More by %s (%d)"
+msgstr "Ще від %s (%d)"
+
+#: sui_window.lua:2430
+msgid "Move down"
+msgstr "Перейти вниз"
+
+#: sui_window.lua:2424 sui_settings_window.lua:487 sui_settings_window.lua:523
+msgid "Move to page"
+msgstr "Перейти на сторінку"
+
+#: sui_window.lua:2427
+msgid "Move up"
+msgstr "Піднятися вгору"
+
+#: sui_quickactions.lua:22
+msgid "My Action"
+msgstr "Моя дія"
+
+#: desktop_modules/module_quote.lua:1319
 msgid "My Highlights"
-msgstr "Моє найцікавіше"
+msgstr "Мої улюблені"
 
-#: sui_quickactions.lua:850 sui_quickactions.lua:869 sui_quickactions.lua:896 sui_quickactions.lua:924
+#: sui_presets.lua:765 sui_presets.lua:770
+msgid "My Presets"
+msgstr "Мої пресети"
+
+#: sui_quickactions.lua:2111
 msgid "Name"
-msgstr "Ім'я"
+msgstr "Назва"
 
-#: sui_menu.lua:1947
+#: sui_foldercovers.lua:298 sui_menu.lua:3025 sui_menu.lua:3034
+#: sui_menu.lua:3046
+msgid "Native"
+msgstr "Нативне"
+
+#: sui_menu.lua:2663
 msgid "Navigation Bar"
 msgstr "Панель навігації"
 
-#: sui_menu.lua:366
+#: sui_menu.lua:1306
+msgid "Navigation Bar Size"
+msgstr "Розмір панелі навігації"
+
+#: sui_menu.lua:1108
+msgid ""
+"Navigation Bar will be %s after restart.\n"
+"\n"
+"Restart now?"
+msgstr ""
+"Після перезапуску панель навігації буде %s.\n"
+"\n"
+"Перезапустити зараз?"
+
+#: sui_menu.lua:461 sui_style.lua:1385
 msgid "Navpager"
 msgstr "Navpager"
 
-#: sui_menu.lua:373
+#: sui_menu.lua:468
 msgid ""
 "Navpager enabled.\n"
 "\n"
@@ -876,1101 +1877,2371 @@ msgstr ""
 "\n"
 "Перезапустити зараз?"
 
-#: sui_quickactions.lua:488
+#: sui_style.lua:168
+msgid "Navpager: Next"
+msgstr "Navpager: Наступна"
+
+#: sui_style.lua:162
+msgid "Navpager: Previous"
+msgstr "Navpager: Попередня"
+
+#: sui_quickactions.lua:1748
 msgid "Nerd Font Icon"
-msgstr ""
+msgstr "Іконка шрифту Nerd Font"
 
-#: sui_quickactions.lua:573
+#: sui_quickactions.lua:1819
 msgid "Nerd Font symbol…"
-msgstr ""
+msgstr "Символ шрифту Nerd Font…"
 
-#: sui_bottombar.lua:1454
+#: sui_quickactions.lua:204
 msgid "Network manager unavailable."
-msgstr "Менеджер мережі недоступний."
+msgstr "Мережевий менеджер недоступний."
 
-#: desktop_modules/module_new_books.lua:180
+#: sui_menu.lua:2527
+msgid "Never"
+msgstr "Ніколи"
+
+#: sui_foldercovers.lua:2436 sui_foldercovers.lua:3115
+#: desktop_modules/module_new_books.lua:216
 msgid "New"
-msgstr "Нова"
+msgstr "Нове"
 
-#: desktop_modules/module_new_books.lua:46 desktop_modules/module_new_books.lua:47 desktop_modules/module_new_books.lua:107
-#: desktop_modules/module_new_books.lua:280
+#: sui_menu.lua:3088
+msgid "New Book"
+msgstr "Нова книга"
+
+#: desktop_modules/module_new_books.lua:50
+#: desktop_modules/module_new_books.lua:51
+#: desktop_modules/module_new_books.lua:130
+#: desktop_modules/module_new_books.lua:381
 msgid "New Books"
 msgstr "Нові книги"
 
-#: sui_quickactions.lua:752
+#: sui_quickactions.lua:1992
 msgid "New Quick Action"
-msgstr "Нова Швидка дія"
+msgstr "Нова швидка дія"
 
-#: sui_quickactions.lua:1058
-msgid "New name…"
-msgstr "Нова назва…"
+#: sui_foldercovers.lua:743 sui_browsemeta.lua:1081
+msgid "New collection name"
+msgstr "Нова назва добірки"
 
-#: sui_bottombar.lua:288
+#: sui_bottombar.lua:569
 msgid "Next"
 msgstr "Далі"
 
-#: desktop_modules/module_quote.lua:1275
-msgid "No .lua files found in custom_quotes/"
-msgstr ""
+#: sui_quickactions.lua:721 sui_config.lua:125
+msgid "Night Mode"
+msgstr "Нічний режим"
 
-#: sui_updater.lua:419
+#: desktop_modules/module_clock.lua:200 desktop_modules/module_clock.lua:248
+msgid "Nine"
+msgstr "Дев'ять"
+
+#: desktop_modules/module_clock.lua:210 desktop_modules/module_clock.lua:252
+msgid "Nineteen"
+msgstr "Дев'ятнадцять"
+
+#: desktop_modules/module_quote.lua:1376
+msgid "No .lua files found in sui_quotes/"
+msgstr "У каталозі sui_quotes/ не знайдено файлів .lua"
+
+#: sui_menu.lua:3729
 msgid ""
-"No automatic update file was found.\n"
-"\n"
-"Open the releases page on GitHub?"
+"No .zip files found.\n"
+"Place .zip files in:\n"
+"%1"
 msgstr ""
-"Файл автоматичного оновлення не знайдено.\n"
-"\n"
-"Відкрити сторінку випусків на GitHub?"
+"Файли .zip не знайдено.\n"
+"Помістіть файли .zip у:\n"
+"%1"
 
-#: sui_bottombar.lua:1389
+#: sui_quicksettings_bar.lua:1204 sui_quicksettings_bar.lua:1224
+msgid "No actions active yet."
+msgstr "Поки що немає активних дій."
+
+#: sui_quickactions.lua:1356 sui_settings_window.lua:453
+#: desktop_modules/module_action_list.lua:108
+#: desktop_modules/module_action_list.lua:135
+#: desktop_modules/module_quick_actions.lua:90
+msgid "No actions configured"
+msgstr "Дії не налаштовані"
+
+#: desktop_modules/module_action_list.lua:107
+#: desktop_modules/module_action_list.lua:134
+#: desktop_modules/module_quick_actions.lua:89
+msgid "No actions configured  —  long press to configure"
+msgstr "Дії не налаштовані  —  натисніть і утримуйте, щоб налаштувати"
+
+#: sui_quicksettings_bar.lua:355
+msgid ""
+"No actions configured.\n"
+"Go to Bars → Quick Settings Bar."
+msgstr ""
+"Дії не налаштовані.\n"
+"Перейдіть до меню «Панелі» → «Панель швидких налаштувань»."
+
+#: sui_quickactions.lua:655
 msgid "No book in history."
-msgstr "Жодної книги в історії."
+msgstr "У історії немає такої книги."
 
-#: sui_foldercovers.lua:609
+#: sui_stats_windows.lua:729
+msgid "No books finished in %s"
+msgstr "У %s не прочитано жодної книги"
+
+#: sui_foldercovers.lua:850
 msgid "No books found in this folder."
-msgstr "У цій папці не знайдено книг."
+msgstr "У цій папці не знайдено жодної книги."
 
-#: sui_foldercovers.lua:544
+#: sui_foldercovers.lua:736 sui_foldercovers.lua:793
 msgid "No books found in this series."
-msgstr "У цій серії не знайдено книг."
+msgstr "У цій серії книг не знайдено жодної книги."
 
-#: sui_browsemeta.lua:731
+#: sui_browsemeta.lua:1150
 msgid "No books found."
-msgstr ""
+msgstr "Книг не знайдено."
 
-#: desktop_modules/module_tbr.lua:455
+#: desktop_modules/module_tbr.lua:621 desktop_modules/module_tbr.lua:646
+#: desktop_modules/module_tbr.lua:721
 msgid "No books in To Be Read list."
-msgstr "Немає книг у списку для читання."
+msgstr "У списку «До прочитання» немає книг."
 
-#: sui_homescreen.lua:190
+#: sui_homescreen.lua:406
 msgid "No books opened yet"
 msgstr "Книг ще не відкрито"
 
-#: desktop_modules/module_collections.lua:673
+#: desktop_modules/module_collections.lua:976
 msgid "No collections found."
-msgstr "Колекції не знайдено."
+msgstr "Добірок не знайдено."
 
-#: desktop_modules/module_collections.lua:378
+#: desktop_modules/module_collections.lua:431
 msgid "No collections selected"
-msgstr "Колекції не вибрано"
+msgstr "Не вибрано жодної добірки"
 
-#: desktop_modules/module_quote.lua:831
-msgid "No custom quotes found. Add a .lua file to the plugin\\'s desktop_modules/custom_quotes/ folder and select it in Settings."
+#: desktop_modules/module_collections.lua:430
+msgid "No collections selected  —  long press to configure"
+msgstr "Добірок не вибрано  —  натисніть і утримуйте, щоб налаштувати"
+
+#: desktop_modules/module_quote.lua:876
+msgid ""
+"No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder "
+"and select it in Settings."
 msgstr ""
-"Користувацьких цитат не знайдено. Додайте файл .lua до папки desktop_modules/custom_quotes/плагіна та виберіть його в "
-"налаштуваннях."
+"Не знайдено жодних власних цитат. Додайте файл .lua до папки sui_quotes/ "
+"додатку та виберіть його в налаштуваннях."
 
-#: sui_quickactions.lua:1302
+#: sui_updater.lua:481
+msgid ""
+"No download file found.\n"
+"\n"
+"Open the releases page?"
+msgstr ""
+"Файл для завантаження не знайдено.\n"
+"\n"
+"Відкрити сторінку з версіями?"
+
+#: sui_presets.lua:389 sui_presets.lua:569
+msgid "No export directory"
+msgstr "Каталог експорту відсутній"
+
+#: sui_stats_windows.lua:133
+msgid "No filepath."
+msgstr "Шлях до файлу відсутній."
+
+#: sui_quickactions.lua:2713
 msgid ""
 "No folder, collection or plugin configured.\n"
-"Go to Simple UI \\\\xe2\\\\x86\\\\x92 Settings \\\\xe2\\\\x86\\\\x92 Quick Actions to set one."
+"Go to Simple UI → Settings → Quick Actions to set one."
 msgstr ""
-"Немає налаштованих папок, колекцій або плагінів.\n"
-"Перейдіть до Simple UI \\\\xe2\\\\x86\\\\ x92 Налаштування \\\\xe2\\\\x86\\\\ x92 Швидкі дії, щоб встановити."
+"Не налаштовано жодної папки, добірки чи додатку.\n"
+"Перейдіть до «Simple UI» → «Налаштування» → «Швидкі дії», щоб налаштувати їх."
 
-#: desktop_modules/module_quote.lua:895
+#: sui_style.lua:1784
+msgid "No fonts found."
+msgstr "Шрифти не знайдено."
+
+#: desktop_modules/module_quote.lua:948
 msgid "No highlights found. Open a book and highlight some passages."
-msgstr "Найцікавіше не знайдено. Відкрийте книгу та виділіть деякі уривки."
-
-#: sui_quickactions.lua:586
-msgid "No icons found in:"
-msgstr "Немає значків у:"
-
-#: sui_quickactions.lua:886
-msgid "No plugins found."
-msgstr "Плагінів не знайдено."
-
-#: desktop_modules/module_quote.lua:861
-msgid "No quotes found."
 msgstr ""
+"Виділених фрагментів не знайдено. Відкрийте книгу та виділіть кілька уривків."
 
-#: desktop_modules/module_reading_stats.lua:286
+#: sui_quickactions.lua:1832
+msgid "No icons found in:"
+msgstr "Не знайдено піктограм у:"
+
+#: sui_window.lua:2124 sui_window.lua:2723
+msgid "No items available."
+msgstr "Елементів немає."
+
+#: sui_menu.lua:871 sui_menu.lua:949 sui_menu.lua:1135 sui_menu.lua:1186
+#: sui_menu.lua:1548 sui_menu.lua:1655 sui_menu.lua:1957 sui_menu.lua:1982
+#: sui_window.lua:2633 desktop_modules/module_collections.lua:818
+#: desktop_modules/module_collections.lua:843
+#: desktop_modules/module_action_list.lua:478
+#: desktop_modules/module_action_list.lua:503
+#: desktop_modules/module_reading_stats.lua:615
+#: desktop_modules/module_reading_stats.lua:636
+#: desktop_modules/module_reading_goals.lua:905
+#: desktop_modules/module_reading_goals.lua:912
+#: desktop_modules/module_coverdeck.lua:1225
+#: desktop_modules/module_coverdeck.lua:1233
+#: desktop_modules/module_currently.lua:1200
+#: desktop_modules/module_currently.lua:1284
+#: desktop_modules/module_currently.lua:1416
+#: desktop_modules/module_currently.lua:1459
+#: desktop_modules/module_quick_actions.lua:405
+#: desktop_modules/module_quick_actions.lua:430
+msgid "No items selected."
+msgstr "Не вибрано жодного елемента."
+
+#: sui_settings_window.lua:372 sui_settings_window.lua:534
+msgid "No modules"
+msgstr "Модулів немає"
+
+#: sui_settings_window.lua:520
+msgid "No other pages available."
+msgstr "Інших сторінок немає."
+
+#: sui_menu.lua:3765
+msgid "No packs found."
+msgstr "Пакетів не знайдено."
+
+#: sui_quickactions.lua:2206
+msgid "No plugins found."
+msgstr "Додатків не знайдено."
+
+#: sui_menu.lua:4155 sui_presets.lua:1057
+msgid ""
+"No preset files found.\n"
+"Place .lua files in:\n"
+"%1"
+msgstr ""
+"Файли пресетів не знайдено.\n"
+"Помістіть файли .lua у:\n"
+"%1"
+
+#: sui_menu.lua:4131 sui_presets.lua:1034
+msgid "No presets found."
+msgstr "Пресетів не знайдено."
+
+#: desktop_modules/module_quote.lua:910
+msgid "No quotes found."
+msgstr "Цитат не знайдено."
+
+#: sui_quickactions.lua:3028
+msgid "No recent books."
+msgstr "Немає останніх книг."
+
+#: sui_stats_windows.lua:142 sui_stats_windows.lua:177
+#: sui_stats_windows.lua:2528
+msgid "No statistics found for this book."
+msgstr "Статистика для цієї книги не знайдена."
+
+#: desktop_modules/module_coverdeck.lua:1087
+msgid "No statistics selected."
+msgstr "Статистика не обрана."
+
+#: desktop_modules/module_reading_stats.lua:352
 msgid "No stats selected"
-msgstr "Статистичні дані не вибрано"
+msgstr "Статистика не обрана"
 
-#: sui_quickactions.lua:914
+#: desktop_modules/module_reading_stats.lua:351
+msgid "No stats selected  —  long press to configure"
+msgstr "Статистика не обрана  —  натисніть і утримуйте, щоб налаштувати"
+
+#: sui_quickactions.lua:2232
 msgid "No system actions found."
 msgstr "Системних дій не знайдено."
 
-#: desktop_modules/module_clock.lua:56
+#: sui_menu.lua:2225
+msgid "No wallpapers found."
+msgstr "Шпалери не знайдено."
+
+#: sui_quickactions.lua:2104 sui_foldercovers.lua:303 sui_menu.lua:3026
+#: sui_menu.lua:3035 sui_menu.lua:3053 sui_menu.lua:3093 sui_menu.lua:3102
+#: sui_menu.lua:3120
+msgid "None"
+msgstr "Немає"
+
+#: desktop_modules/module_clock.lua:223 desktop_modules/module_clock.lua:307
+msgid "Noon"
+msgstr "Полудень"
+
+#: desktop_modules/module_reading_goals.lua:953
+#: desktop_modules/module_reading_goals.lua:968
+#: desktop_modules/module_reading_goals.lua:983
+msgid "Not set"
+msgstr "Не встановлено"
+
+#: sui_stats_windows.lua:1066 sui_stats_windows.lua:2769
+msgid "Notes"
+msgstr "Примітки"
+
+#: desktop_modules/module_clock.lua:62
 msgid "November"
 msgstr "Листопад"
 
-#: sui_menu.lua:2058
+#: sui_menu.lua:2839
 msgid "Number of Books in Folder"
 msgstr "Кількість книг у папці"
 
-#: sui_menu.lua:1482 sui_menu.lua:2090
+#: sui_menu.lua:2913
 msgid "Number of Pages"
 msgstr "Кількість сторінок"
 
-#: sui_menu.lua:500
-msgid "Number of Pages in Title Bar Always"
-msgstr "Кількість сторінок у рядку заголовка завжди"
+#: desktop_modules/module_clock.lua:226 desktop_modules/module_clock.lua:325
+msgid "O'Clock"
+msgstr "година"
 
-#: sui_quickactions.lua:501
+#: sui_quickactions.lua:1761
 msgid "OK"
-msgstr "OK"
+msgstr "ОК"
 
-#: desktop_modules/module_clock.lua:56
+#: desktop_modules/module_clock.lua:62
 msgid "October"
 msgstr "Жовтень"
 
-#: sui_menu.lua:737 sui_menu.lua:806 sui_menu.lua:996 sui_menu.lua:1142 sui_menu.lua:1825 sui_menu.lua:1906
+#: sui_quickactions.lua:1453 sui_quickactions.lua:2445 sui_menu.lua:1401
+#: sui_menu.lua:1606 sui_menu.lua:3159 sui_menu.lua:3324 sui_menu.lua:4464
 msgid "Off"
 msgstr "Вимкнено"
 
-#: sui_menu.lua:737 sui_menu.lua:806 sui_menu.lua:996 sui_menu.lua:1142 sui_menu.lua:1825 sui_menu.lua:1906
+#: desktop_modules/module_clock.lua:227 desktop_modules/module_clock.lua:270
+msgid "Oh"
+msgstr "  "
+
+#: sui_quickactions.lua:1452 sui_quickactions.lua:2444 sui_menu.lua:1401
+#: sui_menu.lua:1606 sui_menu.lua:4464
 msgid "On"
 msgstr "Увімкнено"
 
-#: sui_homescreen.lua:420 desktop_modules/module_quote.lua:1114
+#: desktop_modules/module_clock.lua:192 desktop_modules/module_clock.lua:246
+msgid "One"
+msgstr "Один"
+
+#: sui_quickactions.lua:2983 sui_homescreen.lua:738 sui_stats_windows.lua:713
+#: desktop_modules/module_quote.lua:1212
 msgid "Open"
 msgstr "Відкрити"
 
-#: sui_homescreen.lua:199
+#: sui_homescreen.lua:415
 msgid "Open a book to get started"
-msgstr "Щоб почати, відкрийте книгу"
+msgstr "Відкрийте книгу, щоб розпочати роботу"
 
-#: sui_updater.lua:420
+#: sui_updater.lua:482
 msgid "Open in browser"
 msgstr "Відкрити в браузері"
 
-#: sui_homescreen.lua:419 desktop_modules/module_quote.lua:1113
+#: sui_quickactions.lua:2982 sui_homescreen.lua:737 sui_stats_windows.lua:711
+#: desktop_modules/module_quote.lua:1211
 msgid "Open this file?"
 msgstr "Відкрити цей файл?"
 
-#: sui_menu.lua:2054
+#: sui_menu.lua:2583
+msgid "Overflow Warning"
+msgstr "Попередження про переповнення"
+
+#: sui_menu.lua:2803
 msgid "Overlays"
 msgstr "Накладки"
 
-#: sui_patches.lua:1404 sui_patches.lua:1759 sui_homescreen.lua:1673
+#: sui_menu.lua:3957 sui_menu.lua:3986 sui_menu.lua:4115 sui_presets.lua:856
+#: sui_presets.lua:886 sui_presets.lua:1018
+msgid "Overwrite"
+msgstr "Перезаписати"
+
+#: sui_presets.lua:885 sui_presets.lua:1017
+msgid "Overwrite preset \"%s\" with the current homescreen settings?"
+msgstr "Перезаписати пресет%s поточними налаштуваннями головного екрану?"
+
+#: sui_menu.lua:3985 sui_menu.lua:4114
+msgid "Overwrite preset \"%s\" with the current icon settings?"
+msgstr "Перезаписати пресет%s поточними налаштуваннями піктограм?"
+
+#: sui_menu.lua:3781
+msgid ""
+"Pack \"%s\" applied.\n"
+"%d icons replaced."
+msgstr ""
+"Пакет «%s» застосовано.\n"
+"Замінено%d піктограм."
+
+#: sui_menu.lua:3742
+msgid ""
+"Pack \"%s\" installed.\n"
+"You can now apply it from the list."
+msgstr ""
+"Пакет «%s» встановлено.\n"
+"Тепер ви можете застосувати його зі списку."
+
+#: sui_style.lua:2400
+msgid "Pack folder not accessible: "
+msgstr "Немає доступу до папки Pack: "
+
+#: sui_homescreen.lua:1793 sui_patches.lua:1771 sui_patches.lua:2277
+#: sui_window.lua:1114
 msgid "Page %1 of %2"
 msgstr "Сторінка %1 з %2"
 
-#: sui_menu.lua:1948
-msgid "Pagination Bar"
-msgstr "Пагінація"
+#: sui_settings_window.lua:346 sui_settings_window.lua:496
+#: sui_settings_window.lua:870
+msgid "Page %d"
+msgstr "Сторінка %d"
 
-#: sui_menu.lua:383
+#: sui_settings_window.lua:345 sui_settings_window.lua:495
+#: sui_settings_window.lua:869
+msgid "Page 1 (Home)"
+msgstr "Сторінка 1 (Головна)"
+
+#: sui_stats_windows.lua:882 sui_stats_windows.lua:2614
+msgid "Pages"
+msgstr "Сторінки"
+
+#: sui_stats_windows.lua:2091
+msgid "Pages per day"
+msgstr "Сторінок на день"
+
+#: sui_stats_windows.lua:2108 sui_stats_windows.lua:2124
+msgid "Pages read"
+msgstr "Прочитані сторінки"
+
+#: sui_menu.lua:2665 sui_style.lua:1384
+msgid "Pagination Bar"
+msgstr "Панель пагінації"
+
+#: sui_menu.lua:478
 msgid ""
 "Pagination bar hidden.\n"
 "\n"
 "Restart now?"
 msgstr ""
-"Панель пагінації приховано.\n"
+"Панель пагінації прихована.\n"
 "\n"
 "Перезапустити зараз?"
 
-#: sui_menu.lua:362
+#: sui_menu.lua:457
 msgid ""
 "Pagination bar set to Default.\n"
 "\n"
 "Restart now?"
 msgstr ""
-"Панель пагінації встановлено за замовчуванням.\n"
+"Панель пагінації встановлено на значення «За замовчуванням».\n"
 "\n"
 "Перезапустити зараз?"
 
-#: sui_menu.lua:469 sui_menu.lua:481 sui_menu.lua:493
+#: sui_menu.lua:564 sui_menu.lua:576 sui_menu.lua:588
 msgid ""
 "Pagination bar size will change after restart.\n"
 "\n"
 "Restart now?"
 msgstr ""
-"Панель пагінації приховано.\n"
+"Розмір панелі пагінації зміниться після перезапуску.\n"
 "\n"
 "Перезапустити зараз?"
 
-#: sui_quickactions.lua:833
+#: sui_style.lua:149
+msgid "Pagination: First Page"
+msgstr "Пагінація: Перша сторінка"
+
+#: sui_style.lua:155
+msgid "Pagination: Last Page"
+msgstr "Пагінація: Остання сторінка"
+
+#: sui_style.lua:143
+msgid "Pagination: Next Page"
+msgstr "Пагінація: Наступна сторінка"
+
+#: sui_style.lua:137
+msgid "Pagination: Previous Page"
+msgstr "Пагінація: Попередня сторінка"
+
+#: sui_quickactions.lua:2160
 msgid "Path chooser not available."
 msgstr "Вибір шляху недоступний."
 
-#: desktop_modules/module_recent.lua:304
-msgid "Percentage overlay on cover"
-msgstr "Накладання відсотків на обкладинку"
+#: sui_style.lua:2389
+msgid "Path does not exist: "
+msgstr "Шлях не існує: "
 
-#: desktop_modules/module_currently.lua:268 desktop_modules/module_currently.lua:911 desktop_modules/module_coverdeck.lua:75
+#: desktop_modules/module_tbr.lua:795
+msgid "Percentage Overlay on Cover"
+msgstr "Накладення відсотків на обкладинку"
+
+#: desktop_modules/module_tbr.lua:785
+msgid "Percentage Text"
+msgstr "Текст із відсотками"
+
+#: desktop_modules/module_recent.lua:581
+msgid "Percentage overlay on cover"
+msgstr "Накладення відсотків на обкладинку"
+
+#: desktop_modules/module_coverdeck.lua:78
+#: desktop_modules/module_currently.lua:249
+#: desktop_modules/module_currently.lua:1159
 msgid "Percentage read"
 msgstr "Відсоток прочитаного"
 
-#: desktop_modules/module_recent.lua:294
+#: desktop_modules/module_recent.lua:571
 msgid "Percentage text"
-msgstr "Відсотковий текст"
+msgstr "Текст із відсотками"
 
-#: desktop_modules/module_reading_goals.lua:371
+#: desktop_modules/module_reading_goals.lua:404
 msgid "Physical Books — %s"
-msgstr "Фізичні книги — %s"
+msgstr "Паперові книги — %s"
 
-#: desktop_modules/module_reading_goals.lua:372
+#: desktop_modules/module_reading_goals.lua:405
 msgid "Physical books read this year:"
-msgstr "Фізичні книги, прочитані цього року:"
+msgstr "Прочитані цьогоріч паперові книги:"
 
-#: desktop_modules/module_quote.lua:1300
-msgid "Place .lua files in the plugin's desktop_modules/custom_quotes/ folder"
-msgstr "Помістіть файли .lua у папку desktop_modules/custom_quotes/плагіна"
+#: desktop_modules/module_quote.lua:1401
+msgid "Place .lua files in the plugin's sui_quotes/ folder"
+msgstr "Помістіть файли .lua у папку sui_quotes/ додатку"
 
-#: sui_menu.lua:2183
-msgid "Placeholder cover for bookless folders"
-msgstr "Обкладинка-заповнювач для папок без книг"
+#: sui_menu.lua:3766
+msgid "Place a folder or .zip in:"
+msgstr "Помістіть папку або файл .zip у:"
 
-#: sui_quickactions.lua:945
+#: sui_menu.lua:2227
+msgid "Place images in:"
+msgstr "Розмістіть зображення в:"
+
+#: sui_onboarding.lua:169
+msgid ""
+"Place your files in koreader/settings/simpleui/sui_wallpapers or sui_icons."
+msgstr ""
+"Помістіть свої файли в папку koreader/settings/simpleui/sui_wallpapers або "
+"sui_icons."
+
+#: sui_menu.lua:3422
+msgid "Placeholder Cover for Bookless Folders"
+msgstr "Заповнювач обкладинки для папок без книги"
+
+#: sui_stats_windows.lua:611
+msgid "Please enter a date in YYYY-MM-DD format."
+msgstr "Будь ласка, введіть дату у форматі YYYY-MM-DD."
+
+#: sui_menu.lua:3936 sui_presets.lua:830
+msgid "Please enter a name for the preset."
+msgstr "Введіть назву пресета."
+
+#: sui_quickactions.lua:2131
+msgid "Please select an action."
+msgstr "Будь ласка, виберіть дію."
+
+#: sui_quickactions.lua:2225 sui_quickactions.lua:2344
 msgid "Plugin"
-msgstr "Плагін"
+msgstr "Додаток"
 
-#: sui_quickactions.lua:1287
+#: sui_quickactions.lua:2698
 msgid "Plugin error: %s"
-msgstr "Помилка плагіна: %s"
+msgstr "Помилка додатку: %s"
 
-#: sui_quickactions.lua:1289
+#: sui_quickactions.lua:2700
 msgid "Plugin not available: %s"
-msgstr "Плагін недоступний: %s"
+msgstr "Додаток недоступний: %s"
 
-#: sui_config.lua:143
+#: sui_menu.lua:2846 sui_menu.lua:3250
+msgid "Position"
+msgstr "Позиція"
+
+#: sui_quickactions.lua:751 sui_config.lua:127
 msgid "Power"
-msgstr "Живлення "
+msgstr "Живлення"
 
-#: sui_bottombar.lua:288
+#: sui_menu.lua:2608
+msgid "Preserve Deleted Books in Statistics"
+msgstr "Збереження видалених книг у статистиці"
+
+#: sui_menu.lua:4167 sui_presets.lua:1071
+msgid "Preset \"%s\" imported."
+msgstr "Імпортовано пресет «%s»."
+
+#: sui_menu.lua:3896 sui_presets.lua:712 sui_presets.lua:790
+msgid "Preset \"%s\" not found."
+msgstr "Не знайдено пресет «%s»."
+
+#: sui_menu.lua:3946 sui_presets.lua:847
+msgid "Preset \"%s\" saved."
+msgstr "Пресет «%s» збережено."
+
+#: sui_menu.lua:3992 sui_menu.lua:4121 sui_presets.lua:892 sui_presets.lua:1024
+msgid "Preset \"%s\" updated."
+msgstr "Оновлено пресет «%s»."
+
+#: sui_menu.lua:4203 sui_presets.lua:1104
+msgid ""
+"Preset exported to:\n"
+"%s"
+msgstr ""
+"Пресет експортовано до:\n"
+"%s"
+
+#: sui_menu.lua:3921 sui_presets.lua:815
+msgid "Preset name"
+msgstr "Назва пресета"
+
+#: sui_presets.lua:391 sui_presets.lua:571
+msgid "Preset not found"
+msgstr "Пресет не знайдено"
+
+#: sui_menu.lua:2637 sui_settings_window.lua:324
+msgid "Presets"
+msgstr "Пресети"
+
+#: sui_settings_window.lua:684
+msgid "Presets module unavailable."
+msgstr "Модуль пресетів недоступний."
+
+#: sui_onboarding.lua:157
+msgid ""
+"Press and hold any element on the screen (like modules or bars) to quickly "
+"customize its settings."
+msgstr ""
+"Натисніть і утримуйте будь-який елемент на екрані (наприклад, модулі або "
+"панелі), щоб швидко налаштувати його параметри."
+
+#: sui_bottombar.lua:569
 msgid "Prev"
 msgstr "Попередня"
 
-#: desktop_modules/module_currently.lua:267 desktop_modules/module_recent.lua:284
-msgid "Progress bar"
-msgstr ""
+#: sui_menu.lua:3021
+msgid "Progress"
+msgstr "Хід виконання"
 
-#: desktop_modules/module_currently.lua:923
+#: desktop_modules/module_tbr.lua:775
+msgid "Progress Bar"
+msgstr "Індикатор виконання"
+
+#: sui_menu.lua:4291
+msgid "Progress Bar Type"
+msgstr "Тип індикатора прогресу"
+
+#: desktop_modules/module_recent.lua:561
+#: desktop_modules/module_coverdeck.lua:92
+#: desktop_modules/module_currently.lua:248
+msgid "Progress bar"
+msgstr "Індикатор виконання"
+
+#: desktop_modules/module_currently.lua:1497
 msgid "Progress bar style"
 msgstr "Стиль індикатора прогресу"
 
-#: sui_menu.lua:1455 sui_menu.lua:1955
+#: sui_quickactions.lua:1354 sui_quickactions.lua:2926 sui_menu.lua:2130
+#: sui_menu.lua:4519 sui_quicksettings_bar.lua:1196
+#: sui_quicksettings_bar.lua:1201 sui_quicksettings_bar.lua:1222
+#: sui_settings_window.lua:279 desktop_modules/module_action_list.lua:470
+#: desktop_modules/module_action_list.lua:475
+#: desktop_modules/module_action_list.lua:501
+#: desktop_modules/module_quick_actions.lua:397
+#: desktop_modules/module_quick_actions.lua:402
+#: desktop_modules/module_quick_actions.lua:428
+#: desktop_modules/module_quick_actions.lua:539
 msgid "Quick Actions"
 msgstr "Швидкі дії"
 
-#: sui_menu.lua:1959
+#: sui_menu.lua:4523
 msgid "Quick Actions  (%d/%d — %d left)"
-msgstr "Швидкі дії  (залишилося %d/%d — %d)"
+msgstr "Швидкі дії  (%d — залишилося %d )"
 
-#: sui_menu.lua:1957
+#: sui_menu.lua:4521
 msgid "Quick Actions  (%d/%d — at limit)"
-msgstr "Швидкі дії  (%d/%d — на межі)"
+msgstr "Швидкі дії  (%d — досягнуто ліміту)"
 
-#: sui_menu.lua:1293 desktop_modules/module_quick_actions.lua:199 desktop_modules/module_quick_actions.lua:249
-msgid "Quick Actions %d"
-msgstr "Швидкі дії %d"
+#: sui_quickactions.lua:1599 sui_menu.lua:3615
+msgid "Quick Actions Icons"
+msgstr "Піктограми швидких дій"
 
-#: sui_bottombar.lua:1756
+#: sui_menu.lua:1882 desktop_modules/module_quick_actions.lua:251
+#: desktop_modules/module_quick_actions.lua:301
+#: desktop_modules/module_quick_actions.lua:654
+msgid "Quick Actions Row"
+msgstr "Рядок швидких дій"
+
+#: sui_menu.lua:2667 sui_quicksettings_bar.lua:1049
+msgid "Quick Settings Bar"
+msgstr "Панель швидких налаштувань"
+
+#: sui_onboarding.lua:231 sui_onboarding.lua:232
+msgid "Quick Tips"
+msgstr "Короткі поради"
+
+#: sui_window.lua:1893
+msgid "Quick toggles"
+msgstr "Швидкі перемикачі"
+
+#: sui_quickactions.lua:491
 msgid "Quit"
 msgstr "Вийти"
 
-#: desktop_modules/module_quote.lua:971
+#: sui_presets.lua:172 desktop_modules/module_quote.lua:1030
 msgid "Quote of the Day"
 msgstr "Цитата дня"
 
-#: desktop_modules/module_quote.lua:1240
+#: desktop_modules/module_quote.lua:1341
 msgid "Quotes + My Highlights"
-msgstr "Цитати + Моє найцікавіше"
+msgstr "Цитати + Мої улюблені цитати"
 
-#: sui_config.lua:170
+#: sui_config.lua:169
 msgid "RAM Usage"
 msgstr "Використання оперативної пам'яті"
 
-#: desktop_modules/module_reading_goals.lua:443 desktop_modules/module_reading_goals.lua:444
-#: desktop_modules/module_reading_goals.lua:469 desktop_modules/module_reading_goals.lua:608
+#: sui_presets.lua:207 desktop_modules/module_reading_goals.lua:540
+#: desktop_modules/module_reading_goals.lua:541
+#: desktop_modules/module_reading_goals.lua:567
+#: desktop_modules/module_reading_goals.lua:1069
 msgid "Reading Goals"
 msgstr "Цілі читання"
 
-#: desktop_modules/module_reading_stats.lua:218
+#: sui_stats_windows.lua:2454
+msgid "Reading Insights"
+msgstr "Статистика читання"
+
+#: sui_presets.lua:207 desktop_modules/module_reading_stats.lua:278
 msgid "Reading Stats"
 msgstr "Статистика читання"
 
-#: desktop_modules/module_coverdeck.lua:728 desktop_modules/module_recent.lua:62 desktop_modules/module_recent.lua:63
-#: desktop_modules/module_recent.lua:72 desktop_modules/module_recent.lua:281
+#: sui_quickactions.lua:479
+msgid "Reboot"
+msgstr "Перезавантаження"
+
+#: sui_quickactions.lua:634 sui_quickactions.lua:3089 sui_config.lua:119
+msgid "Recent"
+msgstr "Останні"
+
+#: sui_presets.lua:137 sui_presets.lua:172 sui_presets.lua:230
+#: desktop_modules/module_recent.lua:69 desktop_modules/module_recent.lua:70
+#: desktop_modules/module_recent.lua:81 desktop_modules/module_recent.lua:541
+#: desktop_modules/module_coverdeck.lua:1038
 msgid "Recent Books"
 msgstr "Останні книги"
 
-#: desktop_modules/module_tbr.lua:265
+#: desktop_modules/module_tbr.lua:294
 msgid "Remove from To Be Read"
-msgstr ""
+msgstr "Видалити зі списку «До прочитання»"
 
-#: sui_quickactions.lua:1056 sui_quickactions.lua:1114
+#: sui_menu.lua:3998 sui_menu.lua:4005 sui_menu.lua:4090 sui_window.lua:1600
+#: sui_window.lua:2436 sui_presets.lua:898 sui_presets.lua:905
+#: sui_presets.lua:991
 msgid "Rename"
 msgstr "Перейменувати"
 
-#: sui_menu.lua:369
+#: sui_menu.lua:4001 sui_menu.lua:4086 sui_presets.lua:901 sui_presets.lua:987
+msgid "Rename \"%s\""
+msgstr "Перейменувати «%s»"
+
+#: sui_menu.lua:2558
 msgid ""
-"Replaces the pagination bar with Prev/Next arrows at the edges of the bottom bar.\n"
+"Replaces the \"Closing book…\" notice above with the cover for that close, "
+"when a cover is available."
+msgstr ""
+"Замінює повідомлення «Закриття книги…» вище обкладинкою для цього закриття, "
+"якщо обкладинка доступна."
+
+#: sui_menu.lua:464
+msgid ""
+"Replaces the pagination bar with Prev/Next arrows at the edges of the bottom "
+"bar.\n"
 "The arrows dim when there is no previous or next page.\n"
 "With navpager active, as few as 1 tab and at most 4 tabs can be configured."
 msgstr ""
-"Замінює панель навігації стрілками Попередня/Наступна по краях нижньої панелі.\n"
-"Стрілки тьмяніють, коли немає попередньої або наступної сторінки.\n"
-"З активним навігатором можна налаштувати лише 1 вкладку та не більше 4 вкладок."
+"Замінює панель нумерації сторінок на стрілки «Назад»/«Вперед» по краях "
+"нижньої панелі.\n"
+"Стрілки стають тьмяними, коли немає попередньої або наступної сторінки.\n"
+"При увімкненому navpager можна налаштувати від 1 до 4 вкладок."
 
-#: sui_quickactions.lua:1065 sui_menu.lua:1796
+#: sui_quickactions.lua:1607 sui_menu.lua:2473 sui_stats_windows.lua:595
+#: sui_style.lua:1400
 msgid "Reset"
 msgstr "Скинути"
 
-#: sui_menu.lua:1795
+#: sui_quickactions.lua:1601 sui_style.lua:1394
+msgid "Reset All"
+msgstr "Скинути все"
+
+#: sui_quickactions.lua:2371
+msgid "Reset All Quick Action Icons"
+msgstr "Скинути всі іконки швидких дій"
+
+#: sui_style.lua:1147
+msgid "Reset All System Icons"
+msgstr "Скинути всі системні іконки"
+
+#: sui_style.lua:2189
+msgid "Reset All Theme Colors"
+msgstr "Скинути всі кольори теми"
+
+#: sui_quickactions.lua:1606
+msgid "Reset all Quick Actions icons to default?"
+msgstr "Скинути всі піктограми швидких дій до значень за замовчуванням?"
+
+#: sui_menu.lua:2472
 msgid "Reset all scales to default (100%)? This cannot be undone."
-msgstr "Відновити всі масштаби до стандартних (100%)? Це неможливо скасувати."
-
-#: sui_menu.lua:1790
-msgid "Reset to Default Scale"
-msgstr "Скинути масштаб за замовчуванням"
-
-#: sui_menu.lua:341 sui_menu.lua:746 sui_menu.lua:815 sui_menu.lua:850 sui_menu.lua:1156 sui_menu.lua:1924 sui_bottombar.lua:1735
-#: sui_updater.lua:360
-msgid "Restart"
-msgstr "Перезапуск"
-
-#: sui_menu.lua:1845
-msgid "Return to Book Folder"
 msgstr ""
+"Скинути всі масштаби до значень за замовчуванням (100%)? Цю дію неможливо "
+"скасувати."
 
-#: sui_menu.lua:626 sui_menu.lua:1040
+#: sui_style.lua:1399
+msgid "Reset all system icons to default?"
+msgstr "Скинути всі системні іконки до значень за замовчуванням?"
+
+#: sui_menu.lua:2467
+msgid "Reset to Default Scale"
+msgstr "Скинути до стандартного масштабу"
+
+#: sui_quickactions.lua:472 sui_menu.lua:436 sui_menu.lua:843 sui_menu.lua:1047
+#: sui_menu.lua:1109 sui_menu.lua:1324 sui_menu.lua:1750 sui_menu.lua:3338
+#: sui_menu.lua:3361 sui_menu.lua:3383 sui_menu.lua:4279 sui_menu.lua:4482
+#: sui_quicksettings_bar.lua:1186 sui_window.lua:1829 sui_updater.lua:431
+msgid "Restart"
+msgstr "Перезапустити"
+
+#: sui_style.lua:1776 sui_style.lua:1820
+msgid "Restart to fully apply the UI font change."
+msgstr "Перезапустіть програму, щоб зміни шрифту інтерфейсу набули чинності."
+
+#: sui_menu.lua:2487
+msgid "Return to Book Folder"
+msgstr "Повернутися до папки «Книги»"
+
+#: sui_menu.lua:2373
+msgid "Return to Home Screen on Wakeup"
+msgstr "Головний екран після пробудження"
+
+#: sui_menu.lua:3092 sui_menu.lua:3101 sui_menu.lua:3113
+msgid "Ribbon"
+msgstr "Стрічка"
+
+#: sui_menu.lua:708 sui_menu.lua:941 sui_menu.lua:1445 sui_menu.lua:1645
+#: desktop_modules/module_quote.lua:125 desktop_modules/module_quote.lua:1433
+#: desktop_modules/module_action_list.lua:74
+#: desktop_modules/module_action_list.lua:603
+#: desktop_modules/module_reading_stats.lua:66
+#: desktop_modules/module_reading_stats.lua:775
+#: desktop_modules/module_clock.lua:116 desktop_modules/module_clock.lua:870
 msgid "Right"
 msgstr "Праворуч"
 
-#: desktop_modules/module_clock.lua:51
+#: sui_quicksettings_bar.lua:1318 desktop_modules/module_quick_actions.lua:575
+msgid "Round"
+msgstr "Round"
+
+#: sui_quicksettings_bar.lua:1328 desktop_modules/module_quick_actions.lua:585
+msgid "Rounded Square"
+msgstr "Закруглений квадрат"
+
+#: desktop_modules/module_clock.lua:57
 msgid "Saturday"
 msgstr "Субота"
 
-#: sui_quickactions.lua:808 sui_quickactions.lua:1076 desktop_modules/module_reading_goals.lua:358
-#: desktop_modules/module_reading_goals.lua:374 desktop_modules/module_reading_goals.lua:391
+#: sui_quickactions.lua:2128 sui_menu.lua:3929 sui_stats_windows.lua:604
+#: sui_presets.lua:823 desktop_modules/module_reading_goals.lua:391
+#: desktop_modules/module_reading_goals.lua:407
+#: desktop_modules/module_reading_goals.lua:424
+#: desktop_modules/module_reading_goals.lua:442
 msgid "Save"
 msgstr "Зберегти"
 
-#: sui_menu.lua:1710 desktop_modules/module_reading_stats.lua:389 desktop_modules/module_reading_stats.lua:391
-#: desktop_modules/module_collections.lua:500 desktop_modules/module_collections.lua:502 desktop_modules/module_currently.lua:797
-#: desktop_modules/module_currently.lua:799 desktop_modules/module_new_books.lua:246 desktop_modules/module_new_books.lua:248
-#: desktop_modules/module_reading_goals.lua:568 desktop_modules/module_reading_goals.lua:570 desktop_modules/module_clock.lua:461
-#: desktop_modules/module_clock.lua:463 desktop_modules/module_tbr.lua:362 desktop_modules/module_tbr.lua:364
-#: desktop_modules/module_quote.lua:1160 desktop_modules/module_quote.lua:1164 desktop_modules/module_coverdeck.lua:698
-#: desktop_modules/module_coverdeck.lua:700 desktop_modules/module_quick_actions.lua:385
-#: desktop_modules/module_quick_actions.lua:387 desktop_modules/module_recent.lua:242 desktop_modules/module_recent.lua:244
+#: sui_menu.lua:3914 sui_presets.lua:808
+msgid "Save as new preset"
+msgstr "Зберегти як новий пресет"
+
+#: sui_menu.lua:3919
+msgid "Save icon preset"
+msgstr "Зберегти пресет іконки"
+
+#: sui_presets.lua:813
+msgid "Save preset"
+msgstr "Зберегти пресет"
+
+#: sui_menu.lua:2385 desktop_modules/module_quote.lua:1261
+#: desktop_modules/module_quote.lua:1265
+#: desktop_modules/module_collections.lua:657
+#: desktop_modules/module_collections.lua:659
+#: desktop_modules/module_action_list.lua:560
+#: desktop_modules/module_action_list.lua:562
+#: desktop_modules/module_recent.lua:501 desktop_modules/module_recent.lua:503
+#: desktop_modules/module_tbr.lua:533 desktop_modules/module_tbr.lua:535
+#: desktop_modules/module_reading_stats.lua:550
+#: desktop_modules/module_reading_stats.lua:552
+#: desktop_modules/module_reading_goals.lua:814
+#: desktop_modules/module_reading_goals.lua:816
+#: desktop_modules/module_clock.lua:787 desktop_modules/module_clock.lua:789
+#: desktop_modules/module_coverdeck.lua:1008
+#: desktop_modules/module_coverdeck.lua:1010
+#: desktop_modules/module_new_books.lua:325
+#: desktop_modules/module_new_books.lua:327
+#: desktop_modules/module_currently.lua:997
+#: desktop_modules/module_currently.lua:999
+#: desktop_modules/module_quick_actions.lua:545
+#: desktop_modules/module_quick_actions.lua:547
 msgid "Scale"
 msgstr "Масштаб"
 
-#: desktop_modules/module_currently.lua:827
+#: desktop_modules/module_currently.lua:1026
 msgid ""
 "Scale for all text elements (title, author, progress, time).\n"
 "100% is the default size."
 msgstr ""
-"Масштаб  для всіх текстових елементів (назва, автор, прогрес, час).\n"
-"100%- це розмір за замовчуванням."
+"Масштаб для всіх текстових елементів (заголовок, автор, прогрес, час).\n"
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_quick_actions.lua:399
+#: desktop_modules/module_quick_actions.lua:562
 msgid ""
 "Scale for the button label text.\n"
 "100% is the default size."
 msgstr ""
-"Масштаб для тексту мітки кнопки.\n"
-"100%- це розмір за замовчуванням."
+"Масштаб тексту написи на кнопці.\n"
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_collections.lua:516
+#: desktop_modules/module_collections.lua:673
 msgid ""
 "Scale for the collection name text.\n"
 "100% is the default size."
 msgstr ""
-"Масштаб для тексту назви колекції.\n"
-"100%- це розмір за замовчуванням."
+"Масштаб назви добірки.\n"
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_collections.lua:654
+#: desktop_modules/module_collections.lua:903
 msgid ""
 "Scale for the collection thumbnails only.\n"
 "The label text follows the module scale.\n"
 "100% is the default size."
 msgstr ""
-"Масштаб лише для мініатюр колекції.\n"
-"Текст мітки відповідає масштабу модуля.\n"
-"100% - це розмір за замовчуванням."
+"Масштаб застосовується лише до обкладинок добірок.\n"
+"Текст підпису відповідає масштабу модуля.\n"
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_currently.lua:814
+#: desktop_modules/module_currently.lua:1013
 msgid ""
 "Scale for the cover thumbnail only.\n"
 "100% is the default size."
 msgstr ""
-"Масштаб лише для мініатюри обкладинки.\n"
-"100%- це розмір за замовчуванням."
+"Масштаб застосовується лише до мініатюри обкладинки.\n"
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_coverdeck.lua:709
+#: desktop_modules/module_coverdeck.lua:1019
 msgid ""
 "Scale for the cover thumbnails only.\n"
 "100% is the default size."
 msgstr ""
-"Масштаб лише для мініатюри обкладинки.\n"
-"100%- це розмір за замовчуванням."
+"Масштаб застосовується лише до мініатюр обкладинок.\n"
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_new_books.lua:263 desktop_modules/module_recent.lua:259
+#: desktop_modules/module_recent.lua:518 desktop_modules/module_tbr.lua:749
+#: desktop_modules/module_new_books.lua:342
 msgid ""
 "Scale for the cover thumbnails only.\n"
 "Text and progress bar follow the module scale.\n"
 "100% is the default size."
 msgstr ""
-"Масштаб лише мініатюри обкладинки.\n"
-"Тексті індикатор прогресу відповідають масштабу модуля.\n"
-"100% - це розмір за замовчуванням."
+"Масштаб застосовується лише до мініатюр обкладинок.\n"
+"Текст та індикатор прогресу дотримуються масштабу модуля.\n"
+"100% — це розмір за замовчуванням."
 
-#: sui_menu.lua:2155
+#: sui_menu.lua:3311
 msgid ""
 "Scale for the folder name overlay text.\n"
 "100% is the default size."
 msgstr ""
-"Масштаб тексту накладання імені папки.\n"
-"\v100% - це розмір за замовчуванням."
+"Масштаб тексту накладення на назву папки.\n"
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_new_books.lua:275
+#: sui_quicksettings_bar.lua:1297 desktop_modules/module_action_list.lua:571
+#: desktop_modules/module_new_books.lua:354
 msgid ""
 "Scale for the label text.\n"
 "100% is the default size."
 msgstr ""
-"Масштаб для тексту мітки кнопки.\n"
-"100%- це розмір за замовчуванням."
+"Масштаб тексту мітки.\n"
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_recent.lua:273
+#: sui_menu.lua:2820
+msgid ""
+"Scale for the library badges (progress, pages, etc.).\n"
+"100% is the default size."
+msgstr ""
+"Масштаб значків бібліотеки (прогрес, сторінки тощо).\n"
+"100% — це розмір за замовчуванням."
+
+#: desktop_modules/module_recent.lua:532 desktop_modules/module_tbr.lua:740
 msgid ""
 "Scale for the percentage read text.\n"
 "100% is the default size."
 msgstr ""
 "Масштаб для відсотка прочитаного тексту.\n"
-"100% - це розмір за замовчуванням."
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_coverdeck.lua:701
+#: desktop_modules/module_coverdeck.lua:1011
 msgid "Scale for this module."
 msgstr "Масштаб для цього модуля."
 
-#: desktop_modules/module_reading_stats.lua:392 desktop_modules/module_collections.lua:503
-#: desktop_modules/module_currently.lua:800 desktop_modules/module_new_books.lua:249 desktop_modules/module_reading_goals.lua:571
-#: desktop_modules/module_clock.lua:464 desktop_modules/module_tbr.lua:365 desktop_modules/module_quote.lua:1166
-#: desktop_modules/module_quick_actions.lua:388 desktop_modules/module_recent.lua:245
+#: desktop_modules/module_quote.lua:1267
+#: desktop_modules/module_collections.lua:660
+#: desktop_modules/module_action_list.lua:563
+#: desktop_modules/module_recent.lua:504 desktop_modules/module_tbr.lua:536
+#: desktop_modules/module_reading_stats.lua:553
+#: desktop_modules/module_reading_goals.lua:817
+#: desktop_modules/module_clock.lua:790
+#: desktop_modules/module_new_books.lua:328
+#: desktop_modules/module_currently.lua:1000
+#: desktop_modules/module_quick_actions.lua:548
 msgid ""
 "Scale for this module.\n"
 "100% is the default size."
 msgstr ""
 "Масштаб для цього модуля.\n"
-"\v100% - це розмір за замовчуванням."
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_coverdeck.lua:717
+#: desktop_modules/module_coverdeck.lua:1027
 msgid ""
 "Scale for title and statistics text.\n"
 "100% is the default size."
 msgstr ""
 "Масштаб для заголовка та тексту статистики.\n"
-"100% - це розмір за замовчуванням."
+"100% — це розмір за замовчуванням."
 
-#: sui_menu.lua:1733
+#: sui_menu.lua:2409
 msgid ""
 "Scales all modules and labels together.\n"
 "100% is the default size."
 msgstr ""
-"Масштабує всі модулі та мітки разом.\n"
-"100% - це розмір за замовчуванням."
+"Масштабує всі модулі та написи одночасно.\n"
+"100% — це розмір за замовчуванням."
 
-#: sui_menu.lua:1769
+#: sui_menu.lua:2447
 msgid ""
 "Scales the section label text above each module.\n"
 "100% is the default size."
 msgstr ""
-"Масштаб тексту мітки розділу над кожним модулем.\n"
-"100% - це розмір за замовчуванням."
+"Регулює розмір тексту заголовків розділів над кожним модулем.\n"
+"За замовчуванням встановлено розмір 100%."
 
-#: sui_menu.lua:2198
-msgid "Scan subfolders for cover"
-msgstr "Сканувати підпапки для обкладинки"
+#: sui_menu.lua:3435
+msgid "Scan Subfolders for Covers"
+msgstr "Сканувати підпапки на наявність обкладинок"
 
-#: sui_titlebar.lua:56
+#: sui_titlebar.lua:104
 msgid "Search"
 msgstr "Пошук"
 
-#: desktop_modules/module_collections.lua:627
-msgid "Select at least 2 collections to arrange."
-msgstr "Виберіть принаймні 2 колекції для упорядкування."
+#: sui_style.lua:94
+msgid "Search Button"
+msgstr "Кнопка пошуку"
 
-#: desktop_modules/module_clock.lua:56
+#: sui_style.lua:2083
+msgid "Secondary / Dim Text"
+msgstr "Додатковий / приглушений текст"
+
+#: sui_window.lua:1589 sui_window.lua:2421
+msgid "Select"
+msgstr "Вибрати"
+
+#: sui_menu.lua:3905 sui_presets.lua:721 sui_presets.lua:729
+#: sui_presets.lua:734
+msgid "Select Preset"
+msgstr "Вибрати пресет"
+
+#: sui_menu.lua:2205
+msgid "Select Wallpaper"
+msgstr "Вибрати шпалери"
+
+#: desktop_modules/module_collections.lua:791
+msgid "Select at least 2 collections to arrange."
+msgstr "Виберіть щонайменше 2 добірки для упорядкування."
+
+#: sui_style.lua:2084
+msgid "Separator Line"
+msgstr "Розділова лінія"
+
+#: sui_style.lua:2048
+msgid "Sepia Classic"
+msgstr "Класична сепія"
+
+#: desktop_modules/module_clock.lua:62
 msgid "September"
 msgstr "Вересень"
 
-#: sui_config.lua:146 sui_browsemeta.lua:58
+#: sui_quickactions.lua:791 sui_config.lua:131 sui_browsemeta.lua:78
 msgid "Series"
-msgstr "Серії"
+msgstr "Серія"
 
-#: sui_menu.lua:2096
+#: sui_menu.lua:2967
 msgid "Series Index"
-msgstr "Індекс серії"
+msgstr "Індекс серій"
 
-#: sui_foldercovers.lua:589
-msgid "Series cover"
-msgstr "Обкладинка серії"
-
-#: sui_menu.lua:571
+#: sui_menu.lua:647 sui_menu.lua:908
 msgid "Set"
 msgstr "Встановити"
 
-#: sui_foldercovers.lua:693
-msgid "Set folder cover…"
-msgstr ""
+#: desktop_modules/module_reading_goals.lua:959
+#: desktop_modules/module_reading_goals.lua:974
+#: desktop_modules/module_reading_goals.lua:989
+msgid "Set Goal"
+msgstr "Встановити ціль"
 
-#: sui_foldercovers.lua:689
-msgid "Set series cover…"
-msgstr "Встановити обкладинку серії…"
+#: sui_foldercovers.lua:924 sui_foldercovers.lua:1237 sui_browsemeta.lua:1386
+msgid "Set folder cover"
+msgstr "Встановити обкладинку папки"
 
-#: sui_foldercovers.lua:691
-msgid "Set virtual folder cover…"
-msgstr "Встановити обкладинку віртуальної папки…"
+#: sui_onboarding.lua:164
+msgid "Set your reading goal"
+msgstr "Встановіть свою ціль щодо читання"
 
-#: sui_menu.lua:1933
+#: sui_quickactions.lua:760 sui_config.lua:128
 msgid "Settings"
 msgstr "Налаштування"
 
-#: sui_menu.lua:784 sui_menu.lua:954 sui_menu.lua:1857
+#: sui_settings_window.lua:236 sui_settings_window.lua:241
+msgid "Settings not found."
+msgstr "Налаштування не знайдено."
+
+#: sui_menu.lua:1078 sui_menu.lua:1370 sui_menu.lua:2595
+#: sui_quicksettings_bar.lua:1388
 msgid "Settings on Long Tap"
-msgstr "Налаштування при довгому натисканні"
+msgstr "Налаштування при тривалому натисканні"
 
-#: desktop_modules/module_clock.lua:494
+#: desktop_modules/module_clock.lua:198 desktop_modules/module_clock.lua:248
+msgid "Seven"
+msgstr "Сім"
+
+#: desktop_modules/module_clock.lua:208 desktop_modules/module_clock.lua:251
+msgid "Seventeen"
+msgstr "Сімнадцять"
+
+#: desktop_modules/module_clock.lua:821
 msgid "Show Battery"
-msgstr ""
+msgstr "Показати заряд акумулятора"
 
-#: desktop_modules/module_clock.lua:482
+#: desktop_modules/module_clock.lua:809
 msgid "Show Clock"
-msgstr ""
+msgstr "Показати годинник"
 
-#: desktop_modules/module_clock.lua:488
+#: desktop_modules/module_clock.lua:815
 msgid "Show Date"
-msgstr ""
+msgstr "Показати дату"
 
-#: sui_config.lua:1775
-msgid "Show section label"
-msgstr "Показати мітку розділу"
+#: desktop_modules/module_action_list.lua:578
+msgid "Show Icon"
+msgstr "Показати піктограму"
 
-#: sui_menu.lua:504
+#: sui_menu.lua:595
+msgid "Show Page Count in Title Bar"
+msgstr "Показати кількість сторінок у заголовку"
+
+#: sui_menu.lua:2500
 msgid ""
-"Shows \\\"Page X of Y\\\" in the title bar subtitle when browsing the library, history or collections.\n"
+"Show a brief \"Closing book…\" notice when closing a book, preventing "
+"accidental double-taps while e-ink refreshes."
+msgstr ""
+"Під час закриття книги відображати коротке повідомлення «Закриття книги…», "
+"щоб запобігти випадковим подвійним натисканням під час оновлення екрану e-"
+"ink."
+
+#: sui_menu.lua:2572
+msgid ""
+"Show a brief \"Loading statistics\\xe2\\x80\\xa6\" notice when opening a "
+"statistics window, preventing accidental double-taps while e-ink refreshes."
+msgstr ""
+"Показувати коротке повідомлення «Завантаження статистики\\xe2\\x80\\xa6» під "
+"час відкриття вікна статистики, запобігаючи випадковим подвійним натисканням "
+"під час оновлення електронного чорнила."
+
+#: desktop_modules/module_recent.lua:590
+#: desktop_modules/module_coverdeck.lua:1283
+msgid "Show finished books"
+msgstr "Показати прочитані книги"
+
+#: sui_menu.lua:2557
+msgid "Show on Close"
+msgstr "Показати при закритті"
+
+#: sui_menu.lua:2546
+msgid "Show on Open"
+msgstr "Показати при відкритті"
+
+#: sui_config.lua:954
+msgid "Show section label"
+msgstr "Показати назву розділу"
+
+#: sui_menu.lua:2272
+msgid "Show wallpaper on all screens"
+msgstr "Показати шпалери на всіх екранах"
+
+#: sui_menu.lua:600
+msgid ""
+"Shows \"Page X of Y\" in the title bar subtitle when browsing the library, "
+"history or collections.\n"
 "Navpager enables this automatically.\n"
 "Not available when Navpager is active."
 msgstr ""
-"Показує \\\"Сторінку X з Y\\\" у підзаголовку рядка заголовка під час перегляду бібліотеки, історії або колекцій.\n"
-"Navpager вмикає це автоматично.\n"
-"Недоступний, коли Navpager активний."
+"Під час перегляду бібліотеки, історії або добірок у підзаголовку панелі "
+"заголовка відображається «Сторінка X з Y».\n"
+"Navpager вмикає цю функцію автоматично.\n"
+"Недоступно, коли Navpager активний."
 
-#: sui_menu.lua:401
+#: sui_menu.lua:496
 msgid ""
 "Shows a row of dots at the bottom of the homescreen.\n"
 "The active page dot is filled; the others are dimmed.\n"
 "Always active when Navpager is selected."
 msgstr ""
-"Показує ряд крапок у нижній частині головного екрана.\n"
-"Активна крапка сторінки заповнена; інші крапки затемнені.\n"
-" Завжди активні, коли вибрано Navpager."
+"Відображає ряд крапок у нижній частині головного екрана.\n"
+"Крапка активної сторінки зафарбована; інші — затемнені.\n"
+"Завжди активна, коли вибрано Navpager."
 
-#: desktop_modules/module_currently.lua:926
+#: desktop_modules/module_currently.lua:1500
 msgid "Simple"
 msgstr "Простий"
 
-#: sui_menu.lua:1902 sui_menu.lua:1906 main.lua:682 main.lua:695
+#: sui_menu.lua:4459 sui_menu.lua:4464 main.lua:2183 main.lua:2196
 msgid "Simple UI"
 msgstr "Simple UI"
 
-#: sui_updater.lua:407
+#: sui_updater.lua:428
+msgid ""
+"Simple UI %s installed.\n"
+"\n"
+"Restart KOReader to apply the update?"
+msgstr ""
+"Simple UI %s встановлено.\n"
+"\n"
+"Перезапустити KOReader, щоб застосувати оновлення?"
+
+#: sui_updater.lua:475
 msgid ""
 "Simple UI %s is available!\n"
 "You have %s."
 msgstr ""
-#: sui_updater.lua:357
+"Simple UI %s вже доступний!\n"
+"У вас %s."
+
+#: sui_settings_window.lua:850
+msgid "Simple UI Settings"
+msgstr "Налаштування Simple UI"
+
+#: sui_onboarding.lua:129
 msgid ""
-"Simple UI %s successfully installed.\n"
-"\n"
-"Restart KOReader to apply the update?"
+"Simple UI is designed to be simple and flexible. Here are a few tips to get "
+"the most out of it."
 msgstr ""
-"Simple UI %s успішно встановлено.\n"
-"\n"
-"Перезапустити KOReader, щоб застосувати оновлення?"
+"Simple UI розроблено так, щоб бути простим і гнучким. Ось кілька порад, як "
+"отримати від нього максимум користі."
 
-#: sui_updater.lua:399
+#: sui_updater.lua:469
 msgid "Simple UI is up to date (%s)."
-msgstr ""
+msgstr "Simple UI оновлено до версії (%s)."
 
-#: sui_menu.lua:1923
+#: sui_menu.lua:4481
 msgid ""
 "Simple UI will be %s after restart.\n"
 "\n"
 "Restart now?"
 msgstr ""
-"Simple UI буде %s після перезавантаження.\n"
+"Simple UI стане %s після перезапуску.\n"
 "\n"
 "Перезапустити зараз?"
 
-#: sui_menu.lua:457 sui_menu.lua:756 sui_menu.lua:826
+#: main.lua:869
+msgid "Simple UI: Go to Homescreen"
+msgstr "Simple UI: Перейти на головний екран"
+
+#: main.lua:875
+msgid "Simple UI: Go to Library"
+msgstr "Simple UI: Перейти до бібліотеки"
+
+#: main.lua:893
+msgid "Simple UI: Recent"
+msgstr "Simple UI: Налаштування"
+
+#: main.lua:887
+msgid "Simple UI: Settings"
+msgstr "Simple UI: Налаштування"
+
+#: main.lua:881
+msgid "Simple UI: Toggle Homescreen / Library"
+msgstr "Simple UI: Перемкнути Головний екран / Бібліотека"
+
+#: sui_menu.lua:2767
+msgid "Single Cover"
+msgstr "Одинарна обкладинка"
+
+#: desktop_modules/module_clock.lua:197 desktop_modules/module_clock.lua:247
+msgid "Six"
+msgstr "Шість"
+
+#: desktop_modules/module_clock.lua:207 desktop_modules/module_clock.lua:251
+msgid "Sixteen"
+msgstr "Шістнадцять"
+
+#: sui_menu.lua:1022 sui_menu.lua:2811 sui_quicksettings_bar.lua:1295
+#: sui_quicksettings_bar.lua:1296 sui_window.lua:1914 sui_window.lua:1921
+#: desktop_modules/module_quick_actions.lua:560
+#: desktop_modules/module_quick_actions.lua:561
 msgid "Size"
 msgstr "Розмір"
 
-#: sui_menu.lua:891
+#: sui_menu.lua:1338
 msgid ""
 "Size of the tab icons.\n"
 "100% is the default size."
 msgstr ""
-"Розмір значків вкладок.\n"
-"\v100% - це розмір за замовчуванням."
+"Розмір піктограм вкладок.\n"
+"100% — це розмір за замовчуванням."
 
-#: sui_menu.lua:911
+#: sui_menu.lua:1348
 msgid ""
 "Size of the tab label text.\n"
 "100% is the default size."
 msgstr ""
-"Розмір тексту мітки вкладки.\n"
-"\v100%- це розмір за замовчуванням."
+"Розмір тексту назви вкладки.\n"
+"100% — це розмір за замовчуванням."
 
-#: desktop_modules/module_reading_stats.lua:473
+#: desktop_modules/module_reading_stats.lua:696
 msgid ""
 "Size of the text inside the stat cards.\n"
 "Does not affect card size or padding.\n"
 "100% is the default size."
 msgstr ""
-"Розмір тексту всередині статистичних карток.\n"
-"\vНе впливає на розмір картки або заповнення.\n"
-"\v100% - це розмір за замовчуванням."
+"Розмір тексту всередині карток статистики.\n"
+"Не впливає на розмір картки або відступи.\n"
+"100% — це розмір за замовчуванням."
 
-#: sui_bottombar.lua:1746
+#: sui_quickactions.lua:485
 msgid "Sleep"
 msgstr "Сон"
 
-#: sui_menu.lua:473
+#: sui_menu.lua:568
 msgid "Small"
 msgstr "Маленький"
 
-#: desktop_modules/module_quote.lua:1192 desktop_modules/module_coverdeck.lua:725
+#: sui_menu.lua:3208 sui_menu.lua:3212 sui_quicksettings_bar.lua:1365
+#: desktop_modules/module_quick_actions.lua:622
+msgid "Solid"
+msgstr "Суцільне"
+
+#: desktop_modules/module_collections.lua:920
+#: desktop_modules/module_recent.lua:552 desktop_modules/module_tbr.lua:766
+#: desktop_modules/module_reading_goals.lua:1080
+#: desktop_modules/module_new_books.lua:369
+#: desktop_modules/module_currently.lua:1488
+msgid "Solid Background"
+msgstr "Суцільне тло"
+
+#: desktop_modules/module_quote.lua:1293
+#: desktop_modules/module_coverdeck.lua:1035
 msgid "Source"
 msgstr "Джерело"
 
-#: sui_menu.lua:869
+#: sui_menu.lua:1358
 msgid ""
 "Space below the bottom navigation bar.\n"
 "100% is the default spacing."
 msgstr ""
-"Пробіл під нижньою панеллю навігації.\n"
-"\v100% - це інтервал за замовчуванням."
+"Простір під нижньою навігаційною панеллю.\n"
+"100% — це значення за замовчуванням."
 
-#: sui_patches.lua:682 sui_patches.lua:684
+#: desktop_modules/module_spacer.lua:56 desktop_modules/module_spacer.lua:109
+msgid "Spacer"
+msgstr "Роздільник"
+
+#: desktop_modules/module_spacer.lua:87 desktop_modules/module_spacer.lua:88
+msgid "Spacer Size"
+msgstr "Розмір роздільника"
+
+#: sui_onboarding.lua:267
+msgid "Start using Simple UI"
+msgstr "Почніть користуватися Simple UI"
+
+#: sui_patches.lua:870 sui_patches.lua:872
 msgid "Start with"
-msgstr "Почати з"
+msgstr "Почніть з"
 
-#: sui_menu.lua:1835
+#: sui_menu.lua:2362
 msgid "Start with Home Screen"
-msgstr "Почати з головного екрана"
+msgstr "Почати з головного екрану"
 
-#: sui_bottombar.lua:1117 sui_bottombar.lua:1402
+#: sui_onboarding.lua:58
+msgid "Start with a ready-made layout. You can change everything later."
+msgstr "Почніть з готового макета. Пізніше ви зможете все змінити."
+
+#: desktop_modules/module_coverdeck.lua:93
+#: desktop_modules/module_coverdeck.lua:1085
+#: desktop_modules/module_coverdeck.lua:1132
+#: desktop_modules/module_coverdeck.lua:1198
+msgid "Statistics"
+msgstr "Статистика"
+
+#: sui_menu.lua:2571
+msgid "Statistics Loading Notice"
+msgstr "Повідомлення про завантаження статистики"
+
+#: sui_stats_windows.lua:137
+msgid "Statistics database library not available."
+msgstr "Бібліотека бази даних статистики недоступна."
+
+#: sui_quickactions.lua:745
 msgid "Statistics plugin not available."
-msgstr "Плагін статистики недоступний."
+msgstr "Додаток статистики недоступний."
 
-#: sui_config.lua:142
+#: sui_quickactions.lua:730 sui_config.lua:126
+#: desktop_modules/module_currently.lua:1194
+#: desktop_modules/module_currently.lua:1276
+#: desktop_modules/module_currently.lua:1337
 msgid "Stats"
 msgstr "Статистика"
 
-#: desktop_modules/module_currently.lua:951
+#: desktop_modules/module_currently.lua:1522
 msgid "Stats layout"
-msgstr ""
+msgstr "Макет статистики"
 
-#: sui_menu.lua:1939
+#: desktop_modules/module_reading_stats.lua:829
+#: desktop_modules/module_reading_goals.lua:1113
+#: desktop_modules/module_coverdeck.lua:1316
+#: desktop_modules/module_currently.lua:1571
+msgid "Stats updated successfully."
+msgstr "Статистику успішно оновлено."
+
+#: sui_menu.lua:2662
 msgid "Status Bar"
-msgstr "Рядок стану"
+msgstr "Смуга стану"
 
-#: desktop_modules/module_reading_stats.lua:67
-msgid "Streak"
-msgstr "Смуга"
+#: sui_menu.lua:1029
+msgid "Status Bar Size"
+msgstr "Розмір рядка стану"
 
-#: sui_menu.lua:1180
-msgid "Sub-pages Buttons"
-msgstr "Підсторінки Кнопки"
-
-#: desktop_modules/module_clock.lua:50
-msgid "Sunday"
-msgstr "Неділя"
-
-#: sui_menu.lua:522
-msgid "Swipe Indicator"
-msgstr ""
-
-#: sui_quickactions.lua:947
-msgid "System Actions"
-msgstr "Системні дії"
-
-#: sui_quickactions.lua:1253
-msgid "System action error: %s"
-msgstr "Помилка системної дії: %s"
-
-#: sui_menu.lua:949
-msgid "Tabs  (%d/%d — %d left)"
-msgstr "Вкладки  (залишилося %d/%d — %d)"
-
-#: sui_menu.lua:947
-msgid "Tabs  (%d/%d — at limit)"
-msgstr "Вкладки  (%d/%d — на межі)"
-
-#: sui_menu.lua:107
-msgid "Text"
-msgstr "текст"
-
-#: desktop_modules/module_reading_stats.lua:469 desktop_modules/module_reading_stats.lua:472
-#: desktop_modules/module_collections.lua:514 desktop_modules/module_collections.lua:515 desktop_modules/module_currently.lua:825
-#: desktop_modules/module_currently.lua:826 desktop_modules/module_new_books.lua:273 desktop_modules/module_new_books.lua:274
-#: desktop_modules/module_quick_actions.lua:395 desktop_modules/module_quick_actions.lua:398
-#: desktop_modules/module_recent.lua:271 desktop_modules/module_recent.lua:272
-msgid "Text Size"
-msgstr "Розмір тексту"
-
-#: desktop_modules/module_reading_stats.lua:470
-msgid "Text Size — %d%%"
-msgstr "Розмір тексту — %d%%"
-
-#: sui_menu.lua:109
-msgid "Text only"
-msgstr "Лише текст"
-
-#: sui_menu.lua:2152 desktop_modules/module_coverdeck.lua:715 desktop_modules/module_coverdeck.lua:716
-msgid "Text size"
-msgstr "Розмір тексту"
-
-#: sui_patches.lua:831
-msgid "The «To Be Read» collection cannot be renamed."
-msgstr "Колекцію «To Be Read» не можна перейменувати."
-
-#: desktop_modules/module_clock.lua:51
-msgid "Thursday"
-msgstr "Четвер"
-
-#: desktop_modules/module_currently.lua:270 desktop_modules/module_coverdeck.lua:77
-msgid "Time read"
-msgstr "Час читання"
-
-#: desktop_modules/module_currently.lua:271 desktop_modules/module_coverdeck.lua:78
-msgid "Time remaining"
-msgstr "Час, що залишився"
-
-#: sui_titlebar.lua:58 desktop_modules/module_currently.lua:265
-msgid "Title"
-msgstr "Заголовок"
-
-#: sui_menu.lua:1940
-msgid "Title Bar"
-msgstr ""
-
-#: desktop_modules/module_coverdeck.lua:747
-msgid "Title Position"
-msgstr "Позиція заголовку"
-
-#: desktop_modules/module_tbr.lua:229 desktop_modules/module_tbr.lua:230 desktop_modules/module_tbr.lua:244
-#: desktop_modules/module_tbr.lua:280 desktop_modules/module_tbr.lua:398 desktop_modules/module_coverdeck.lua:736
-msgid "To Be Read"
-msgstr "Для читання"
-
-#: desktop_modules/module_tbr.lua:450
-msgid "To Be Read books"
-msgstr "Книжки Для читання"
-
-#: sui_patches.lua:879 sui_patches.lua:918 sui_patches.lua:950 sui_patches.lua:991
-msgid "To Be Read list is full (max. 5 books)."
-msgstr ""
-
-#: desktop_modules/module_reading_goals.lua:511 desktop_modules/module_reading_goals.lua:513
-#: desktop_modules/module_reading_goals.lua:536 desktop_modules/module_reading_goals.lua:539
-msgid "Today"
-msgstr "Сьогодні"
-
-#: desktop_modules/module_reading_stats.lua:62
-msgid "Today — Pages"
-msgstr "Сьогодні — Сторінки"
-
-#: desktop_modules/module_reading_stats.lua:61
-msgid "Today — Time"
-msgstr "Сьогодні — Час"
-
-#: sui_menu.lua:1937 sui_menu.lua:2072 sui_menu.lua:2126
-msgid "Top"
-msgstr "Верхня панель"
-
-#: sui_menu.lua:737 sui_topbar.lua:507
-msgid "Top Bar"
-msgstr "Верхня панель"
-
-#: sui_menu.lua:762
-msgid "Top Bar Size"
-msgstr "Розмір верхньої панелі"
-
-#: sui_menu.lua:745
+#: sui_menu.lua:842
 msgid ""
-"Top Bar will be %s after restart.\n"
+"Status Bar will be %s after restart.\n"
 "\n"
 "Restart now?"
 msgstr ""
-"Верхня панель буде %s після перезапуску.\n"
+"Після перезапуску рядок стану матиме значення %s.\n"
 "\n"
 "Перезапустити зараз?"
 
-#: sui_homescreen.lua:1743
-msgid "Top Margin  (%d%%)"
-msgstr "Верхній відступ  (%d%%)"
+#: sui_style.lua:2079
+msgid "Status Bar — Background"
+msgstr "Смуга стану — Фон"
 
-#: sui_menu.lua:925
-msgid "Top separator"
-msgstr "Верхній роздільник"
+#: sui_style.lua:2082
+msgid "Status Bar — Text"
+msgstr "Смуга стану — Текст"
 
-#: sui_menu.lua:2115
+#: sui_settings_window.lua:259
+msgid "Status, title, navigation and pagination"
+msgstr "Статус, заголовок, навігація та розбиття на сторінки"
+
+#: desktop_modules/module_reading_stats.lua:93
+msgid "Streak"
+msgstr "Послідовність"
+
+#: sui_menu.lua:2290
+msgid "Stretch to fill screen"
+msgstr "Розтягнути, щоб заповнити екран"
+
+#: sui_menu.lua:4510 sui_settings_window.lua:272 sui_settings_window.lua:854
+#: desktop_modules/module_reading_stats.lua:706
+msgid "Style"
+msgstr "Стиль"
+
+#: sui_menu.lua:1765 sui_menu.lua:1768
+msgid "Sub-page Buttons"
+msgstr "Кнопки підсторінок"
+
+#: desktop_modules/module_clock.lua:56
+msgid "Sunday"
+msgstr "Неділя"
+
+#: sui_menu.lua:1059
+msgid "Swipe Indicator"
+msgstr "Індикатор прокрутки"
+
+#: sui_quickactions.lua:1577 sui_quickactions.lua:1580
+#: sui_quickactions.lua:2250 sui_quickactions.lua:2346
+msgid "System Actions"
+msgstr "Системні дії"
+
+#: sui_menu.lua:3547 sui_menu.lua:3555 sui_style.lua:1392
+msgid "System Icons"
+msgstr "Системні піктограми"
+
+#: sui_quickactions.lua:2671
+msgid "System action error: %s"
+msgstr "Помилка системної дії: %s"
+
+#: sui_stats_windows.lua:2410
+msgid "THIS MONTH"
+msgstr "ЦЬОГО МІСЯЦЯ"
+
+#: sui_stats_windows.lua:2406
+msgid "THIS WEEK"
+msgstr "ЦЬОГО ТИЖНЯ"
+
+#: sui_stats_windows.lua:2386
+msgid "TODAY'S SUMMARY"
+msgstr "ПІДСУМКИ СЬОГОДНІ"
+
+#: sui_style.lua:1387
+msgid "Tab Bar"
+msgstr "Панель вкладок"
+
+#: sui_menu.lua:1253
+msgid "Tab Style"
+msgstr "Стиль вкладок"
+
+#: sui_style.lua:1343
+msgid "Tab bar icons must be PNG or SVG."
+msgstr "Значки панелі вкладок мають бути у форматі PNG або SVG."
+
+#: sui_window.lua:1878
+msgid "Tab order"
+msgstr "Порядок табуляції"
+
+#: sui_style.lua:270
+msgid "Tab: Back to File Browser"
+msgstr "Вкладка: Назад до переглядача файлів"
+
+#: sui_style.lua:249
+msgid "Tab: File Browser Settings"
+msgstr "Панель: Налаштування переглядача файлів"
+
+#: sui_style.lua:221
+msgid "Tab: Menu"
+msgstr "Вкладка: Меню"
+
+#: sui_style.lua:256
+msgid "Tab: Reader Navigation"
+msgstr "Вкладка: Навігація читання"
+
+#: sui_style.lua:263
+msgid "Tab: Reader Typeset"
+msgstr "Вкладка: Верстка"
+
+#: sui_style.lua:242
+msgid "Tab: Search"
+msgstr "Вкладка: Пошук"
+
+#: sui_style.lua:228
+msgid "Tab: Settings"
+msgstr "Вкладка: Налаштування"
+
+#: sui_style.lua:277
+msgid "Tab: SimpleUI Quick Settings"
+msgstr "Вкладка: Швидкі налаштування SimpleUI"
+
+#: sui_style.lua:235
+msgid "Tab: Tools"
+msgstr "Вкладка: Інструменти"
+
+#: sui_menu.lua:1132 sui_menu.lua:1184
+msgid "Tabs"
+msgstr "Вкладки"
+
+#: sui_menu.lua:1126
+msgid "Tabs  (%d/%d — %d left)"
+msgstr "Вкладки  (%d — залишилося %d )"
+
+#: sui_menu.lua:1124
+msgid "Tabs  (%d/%d — at limit)"
+msgstr "Вкладки  (%d — досягнуто межі)"
+
+#: sui_quickactions.lua:809 sui_config.lua:133 sui_browsemeta.lua:79
+msgid "Tags"
+msgstr "Теги"
+
+#: desktop_modules/module_clock.lua:201 desktop_modules/module_clock.lua:249
+msgid "Ten"
+msgstr "Десять"
+
+#: sui_menu.lua:201
+msgid "Text"
+msgstr "Текст"
+
+#: sui_menu.lua:3308 desktop_modules/module_collections.lua:671
+#: desktop_modules/module_collections.lua:672
+#: desktop_modules/module_action_list.lua:569
+#: desktop_modules/module_action_list.lua:570
+#: desktop_modules/module_recent.lua:530 desktop_modules/module_recent.lua:531
+#: desktop_modules/module_tbr.lua:738 desktop_modules/module_tbr.lua:739
+#: desktop_modules/module_reading_stats.lua:692
+#: desktop_modules/module_reading_stats.lua:695
+#: desktop_modules/module_new_books.lua:352
+#: desktop_modules/module_new_books.lua:353
+#: desktop_modules/module_currently.lua:1024
+#: desktop_modules/module_currently.lua:1025
+msgid "Text Size"
+msgstr "Розмір тексту"
+
+#: desktop_modules/module_reading_stats.lua:693
+msgid "Text Size — %d%%"
+msgstr "Розмір тексту — %d%%"
+
+#: sui_menu.lua:203
+msgid "Text only"
+msgstr "Тільки текст"
+
+#: desktop_modules/module_coverdeck.lua:1025
+#: desktop_modules/module_coverdeck.lua:1026
+msgid "Text size"
+msgstr "Розмір тексту"
+
+#: sui_quicksettings_bar.lua:1183
+msgid ""
+"The Quick Settings Bar will be %s after restart.\n"
+"\n"
+"Restart now?"
+msgstr ""
+"Після перезапуску панель швидких налаштувань матиме номер %s.\n"
+"\n"
+"Перезапустити зараз?"
+
+#: sui_patches.lua:1016
+msgid "The «To Be Read» collection cannot be renamed."
+msgstr "Добірку «До прочитання» неможливо перейменувати."
+
+#: sui_menu.lua:4332
+msgid "Theme Colors"
+msgstr "Кольори теми"
+
+#: desktop_modules/module_clock.lua:204 desktop_modules/module_clock.lua:250
+msgid "Thirteen"
+msgstr "Тринадцять"
+
+#: desktop_modules/module_clock.lua:216 desktop_modules/module_clock.lua:255
+msgid "Thirty"
+msgstr "Тридцять"
+
+#: sui_quickactions.lua:2827 sui_quickactions.lua:2910
+msgid ""
+"This group is empty.\n"
+"Add actions to it from Settings → Quick Actions."
+msgstr ""
+"Ця група порожня.\n"
+"Додайте до неї дії з меню «Налаштування» → «Швидкі дії»."
+
+#: desktop_modules/module_reading_stats.lua:90
+msgid "This month — Pages"
+msgstr "Цього місяця — Сторінки"
+
+#: desktop_modules/module_reading_stats.lua:89
+msgid "This month — Time"
+msgstr "Цього місяця — Час"
+
+#: sui_presets.lua:837 sui_presets.lua:910 sui_presets.lua:996
+msgid "This name is reserved by a built-in preset."
+msgstr "Ця назва зарезервована для вбудованого пресета."
+
+#: desktop_modules/module_reading_stats.lua:86
+msgid "This week — Pages"
+msgstr "Цього тижня — Сторінки"
+
+#: desktop_modules/module_reading_stats.lua:85
+msgid "This week — Time"
+msgstr "Цього тижня — Час"
+
+#: sui_menu.lua:4398
+msgid ""
+"This will delete all Simple UI settings and restart KOReader.\n"
+"Are you sure?"
+msgstr ""
+"Це призведе до видалення всіх налаштувань Simple UI та перезапуску "
+"KOReader.\n"
+"Ви впевнені?"
+
+#: desktop_modules/module_clock.lua:194 desktop_modules/module_clock.lua:246
+msgid "Three"
+msgstr "Три"
+
+#: desktop_modules/module_clock.lua:57
+msgid "Thursday"
+msgstr "Четвер"
+
+#: desktop_modules/module_coverdeck.lua:80
+#: desktop_modules/module_currently.lua:251
+msgid "Time read"
+msgstr "Час читання"
+
+#: desktop_modules/module_coverdeck.lua:81
+#: desktop_modules/module_currently.lua:252
+msgid "Time remaining"
+msgstr "Залишок часу"
+
+#: sui_titlebar.lua:106 desktop_modules/module_coverdeck.lua:90
+#: desktop_modules/module_currently.lua:246
+msgid "Title"
+msgstr "Заголовок"
+
+#: sui_menu.lua:2664 sui_style.lua:1382
+msgid "Title Bar"
+msgstr "Заголовна панель"
+
+#: sui_menu.lua:1747
+msgid ""
+"Title Bar will be %s after restart.\n"
+"\n"
+"Restart now?"
+msgstr ""
+"Після перезапуску рядок заголовка матиме значення %s.\n"
+"\n"
+"Перезапустити зараз?"
+
+#: sui_menu.lua:3370
+msgid "Title and Author"
+msgstr "Назва та автор"
+
+#: sui_menu.lua:3321
+msgid "Title and Author Below Covers"
+msgstr "Назва та автор під обкладинками"
+
+#: sui_menu.lua:3382
+msgid ""
+"Title and author strip enabled.\n"
+"\n"
+"Restart now?"
+msgstr ""
+"Увімкнено відображення назви та імені автора.\n"
+"\n"
+"Перезапустити зараз?"
+
+#: sui_menu.lua:3348
+msgid "Title only"
+msgstr "Тільки заголовок"
+
+#: sui_menu.lua:3337
+msgid ""
+"Title strip disabled.\n"
+"\n"
+"Restart now?"
+msgstr ""
+"Смуга заголовка вимкнена.\n"
+"\n"
+"Перезапустити зараз?"
+
+#: sui_menu.lua:3360
+msgid ""
+"Title strip enabled.\n"
+"\n"
+"Restart now?"
+msgstr ""
+"Смуга заголовка увімкнено.\n"
+"\n"
+"Перезапустити зараз?"
+
+#: desktop_modules/module_tbr.lua:257 desktop_modules/module_tbr.lua:258
+#: desktop_modules/module_tbr.lua:273 desktop_modules/module_tbr.lua:309
+#: desktop_modules/module_tbr.lua:755 desktop_modules/module_coverdeck.lua:1047
+msgid "To Be Read"
+msgstr "До прочитання"
+
+#: desktop_modules/module_tbr.lua:617
+msgid "To Be Read Books"
+msgstr "Книги, які варто прочитати"
+
+#: sui_patches.lua:1058
+msgid "To Be Read list is full (max. 5 books)."
+msgstr "Список «До прочитання» заповнений (макс. 5 книг)."
+
+#: desktop_modules/module_reading_goals.lua:652
+#: desktop_modules/module_reading_goals.lua:654
+#: desktop_modules/module_reading_goals.lua:708
+#: desktop_modules/module_reading_goals.lua:711
+msgid "Today"
+msgstr "Сьогодні"
+
+#: desktop_modules/module_reading_stats.lua:84
+msgid "Today — Pages"
+msgstr "Сьогодні — Сторінки"
+
+#: desktop_modules/module_reading_stats.lua:83
+msgid "Today — Time"
+msgstr "Сьогодні — Час"
+
+#: sui_menu.lua:2842 sui_menu.lua:2849 sui_menu.lua:2853 sui_menu.lua:3253
+#: sui_menu.lua:3260 desktop_modules/module_collections.lua:942
+msgid "Top"
+msgstr "Угорі"
+
+#: sui_topbar.lua:515
+msgid "Top Bar"
+msgstr "Верхня панель"
+
+#: sui_homescreen.lua:1868
+msgid "Top Margin"
+msgstr "Верхнє поле"
+
+#: sui_stats_windows.lua:878 sui_stats_windows.lua:2610
+msgid "Total"
+msgstr "Всього"
+
+#: sui_stats_windows.lua:2106 sui_stats_windows.lua:2122
+msgid "Total time"
+msgstr "Загальний час"
+
+#: sui_menu.lua:3208 sui_menu.lua:3225 sui_quicksettings_bar.lua:1355
+#: desktop_modules/module_quick_actions.lua:612
 msgid "Transparent"
 msgstr "Прозорий"
 
-#: desktop_modules/module_clock.lua:50
+#: sui_menu.lua:2252
+msgid "Transparent navigation bar"
+msgstr "Прозора панель навігації"
+
+#: sui_menu.lua:2234
+msgid "Transparent status bar"
+msgstr "Прозора панель стану"
+
+#: desktop_modules/module_clock.lua:56
 msgid "Tuesday"
 msgstr "Вівторок"
 
-#: sui_menu.lua:938 desktop_modules/module_reading_stats.lua:430 desktop_modules/module_reading_goals.lua:586
-#: desktop_modules/module_quick_actions.lua:407
+#: desktop_modules/module_clock.lua:203 desktop_modules/module_clock.lua:249
+msgid "Twelve"
+msgstr "Дванадцять"
+
+#: desktop_modules/module_clock.lua:215 desktop_modules/module_clock.lua:255
+msgid "Twenty"
+msgstr "Двадцять"
+
+#: desktop_modules/module_clock.lua:193 desktop_modules/module_clock.lua:246
+msgid "Two"
+msgstr "Два"
+
+#: sui_menu.lua:3030 sui_menu.lua:3097
 msgid "Type"
 msgstr "Тип"
 
-#: sui_menu.lua:2166
+#: sui_menu.lua:4228 sui_menu.lua:4231
+msgid "UI Font"
+msgstr "Шрифт інтерфейсу"
+
+#: sui_menu.lua:4235
+msgid "UI Font  (default)"
+msgstr "Шрифт інтерфейсу (за замовчуванням)"
+
+#: sui_menu.lua:4237
+msgid "UI Font  [%s]"
+msgstr "Шрифт інтерфейсу  [%s]"
+
+#: sui_menu.lua:3397
 msgid "Uniformize Covers (2:3)"
-msgstr "Уніформуйте обкладинки (2:3)"
+msgstr "Уніфікувати обкладинки (2:3)"
 
-#: sui_updater.lua:377
-msgid "Update cancelled."
+#: sui_stats_windows.lua:793
+msgid "Unknown error."
+msgstr "Невідома помилка."
+
+#: sui_style.lua:2398
+msgid "Unsupported format (use a folder or a .zip file)"
+msgstr "Непідтримуваний формат (використовуйте папку або файл .zip)"
+
+#: sui_quickactions.lua:75 sui_quickactions.lua:1534 sui_style.lua:1128
+#: sui_style.lua:1336
+msgid ""
+"Unsupported icon format.\n"
+"Please use a PNG or SVG file."
 msgstr ""
+"Непідтримуваний формат іконки.\n"
+"Будь ласка, використовуйте файл у форматі PNG або SVG."
 
-#: sui_updater.lua:487
+#: sui_window.lua:1597 sui_window.lua:2433
+msgid "Update"
+msgstr "Оновлення"
+
+#: desktop_modules/module_reading_stats.lua:805
+#: desktop_modules/module_reading_goals.lua:1089
+#: desktop_modules/module_coverdeck.lua:1292
+#: desktop_modules/module_currently.lua:1547
+msgid "Update Stats Now"
+msgstr "Оновити статистику зараз"
+
+#: sui_updater.lua:448
+msgid "Update cancelled."
+msgstr "Оновлення скасовано."
+
+#: sui_updater.lua:649
 msgid "Update check cancelled."
-msgstr "Перевірку оновлення скасовано."
+msgstr "Перевірка оновлень скасована."
 
-#: sui_menu.lua:2247
+#: sui_menu.lua:3983 sui_presets.lua:883
+msgid "Update with current settings"
+msgstr "Оновити з поточними налаштуваннями"
+
+#: sui_menu.lua:4383
 msgid "Updater module not found."
 msgstr "Модуль оновлення не знайдено."
 
-#: sui_menu.lua:423
+#: sui_quickactions.lua:1730
+msgid "Use this Nerd Font icon?"
+msgstr "Використовувати цю іконку шрифту Nerd Font?"
+
+#: sui_menu.lua:518
 msgid ""
 "Uses the standard KOReader pagination bar on the homescreen.\n"
 "Not available when Navpager is active."
 msgstr ""
-"Використовує стандартну панель нумерації сторінок KOReader на головному екрані.\n"
-"Недоступно, коли Navpager активний."
+"Використовує стандартну панель переходу між сторінками KOReader на головному "
+"екрані.\n"
+"Недоступно, коли активний Navpager."
 
-#: sui_menu.lua:2232
+#: sui_settings_window.lua:299
+msgid "Version, author and updates"
+msgstr "Версія, автор та оновлення"
+
+#: sui_menu.lua:4355
 msgid "Version: %s"
 msgstr "Версія: %s"
 
-#: sui_homescreen.lua:1746
+#: sui_homescreen.lua:1871
 msgid ""
 "Vertical space above this module.\n"
 "100% is the default spacing."
 msgstr ""
-"Вертикальний проміжок над цим модулем.\n"
-"\v100% - це інтервал за замовчуванням."
+"Вертикальний простір над цим модулем.\n"
+"За замовчуванням встановлено 100% відстані до нього."
 
-#: sui_browsemeta.lua:778
-msgid "Virtual folder cover"
-msgstr "Обкладинка віртуальної папки"
+#: desktop_modules/module_clock.lua:888
+msgid ""
+"Vertical space between the clock and the date.\n"
+"100% is the default spacing."
+msgstr ""
+"Вертикальна відстань між годинником і датою.\n"
+"100% — це відстань за замовчуванням."
 
-#: sui_menu.lua:925
+#: desktop_modules/module_clock.lua:914
+msgid ""
+"Vertical space between the date (or clock) and the battery.\n"
+"100% is the default spacing."
+msgstr ""
+"Вертикальна відстань між датою (або годинником) та значком заряду батареї.\n"
+"100% — це значення за замовчуванням."
+
+#: sui_menu.lua:2919 sui_menu.lua:2973 sui_menu.lua:3205
+msgid "Visibility"
+msgstr "Видимість"
+
+#: sui_menu.lua:2915 sui_menu.lua:2921 sui_menu.lua:2925 sui_menu.lua:2969
+#: sui_menu.lua:2975 sui_menu.lua:2979
 msgid "Visible"
-msgstr "Видно"
+msgstr "Видимий"
 
-#: desktop_modules/module_clock.lua:50
+#: sui_stats_windows.lua:2394
+msgid "WEEK STREAK"
+msgstr "ПОСЛІДОВНІСТЬ ТИЖНІВ"
+
+#: desktop_modules/module_clock.lua:234 desktop_modules/module_clock.lua:259
+msgid "WORD_CLOCK_TENS_SEP"
+msgstr "WORD_CLOCK_TENS_SEP"
+
+#: sui_menu.lua:2633 sui_settings_window.lua:318 sui_settings_window.lua:862
+msgid "Wallpaper"
+msgstr "Шпалери"
+
+#: sui_style.lua:2006
+msgid "Warm Paper"
+msgstr "Теплий папір"
+
+#: sui_quicksettings_bar.lua:500 sui_quicksettings_bar.lua:521
+#: sui_quicksettings_bar.lua:532
+msgid "Warmth"
+msgstr "Тепло"
+
+#: sui_quicksettings_bar.lua:1281
+msgid "Warmth Slider"
+msgstr "Повзунок «Тепло»"
+
+#: sui_menu.lua:2584
+msgid "Warn when modules on a page exceed the available screen height."
+msgstr ""
+"Показувати попередження, коли модулі на сторінці перевищують доступну висоту "
+"екрана."
+
+#: desktop_modules/module_clock.lua:56
 msgid "Wednesday"
 msgstr "Середа"
 
-#: sui_updater.lua:412
+#: sui_onboarding.lua:229 sui_onboarding.lua:230
+msgid "Welcome to Simple UI"
+msgstr "Ласкаво просимо до Simple UI"
+
+#: sui_updater.lua:476
 msgid "What's new:"
 msgstr "Що нового:"
 
-#: sui_menu.lua:1858
+#: sui_menu.lua:2609
 msgid ""
-"When enabled, long-pressing a section opens its settings menu.\n"
+"When a finished book is deleted from the device, keep it counted in the "
+"Books Read statistics on the Home Screen.\n"
+"\n"
+"Books changed back to Reading or Abandoned are automatically removed from "
+"this list."
+msgstr ""
+"Коли прочитану книгу видалено з пристрою, вона має залишатися у статистиці "
+"«Прочитані книги» на головному екрані.\n"
+"\n"
+"Книги, статус яких повернуто до «Читаю» або «Недочитано», автоматично "
+"видаляються з цього списку."
+
+#: sui_menu.lua:2488
+msgid ""
+"When closing a book from the Home Screen, go back to the folder where the "
+"book is located instead of the Library home folder."
+msgstr ""
+"При закритті книги з головного екрану повертатися до папки, в якій "
+"знаходиться книга, а не до головної папки бібліотеки."
+
+#: sui_menu.lua:2596
+msgid ""
+"When enabled, long-pressing a module on the home screen opens its settings "
+"menu.\n"
+"Disable this to prevent settings from appearing on long tap."
+msgstr ""
+"Якщо ця опція увімкнена, тривале натискання на модуль на головному екрані "
+"відкриває меню налаштувань.\n"
+"Вимкніть цю опцію, щоб налаштування не з’являлися при тривалому натисканні."
+
+#: sui_quicksettings_bar.lua:1389
+msgid ""
+"When enabled, long-pressing the Quick Settings Bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
-"Якщо ввімкнено, тривале натискання розділу відкриває його меню налаштувань.\n"
-"\vВимкніть це, щоб меню налаштувань не відображалося при довгому натисканні."
+"Якщо ця опція увімкнена, тривале натискання на панель швидких налаштувань "
+"відкриває меню налаштувань.\n"
+"Вимкніть цю опцію, щоб меню налаштувань не з’являлося при тривалому "
+"натисканні."
 
-#: sui_menu.lua:955
+#: sui_menu.lua:1371
 msgid ""
 "When enabled, long-pressing the bottom bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
-"Якщо ввімкнути цю функцію, тривале натискання нижньої панелі відкриє меню налаштувань.\n"
-"Вимкніть цю функцію, щоб меню налаштувань не відображалося при довгому натисканні."
+"Якщо ця опція увімкнена, тривале натискання на нижню панель відкриває меню "
+"налаштувань.\n"
+"Вимкніть цю опцію, щоб меню налаштувань не з’являлося при тривалому "
+"натисканні."
 
-#: sui_menu.lua:785
+#: sui_menu.lua:1079
 msgid ""
 "When enabled, long-pressing the top bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
-"Якщо ввімкнено, тривале натискання розділу відкриває його меню налаштувань.\n"
-"Вимкніть це, щоб меню налаштувань не відображалося при довгому натисканні."
+"Якщо ця опція увімкнена, тривале натискання на верхню панель відкриває меню "
+"налаштувань.\n"
+"Вимкніть цю опцію, щоб меню налаштувань не з’являлося при тривалому "
+"натисканні."
 
-#: sui_menu.lua:1846
+#: sui_menu.lua:2374
 msgid ""
-"When enabled, opening the file browser after finishing or closing a book navigates to the folder the book is in, matching "
-"native KOReader behaviour.\n"
-"When disabled (default), SimpleUI always returns to the library root.\n"
-"This option works independently of \\\"Start with Home Screen\\\"."
+"When waking the device from sleep/suspend, always return to the Home Screen "
+"— even if a book was open when it went to sleep."
 msgstr ""
-"Якщо ввімкнено, відкриття веб-переглядача файлів після завершення або закриття книги переходить до папки, в якій знаходиться "
-"книга, відповідно до власної поведінки KOReader.\n"
-"\vЯкщо вимкнено (за замовчуванням), SimpleUI завжди повертається до кореня бібліотеки.\n"
-"Ця опція працює незалежно від\\\"Почати з головного екрана\\\"."
+"Під час виведення пристрою з режиму сну/призупинення завжди повертайтеся на "
+"головний екран, навіть якщо під час переходу в режим сну була відкрита книга."
 
-#: sui_config.lua:140
+#: sui_quickactions.lua:696 sui_config.lua:123
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
-#: sui_bottombar.lua:1462
+#: sui_quickactions.lua:212
 msgid "Wi-Fi off"
-msgstr ""
+msgstr "Wi-Fi вимкнено"
 
-#: sui_config.lua:166
+#: sui_config.lua:165
 msgid "WiFi"
-msgstr "WiFi"
+msgstr "Wi-Fi"
 
-#: sui_bottombar.lua:1449
+#: sui_quickactions.lua:199
 msgid "WiFi not available on this device."
-msgstr "Wi-Fi недоступний на цьому пристрої."
+msgstr "На цьому пристрої немає доступу до Wi-Fi."
 
-#: sui_quickactions.lua:625
+#: sui_quickactions.lua:1874
 msgid "Wikipedia Lookup"
 msgstr "Пошук у Вікіпедії"
 
-#: desktop_modules/module_currently.lua:936
+#: desktop_modules/module_currently.lua:1510
 msgid "With percentage"
 msgstr "З відсотками"
 
-#: desktop_modules/module_quote.lua:897
+#: desktop_modules/module_clock.lua:831 desktop_modules/module_clock.lua:842
+msgid "Word"
+msgstr "Словами"
+
+#: desktop_modules/module_quote.lua:950
 msgid "Your highlights"
-msgstr "Ваше найцікавіше"
+msgstr "Ваші улюблені"
 
-#: sui_updater.lua:410
-msgid ""
-"\n"
-"Download and install now?"
-msgstr ""
-#: desktop_modules/module_reading_stats.lua:66
+#: sui_stats_windows.lua:391
+msgid "apr"
+msgstr "квіт"
+
+#: sui_stats_windows.lua:392
+msgid "aug"
+msgstr "серп"
+
+#: sui_stats_windows.lua:1980 desktop_modules/module_reading_stats.lua:92
 msgid "books finished"
-msgstr ""
+msgstr "прочитані книги"
 
-#: desktop_modules/module_reading_stats.lua:63
+#: desktop_modules/module_reading_stats.lua:87
 msgid "daily avg (7 days)"
-msgstr "середнє щоденне (7 днів)"
+msgstr "середнє щодня (7 днів)"
 
-#: desktop_modules/module_reading_stats.lua:68
+#: desktop_modules/module_reading_stats.lua:94
 msgid "day streak"
-msgstr "день смуги"
+msgstr "день послідовності"
 
-#: desktop_modules/module_reading_stats.lua:68
+#: desktop_modules/module_reading_stats.lua:94
 msgid "days streak"
-msgstr "днів смуги"
+msgstr "днів послідовності"
 
-#: sui_quickactions.lua:1010
+#: sui_stats_windows.lua:392
+msgid "dec"
+msgstr "груд"
+
+#: sui_quickactions.lua:1526 sui_quickactions.lua:2484
 msgid "default"
 msgstr "за замовчуванням"
 
-#: sui_menu.lua:745 sui_menu.lua:814 sui_menu.lua:1154 sui_menu.lua:1923
+#: sui_menu.lua:842 sui_menu.lua:1108 sui_menu.lua:1748 sui_menu.lua:4481
+#: sui_quicksettings_bar.lua:1184
 msgid "disabled"
-msgstr "вимкнено"
+msgstr "відключено"
 
-#: sui_quickactions.lua:850
-msgid "e.g. Comics…"
-msgstr "напр. Комікси…"
+#: sui_style.lua:2101
+msgid "e.g. #F5F0E8  or #1C1C1E  (empty = reset)"
+msgstr "наприклад, #F5F0E8  або #1C1C1E  (порожнє поле = скидання налаштувань)"
 
-#: sui_quickactions.lua:896
-msgid "e.g. Rakuyomi…"
-msgstr "напр. Ракуйомі…"
-
-#: sui_quickactions.lua:869
-msgid "e.g. Sci-Fi…"
-msgstr ""
-
-#: sui_quickactions.lua:924
-msgid "e.g. Sleep, Refresh…"
-msgstr "напр. Сон, оновлення…"
-
-#: sui_menu.lua:745 sui_menu.lua:814 sui_menu.lua:1154 sui_menu.lua:1923
+#: sui_menu.lua:842 sui_menu.lua:1108 sui_menu.lua:1748 sui_menu.lua:4481
+#: sui_quicksettings_bar.lua:1184
 msgid "enabled"
-msgstr "включено"
+msgstr "увімкнено"
 
-#: sui_quickactions.lua:490
+#: sui_stats_windows.lua:391
+msgid "feb"
+msgstr "лют"
+
+#: sui_style.lua:2344
+msgid "ffi/archiver not available in this KOReader version"
+msgstr "ffi/archiver недоступний у цій версії KOReader"
+
+#: sui_quickactions.lua:1750
 msgid "hex code, e.g. E001"
-msgstr ""
+msgstr "шестнадцятковий код, наприклад E001"
 
-#: desktop_modules/module_reading_stats.lua:68
+#: sui_stats_windows.lua:1759 sui_stats_windows.lua:1978
+msgid "hours read"
+msgstr "години читання"
+
+#: sui_stats_windows.lua:391
+msgid "jan"
+msgstr "січ"
+
+#: sui_stats_windows.lua:392
+msgid "jul"
+msgstr "лип"
+
+#: sui_stats_windows.lua:391
+msgid "jun"
+msgstr "черв"
+
+#: sui_updater.lua:663
+msgid "latest"
+msgstr "остання версія"
+
+#: sui_stats_windows.lua:391
+msgid "mar"
+msgstr "бер"
+
+#: sui_stats_windows.lua:391
+msgid "may"
+msgstr "трав"
+
+#: desktop_modules/module_reading_stats.lua:94
 msgid "no streak"
-msgstr "немає смуги"
+msgstr "немає послідовності"
 
-#: sui_quickactions.lua:1163 sui_quickactions.lua:1179
+#: sui_quickactions.lua:1305 sui_quickactions.lua:2581
+#: sui_quickactions.lua:2600
 msgid "not configured"
-msgstr ""
+msgstr "не налаштовано"
 
-#: desktop_modules/module_reading_stats.lua:61
+#: sui_stats_windows.lua:392
+msgid "nov"
+msgstr "лист"
+
+#: sui_stats_windows.lua:392
+msgid "oct"
+msgstr "жовт"
+
+#: desktop_modules/module_reading_stats.lua:89
+msgid "of reading this month"
+msgstr "читання цього місяця"
+
+#: desktop_modules/module_reading_stats.lua:85
+msgid "of reading this week"
+msgstr "читання цього тижня"
+
+#: desktop_modules/module_reading_stats.lua:83
 msgid "of reading today"
 msgstr "читання сьогодні"
 
-#: desktop_modules/module_reading_stats.lua:65
+#: desktop_modules/module_reading_stats.lua:91
 msgid "of reading, all time"
-msgstr "читання, весь час"
+msgstr "читання, за весь час"
 
-#: desktop_modules/module_reading_stats.lua:62
+#: sui_style.lua:2387
+msgid "pack_path not provided"
+msgstr "Шлях до пакета (pack_path) не вказано"
+
+#: sui_stats_windows.lua:1979 sui_stats_windows.lua:2345
+msgid "pages read"
+msgstr "прочитані сторінки"
+
+#: desktop_modules/module_reading_stats.lua:90
+msgid "pages read this month"
+msgstr "сторінок, прочитаних цього місяця"
+
+#: desktop_modules/module_reading_stats.lua:86
+msgid "pages read this week"
+msgstr "сторінок, прочитаних цього тижня"
+
+#: desktop_modules/module_reading_stats.lua:84
 msgid "pages read today"
-msgstr "сторінок сьогодні"
+msgstr "сторінок, прочитаних сьогодні"
 
-#: desktop_modules/module_reading_stats.lua:64
+#: desktop_modules/module_reading_stats.lua:88
 msgid "pages/day (7 days)"
-msgstr "сторінок/день (7 днів)"
+msgstr "сторінок на день (7 днів)"
 
-#: sui_menu.lua:242 sui_menu.lua:1340 desktop_modules/module_reading_stats.lua:507 desktop_modules/module_collections.lua:689
-#: desktop_modules/module_quick_actions.lua:324
+#: sui_stats_windows.lua:2343
+msgid "reading time"
+msgstr "час читання"
+
+#: sui_stats_windows.lua:392
+msgid "sep"
+msgstr "вер"
+
+#: sui_updater.lua:665
+msgid "⬆ Update available: %s"
+msgstr "⬆ Доступне оновлення: %s"
+
+#: sui_menu.lua:337 sui_menu.lua:1929
+#: desktop_modules/module_collections.lua:992
+#: desktop_modules/module_action_list.lua:459
+#: desktop_modules/module_reading_stats.lua:794
+#: desktop_modules/module_quick_actions.lua:377
 msgid "  (%d left)"
 msgid_plural "  (%d left)"
-msgstr[0] "  (%d залишився)"
-msgstr[1] "  (%d залишилося)"
-msgstr[2] "  (%d залишилося)"
+msgstr[0] "  (%d лишилася)"
+msgstr[1] "  (%d лишилося)"
+msgstr[2] "  (%d лишилося)"
 
-#: desktop_modules/module_reading_goals.lua:619
+#: desktop_modules/module_reading_goals.lua:847
 msgid "  Set Goal  (%d book in %s)"
 msgid_plural "  Set Goal  (%d books in %s)"
-msgstr[0] "  Встановити ціль  (%d книга за %s)"
-msgstr[1] "  Встановити ціль  (%d книги за %s)"
-msgstr[2] "  Встановити ціль  (%d книг за %s)"
+msgstr[0] "  Встановити ціль  (%d книга з %s)"
+msgstr[1] "  Встановити ціль  (%d книги з %s)"
+msgstr[2] "  Встановити ціль  (%d книг із %s)"
 
-#: desktop_modules/module_reading_goals.lua:418
+#: desktop_modules/module_reading_goals.lua:472
 msgid "%d book"
 msgid_plural "%d books"
 msgstr[0] "%d книга"
 msgstr[1] "%d книги"
 msgstr[2] "%d книг"
 
-#: desktop_modules/module_currently.lua:540 desktop_modules/module_currently.lua:607 desktop_modules/module_coverdeck.lua:574
+#: desktop_modules/module_reading_goals.lua:952
+msgid "%d book in %s"
+msgid_plural "%d books in %s"
+msgstr[0] "%d книга з %s"
+msgstr[1] "%d книги з %s"
+msgstr[2] "%d книг із %s"
+
+#: sui_stats_windows.lua:1116
+msgid "%d book read in %s"
+msgid_plural "%d books read in %s"
+msgstr[0] "%d книгу прочитано у %s"
+msgstr[1] "%d книги прочитано у %s"
+msgstr[2] "%d книг прочитано у %s"
+
+#: sui_stats_windows.lua:2129 sui_stats_windows.lua:2132
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d день"
+msgstr[1] "%d дні"
+msgstr[2] "%d днів"
+
+#: desktop_modules/module_coverdeck.lua:761
+#: desktop_modules/module_currently.lua:653
+#: desktop_modules/module_currently.lua:654
+#: desktop_modules/module_currently.lua:732
 msgid "%d day of reading"
 msgid_plural "%d days of reading"
 msgstr[0] "%d день читання"
 msgstr[1] "%d дні читання"
 msgstr[2] "%d днів читання"
 
-#: desktop_modules/module_reading_goals.lua:417
+#: desktop_modules/module_reading_goals.lua:1038
+msgid "%d in %s"
+msgid_plural "%d in %s"
+msgstr[0] "%d з %s"
+msgstr[1] "%d з %s"
+msgstr[2] "%d з %s"
+
+#: sui_quickactions.lua:1297 sui_quickactions.lua:2573
+#: sui_quickactions.lua:2594
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] "%d елемент"
+msgstr[1] "%d елементи"
+msgstr[2] "%d елементів"
+
+#: sui_stats_windows.lua:2152 sui_stats_windows.lua:2155
+msgid "%d week"
+msgid_plural "%d weeks"
+msgstr[0] "%d тиждень"
+msgstr[1] "%d тижні"
+msgstr[2] "%d тижнів"
+
+#: desktop_modules/module_reading_goals.lua:470
 msgid "%d/%d book"
 msgid_plural "%d/%d books"
 msgstr[0] "%d/%d книга"
-msgstr[1] "%d/%d книги"
+msgstr[1] "%d/%d книг"
 msgstr[2] "%d/%d книг"
 
-#: sui_menu.lua:1234
-msgid "Digital: %d book in %s"
-msgid_plural "Digital: %d books in %s"
-msgstr[0] "Цифрові: %d книга за %s"
-msgstr[1] "Цифрові: %d книги за %s"
-msgstr[2] "Цифрові: %d книг за %s"
+#: desktop_modules/module_collections.lua:355
+#: desktop_modules/module_reading_stats.lua:297
+#: desktop_modules/module_quick_actions.lua:493
+msgid "(%d/%d — %d left)"
+msgid_plural "(%d/%d — %d left)"
+msgstr[0] "(%d/%d — %d лишилася)"
+msgstr[1] "(%d/%d — %d лишилося)"
+msgstr[2] "(%d/%d — %d лишилося)"
 
-#: sui_menu.lua:1240
-msgid "Physical: %d book in %s"
-msgid_plural "Physical: %d books in %s"
-msgstr[0] "Паперові: %d книга за %s"
-msgstr[1] "Паперові: %d книги за %s"
-msgstr[2] "Паперові: %d книг за %s"
+#: sui_quickactions.lua:2101
+msgid "Group (%d item)"
+msgid_plural "Group (%d items)"
+msgstr[0] "Група (%d елемент)"
+msgstr[1] "Група (%d елементи)"
+msgstr[2] "Група (%d елементів)"
 
-#: sui_menu.lua:560
+#: desktop_modules/module_reading_goals.lua:1029
+msgid "Manually Tracked Books  (%d in %s)"
+msgid_plural "Manually Tracked Books  (%d in %s)"
+msgstr[0] "Книги, що відстежуються вручну  (%d з %s)"
+msgstr[1] "Книги, що відстежуються вручну  (%d з %s)"
+msgstr[2] "Книги, що відстежуються вручну  (%d з %s)"
+
+#: sui_quicksettings_bar.lua:1158
+msgid "Maximum of %d slot reached. Remove one first."
+msgid_plural "Maximum of %d slots reached. Remove one first."
+msgstr[0] ""
+"Досягнуто максимальної кількості слотів (%d). Спочатку видаліть один."
+msgstr[1] ""
+"Досягнуто максимальної кількості слотів (%d). Спочатку видаліть один."
+msgstr[2] ""
+"Досягнуто максимальної кількості слотів (%d). Спочатку видаліть один."
+
+#: sui_menu.lua:636 sui_menu.lua:902
 msgid ""
 "Text shown in the top bar.\n"
 "Maximum %d character."
@@ -1987,30 +4258,76 @@ msgstr[2] ""
 "Текст у верхній панелі.\n"
 "Максимум %d символів."
 
-#: sui_menu.lua:1304 desktop_modules/module_quick_actions.lua:267
+#: sui_menu.lua:1893 sui_menu.lua:2012
+#: desktop_modules/module_action_list.lua:396
+#: desktop_modules/module_action_list.lua:533
+#: desktop_modules/module_quick_actions.lua:319
+#: desktop_modules/module_quick_actions.lua:460
 msgid "The maximum of %d action per module has been reached. Remove one first."
-msgid_plural "The maximum of %d actions per module has been reached. Remove one first."
-msgstr[0] "Досягнуто максимум %d дії на модуль. Спочатку видаліть одну."
-msgstr[1] "Досягнуто максимум %d дій на модуль. Спочатку видаліть одну."
-msgstr[2] "Досягнуто максимум %d дій на модуль. Спочатку видаліть одну."
+msgid_plural ""
+"The maximum of %d actions per module has been reached. Remove one first."
+msgstr[0] ""
+"Досягнуто максимальної кількості дій %d на модуль. Спочатку видаліть одну."
+msgstr[1] ""
+"Досягнуто максимальної кількості дій %d на модуль. Спочатку видаліть одну."
+msgstr[2] ""
+"Досягнуто максимальної кількості дій %d на модуль. Спочатку видаліть одну."
 
-#: sui_quickactions.lua:1124
+#: sui_quickactions.lua:1363 sui_quickactions.lua:2537
 msgid "The maximum of %d quick action has been reached. Delete one first."
-msgid_plural "The maximum of %d quick actions has been reached. Delete one first."
-msgstr[0] "Досягнуто максимум %d швидкої дії. Спочатку видаліть одну."
-msgstr[1] "Досягнуто максимум %d швидких дій. Спочатку видаліть одну."
-msgstr[2] "Досягнуто максимум %d швидких дій. Спочатку видаліть одну."
+msgid_plural ""
+"The maximum of %d quick actions has been reached. Delete one first."
+msgstr[0] ""
+"Досягнуто максимальної кількості швидких дій: %d. Спочатку видаліть одну."
+msgstr[1] ""
+"Досягнуто максимальної кількості швидких дій: %d. Спочатку видаліть одну."
+msgstr[2] ""
+"Досягнуто максимальної кількості швидких дій: %d. Спочатку видаліть одну."
 
-#: desktop_modules/module_reading_stats.lua:419
+#: desktop_modules/module_reading_stats.lua:580
+#: desktop_modules/module_reading_stats.lua:662
 msgid "The maximum of %d stat per row has been reached. Remove one first."
-msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-msgstr[0] "Досягнуто максимум %d показника в рядку. Спочатку видаліть один."
-msgstr[1] "Досягнуто максимум %d показники в рядку. Спочатку видаліть один."
-msgstr[2] "Досягнуто максимум %d показників в рядку. Спочатку видаліть один."
+msgid_plural ""
+"The maximum of %d stats per row has been reached. Remove one first."
+msgstr[0] ""
+"Досягнуто максимальної кількості статистичних даних %d на рядок. Спочатку "
+"видаліть одну."
+msgstr[1] ""
+"Досягнуто максимальної кількості статистичних даних %d на рядок. Спочатку "
+"видаліть одну."
+msgstr[2] ""
+"Досягнуто максимальної кількості статистичних даних %d на рядок. Спочатку "
+"видаліть одну."
 
-#: sui_menu.lua:275
+#: sui_menu.lua:370 sui_menu.lua:1223
 msgid "The maximum of %d tab has been reached. Remove one first."
 msgid_plural "The maximum of %d tabs has been reached. Remove one first."
-msgstr[0] "Досягнуто максимум %d вкладки. Спочатку видаліть одну."
-msgstr[1] "Досягнуто максимум %d вкладки. Спочатку видаліть одну."
-msgstr[2] "Досягнуто максимум %d вкладок. Спочатку видаліть одну."
+msgstr[0] ""
+"Досягнуто максимальної кількості вкладок %d. Спочатку видаліть одну."
+msgstr[1] ""
+"Досягнуто максимальної кількості вкладок %d. Спочатку видаліть одну."
+msgstr[2] ""
+"Досягнуто максимальної кількості вкладок %d. Спочатку видаліть одну."
+
+#: sui_stats_windows.lua:1762
+msgid "day read"
+msgid_plural "days read"
+msgstr[0] "день читання"
+msgstr[1] "дні читання"
+msgstr[2] "днів читання"
+
+#: sui_stats_windows.lua:1777
+msgid "page read"
+msgid_plural "pages read"
+msgstr[0] "сторінку прочитано"
+msgstr[1] "сторінки прочитано"
+msgstr[2] "сторінок прочитано"
+
+#~ msgid "Above"
+#~ msgstr "Зверху"
+
+#~ msgid "Below"
+#~ msgstr "Знизу"
+
+#~ msgid "Title Position"
+#~ msgstr "Розташування заголовка"
