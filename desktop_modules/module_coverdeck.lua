@@ -1440,15 +1440,6 @@ function M.getMenuItems(ctx_menu)
     menu[#menu+1] = items_item
     for _i, item in ipairs(scale_items) do menu[#menu+1] = item end
     menu[#menu+1] = {
-        text           = _lc("Progress bar"),
-        checked_func   = function() return _showElem(pfx, "progress") end,
-        keep_menu_open = true,
-        callback       = function()
-            _toggleElem(pfx, "progress")
-            refresh()
-        end,
-    }
-    menu[#menu+1] = {
         text           = _lc("Show finished books"),
         checked_func   = function() return showFinished(pfx) end,
         keep_menu_open = true,
