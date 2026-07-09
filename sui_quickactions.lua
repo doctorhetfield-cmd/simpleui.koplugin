@@ -26,6 +26,11 @@
 --     get_label   = function(id) ... end,
 --     -- execution:
 --     is_in_place = true,  -- bool OR function(id)->bool
+--     -- optional, only meaningful when is_in_place is true: set this when
+--     -- execute() opens a widget/dialog that outlives the call itself
+--     -- (e.g. a UIManager:show()'d confirm box or window). See
+--     -- QA.isAsyncInPlace / sui_bottombar._executeInPlace.
+--     is_async_in_place = false, -- bool, default false
 --     execute     = function(ctx) ... end,
 --     -- ctx = { plugin, fm, show_unavailable }
 --     -- optional metadata:
@@ -669,6 +674,57 @@ local function _registerBuiltins()
             end,
         },
         {
+            id    = "random_document",
+            label = _("Random"),
+            icon  = Config.ICON.random,
+            -- is_in_place: like bookmark_browser/power, this opens a floating
+            -- dialog (MultiConfirmBox) on top of whatever screen is active —
+            -- it doesn't need the FM to be the visible screen. Keeping this
+            -- as `false` forced navigate() to close the homescreen and reveal
+            -- the FM underneath before showing the dialog, which is why the
+            -- action looked like it "went to Library" no matter where it was
+            -- triggered from.
+            is_in_place = true,
+            -- The MultiConfirmBox outlives this execute() call, same as
+            -- bookmark_browser/power — see QA.isAsyncInPlace.
+            is_async_in_place = true,
+            execute = function(ctx)
+                local su = ctx.show_unavailable or _unavailToast
+                -- ctx.fm is "whatever widget owns the bottom bar that was
+                -- tapped" (see sui_bottombar.registerTouchZones), NOT
+                -- necessarily the FileManager — it can be the homescreen,
+                -- Collections, History, etc. when random_document is tapped
+                -- from their injected bars. Only trust it if it actually
+                -- behaves like a FileManager (has openRandomFile); otherwise
+                -- fall back to the live FM instance (which stays alive
+                -- underneath the homescreen even while hidden — see the
+                -- window-stack sink notes in sui_bottombar._executeInPlace).
+                local function isFM(w) return w and w.openRandomFile end
+                local fm = isFM(ctx.fm) and ctx.fm or _liveFM()
+                if not isFM(fm) then fm = nil end
+                -- FileManager:openRandomFile only touches `self` to recurse
+                -- on the "Another" button (self:openRandomFile(...)) — it
+                -- never reads anything off self. So it's safe to call on the
+                -- FileManager *class* itself when there's no valid instance
+                -- at all, e.g. triggered from inside the reader or the
+                -- in-reader quicksettings bar: KOReader tears the FM widget
+                -- down (FileManager.instance = nil) the moment a book is
+                -- opened.
+                local FMClass = fm
+                    or package.loaded["apps/filemanager/filemanager"]
+                    or require("apps/filemanager/filemanager")
+                if not (FMClass and FMClass.openRandomFile) then
+                    su(_("File Manager not available."))
+                    return
+                end
+                local dir = (fm and fm.file_chooser and fm.file_chooser.path)
+                    or G_reader_settings:readSetting("home_dir")
+                    or (Device and Device.home_dir)
+                    or "."
+                FMClass:openRandomFile(dir, false)
+            end,
+        },
+        {
             id    = "favorites",
             label = _("Favorites"),
             icon  = Config.ICON.ko_star,
@@ -686,7 +742,10 @@ local function _registerBuiltins()
             label = _("Bookmarks"),
             icon  = Config.ICON.ko_bookmark,
             is_in_place = true,
-            -- needs_stack_sink = false (opens async widgets, skip the HS sink)
+            -- is_async_in_place: opens a widget that outlives this execute()
+            -- call (async dialog), so _executeInPlace must skip the HS
+            -- stack-sink/restore dance for it — see QA.isAsyncInPlace.
+            is_async_in_place = true,
             execute = function(ctx)
                 local fm = ctx.fm or _liveFM()
                 local _bb_ui = fm
@@ -763,6 +822,7 @@ local function _registerBuiltins()
             label = _("Power"),
             icon  = Config.ICON.power,
             is_in_place = true,
+            is_async_in_place = true,
             execute = function(ctx)
                 _showPowerDialog(ctx.plugin or _simpleui_plugin())
             end,
@@ -922,6 +982,25 @@ function QA.isInPlace(id)
     local iip = desc.is_in_place
     if type(iip) == "function" then return iip(id) end
     return iip == true
+end
+
+-- ---------------------------------------------------------------------------
+-- QA.isAsyncInPlace(id) — single authority for "is this in-place action a
+-- floating widget/dialog that outlives its execute() call". Mirrors
+-- QA.isInPlace's shape: built-ins declare `is_async_in_place = true` on their
+-- descriptor (bookmark_browser, power, random_document), custom QA folders
+-- delegate to QA.isAsyncInPlaceCustomQA. sui_bottombar._executeInPlace uses
+-- this to decide whether to skip the HS stack-sink/restore dance — that dance
+-- must not run for actions whose UI is still open when navigate() returns.
+-- ---------------------------------------------------------------------------
+function QA.isAsyncInPlace(id)
+    if not id then return false end
+    if id:match("^custom_qa_%d+$") then
+        return QA.isAsyncInPlaceCustomQA(id)
+    end
+    local desc = _registry[id]
+    if not desc then return false end
+    return desc.is_async_in_place == true
 end
 
 -- ---------------------------------------------------------------------------
@@ -3129,9 +3208,11 @@ end
 -- ---------------------------------------------------------------------------
 -- isAsyncInPlaceCustomQA — in-place custom QAs whose UI outlives the calling
 -- function (i.e. opens a floating widget instead of executing synchronously).
--- Mirrors the bookmark_browser/power exclusion in sui_bottombar._executeInPlace:
--- these must NOT be wrapped by the HS stack-sink/restore dance, because the
--- sink is undone before the async widget's own show/close cycle completes.
+-- Delegated to by QA.isAsyncInPlace for the custom_qa_%d+ case (mirrors
+-- QA.isInPlaceCustomQA's role for QA.isInPlace above). These must NOT be
+-- wrapped by the HS stack-sink/restore dance in sui_bottombar._executeInPlace,
+-- because the sink is undone before the async widget's own show/close cycle
+-- completes.
 -- ---------------------------------------------------------------------------
 
 function QA.isAsyncInPlaceCustomQA(action_id)

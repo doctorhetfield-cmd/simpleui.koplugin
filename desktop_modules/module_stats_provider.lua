@@ -100,6 +100,18 @@ local function _getSUIStore()
     return _SUIStore
 end
 
+-- Lazily resolve sui_streak (freeze half) the same defensive way — this is
+-- the Phase 1 earning-hook tap point for the Streak Manager freeze mechanic.
+-- Lazy require avoids any load-order assumption between the two modules.
+local _StreakFreeze = nil
+local function _getStreakFreeze()
+    if not _StreakFreeze then
+        local ok, m = pcall(require, "sui_streak")
+        if ok then _StreakFreeze = m end
+    end
+    return _StreakFreeze
+end
+
 -- Writes a stale-safe snapshot of `state` into the in-memory settings table
 -- only — see the WRITE COST note above. Safe to call unconditionally after
 -- every successful SP.get() recompute; never performs disk I/O itself.
@@ -275,45 +287,61 @@ local function fetchTimeSeries(conn, start_today, week_start, month_start, year_
 end
 
 -- ---------------------------------------------------------------------------
--- Query 2: reading streak (recursive CTE — structurally incompatible with Q1).
--- Queries page_stat_data directly (not the page_stat VIEW) for the same
--- index-utilisation reasons as fetchTimeSeries above.
+-- Query 2: reading streak.
 --
--- Fixes applied:
---   • dated CTE filters duration > 0, consistent with fetchTimeSeries, so that
---     zero-duration entries (e.g. from a crash/force-close) do not inflate the
---     streak while showing 0 min in today's stats.
---   • PRAGMA recursive_triggers / max_page_count are not streak-related; for
---     the CTE recursion depth the relevant limit is the compile-time
---     SQLITE_MAX_EXPR_DEPTH. KOReader's bundled SQLite raises it to 10000, so
---     streaks up to 10 000 days are safe. We set the run-time
---     temp_store = MEMORY pragma before the query so the intermediate CTE rows
---     don't hit the page limit on constrained devices, and we explicitly cap the
---     recursive walk at 9999 steps with an extra WHERE guard to be safe on any
---     build that left the default at 1000.
+-- The consecutive-day walk itself lives in sui_streak.lua, shared with
+-- sui_stats_windows.lua's _riGetStreaks() (Reading Insights window) — see
+-- that module's header comment for why. This function's own job is reduced
+-- to fetching the plain list of distinct active dates and merging in any
+-- frozen dates (Streak Manager freeze mechanic, Phase 2) before handing off
+-- to the shared walk — never writing frozen days into page_stat_data itself.
+--
+-- Previously this ran a recursive SQL CTE entirely inside SQLite. That
+-- approach could not merge in frozen days (SQLite has no visibility into
+-- SUISettings) without either a second query per candidate day or writing
+-- fake rows into page_stat_data — the latter explicitly forbidden. Fetching
+-- distinct dates directly is also a strictly simpler query with no
+-- recursion-depth ceiling to reason about.
+--
+-- Queries page_stat_data directly (not the page_stat VIEW) for the same
+-- index-utilisation reasons as fetchTimeSeries above; duration > 0 filters
+-- zero-duration entries (e.g. from a crash/force-close), consistent with
+-- fetchTimeSeries, so they don't inflate the streak while showing 0 min in
+-- today's stats.
+--
+-- today_str/yesterday_str are passed in (derived from SP.get()'s single
+-- os.date("*t") call and start_today) so this function makes zero os.date
+-- calls of its own.
 -- ---------------------------------------------------------------------------
-local function fetchStreak(conn, start_today)
+local function fetchStreak(conn, today_str, yesterday_str)
     local streak = 0
     local ok, err = pcall(function()
-        local val = conn:rowexec(string.format([[
-            WITH RECURSIVE
-            dated(d) AS (
-                SELECT DISTINCT date(start_time,'unixepoch','localtime')
-                FROM page_stat_data
-                WHERE duration > 0),
-            streak(d,n) AS (
-                SELECT d, 1 FROM dated
-                WHERE d = (SELECT max(d) FROM dated)
-                UNION ALL
-                SELECT date(streak.d,'-1 day'), streak.n+1
-                FROM streak
-                WHERE n < 9999
-                  AND EXISTS (SELECT 1 FROM dated WHERE d = date(streak.d,'-1 day')))
-            SELECT CASE
-                WHEN (SELECT max(d) FROM dated) >= date(%d,'unixepoch','localtime','-1 day')
-                THEN COALESCE((SELECT max(n) FROM streak), 0)
-                ELSE 0 END;]], start_today))
-        streak = tonumber(val) or 0
+        local dated = {}
+        local rw = conn:exec([[
+            SELECT DISTINCT date(start_time,'unixepoch','localtime')
+            FROM page_stat_data
+            WHERE duration > 0
+        ]])
+        if rw and rw[1] then
+            for _, d in ipairs(rw[1]) do dated[#dated + 1] = d end
+        end
+
+        local frozen = {}
+        local SF = _getStreakFreeze()
+        if SF and SF.getFrozenDatesInRange then
+            frozen = SF.getFrozenDatesInRange(nil, nil)
+        end
+
+        -- sui_streak.lua now covers both the freeze state (SF above) and
+        -- this calc walk — same module, so reuse SF rather than requiring
+        -- it a second time.
+        if SF and SF.computeCurrentDayStreak then
+            streak = SF.computeCurrentDayStreak(dated, {
+                frozen_dates = frozen,
+                today        = today_str,
+                yesterday    = yesterday_str,
+            })
+        end
     end)
     if not ok then
         logger.warn("simpleui: stats_provider: fetchStreak failed: " .. tostring(err))
@@ -643,6 +671,18 @@ function SP.get(db_conn, year_str, needs_books)
         end
 
         if not result.db_conn_fatal then
+            -- Streak Manager freeze mechanic — time-based earning hook
+            -- (Phase 1). result.total_secs was just freshly recomputed by
+            -- fetchTimeSeries above (this whole block only runs on a
+            -- cold-cache miss), so this is exactly the "existing pipeline
+            -- learns about new reading time" point. The helper derives its
+            -- own delta from a persisted baseline and is a no-op when the
+            -- freeze mechanic is disabled — no mode check needed here.
+            local SF = _getStreakFreeze()
+            if SF and SF.advanceFreezeTimeFromTotalSecs then
+                pcall(SF.advanceFreezeTimeFromTotalSecs, result.total_secs)
+            end
+
             -- Skip fetchStreak when invalidateTimeSeries() preserved the value:
             -- _streak_cache_valid is set only when the previous cache was built
             -- on today_str, meaning the streak was already correct for today.
@@ -651,7 +691,23 @@ function SP.get(db_conn, year_str, needs_books)
                 result.streak   = (_cache and _cache.streak) or 0
                 _streak_cache_valid = false
             else
-                result.streak = fetchStreak(db_conn, start_today)
+                -- yesterday_str reuses start_today (already computed as
+                -- midnight-of-today) instead of a fresh os.time()/os.date()
+                -- round trip — start_today - 86400 is midnight yesterday.
+                local yesterday_str = os.date("%Y-%m-%d", start_today - 86400)
+                result.streak = fetchStreak(db_conn, today_str, yesterday_str)
+
+                -- Streak Manager freeze mechanic — day-based earning hook
+                -- (Phase 1). Only reached when the streak was actually just
+                -- freshly recomputed (not the same-day fast path above), so
+                -- reopening the app repeatedly on the same day cannot
+                -- double-grant: the watermark update inside
+                -- maybeGrantDayFreeze is idempotent for a repeated value,
+                -- and this branch itself only runs once per new streak
+                -- computation. No-op when the freeze mechanic is disabled.
+                if SF and SF.maybeGrantDayFreeze then
+                    pcall(SF.maybeGrantDayFreeze, result.streak)
+                end
             end
         end
     end

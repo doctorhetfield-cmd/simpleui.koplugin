@@ -62,6 +62,7 @@ M.ICON = {
     collections    = _P .. "collections.svg",
     history        = _P .. "history.svg",
     recent         = _P .. "recent.svg",
+    random         = _P .. "random.svg",
     continue_      = _P .. "continue.svg",       -- trailing _ avoids clash with Lua keyword
     frontlight     = _P .. "frontlight.svg",
     night          = _P .. "night.svg",
@@ -118,6 +119,7 @@ M.ALL_ACTIONS = {
     { id = "history",          label = _("History"),          icon = M.ICON.history     },
     { id = "recent",           label = _("Recent"),           icon = M.ICON.recent      },
     { id = "continue",         label = _("Continue"),         icon = M.ICON.continue_   },
+    { id = "random_document",  label = _("Random"),           icon = M.ICON.random      },
     { id = "favorites",        label = _("Favorites"),        icon = M.ICON.ko_star     },
     { id = "bookmark_browser", label = _("Bookmarks"),        icon = M.ICON.ko_bookmark },
     { id = "wifi_toggle",      label = _("Wi-Fi"),            icon = M.ICON.ko_wifi_on  },

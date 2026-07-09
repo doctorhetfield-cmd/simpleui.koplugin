@@ -426,7 +426,7 @@ local function getFps(source, ctx)
     else
         fps = buildRecentFps(ctx)
     end
-    -- Fallback: if chosen source is empty, try the other.
+    -- Fallback: if chosen source is empty, cascade through the others.
     if not fps or #fps == 0 then
         if source ~= "recent" then
             fps = buildRecentFps(ctx)

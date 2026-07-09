@@ -1644,7 +1644,16 @@ function HomescreenWidget:_buildCtx()
     if mod_rg and Registry.isEnabled(mod_rg, PFX) then
         needs_books = true
     elseif mod_rs and mod_rs.isEnabled and mod_rs.isEnabled(PFX) then
-        local rs_items = SUISettings:readSetting(PFX .. "reading_stats_items") or {}
+        -- mod_rs.getItems(PFX) applies the same default { "total_books",
+        -- "today_time", "streak" } fallback module_reading_stats itself uses
+        -- when the user has never customized their stat cards. Reading the
+        -- raw "reading_stats_items" setting here instead (as before) returns
+        -- nil/{} on a fresh install, which was wrongly treated as "no items
+        -- selected" — even though the card actually rendered "total_books"
+        -- by falling back to that same default. That mismatch is why the
+        -- Books Finished card only ever populated when Reading Goals (which
+        -- forces needs_books=true unconditionally above) was also enabled.
+        local rs_items = mod_rs.getItems and mod_rs.getItems(PFX) or {}
         for _, id in ipairs(rs_items) do
             if id == "total_books" then needs_books = true; break end
         end

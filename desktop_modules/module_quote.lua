@@ -1,14 +1,16 @@
 -- module_quote.lua — Simple UI
 
--- Quote of the Day module. Four source modes:
+-- Quote of the Day module. Five source modes:
 
---   "quotes"     — random quote from quotes.lua (default)
+--   "quotes"       — random quote from quotes.lua (default)
 
---   "highlights" — random highlight from the user's books
+--   "highlights"   — random highlight from the user's books
 
---   "mixed"      — random pick between both sources
+--   "mixed"        — random pick between quotes.lua and highlights
 
---   "custom"     — random quote from a user-supplied .lua file in the plugin's desktop_modules/custom_quotes/ folder
+--   "custom"       — random quote from a user-supplied .lua file in the plugin's desktop_modules/custom_quotes/ folder
+
+--   "custom_mixed" — random pick between the selected custom file and highlights
 
 
 
@@ -1013,6 +1015,41 @@ end
 
 
 
+-- Same as buildFromMixed, but pairs the user's highlights with the selected
+-- custom quotes file instead of the built-in quotes.lua pool.
+local function buildFromCustomMixed(inner_w, face_quote, face_attr, vspan_gap, pfx, has_wallpaper, clr_quote, clr_attr, alignment)
+
+    local has_highlights = #getPool() > 0
+
+    local custom_quotes  = loadCustomQuotes(getCustomFile(pfx))
+    local has_custom     = custom_quotes ~= nil and #custom_quotes > 0
+
+    if has_highlights and has_custom then
+
+        if math.random(2) == 1 then
+
+            return buildFromHighlight(inner_w, face_quote, face_attr, vspan_gap, has_wallpaper, clr_quote, clr_attr, alignment)
+
+        else
+
+            return buildFromCustomQuote(inner_w, face_quote, face_attr, vspan_gap, pfx, has_wallpaper, clr_quote, clr_attr, alignment), nil, nil, nil, nil
+
+        end
+
+    elseif has_highlights then
+
+        return buildFromHighlight(inner_w, face_quote, face_attr, vspan_gap, has_wallpaper, clr_quote, clr_attr, alignment)
+
+    else
+
+        return buildFromCustomQuote(inner_w, face_quote, face_attr, vspan_gap, pfx, has_wallpaper, clr_quote, clr_attr, alignment), nil, nil, nil, nil
+
+    end
+
+end
+
+
+
 -- ---------------------------------------------------------------------------
 
 -- Module API
@@ -1105,6 +1142,10 @@ function M.build(w, ctx)
     elseif source == "custom" then
 
         content = buildFromCustomQuote(inner_w, face_quote, face_attr, vspan_gap, ctx and ctx.pfx, has_wallpaper, _clr_quote, _clr_attr, alignment)
+
+    elseif source == "custom_mixed" then
+
+        content, hl_filepath, hl_title, hl_pos0, hl_page = buildFromCustomMixed(inner_w, face_quote, face_attr, vspan_gap, ctx and ctx.pfx, has_wallpaper, _clr_quote, _clr_attr, alignment)
 
     else
 
@@ -1389,6 +1430,55 @@ function M.getMenuItems(ctx_menu)
                                     keep_menu_open = true,
                                     callback       = function()
                                         SUISettings:saveSetting(pfx .. SETTING_SOURCE,      "custom")
+                                        SUISettings:saveSetting(pfx .. SETTING_CUSTOM_FILE, _fname)
+                                        M.invalidateCache()
+                                        refresh()
+                                    end,
+                                }
+                            end
+                        end
+
+                        subitems[#subitems + 1] = {
+                            text    = _lc("Place .lua files in the plugin's sui_quotes/ folder"),
+                            enabled = false,
+                        }
+
+                        return subitems
+                    end,
+
+                },
+
+                {
+
+                    text         = _lc("Custom File + My Highlights"),
+
+                    radio        = true,
+
+                    checked_func = function() return getSource(pfx) == "custom_mixed" end,
+
+                    -- Scan the filesystem only when the user opens this sub-menu.
+                    sub_item_table_func = function()
+                        local files    = listCustomQuoteFiles()
+                        local subitems = {}
+
+                        if #files == 0 then
+                            subitems[#subitems + 1] = {
+                                text    = _lc("No .lua files found in sui_quotes/"),
+                                enabled = false,
+                            }
+                        else
+                            for _, fname in ipairs(files) do
+                                local _fname = fname
+                                subitems[#subitems + 1] = {
+                                    text           = _fname,
+                                    radio          = true,
+                                    checked_func   = function()
+                                        return getSource(pfx) == "custom_mixed"
+                                               and getCustomFile(pfx) == _fname
+                                    end,
+                                    keep_menu_open = true,
+                                    callback       = function()
+                                        SUISettings:saveSetting(pfx .. SETTING_SOURCE,      "custom_mixed")
                                         SUISettings:saveSetting(pfx .. SETTING_CUSTOM_FILE, _fname)
                                         M.invalidateCache()
                                         refresh()

@@ -2540,7 +2540,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             },
             {
                 text = _("Book Cover Transition"),
-                help_text = _("Briefly show the book cover full-screen when opening or closing a book, masking the page-layout flash. Requires the book to already be indexed by the cover browser (its cover must have been seen at least once in a grid/list view)."),
+                help_text = _("Briefly show the book cover full-screen when opening or closing a book, masking the page-layout flash. Normally requires the book to already be indexed by the cover browser (its cover must have been seen at least once in a grid/list view) — see \"High-Quality Cover\" below to also cover un-indexed books."),
                 sub_item_table = {
                     {
                         text           = _("Show on Open"),
@@ -2563,6 +2563,30 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                         callback       = function()
                             local on = SUISettings:isTrue("simpleui_reader_cover_close")
                             SUISettings:saveSetting("simpleui_reader_cover_close", not on)
+                        end,
+                    },
+                    {
+                        text           = _("High-Quality Cover"),
+                        help_text      = _("The cover shown right as a book opens normally comes from the library's cached thumbnail, which can look soft on higher-resolution screens. When on, SimpleUI instead reads the cover straight from the book file for that moment (also covers books never opened before, which otherwise show no cover at all) — at the cost of a brief extra pause while opening, since the file has to be read twice. Cover on close is unaffected either way: it already reads the full-quality cover from the open book."),
+                        checked_func   = function()
+                            return SUISettings:isTrue("simpleui_reader_cover_bestquality")
+                        end,
+                        keep_menu_open = true,
+                        callback       = function()
+                            local on = SUISettings:isTrue("simpleui_reader_cover_bestquality")
+                            SUISettings:saveSetting("simpleui_reader_cover_bestquality", not on)
+                        end,
+                    },
+                    {
+                        text           = _("Preserve Cover Proportions"),
+                        help_text      = _("By default the cover is stretched to fill the whole screen, which can distort it if its proportions don't match your screen's. When on, the cover keeps its original proportions instead, centered over a black background."),
+                        checked_func   = function()
+                            return SUISettings:isTrue("simpleui_reader_cover_fit")
+                        end,
+                        keep_menu_open = true,
+                        callback       = function()
+                            local on = SUISettings:isTrue("simpleui_reader_cover_fit")
+                            SUISettings:saveSetting("simpleui_reader_cover_fit", not on)
                         end,
                     },
                 },

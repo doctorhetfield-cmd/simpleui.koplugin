@@ -1237,6 +1237,14 @@ M.CoverTransition = CoverTransition
 local _ct_widget     = nil
 local _ct_close_task = nil
 
+-- Blitbuffer ownership: normally cover_bb comes straight from the
+-- BookInfoManager cache or from an already-open document — neither of those
+-- is ours to free. The one exception is the best-quality direct-extraction
+-- fallback below, which opens its own temporary document and therefore
+-- returns a bb nothing else is tracking. _ct_owned_bb is only ever set in
+-- that case, and only that bb ever gets :free()'d.
+local _ct_owned_bb = nil
+
 -- Lazy-loaded, same pattern as module_books_shared.getBookInfoManager(): no
 -- package.path manipulation needed, CoverBrowser (if present) has already
 -- registered "bookinfomanager" in package.loaded by the time SimpleUI reads it.
@@ -1257,12 +1265,32 @@ function CoverTransition.isCloseEnabled()
     return SUISettings:isTrue("simpleui_reader_cover_close")
 end
 
+-- Off by default (stretch-to-fill, the original behaviour). When on, the
+-- cover keeps its native aspect ratio — scaled to fit inside the screen
+-- rather than stretched to it — with the rest of the screen filled in
+-- black. Only changes how the widget is built in show() below; does not
+-- touch which cover source is used.
+function CoverTransition.isFitEnabled()
+    return SUISettings:isTrue("simpleui_reader_cover_fit")
+end
+
+-- Off by default. Only affects the single moment where no live document is
+-- available yet — the "Opening file '...'." notice substitution, before
+-- ReaderUI has actually loaded anything. In every other case (close side,
+-- and the second open-side call once ReaderUI is up) the cover already
+-- comes straight off the live document at full quality, so this toggle
+-- changes nothing there.
+function CoverTransition.isBestQualityEnabled()
+    return SUISettings:isTrue("simpleui_reader_cover_bestquality")
+end
+
 -- Only source: the CoverBrowser cache DB, if the plugin is installed and has
 -- already indexed the file. Deliberately does NOT fall back to opening the
 -- document directly (unlike a full re-implementation would) — that path
 -- means a second, temporary document render just to grab a thumbnail, which
 -- is the kind of extra SQLite/CRE work this feature exists to hide, not add.
--- Cache misses simply skip the cover for that one transition.
+-- Cache misses simply skip the cover for that one transition, unless
+-- best-quality mode asks for the direct-extraction fallback below.
 local function _ctFindCoverBB(filepath)
     if not filepath or filepath == "" then return nil end
     local BIM = _ctBookInfoManager()
@@ -1272,6 +1300,42 @@ local function _ctFindCoverBB(filepath)
     if not ok or not info then return nil end
     if not info.has_cover or info.ignore_cover or not info.cover_bb then return nil end
     return info.cover_bb
+end
+
+-- Best-quality fallback: opens the file itself just long enough to pull its
+-- native embedded cover, then closes it again. This is genuine extra I/O on
+-- the opening hot path (document open + provider load), so it is used only
+-- as a last resort — when the caller has no live document AND either the
+-- cache missed or best-quality mode is on — never as the first choice.
+-- Returns bb, true (the `true` marks it as owned: caller must free it).
+local function _ctExtractCoverDirect(filepath)
+    if not filepath or filepath == "" then return nil end
+    local ok_dr, DocumentRegistry = pcall(require, "document/documentregistry")
+    if not ok_dr or not DocumentRegistry or not DocumentRegistry:hasProvider(filepath) then
+        return nil
+    end
+
+    local ok_rui, ReaderUI = pcall(require, "apps/reader/readerui")
+    if not ok_rui or not ReaderUI then return nil end
+
+    local document
+    local ok, cover_bb = pcall(function()
+        local provider = ReaderUI:extendProvider(filepath, DocumentRegistry:getProvider(filepath))
+        document = DocumentRegistry:openDocument(filepath, provider)
+        if not document then return nil end
+        if document.loadDocument and not document:loadDocument(false) then return nil end
+        return document:getCoverPageImage()
+    end)
+
+    if document then
+        pcall(function() document:close() end)
+    end
+
+    if ok and cover_bb then return cover_bb, true end
+    if not ok then
+        logger.warn("simpleui/sui_patches: CoverTransition direct extraction failed", cover_bb)
+    end
+    return nil
 end
 
 -- Public: exposed so other SimpleUI modules can reuse the exact same cover
@@ -1285,6 +1349,12 @@ end
 -- of going through BookInfoManager. Custom covers (DocSettings custom cover
 -- file) are still honoured, since that is the one case where a *different*,
 -- normally tiny, file legitimately needs to be opened.
+--
+-- Second return value: true when the returned bb was obtained via the
+-- direct-extraction fallback and is therefore owned by the caller (must be
+-- :free()'d). Always nil/false for the live-document and cache paths, since
+-- those bbs are managed elsewhere (the open document, or BookInfoManager's
+-- own cache) and must never be freed here.
 function CoverTransition.findCoverBB(filepath, live_document)
     if live_document then
         local ok, bb = pcall(function()
@@ -1303,7 +1373,19 @@ function CoverTransition.findCoverBB(filepath, live_document)
         end)
         if ok and bb then return bb end
     end
-    return _ctFindCoverBB(filepath)
+
+    local cache_bb = _ctFindCoverBB(filepath)
+    if cache_bb and not CoverTransition.isBestQualityEnabled() then
+        return cache_bb
+    end
+
+    -- Cache missed, or best-quality mode wants the sharper source anyway —
+    -- either way this only runs when there is no live document, i.e. the
+    -- single "Opening file '...'." notice-substitution moment.
+    local direct_bb, owned = _ctExtractCoverDirect(filepath)
+    if direct_bb then return direct_bb, owned end
+
+    return cache_bb
 end
 
 function CoverTransition.isShowing()
@@ -1327,12 +1409,83 @@ local function _ctCancelPendingClose()
     end
 end
 
+-- Frees the direct-extraction bb, if there is one. Safe to call unconditionally.
+local function _ctFreeOwnedBB()
+    if not _ct_owned_bb then return end
+    pcall(function() _ct_owned_bb:free() end)
+    _ct_owned_bb = nil
+end
+
 function CoverTransition.close()
     _ctCancelPendingClose()
     if _ct_widget then
         pcall(function() UIManager:close(_ct_widget) end)
         _ct_widget = nil
     end
+    _ctFreeOwnedBB()
+end
+
+-- Builds the actual cover widget. Stretch (default) fills the screen exactly,
+-- distorting the cover's aspect ratio if it doesn't match the screen's.
+-- Fit mode (opt-in) preserves the cover's proportions instead, centering it
+-- over a black backdrop that covers the rest of the screen — matches how
+-- most cover-only reading apps present a book cover.
+-- Falls back to stretch if the bb doesn't expose dimensions, or on any error
+-- building the fit containers, so a layout hiccup never means no cover at all.
+local function _ctMakeCoverWidget(cover_bb, ImageWidget)
+    local screen_w, screen_h = Screen:getWidth(), Screen:getHeight()
+
+    local function stretch()
+        return ImageWidget:new{
+            image             = cover_bb,
+            width             = screen_w,
+            height            = screen_h,
+            alpha             = true,
+            image_disposable  = false,
+        }
+    end
+
+    if not CoverTransition.isFitEnabled() then
+        return stretch()
+    end
+
+    if not (cover_bb.getWidth and cover_bb.getHeight) then
+        return stretch()
+    end
+    local ok_size, cover_w, cover_h = pcall(function()
+        return cover_bb:getWidth(), cover_bb:getHeight()
+    end)
+    if not (ok_size and cover_w and cover_h and cover_w > 0 and cover_h > 0) then
+        return stretch()
+    end
+
+    local ok_fit, fit_widget = pcall(function()
+        local Blitbuffer      = require("ffi/blitbuffer")
+        local FrameContainer  = require("ui/widget/container/framecontainer")
+        local CenterContainer = require("ui/widget/container/centercontainer")
+
+        local scale_factor = math.min(screen_w / cover_w, screen_h / cover_h)
+        local image = ImageWidget:new{
+            image             = cover_bb,
+            scale_factor      = scale_factor,
+            alpha             = true,
+            image_disposable  = false,
+        }
+        return FrameContainer:new{
+            dimen      = { w = screen_w, h = screen_h },
+            padding    = 0,
+            bordersize = 0,
+            background = Blitbuffer.COLOR_BLACK,
+            CenterContainer:new{
+                dimen = { w = screen_w, h = screen_h },
+                image,
+            },
+        }
+    end)
+    if ok_fit and fit_widget then return fit_widget end
+
+    logger.warn("simpleui/sui_patches: CoverTransition fit layout failed, falling back to stretch", fit_widget)
+    return stretch()
 end
 
 -- show(filepath, orig_show) — orig_show must be the pristine UIManager.show
@@ -1340,31 +1493,31 @@ end
 -- never re-processed by the navbar-injection logic below.
 -- Returns true if a cover was actually displayed.
 function CoverTransition.show(filepath, orig_show, live_document)
-    local cover_bb = CoverTransition.findCoverBB(filepath, live_document)
+    local cover_bb, owned = CoverTransition.findCoverBB(filepath, live_document)
     if not cover_bb then return false end
 
     CoverTransition.close()
+    if owned then _ct_owned_bb = cover_bb end
 
     local ok_iw, ImageWidget = pcall(require, "ui/widget/imagewidget")
-    if not ok_iw then return false end
+    if not ok_iw then
+        _ctFreeOwnedBB()
+        return false
+    end
 
-    local ok_w, widget_or_err = pcall(function()
-        return ImageWidget:new{
-            image             = cover_bb,
-            width             = Screen:getWidth(),
-            height            = Screen:getHeight(),
-            alpha             = true,
-            image_disposable  = false,
-        }
-    end)
+    local ok_w, widget_or_err = pcall(_ctMakeCoverWidget, cover_bb, ImageWidget)
     if not ok_w then
         logger.warn("simpleui/sui_patches: CoverTransition failed to build widget", widget_or_err)
+        _ctFreeOwnedBB()
         return false
     end
 
     local widget = widget_or_err
     local ok_show = pcall(orig_show, UIManager, widget, "full")
-    if not ok_show then return false end
+    if not ok_show then
+        _ctFreeOwnedBB()
+        return false
+    end
 
     UIManager:forceRePaint()
     _ct_widget = widget
@@ -2641,6 +2794,7 @@ local function _onStatusChanged(file)
     --    to disk before caller_callback() is invoked, so this is always current.
     pcall(function()
         local DB = SUISettings.DeletedBooks
+        if not (DB and DB.isEnabled()) then return end
         local ok_DS, DocSettings = pcall(require, "docsettings")
         if not ok_DS or not DocSettings then return end
         local ds = DocSettings:open(file)
@@ -2648,27 +2802,9 @@ local function _onStatusChanged(file)
         local new_status = type(summary) == "table" and summary.status or nil
         if new_status ~= "complete" then
             local md5 = ds:readSetting("partial_md5_checksum")
-            local changed = false
-            if type(summary) == "table" and summary.date_finished ~= nil then
-                summary.date_finished = nil
-                changed = true
-            end
-            if changed then
-                ds:saveSetting("summary", summary)
-                pcall(function() ds:flush() end)
-            end
             pcall(function() ds:close() end)
-            if DB and DB.isEnabled() and md5 then DB.removeByMd5(md5) end
+            if md5 then DB.removeByMd5(md5) end
         else
-            local changed = false
-            if type(summary) == "table" and summary.date_finished == nil then
-                summary.date_finished = os.date("%Y-%m-%d")
-                changed = true
-            end
-            if changed then
-                ds:saveSetting("summary", summary)
-                pcall(function() ds:flush() end)
-            end
             pcall(function() ds:close() end)
         end
     end)
@@ -2879,7 +3015,7 @@ function M.patchFontGetFace(plugin)
     local Font = require("ui/font")
     if Font._simpleui_getface_patched then return end
 
-    local scale = (Config.getFontScalePct and Config.getFontScalePct() or 100) / 100
+    local scale = Config.getFontScalePct() / 100
     if scale == 1 then return end  -- default: leave getFace fully untouched
 
     Font._simpleui_getface_patched = true
@@ -3892,9 +4028,9 @@ function M.patchDeleteFile(FileManager, plugin)
                 local doc_props = ds:readSetting("doc_props")
                 local title   = doc_props and doc_props.title   or ""
                 local authors = doc_props and doc_props.authors or ""
-                -- Derive year from summary.date_finished or summary.modified (same source as countMarkedReadBoth).
+                -- Derive year from summary.modified (same source as countMarkedReadBoth).
                 local year = 0
-                local mod = summary.date_finished or summary.modified
+                local mod = summary.modified
                 if type(mod) == "number" then
                     year = tonumber(os.date("%Y", mod)) or 0
                 elseif type(mod) == "string" and #mod >= 4 then

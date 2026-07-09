@@ -169,6 +169,24 @@ SUIWindow._open_instances = {}
 ---   on_close       function() | nil
 ---   width          number | nil  — px (default: 5/6 of screen)
 ---   height         number | nil  — px (default: 2/3 of screen)
+---   auto_height    bool | nil    — when true, the window shrinks to fit the
+---                                  first page's content instead of always
+---                                  occupying the full height, on the window's
+---                                  very first paint only; later pages/screens
+---                                  keep that same fixed height (see the
+---                                  comment above o._auto_height below).
+---   auto_height_per_page
+---                  bool | nil    — when true, extends auto_height so EVERY
+---                                  dot-bar page within the same screen gets
+---                                  its own fit height, live, as the user
+---                                  swipes/taps between them (e.g. a page
+---                                  with a tall calendar can be taller than a
+---                                  page with just a couple of summary rows).
+---                                  Navigating to a *different* screen via
+---                                  _navPush/_navPop is unaffected — that
+---                                  screen still keeps whatever height was
+---                                  last set, same as plain auto_height.
+---                                  Implies auto_height; no need to pass both.
 ---   navpager_mode  bool | nil    — when true, the window registers onPrevPage /
 ---                                  onNextPage / onGotoPage / page_num on its wrapper
 ---                                  so the bottom-bar navpager can drive pagination,
@@ -197,13 +215,8 @@ function SUIWindow:new(opts)
     -- shrink on top of an already-swapped axis, squashing height instead of
     -- scaling both axes down uniformly. opts.width/opts.height, when passed
     -- explicitly by callers, are likewise expected to be portrait-based.
-    local portrait_w, portrait_h
-    if UI.getPortraitDims then
-        portrait_w, portrait_h = UI.getPortraitDims()
-    else
-        portrait_w, portrait_h = sw < sh and sw or sh, sw < sh and sh or sw
-    end
-    local landscape_factor = UI.getLandscapeFactor and UI.getLandscapeFactor() or 1
+    local portrait_w, portrait_h = UI.getPortraitDims()
+    local landscape_factor = UI.getLandscapeFactor()
     o._scale         = landscape_factor
     o._modal_w       = math.floor((opts.width  or math.floor(portrait_w * 5 / 6))  * landscape_factor)
     o._modal_h       = math.floor((opts.height or math.floor(portrait_h * 23 / 30)) * landscape_factor)
@@ -213,12 +226,26 @@ function SUIWindow:new(opts)
     o._pad_h         = math.floor(Screen:scaleBySize(20) * landscape_factor)
     o._inner_w       = o._modal_w - 2 * o._pad_h
     o._navpager_mode = opts.navpager_mode == true
-    -- When true, the window shrinks to fit its (single-page) content instead
-    -- of always occupying the full opts.height/default height. Only applied
-    -- on the window's first paint, and only while content fits on one page
-    -- at the full height — once content needs more than one page, the window
-    -- uses the full height and paginates as usual.
+    -- When true, the window shrinks to fit page 1's content instead of
+    -- always occupying the full opts.height/default height. Only applied on
+    -- the window's first paint. When content fits on one page, that's the
+    -- final height. When content needs more than one page — either because
+    -- it genuinely overflows the max height, or because a widget was marked
+    -- force_new_page (see _buildPages) to force page 1 to hold only part of
+    -- the content — the window still shrinks to page 1's own content height
+    -- (clamped to the max height), and later pages paginate within that
+    -- same fixed height via the normal swipe/dot navigation.
     o._auto_height   = opts.auto_height == true
+    -- Extends auto_height so re-fit isn't a one-shot, first-paint-only thing:
+    -- with this on, every repaint that stays within the SAME screen (i.e. a
+    -- dot-bar page swipe/tap, not a _navPush/_navPop to a different screen)
+    -- re-measures and re-fits the modal to whatever the now-current page
+    -- actually needs — see _last_fit_screen_id / same_screen_as_last_fit in
+    -- _rebuildFrame. Screen changes are deliberately excluded from this and
+    -- keep the plain auto_height behaviour (frozen after first paint).
+    o._auto_height_per_page = opts.auto_height_per_page == true
+    if o._auto_height_per_page then o._auto_height = true end
+    o._last_fit_screen_id = nil
     o._first_paint_done = false
     -- Position of the modal within the usable area (between topbar and navbar).
     -- "center"  — centred vertically in the usable area (default)
@@ -690,6 +717,20 @@ function SUIWindow:_rebuildFrame(ctx, items)
     self._title_bar_h = title_h
 
     local frame_id = self:_navCurrent().id
+
+    -- same_screen_as_last_fit: true when this repaint is a dot-bar page
+    -- swipe/tap — or just a content change, e.g. switching the Streak
+    -- calendar to a taller month — within the SAME screen we last fit (not
+    -- a fresh screen via _navPush/_navPop). This is the condition
+    -- auto_height_per_page needs to keep re-fitting live, instead of only
+    -- on the very first paint.
+    local same_screen_as_last_fit = self._auto_height_per_page
+        and self._last_fit_screen_id == frame_id
+    self._last_fit_screen_id = frame_id
+
+    local shrink_to_fit = self._auto_height and not self._has_settings_btn
+        and (not self._first_paint_done or same_screen_as_last_fit)
+
     local foot_fn  = self._screen_footers[frame_id]
     local footer_widget, footer_h = nil, 0
     if foot_fn then
@@ -738,14 +779,34 @@ function SUIWindow:_rebuildFrame(ctx, items)
         end
     end
 
-    local avail_h = inner_h - title_h - footer_h
-
+    -- avail_h is the ceiling _buildPages measures/paginates against. On a
+    -- shrink_to_fit repaint we must measure against the window's real max
+    -- headroom (_modal_max_h) rather than self._modal_h — self._modal_h may
+    -- already be smaller than the max from a PREVIOUS fit (e.g. last
+    -- month's shorter 5-row calendar), and measuring new, taller content
+    -- against that stale, too-small ceiling makes it false-overflow into an
+    -- extra dot-bar page instead of the window growing to fit it. On the
+    -- very first fit ever, self._modal_h already equals self._modal_max_h
+    -- (set together in :show()), so this changes nothing there.
+    local avail_h
+    if shrink_to_fit then
+        local max_inner_h = self._modal_max_h - 2 * border - self._pad_v
+        avail_h = max_inner_h - title_h - footer_h
+    else
+        avail_h = inner_h - title_h - footer_h
+    end
     local req_dot_space = false
-    local shrink_to_fit = self._auto_height and not self._has_settings_btn and not self._first_paint_done
-    local pages = self:_buildPages(items, avail_h, shrink_to_fit)
+    -- fit_page_idx: which page (by index within THIS screen's pagination)
+    -- gets sized to its natural content height instead of the full avail_h.
+    -- Plain auto_height always means page 1 (self._current_page is 1 right
+    -- after a fresh screen). auto_height_per_page instead points this at
+    -- whichever page is actually about to be shown, so _buildPages sizes
+    -- that page — not just page 1 — to its own content.
+    local fit_page_idx = self._current_page
+    local pages = self:_buildPages(items, avail_h, shrink_to_fit, fit_page_idx)
     local np    = #pages
     if np > 1 or self._has_settings_btn then
-        pages = self:_buildPages(items, avail_h - dot_h, shrink_to_fit)
+        pages = self:_buildPages(items, avail_h - dot_h, shrink_to_fit, fit_page_idx)
         np    = #pages
         req_dot_space = true
     end
@@ -838,21 +899,24 @@ function SUIWindow:_rebuildFrame(ctx, items)
     end
 
     if shrink_to_fit then
-        local wanted_h
-        if np == 1 then
-            -- Content plus chrome fit within the max height — shrink to it.
-            local extra = req_dot_space and dot_h or 0
-            local content_h = page_widget:getSize().h
-            wanted_h = 2 * border + self._pad_v + title_h + footer_h + content_h + extra
-            local min_h = title_h + SZ(Screen:scaleBySize(96))
-            wanted_h = math.max(min_h, math.min(wanted_h, self._modal_max_h))
-        else
-            -- Content needs pagination even at the max height — use it as-is.
-            wanted_h = self._modal_max_h
-        end
+        -- Shrink to whatever the fit page (fit_page_idx, above) actually
+        -- holds — whether that's the ONLY page (np == 1, content fits
+        -- within the max height), the first of several (np > 1, either
+        -- because content genuinely overflows the max height, in which case
+        -- content_h ends up close to avail_h anyway and wanted_h clamps
+        -- back to modal_max_h below, or because a widget on that page was
+        -- marked force_new_page — see _buildPages — in which case page 1
+        -- can be deliberately smaller than the rest, e.g. the Streak
+        -- window's calendar-only first page), or — with auto_height_per_page
+        -- — whichever page the user has since swiped/tapped to.
+        local extra = req_dot_space and dot_h or 0
+        local content_h = page_widget:getSize().h
+        local wanted_h = 2 * border + self._pad_v + title_h + footer_h + content_h + extra
+        local min_h = title_h + SZ(Screen:scaleBySize(96))
+        wanted_h = math.max(min_h, math.min(wanted_h, self._modal_max_h))
         if math.abs(wanted_h - self._modal_h) > 1 then
-            self._modal_h = wanted_h
             local mf = self._modal_frame
+            self._modal_h = wanted_h
             mf.dimen.h = wanted_h
             local new_x = mf.overlap_offset and mf.overlap_offset[1] or 0
             local new_y
@@ -864,6 +928,11 @@ function SUIWindow:_rebuildFrame(ctx, items)
                 new_y = self._top_h_cache + math.floor((self._usable_h_cache - wanted_h) / 2)
             end
             mf.overlap_offset = { new_x, new_y }
+
+            -- Flags _repaint to do a full-screen "all"/"partial" refresh
+            -- instead of the usual self._wrapper/"ui" one — see the
+            -- reasoning in _repaint, right where this flag is read.
+            self._pending_resize_dirty_rect = true
         end
     end
 
@@ -968,9 +1037,31 @@ function SUIWindow:_repaint()
 
     if self._wrapper then
         local mf = self._modal_frame
-        UIManager:setDirty(self._wrapper, function()
-            return "ui", mf.dimen
-        end)
+        local did_resize = self._pending_resize_dirty_rect
+        self._pending_resize_dirty_rect = nil
+        if did_resize then
+            -- A resize (auto_height / auto_height_per_page) moves/resizes
+            -- the modal by mutating mf.dimen.h and mf.overlap_offset in
+            -- place rather than rebuilding the frame from scratch, and the
+            -- rounded FrameContainer corner doesn't come out clean from
+            -- that — visible as artifacts right at the edge/corner where the
+            -- box moved, on top of the plain leftover-pixel gap issue (see
+            -- the "all" reasoning below). A full-screen partial refresh
+            -- sidesteps both: it's the same one the window's own first
+            -- paint already does, just re-triggered on every resize instead
+            -- of only once. Targeting "all" (same pattern as sui_style.lua)
+            -- rather than just self._wrapper also makes sure whatever sits
+            -- underneath (homescreen, or another screen) actually repaints
+            -- in the area the modal no longer covers after shrinking —
+            -- _wrapper itself is transparent there by design, so its own
+            -- repaint never touches it, and UIManager's occlusion check
+            -- otherwise assumes that area doesn't need redrawing at all.
+            UIManager:setDirty("all", "partial")
+        else
+            UIManager:setDirty(self._wrapper, function()
+                return "ui", mf.dimen
+            end)
+        end
     end
 end
 
@@ -1026,7 +1117,8 @@ function SUIWindow:_updateNavbarArrows()
     UIManager:setDirty(target, "ui")
 end
 
-function SUIWindow:_buildPages(widgets, avail_h, shrink_to_fit)
+function SUIWindow:_buildPages(widgets, avail_h, shrink_to_fit, fit_page_idx)
+    fit_page_idx = fit_page_idx or 1
     -- Restaura os separadores caso a função seja chamada mais que uma vez
     -- (ex: recalcular a paginação para acomodar os pontos).
     for _, w in ipairs(widgets) do
@@ -1037,13 +1129,29 @@ function SUIWindow:_buildPages(widgets, avail_h, shrink_to_fit)
     end
 
     local pages  = {}
+    local page_heights = {}
     local cur_vg = VerticalGroup:new{ align = "left" }
     local cur_h  = 0
     table.insert(pages, cur_vg)
 
     for _, w in ipairs(widgets) do
         local wh = w:getSize().h
-        if cur_h + wh > avail_h and cur_h > 0 then
+        if w.force_new_page and cur_h > 0 then
+            -- Quebra de página explícita: este widget tem de começar sempre
+            -- uma nova página, independentemente de caber ou não no espaço
+            -- restante da página atual (ex: a "Streak" window força que a
+            -- página 1 tenha só o calendário). Diferente do overflow normal
+            -- abaixo, que só quebra quando o conteúdo efetivamente não cabe.
+            local last_w = cur_vg[#cur_vg]
+            if last_w and last_w.is_list_row_with_sep then
+                if not last_w._orig_sep then last_w._orig_sep = last_w[2] end
+                last_w[2] = VerticalSpan:new{ width = 0 }
+            end
+            page_heights[#pages] = cur_h
+            cur_vg = VerticalGroup:new{ align = "left" }
+            table.insert(pages, cur_vg)
+            cur_h = 0
+        elseif cur_h + wh > avail_h and cur_h > 0 then
             local last_w = cur_vg[#cur_vg]
             -- Previne que uma secção fique orfã no fundo da página.
             -- Se o último widget inserido foi uma secção, e houverem outros itens
@@ -1055,6 +1163,7 @@ function SUIWindow:_buildPages(widgets, avail_h, shrink_to_fit)
                     if not real_last._orig_sep then real_last._orig_sep = real_last[2] end
                     real_last[2] = VerticalSpan:new{ width = 0 }
                 end
+                page_heights[#pages] = cur_h - last_w:getSize().h
                 cur_vg = VerticalGroup:new{ align = "left" }
                 table.insert(pages, cur_vg)
                 table.insert(cur_vg, last_w)
@@ -1064,6 +1173,7 @@ function SUIWindow:_buildPages(widgets, avail_h, shrink_to_fit)
                     if not last_w._orig_sep then last_w._orig_sep = last_w[2] end
                     last_w[2] = VerticalSpan:new{ width = 0 }
                 end
+                page_heights[#pages] = cur_h
                 cur_vg = VerticalGroup:new{ align = "left" }
                 table.insert(pages, cur_vg)
                 cur_h = 0
@@ -1072,6 +1182,7 @@ function SUIWindow:_buildPages(widgets, avail_h, shrink_to_fit)
         table.insert(cur_vg, w)
         cur_h = cur_h + wh
     end
+    page_heights[#pages] = cur_h
 
     local last_w = cur_vg[#cur_vg]
     if last_w and last_w.is_list_row_with_sep then
@@ -1081,15 +1192,23 @@ function SUIWindow:_buildPages(widgets, avail_h, shrink_to_fit)
 
     local inner_w = self._inner_w
     local total_p = #pages
-    -- When shrink_to_fit is requested and everything fit on one page, size
-    -- that page's tap/paint area to the content it actually holds (cur_h)
-    -- instead of the full avail_h, so the caller can shrink the window to match.
-    local single_page_h = avail_h
-    if shrink_to_fit and total_p == 1 then
-        single_page_h = math.min(avail_h, cur_h)
-    end
+    -- When shrink_to_fit is requested, size the fit_page_idx page's tap/paint
+    -- area to the content it actually holds (page_heights[fit_page_idx])
+    -- instead of the full avail_h, so the caller can shrink the window to
+    -- match. fit_page_idx is 1 for plain auto_height (page 1 is the ONLY
+    -- page, or just the first of several because a widget was marked
+    -- force_new_page — see the loop above), or the currently-shown page for
+    -- auto_height_per_page. Every OTHER page still gets the full avail_h:
+    -- once the window has shrunk to the fit page's height on the very next
+    -- repaint, avail_h itself will already be the right value if/when that
+    -- other page becomes the current one.
     for i, vg in ipairs(pages) do
-        local area_h = (total_p == 1) and single_page_h or avail_h
+        local area_h
+        if shrink_to_fit and i == fit_page_idx then
+            area_h = math.min(avail_h, page_heights[fit_page_idx] or avail_h)
+        else
+            area_h = avail_h
+        end
         local area = InputContainer:new{
             dimen = Geom:new{ w = inner_w, h = area_h },
             [1]   = vg,
@@ -1439,7 +1558,15 @@ function SUIWindow.ListRow(opts)
 
     local left_vg = VerticalGroup:new{ align = "left" }
     local is_disabled = (opts.enabled == false) or (opts.dim == true)
-    local fg_color = is_disabled and _clrSecondary() or _clrPrimary()
+    -- dim_only: purely visual muting (e.g. "excluded from goals" rows in
+    -- Year in Review) — unlike dim/enabled=false, it must NOT strip on_tap,
+    -- since the row still needs to be tappable (e.g. to reach the toggle
+    -- that excluded it in the first place). Kept as a separate flag rather
+    -- than reusing `dim` so existing "genuinely disabled" callers elsewhere
+    -- (e.g. MenuTable's grayed-out/unavailable items) keep their current,
+    -- correct behaviour untouched.
+    local is_dim_visual = is_disabled or (opts.dim_only == true)
+    local fg_color = is_dim_visual and _clrSecondary() or _clrPrimary()
 
     -- opts.title_face overrides the default UI font (used e.g. by font-picker
     -- entries to render each row in the font it represents).

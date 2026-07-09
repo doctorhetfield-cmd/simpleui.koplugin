@@ -1351,15 +1351,14 @@ local function _executeInPlace(action_id, plugin, fm)
     local stack   = UI_mod.getWindowStack()
     local hs_idx  = nil
 
-    -- bookmark_browser, power, and QA groups open asynchronous widgets that
-    -- outlive this function call. Skip the HS sink/restore for those — their
-    -- dialogs float on top of the HS naturally. All other synchronous in-place
-    -- actions (wifi, frontlight, stats, dispatcher, plugin) need the sink so
-    -- FM plugins receive events. QA.isInPlace already ensures only those
-    -- reach this path.
-    local needs_stack_sink = action_id ~= "bookmark_browser"
-                          and action_id ~= "power"
-                          and not _QA().isAsyncInPlaceCustomQA(action_id)
+    -- Async in-place actions (bookmark_browser, power, random_document, and
+    -- QA groups) open widgets that outlive this function call. Skip the HS
+    -- sink/restore for those — their dialogs float on top of the HS
+    -- naturally. All other synchronous in-place actions (wifi, frontlight,
+    -- stats, dispatcher, plugin) need the sink so FM plugins receive events.
+    -- Fully delegated to QA.isAsyncInPlace — single authority, same pattern
+    -- as _isInPlaceAction above (no hand-maintained id list to drift here).
+    local needs_stack_sink = not _QA().isAsyncInPlace(action_id)
 
     if needs_stack_sink and hs_inst then
         for i, entry in ipairs(stack) do

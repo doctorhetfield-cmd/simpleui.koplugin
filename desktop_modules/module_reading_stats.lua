@@ -24,6 +24,7 @@ local Config          = require("sui_config")
 local UI      = require("sui_core")
 local SUISettings = require("sui_store")
 local SUIStyle    = require("sui_style")
+local StreakFreeze = require("sui_streak")
 local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
 local PAD     = UI.PAD
 local MOD_GAP = UI.MOD_GAP
@@ -269,6 +270,21 @@ local function openReadingInsights()
     end
 end
 
+--- Opens the Streak Manager window (streak card tap). Returns true on
+--- success so callers can fall through to openReadingInsights() as a
+--- best-effort fallback if sui_stats_windows turns out to be unavailable —
+--- mirrors the same fallback shape already used for the total_books ▸
+--- showFinishedBooksDialog routing just above/below this function.
+local function openStreakManager()
+    local ok, SW = pcall(require, "sui_stats_windows")
+    if ok and SW and SW.showStreakManagerWindow then
+        if SW.showLoadingNotice then SW.showLoadingNotice() end
+        SW.showStreakManagerWindow()
+        return true
+    end
+    return false
+end
+
 -- ---------------------------------------------------------------------------
 -- Module API
 -- ---------------------------------------------------------------------------
@@ -287,6 +303,16 @@ end
 function M.setEnabled(pfx, on)
     SUISettings:saveSetting(pfx .. "reading_stats_enabled", on)
 end
+
+-- Public accessor for the selected stat-card ids, applying the same
+-- { "total_books", "today_time", "streak" } default used everywhere else in
+-- this module. Callers outside this file (sui_homescreen's needs_books
+-- check) must use this instead of reading "reading_stats_items" directly —
+-- a raw read returns nil/empty on a fresh install (setting never saved yet),
+-- which does NOT mean "no items", it means "the default three, including
+-- total_books". See the fix for the "Books Finished" card only populating
+-- when Reading Goals is also enabled.
+M.getItems = _getItems
 
 function M.getCountLabel(pfx)
     local n      = #_getItems(pfx)
@@ -421,6 +447,9 @@ function M.build(w, ctx)
                         return true
                     end
                     -- SW unavailable: fall through to insights as best-effort fallback
+                elseif idx >= 1 and idx <= n and stat_ids[idx] == "streak" then
+                    if openStreakManager() then return true end
+                    -- SW unavailable: fall through to insights as best-effort fallback
                 end
             end
             openReadingInsights()
@@ -484,6 +513,9 @@ function M.build(w, ctx)
                                 SW.showFinishedBooksDialog()
                                 return true
                             end
+                            -- SW unavailable: fall through to insights as best-effort fallback
+                        elseif stat_ids[idx] == "streak" then
+                            if openStreakManager() then return true end
                             -- SW unavailable: fall through to insights as best-effort fallback
                         end
                     end
@@ -800,6 +832,37 @@ function M.getMenuItems(ctx_menu)
             sui_hidden     = ctx_menu.is_sui or nil,
         }
     end
+
+    items[#items+1] = {
+        text_func      = function() return _lc("Streak Mode") end,
+        value_func     = function()
+            return StreakFreeze.isFreezeModeEnabled()
+                and _lc("Freezes")
+                or  _lc("Real streak only")
+        end,
+        sub_item_table = {
+            {
+                text           = _lc("Freezes"),
+                radio          = true,
+                keep_menu_open = true,
+                checked_func   = function() return StreakFreeze.getStreakMode() == "freezes" end,
+                callback       = function()
+                    StreakFreeze.setStreakMode("freezes")
+                    refresh()
+                end,
+            },
+            {
+                text           = _lc("Real streak only"),
+                radio          = true,
+                keep_menu_open = true,
+                checked_func   = function() return StreakFreeze.getStreakMode() == "real" end,
+                callback       = function()
+                    StreakFreeze.setStreakMode("real")
+                    refresh()
+                end,
+            },
+        },
+    }
 
     items[#items+1] = {
         text           = _lc("Update Stats Now"),

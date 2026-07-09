@@ -270,6 +270,7 @@ Every file in the pack root must be an `.svg` or `.png`. The filename (without e
 | `sui_action_collections.svg` | Collections |
 | `sui_action_history.svg` | History |
 | `sui_action_continue.svg` | Continue Reading |
+| `sui_action_random_document.svg` | Random |
 | `sui_action_favorites.svg` | Favourites |
 | `sui_action_bookmark_browser.svg` | Bookmark Browser |
 | `sui_action_wifi_toggle.svg` | Wi-Fi toggle (On) |
