@@ -3156,6 +3156,27 @@ function HomescreenWidget:onSetRotationMode(mode)
     local current_is_landscape = (current_mode % 2) == 1
     local new_is_landscape     = (mode      % 2) == 1
     if current_is_landscape == new_is_landscape then
+        -- CORREÇÃO 2 (confirmado por crash log real, ver crash__3_.log,
+        -- janela 18:56:44-18:56:57): depois da correção do segfault, o
+        -- sintoma passou a ser "pisca mas não reorienta". Confirmado no log:
+        -- durante os 3 eventos same-family desta janela a instância de
+        -- FileManager (table: 0xb5505ef0) esteve viva o tempo todo, mas
+        -- nunca correu "setupLayout call" (só volta a correr depois de um
+        -- evento de mudança de família, às 18:58:14); e as linhas
+        -- [FBDepth]/[FBInk] de troca de rotação física só aparecem uma vez,
+        -- no arranque do dispositivo, nunca durante os testes de rotação.
+        -- Ou seja: FileManager:onSetRotationMode -- o único sítio que chama
+        -- Screen:setRotationMode() (ver nota no core, citada no início desta
+        -- função) -- nunca corre para flips same-family enquanto a
+        -- Homescreen está em primeiro plano, por isso Screen:setRotationMode()
+        -- nunca era chamado e o estado de rotação interno do Screen nunca
+        -- mudava: repintamos tudo (daí o "flash") mas sempre com a
+        -- orientação antiga. Chamamos aqui explicitamente, tal como
+        -- FileManager:onSetRotationMode já faz para os seus próprios casos.
+        Screen:setRotationMode(mode)
+        logger.dbg("simpleui[rotation]: HS calling Screen:setRotationMode",
+            "mode=", mode)
+
         -- BUG 1 FIX: same-family flip (e.g. upright <-> upside-down). Screen
         -- dimensions are unchanged so no rebuild is needed, but cached visual
         -- content (wallpaper, dim cache) was drawn assuming the old
