@@ -1430,9 +1430,8 @@ local _MONTH_SHORT = {
     _("jul"), _("aug"), _("sep"), _("oct"), _("nov"), _("dec"),
 }
 local _MONTH_FULL = {
-    _("january"),   _("february"), _("march"),    _("april"),
-    _("may"),       _("june"),     _("july"),     _("august"),
-    _("september"), _("october"),  _("november"), _("december"),
+    _("january"), _("february"), _("march"), _("april"), _("may"), _("june"),    
+    _("july"), _("august"), _("september"), _("october"), _("november"), _("december"),
 }
 
 local function _riGetMonthlyData(year)
