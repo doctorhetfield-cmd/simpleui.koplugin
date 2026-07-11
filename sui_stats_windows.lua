@@ -1429,7 +1429,6 @@ local _MONTH_SHORT = {
     _("jan"), _("feb"), _("mar"), _("apr"), _("may"), _("jun"),
     _("jul"), _("aug"), _("sep"), _("oct"), _("nov"), _("dec"),
 }
-
 local _MONTH_FULL = {
     _("january"),   _("february"), _("march"),    _("april"),
     _("may"),       _("june"),     _("july"),     _("august"),
