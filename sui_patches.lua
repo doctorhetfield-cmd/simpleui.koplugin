@@ -606,7 +606,7 @@ function M.patchFileManagerClass(plugin)
         -- this the buttons keep their default KOReader size after a rotation.
         Bottombar.resizePaginationButtons(fm_self.file_chooser or fm_self, Bottombar.getPaginationIconSize())
 
-        -- CORREÇÃO (bottom bar "estranha", 2ª causa -- confirmado por log real,
+        -- CORREÇÃO 1 (bottom bar "estranha", 2ª causa geral -- confirmado por log real,
         -- crash__6_.log 23:58:55: "triggering refresh {region=1680x1030+0+0}"
         -- em paisagem (screen_h=1264) e "region=1264x1446+0+0" em retrato
         -- (screen_h=1680) -- em ambos falta exatamente ~234px no fundo do
@@ -626,8 +626,19 @@ function M.patchFileManagerClass(plugin)
         -- Forçamos aqui um repaint de ecrã inteiro sempre que uma rotação real
         -- aconteceu (mesmo _dims_changed do bloco de invalidação da cache,
         -- acima). Reversível: remover este bloco if.
+        -- CORREÇÃO 2 (ghosting/"deixa o menu de pernas para o ar para trás" --
+        -- confirmado por log real, crash__8_.log 11:46:29/35: o repaint
+        -- passou a cobrir o ecrã inteiro corretamente (region=1264x1680+0+0,
+        -- sem falha), mas em modo "ui". O modo "ui" no KOReader é um refresh
+        -- parcial/rápido, otimizado para pequenas atualizações, e não limpa
+        -- bem o ecrã quando o conteúdo INTEIRO muda de orientação (flip
+        -- 180°) -- fica ghosting do conteúdo antigo, exatamente o sintoma
+        -- reportado ("deixa o menu antigo, de cabeça para baixo, para trás").
+        -- HomescreenWidget já usa "full" para o mesmo cenário (ver
+        -- sui_homescreen.lua, mesma correção do Bug 1) -- fazemos o mesmo
+        -- aqui, só quando uma rotação real aconteceu (_dims_changed).
         if _dims_changed then
-            UIManager:setDirty(fm_self, "ui")
+            UIManager:setDirty(fm_self, "full")
         end
 
         plugin:_updateFMHomeIcon()
