@@ -382,7 +382,7 @@ local function _showBookmarkBrowserSourceDialog(bb_ui)
     local function open_with_source(fetch_fn, subfolders)
         UIManager:close(source_dialog)
         local info_msg = require("ui/widget/infomessage"):new{
-            text    = _("Fetching bookmarks\xe2\x80\xa6"),
+            text    = _("Fetching bookmarks…"),
             timeout = 0.1,
             _navbar_closing_intentionally = true,
         }
