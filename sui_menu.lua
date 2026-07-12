@@ -2593,7 +2593,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             },
             {
                 text           = _("Statistics Loading Notice"),
-                help_text      = _("Show a brief \"Loading statistics\xe2\x80\xa6\" notice when opening a statistics window, preventing accidental double-taps while e-ink refreshes."),
+                help_text      = _("Show a brief \"Loading statistics…\" notice when opening a statistics window, preventing accidental double-taps while e-ink refreshes."),
                 checked_func   = function()
                     return SUISettings:nilOrTrue("simpleui_stats_loading_notice")
                 end,
