@@ -2496,7 +2496,7 @@ function StatsWindows.showLoadingNotice()
     local ok_im, InfoMessage = pcall(require, "ui/widget/infomessage")
     if not ok_im or not InfoMessage then return nil end
     local notice = InfoMessage:new{
-        text    = _("Loading statistics\xe2\x80\xa6"),
+        text    = _("Loading statistics…"),
         timeout = 0.0,
     }
     UIManager:show(notice)
