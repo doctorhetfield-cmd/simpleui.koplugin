@@ -38,6 +38,7 @@
 --   }
 
 local UIManager = require("ui/uimanager")
+local Event = require("ui/event")
 local VerticalGroup = require("ui/widget/verticalgroup")
 local VerticalSpan  = require("ui/widget/verticalspan")
 local Device    = require("device")
@@ -489,7 +490,16 @@ local function _showPowerDialog(plugin)
         buttons[#buttons + 1] = {{ text = _("Restart"), callback = function()
             _quitting = true
             local d = plugin._power_dialog; plugin._power_dialog = nil
-            UIManager:close(d); UIManager:flushSettings(); UIManager:restartKOReader()
+            UIManager:close(d)
+            -- Broadcast "Restart" (same event native KOReader's Exit menu uses)
+            -- instead of calling UIManager:restartKOReader() directly. This
+            -- routes through DeviceListener:onExit → FileManagerMenu:exitOrRestart
+            -- → self.ui:onClose(), which properly tears down the widget stack
+            -- (closing any still-open screen, e.g. Collections) before
+            -- restarting. Calling restartKOReader() directly skipped that
+            -- teardown, so pending in-memory-only changes — like a collection
+            -- just created but not yet flushed to disk — were lost.
+            UIManager:broadcastEvent(Event:new("Restart"))
         end }}
     end
     if Device:canReboot() then
@@ -508,7 +518,10 @@ local function _showPowerDialog(plugin)
     buttons[#buttons + 1] = {{ text = _("Quit"), callback = function()
         _quitting = true
         local d = plugin._power_dialog; plugin._power_dialog = nil
-        UIManager:close(d); UIManager:flushSettings(); UIManager:quit(0)
+        UIManager:close(d)
+        -- Broadcast "Exit" (same event native KOReader's Exit menu uses)
+        -- instead of calling UIManager:quit() directly — see note above.
+        UIManager:broadcastEvent(Event:new("Exit"))
     end }}
 
     plugin._power_dialog = ButtonDialog:new{

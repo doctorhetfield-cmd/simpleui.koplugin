@@ -1803,6 +1803,20 @@ function M.patchUIManagerShow(plugin)
         -- indicator drift out of sync with the widget actually on screen.
         local plugin = UIManager._simpleui_show_plugin or plugin
 
+        -- Reload-triggered reopen (font size, margins, line spacing, ...):
+        -- swallow KOReader's own "Opening file '...'." notice outright — no
+        -- substitute, not even the cover — mirroring how onCloseDocument
+        -- suppresses the "Closing book…" notice for the same call chain.
+        -- Set by patchReaderShowCoroutine; consumed here on the very next
+        -- matching InfoMessage-shaped show call (same detection the cover-
+        -- substitution path below uses).
+        if plugin._suppress_reader_opening_notice then
+            plugin._suppress_reader_opening_notice = nil
+            if widget and widget.timeout == 0.0 and not widget.covers_fullscreen then
+                return
+            end
+        end
+
         -- Cover Transition (open side, notice substitution): the very next
         -- UIManager.show call after ReaderUI.showReaderCoroutine flagged a
         -- file is, in that narrow window, always KOReader's own "Opening
@@ -3579,7 +3593,17 @@ function M.patchReaderShowCoroutine(plugin)
         local is_reload = live_plugin._suppress_opening_cover
         live_plugin._suppress_opening_cover = nil
 
-        if not seamless and not is_reload and CoverTransition.isOpenEnabled() then
+        if is_reload then
+            -- Reload-triggered reopen (font size, margins, line spacing,
+            -- ... — see patchReloadDocument): suppress the "Opening file
+            -- '...'." notice outright, the same way onCloseDocument already
+            -- suppresses the "Closing book…" notice for this exact call
+            -- chain (_suppress_closing_notice). No substitute either — a
+            -- cover flash is just as visible a hiccup as the notice or the
+            -- Home Screen reveal it would otherwise sit over. The reformat
+            -- should look like nothing happened at all.
+            live_plugin._suppress_reader_opening_notice = true
+        elseif not seamless and CoverTransition.isOpenEnabled() then
             CoverTransition._pending_open_file = file
         end
         return orig(self, file, provider, seamless)

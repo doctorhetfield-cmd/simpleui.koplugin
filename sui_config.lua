@@ -1209,11 +1209,15 @@ end
 function M.getNonFavoritesCollections()
     local rc = M.getReadCollection()
     if not rc then return {} end
-    if rc._read then
-        pcall(function()
-            rc:_read()
-        end)
-    end
+    -- NOTE: deliberately not calling rc:_read() here. That method is a
+    -- one-shot, destructive reload (it wipes and rebuilds rc.coll /
+    -- rc.coll_settings from disk) that KOReader itself only ever calls once,
+    -- at module load. Calling it again from SimpleUI can discard in-memory
+    -- changes the native Collections UI hasn't flushed to disk yet (e.g. a
+    -- collection just created but not yet saved), causing it to vanish and
+    -- crash when opened. The require()'d `rc` singleton is already kept live
+    -- in-process by every mutation (addItem, addCollection, etc.), so no
+    -- reload is needed here.
     local fav = rc.default_collection_name or "favorites"
     local names = {}
     local seen = {}
