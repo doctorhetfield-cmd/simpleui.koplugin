@@ -1426,12 +1426,12 @@ end
 -- Returns an array[1..12] of { month="YYYY-MM", days=N, hours=H,
 --   label="Jan", label_full="January", month_num=N } for a given year.
 local _MONTH_SHORT = {
-    "Jan","Feb","Mar","Apr","May","Jun",
-    "Jul","Aug","Sep","Oct","Nov","Dec",
+    _("jan"), _("feb"), _("mar"), _("apr"), _("may"), _("jun"),
+    _("jul"), _("aug"), _("sep"), _("oct"), _("nov"), _("dec"),
 }
 local _MONTH_FULL = {
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December",
+    _("january"), _("february"), _("march"), _("april"), _("may"), _("june"),    
+    _("july"), _("august"), _("september"), _("october"), _("november"), _("december"),
 }
 
 local function _riGetMonthlyData(year)
