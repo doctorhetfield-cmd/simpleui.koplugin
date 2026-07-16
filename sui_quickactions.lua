@@ -2792,13 +2792,52 @@ function QA.executeCustomQA(action_id, fm, show_unavailable_fn)
         end
 
     elseif cfg.collection and cfg.collection ~= "" then
-        if fm and fm.collections then
-            local ok, err = pcall(function() fm.collections:onShowColl(cfg.collection) end)
+        -- Resolve the live FM the same way the plugin_key branch above does:
+        -- `fm` here can be whatever widget's injected bar was tapped (the
+        -- Homescreen grid, in particular), not necessarily the FileManager
+        -- itself. Falling back to `fm` only when there is no live instance
+        -- keeps this working from contexts where the FM genuinely isn't
+        -- live yet (e.g. very early boot).
+        local live_fm = package.loaded["apps/filemanager/filemanager"]
+        live_fm = live_fm and live_fm.instance
+        local effective_fm = live_fm or fm
+        if effective_fm and effective_fm.collections then
+            local ok, err = pcall(function() effective_fm.collections:onShowColl(cfg.collection) end)
             if not ok then _unavail(string.format(_("Collection not available: %s"), cfg.collection)) end
         end
 
     elseif cfg.path and cfg.path ~= "" then
-        if fm and fm.file_chooser then fm.file_chooser:changeToPath(cfg.path) end
+        -- Same live-FM resolution as above — this is what makes a folder
+        -- Quick Action land on the tapped folder every time instead of
+        -- silently updating a detached/stale FM object while the visible
+        -- one stays on whatever folder it last showed.
+        local live_fm = package.loaded["apps/filemanager/filemanager"]
+        live_fm = live_fm and live_fm.instance
+        local effective_fm = live_fm or fm
+        if effective_fm and effective_fm.file_chooser then
+            -- Set _sui_show_folder_pending before changeToPath: the FileChooser
+            -- teardown that changeToPath triggers internally is seen by
+            -- patchUIManagerClose as a fullscreen-widget close, which would
+            -- otherwise schedule a spurious _doShowHS. The flag tells
+            -- _doShowHS to abort. _navbar_suppress_path_change additionally
+            -- tells fm_self.onPathChanged this is programmatic navigation,
+            -- not a user-driven directory change (see sui_patches.lua).
+            -- Mirrors the identical pattern in _goHome() above.
+            effective_fm._sui_show_folder_pending    = true
+            effective_fm._navbar_suppress_path_change = true
+            effective_fm.file_chooser:changeToPath(cfg.path)
+            effective_fm._navbar_suppress_path_change = nil
+            -- _doShowHS clears the flag; clear it here too in case it was
+            -- never consumed (e.g. _doShowHS was skipped for another reason).
+            effective_fm._sui_show_folder_pending = nil
+            -- onPathChanged (skipped above via _navbar_suppress_path_change)
+            -- is what normally updates the title bar breadcrumb on a folder
+            -- change — since it didn't run, do it explicitly here, exactly
+            -- like _goHome() does for its own suppressed changeToPath call.
+            if effective_fm.updateTitleBarPath then
+                pcall(function() effective_fm:updateTitleBarPath(cfg.path, false) end)
+            end
+        end
 
     else
         _unavail(_("No folder, collection or plugin configured.\nGo to Simple UI → Settings → Quick Actions to set one."))
