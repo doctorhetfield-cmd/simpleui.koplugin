@@ -57,6 +57,14 @@ msgstr "%d%%"
 msgid "%d%% Read"
 msgstr "已读 %d%%"
 
+#: desktop_modules/module_coll_row.lua:142
+msgid "% Read (ascending)"
+msgstr "阅读率（升序）"
+
+#: desktop_modules/module_coll_row.lua:143
+msgid "% Read (descending)"
+msgstr "阅读率（降序）"
+
 #: sui_stats_windows.lua:3443
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d 天 · %d/%d 分钟（下一次冻结）"
@@ -86,6 +94,10 @@ msgstr "剩余 %s"
 #: desktop_modules/module_quick_actions.lua:492
 msgid "(%d/%d — at limit)"
 msgstr "（%d/%d — 已达上限）"
+
+#: desktop_modules/module_coll_row.lua:64
+msgid "(collection not found)"
+msgstr "（未找到收藏夹）"
 
 #: sui_menu.lua:2802
 msgid "4-Cover Grid (Mosaic View Only)"
@@ -311,6 +323,10 @@ msgstr "排序 %s"
 msgid "Arrange Buttons"
 msgstr "排序按钮"
 
+#: desktop_modules/module_coll_row.lua:159 desktop_modules/module_coll_row.lua:194
+msgid "Arrange Collection"
+msgstr "整理收藏夹"
+
 #: sui_homescreen.lua:1898 sui_menu.lua:686 sui_menu.lua:757 sui_menu.lua:764
 #: sui_menu.lua:1906 sui_topbar.lua:514 sui_bottombar.lua:889
 #: sui_quicksettings_bar.lua:1047 sui_quicksettings_bar.lua:1098
@@ -356,6 +372,10 @@ msgstr "8月"
 #: desktop_modules/module_currently.lua:247
 msgid "Author"
 msgstr "作者"
+
+#: desktop_modules/module_coll_row.lua:141
+msgid "Author (A–Z)"
+msgstr "作者（A–Z）"
 
 #: sui_menu.lua:4384
 msgid "Author: %s"
@@ -481,6 +501,10 @@ msgstr "书签浏览器不可用。"
 #: sui_quickactions.lua:742 sui_config.lua:124
 msgid "Bookmarks"
 msgstr "书签"
+
+#: desktop_modules/module_coll_row.lua:202
+msgid "Books"
+msgstr "书籍"
 
 #: desktop_modules/module_reading_goals.lua:388
 msgid "Books to read in %s:"
@@ -699,6 +723,22 @@ msgstr "收藏夹为空。"
 #: sui_quickactions.lua:2797
 msgid "Collection not available: %s"
 msgstr "收藏夹不可用：%s"
+
+#: desktop_modules/module_coll_row.lua:96
+msgid "Collection: "
+msgstr "收藏夹："
+
+#: desktop_modules/module_coll_row.lua:96
+msgid "Collection: (none)"
+msgstr "收藏夹：（无）"
+
+#: desktop_modules/module_coll_row.lua:318 desktop_modules/module_coll_row.lua:334
+msgid "Collection Row"
+msgstr "收藏夹行"
+
+#: desktop_modules/module_coll_row.lua:56
+msgid "Collection Row — tap to configure"
+msgstr "收藏夹行 — 点击以配置"
 
 #: sui_quickactions.lua:441 sui_quickactions.lua:627 sui_quickactions.lua:1961
 #: sui_config.lua:118 desktop_modules/module_collections.lua:338
@@ -1755,6 +1795,15 @@ msgstr "LuaSettings 模块不可用"
 msgid "Make it yours"
 msgstr "打造成您的专属样式"
 
+#: sui_menu.lua:2656
+msgid ""
+"Makes the device's physical Home button always open the SimpleUI Home Screen "
+"— while reading and while browsing files — instead of KOReader's native Home "
+"behaviour."
+msgstr ""
+"使设备的实体主页键始终打开 SimpleUI 主屏幕——无论是在阅读还是浏览文件时——而"
+"非 KOReader 原生的主页行为。"
+
 #: sui_menu.lua:3999 sui_menu.lua:4073 sui_menu.lua:4078 sui_presets.lua:875
 #: sui_presets.lua:951 sui_presets.lua:956
 msgid "Manage presets"
@@ -2050,6 +2099,11 @@ msgstr "未配置任何操作，请前往「快捷设置栏」进行配置"
 msgid "No book in history."
 msgstr "历史记录中没有书籍。"
 
+#: desktop_modules/module_coll_row.lua:205 desktop_modules/module_coll_row.lua:229
+#: desktop_modules/module_coll_row.lua:298
+msgid "No books in this collection."
+msgstr "此收藏夹中没有书籍。"
+
 #: sui_stats_windows.lua:786
 msgid "No books finished in %s"
 msgstr "%s 年尚未读完任何书籍"
@@ -2074,6 +2128,14 @@ msgstr "待读列表中暂无书籍。"
 #: sui_homescreen.lua:406
 msgid "No books opened yet"
 msgstr "尚未打开任何书籍"
+
+#: sui_settings_window.lua:465 desktop_modules/module_coll_row.lua:358
+msgid "No collection selected"
+msgstr "未选择收藏夹"
+
+#: desktop_modules/module_coll_row.lua:357
+msgid "No collection selected  —  long press to configure"
+msgstr "未选择收藏夹 — 长按以配置"
 
 #: desktop_modules/module_coverdeck.lua:1151
 msgid "No collections found"
@@ -2506,6 +2568,10 @@ msgstr "插件错误：%s"
 #: sui_quickactions.lua:2791
 msgid "Plugin not available: %s"
 msgstr "插件不可用：%s"
+
+#: sui_menu.lua:2655
+msgid "PocketBook Home Button Opens Home Screen"
+msgstr "PocketBook 主页键打开主屏幕"
 
 #: sui_menu.lua:2870 sui_menu.lua:3274
 msgid "Position"
@@ -3144,6 +3210,10 @@ msgstr "显示分区标签"
 msgid "Show wallpaper on all screens"
 msgstr "在所有屏幕显示壁纸"
 
+#: desktop_modules/module_coll_row.lua:144
+msgid "Shuffle"
+msgstr "随机"
+
 #: sui_menu.lua:600
 msgid ""
 "Shows \"Page X of Y\" in the title bar subtitle when browsing the library, "
@@ -3300,6 +3370,10 @@ msgstr "纯色"
 #: desktop_modules/module_currently.lua:1488
 msgid "Solid Background"
 msgstr "纯色背景"
+
+#: desktop_modules/module_coll_row.lua:126
+msgid "Sort"
+msgstr "排序"
 
 #: desktop_modules/module_quote.lua:1334
 #: desktop_modules/module_coverdeck.lua:1173
@@ -3671,6 +3745,14 @@ msgstr "剩余时间"
 msgid "Title"
 msgstr "标题"
 
+#: desktop_modules/module_coll_row.lua:139
+msgid "Title (A–Z)"
+msgstr "标题（A–Z）"
+
+#: desktop_modules/module_coll_row.lua:140
+msgid "Title (Z–A)"
+msgstr "标题（Z–A）"
+
 #: sui_menu.lua:2688 sui_style.lua:1382
 msgid "Title Bar"
 msgstr "标题栏"
@@ -3938,7 +4020,7 @@ msgstr "连续周数"
 
 #: desktop_modules/module_clock.lua:234 desktop_modules/module_clock.lua:259
 msgid "WORD_CLOCK_TENS_SEP"
-msgstr ""
+msgstr "零"
 
 #: sui_menu.lua:2657 sui_settings_window.lua:318 sui_settings_window.lua:862
 msgid "Wallpaper"
@@ -4094,8 +4176,16 @@ msgstr "您的高亮标注"
 msgid "apr"
 msgstr "4月"
 
+#: sui_stats_windows.lua:1433
+msgid "april"
+msgstr "4月"
+
 #: sui_stats_windows.lua:418
 msgid "aug"
+msgstr "8月"
+
+#: sui_stats_windows.lua:1434
+msgid "august"
 msgstr "8月"
 
 #: sui_stats_windows.lua:2306 desktop_modules/module_reading_stats.lua:93
@@ -4116,6 +4206,10 @@ msgstr "天连续阅读"
 
 #: sui_stats_windows.lua:418
 msgid "dec"
+msgstr "12月"
+
+#: sui_stats_windows.lua:1434
+msgid "december"
 msgstr "12月"
 
 #: sui_quickactions.lua:1617 sui_quickactions.lua:2575
@@ -4140,6 +4234,10 @@ msgstr "已启用"
 msgid "feb"
 msgstr "2月"
 
+#: sui_stats_windows.lua:1433
+msgid "february"
+msgstr "2月"
+
 #: sui_style.lua:2344
 msgid "ffi/archiver not available in this KOReader version"
 msgstr "此 KOReader 版本不支持 ffi/archiver 模块"
@@ -4156,12 +4254,24 @@ msgstr "已读小时数"
 msgid "jan"
 msgstr "1月"
 
+#: sui_stats_windows.lua:1433
+msgid "january"
+msgstr "1月"
+
 #: sui_stats_windows.lua:418
 msgid "jul"
 msgstr "7月"
 
+#: sui_stats_windows.lua:1434
+msgid "july"
+msgstr "7月"
+
 #: sui_stats_windows.lua:417
 msgid "jun"
+msgstr "6月"
+
+#: sui_stats_windows.lua:1433
+msgid "june"
 msgstr "6月"
 
 #: sui_updater.lua:663
@@ -4170,6 +4280,10 @@ msgstr "最新版"
 
 #: sui_stats_windows.lua:417
 msgid "mar"
+msgstr "3月"
+
+#: sui_stats_windows.lua:1433
+msgid "march"
 msgstr "3月"
 
 #: sui_stats_windows.lua:417
@@ -4189,8 +4303,16 @@ msgstr "未配置"
 msgid "nov"
 msgstr "11月"
 
+#: sui_stats_windows.lua:1434
+msgid "november"
+msgstr "11月"
+
 #: sui_stats_windows.lua:418
 msgid "oct"
+msgstr "10月"
+
+#: sui_stats_windows.lua:1434
+msgid "october"
 msgstr "10月"
 
 #: desktop_modules/module_reading_stats.lua:90
@@ -4239,6 +4361,10 @@ msgstr "阅读时长"
 
 #: sui_stats_windows.lua:418
 msgid "sep"
+msgstr "9月"
+
+#: sui_stats_windows.lua:1434
+msgid "september"
 msgstr "9月"
 
 #: sui_updater.lua:665
