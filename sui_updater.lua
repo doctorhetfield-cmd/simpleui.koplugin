@@ -24,7 +24,11 @@ local _           = require("sui_i18n").translate
 -- ---------------------------------------------------------------------------
 -- Configuration
 -- ---------------------------------------------------------------------------
-local GITHUB_OWNER = "doctorhetfield-cmd"
+-- ASSET_NAME must match both the release asset filename AND the Makefile's
+-- ROOT_DIR/ZIP_NAME. _applyUpdate unzips into the plugin's *parent* directory,
+-- so a zip whose root folder differs from the on-device folder name installs a
+-- second copy beside the running one instead of replacing it.
+local GITHUB_OWNER = "Silther"
 local GITHUB_REPO  = "simpleui.koplugin"
 local ASSET_NAME   = "simpleui.koplugin.zip"
 
@@ -74,19 +78,22 @@ local function _currentVersion()
 end
 
 -- Returns true if version `a` is strictly greater than `b`.
--- Supports "v1.2.3", "1.2.3", "1.2.3-beta1" (suffixes are ignored).
+-- Supports "v1.2.3", "1.2.3", "1.2.3.4", "1.2.3-beta1" (suffix ignored).
+-- Walks the longer of the two component lists so the fork's four-part
+-- versions (2.1.1.1 → 2.1.1.2) compare correctly; comparing only the first
+-- three components makes every fork release look identical to the last.
 local function _versionGt(a, b)
     local function parts(v)
         v = (v or ""):match("^v?(.-)[-+]") or (v or ""):match("^v?(.+)$") or ""
         local t = {}
         for n in (v .. "."):gmatch("(%d+)%.") do t[#t + 1] = tonumber(n) or 0 end
-        while #t < 3 do t[#t + 1] = 0 end
         return t
     end
     local pa, pb = parts(a), parts(b)
-    for i = 1, 3 do
-        if pa[i] > pb[i] then return true end
-        if pa[i] < pb[i] then return false end
+    for i = 1, math.max(#pa, #pb) do
+        local x, y = pa[i] or 0, pb[i] or 0
+        if x > y then return true end
+        if x < y then return false end
     end
     return false
 end
@@ -554,7 +561,11 @@ end
 function M.scheduleAutoCheck()
     -- Opt-in only: skip silently if the user has not enabled auto-check.
     -- SUISettings:isTrue() returns false for missing keys → disabled by default.
-    local ok_s, SUISettings = pcall(require, "sui_settings")
+    -- The settings store is sui_store, not sui_settings - there is no module
+    -- by the latter name, so this pcall always failed and auto-check never ran
+    -- at all, opt-in or not. (sui_store.lua's own header comment still calls
+    -- itself sui_settings, which is presumably where the wrong name came from.)
+    local ok_s, SUISettings = pcall(require, "sui_store")
     if not ok_s or not SUISettings then return end
     if not SUISettings:isTrue("simpleui_updater_auto_check") then
         logger.dbg("simpleui updater: auto-check disabled — skipping")
