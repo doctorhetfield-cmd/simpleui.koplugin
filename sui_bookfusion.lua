@@ -423,48 +423,112 @@ end
 -- cut round-trips; 200-page safety belt just in case.
 local FETCH_PER_PAGE = 50
 
+-- Attach reading progress to a fetched list.
+--
+-- /books/search returns metadata only, so progress needs a second call per
+-- book. Issued as ONE Api:requestAll: inside a coroutine that batches every
+-- spec into a single forked subprocess sharing one keep-alive connection,
+-- rather than N separate round-trips. 404 is whitelisted and means "no remote
+-- position yet", so those books simply keep a nil percentage.
+--
+-- The server sends 0..100 with four decimals; we store a 0..1 fraction.
+local function _attachProgress(api, all)
+    local specs, book_of = {}, {}
+    for i = 1, #all do
+        local b = all[i]
+        if b and b.id then
+            specs[#specs + 1] = {
+                method = "GET",
+                path   = "/api/user/books/" .. b.id .. "/reading_position",
+                opts   = { expected_codes = { [404] = true } },
+            }
+            book_of[#specs] = b
+        end
+    end
+    if #specs == 0 then return end
+
+    local ok_all, results = pcall(api.requestAll, api, specs)
+    if not ok_all or type(results) ~= "table" then return end
+
+    for i = 1, #specs do
+        local r = results[i]
+        if r and r.ok and type(r.data) == "table" then
+            local pct = tonumber(r.data.percentage)
+            if pct then book_of[i].percentage = pct / 100 end
+        end
+    end
+end
+
 function Data.fetchListAll(params, cb, opts)
     local api = Data.api()
     if not api then if cb then cb(false, "api_unavailable") end; return end
+
+    -- Api.runAsync, not a bare scheduleIn: Api:request dispatches on
+    -- inCoroutine(), and outside one it takes the BLOCKING LuaSocket path.
+    -- This used to run on the main thread, so a Currently Reading sync froze
+    -- the UI for one blocking HTTPS round-trip per page plus one per book.
+    -- Inside a coroutine the same calls go through bf_http's forked
+    -- subprocess and yield back to the UI loop between results.
+    --
+    -- runAsync swallows errors into a log line rather than propagating, so
+    -- cb must be reached on every path out of here or the caller's
+    -- _refreshing guard would latch on forever.
+    -- runAsync is a module-level function on bf_api, reachable through the
+    -- instance's __index. Called with a dot: it takes only the body.
+    if type(api.runAsync) ~= "function" then
+        if cb then cb(false, "api_unavailable") end
+        return
+    end
+
     UIManager:scheduleIn(0, function()
-        local all, page = {}, 1
-        while true do
-            local q = { page = page, per_page = FETCH_PER_PAGE }
-            for k, v in pairs(params or {}) do q[k] = v end
-            local ok, books, pagination = api:searchBooks(q)
-            if not ok or type(books) ~= "table" then
-                if cb then cb(false, books) end; return
+        api.runAsync(function()
+            -- cb fires at most once, and on every path out. runAsync only logs
+            -- what escapes it, and the caller drives its list queue from this
+            -- callback: drop it and _refreshing latches true, leaving the sync
+            -- button dead for the session; fire it twice and the queue
+            -- double-advances, skipping a list. The flag matters because cb
+            -- itself repaints, so an error thrown *by* cb lands in our pcall
+            -- after cb has already run.
+            local fired = false
+            local function finish(ok, payload)
+                if fired or not cb then return end
+                fired = true
+                cb(ok, payload)
             end
-            for i = 1, #books do all[#all + 1] = books[i] end
-            local total = pagination and pagination.total
-            if #books < FETCH_PER_PAGE then break end
-            if total and #all >= total then break end
-            page = page + 1
-            if page > 200 then break end
-        end
 
-        -- /books/search returns metadata only — no reading progress. When
-        -- the caller asks for it, follow up with one getReadingPosition per
-        -- book and attach `.percentage` as a 0..1 fraction (server sends
-        -- 0..100.0000). 404 means "no remote position yet" → leave nil.
-        -- N serial GETs — only enable for short lists like Currently Reading.
-        if opts and opts.with_progress then
-            for i = 1, #all do
-                local b = all[i]
-                if b and b.id then
-                    local ok_p, pos = pcall(function()
-                        local ok_r, data = api:getReadingPosition(b.id)
-                        return ok_r and data or nil
-                    end)
-                    if ok_p and type(pos) == "table" then
-                        local pct = tonumber(pos.percentage)
-                        if pct then b.percentage = pct / 100 end
+            -- Yielding across pcall is safe here: KOReader's own Trapper is
+            -- built on exactly this (xpcall around a coroutine body that
+            -- yields), and this runs on LuaJIT.
+            local ok_run, err = pcall(function()
+                local all, page = {}, 1
+                while true do
+                    local q = { page = page, per_page = FETCH_PER_PAGE }
+                    for k, v in pairs(params or {}) do q[k] = v end
+                    local ok, books, pagination = api:searchBooks(q)
+                    if not ok or type(books) ~= "table" then
+                        finish(false, books); return
                     end
+                    for i = 1, #books do all[#all + 1] = books[i] end
+                    local total = pagination and pagination.total
+                    if #books < FETCH_PER_PAGE then break end
+                    if total and #all >= total then break end
+                    page = page + 1
+                    if page > 200 then break end
                 end
-            end
-        end
 
-        if cb then cb(true, all) end
+                -- Degrades gracefully: on failure the list still renders, just
+                -- without progress bars.
+                if opts and opts.with_progress then
+                    _attachProgress(api, all)
+                end
+
+                finish(true, all)
+            end)
+            if not ok_run then
+                logger.warn("simpleui-bf: fetchListAll failed:", tostring(err))
+                finish(false, err)
+            end
+        end)
     end)
 end
 
@@ -474,14 +538,36 @@ end
 function Data.searchPage(query, api_page, per_page, cb)
     local api = Data.api()
     if not api then if cb then cb(false, "api_unavailable") end; return end
+    if type(api.runAsync) ~= "function" then
+        if cb then cb(false, "api_unavailable") end
+        return
+    end
+    -- Same reason as fetchListAll: outside a coroutine this call takes the
+    -- blocking path, freezing the UI for the whole round-trip on every query
+    -- submission and every page-forward past the buffer.
     UIManager:scheduleIn(0, function()
-        local ok, books, pagination = api:searchBooks({
-            query    = query,
-            page     = api_page,
-            per_page = per_page,
-        })
-        if not ok then if cb then cb(false, books) end; return end
-        if cb then cb(true, books, pagination) end
+        api.runAsync(function()
+            -- Fire-once + guaranteed-fire, same reasoning as fetchListAll.
+            local fired = false
+            local function finish(ok, books, pagination)
+                if fired or not cb then return end
+                fired = true
+                cb(ok, books, pagination)
+            end
+            local ok_run, err = pcall(function()
+                local ok, books, pagination = api:searchBooks({
+                    query    = query,
+                    page     = api_page,
+                    per_page = per_page,
+                })
+                if not ok then finish(false, books); return end
+                finish(true, books, pagination)
+            end)
+            if not ok_run then
+                logger.warn("simpleui-bf: searchPage failed:", tostring(err))
+                finish(false, err)
+            end
+        end)
     end)
 end
 
