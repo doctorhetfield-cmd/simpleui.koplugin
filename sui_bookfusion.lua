@@ -207,31 +207,56 @@ function Cache.get(k)
     return type(slot) == "table" and slot or nil
 end
 
+-- Flatten one raw API book into the slim record the widget renders from.
+--
+-- Both the cached lists and the (uncached) search results go through here.
+-- They used to carry separate copies of this table literal, which drifted:
+-- the search copy was written without the cover fields, so every search
+-- result rendered as a placeholder until someone noticed.
+--
+-- Two shapes are normalised away so nothing downstream has to think about
+-- them again:
+--   • `cover` arrives nested as { url, width, height }; we store it flat.
+--   • `authors` is polymorphic — a string, an array of strings, or an array
+--     of { name = ... } tables. formatAuthors collapses all three to one
+--     string. Nothing renders it today, but storing it pre-flattened means a
+--     future author caption cannot reintroduce the polymorphism trap, and
+--     costs one call per book per fetch rather than per paint.
+local function _slimBook(b, Downloader)
+    local cover = b.cover
+    return {
+        id            = b.id,
+        title         = b.title,
+        authors       = Downloader and Downloader.formatAuthors(b.authors) or b.authors,
+        cover_url     = cover and cover.url    or b.cover_url,
+        cover_w       = cover and cover.width  or b.cover_w,
+        cover_h       = cover and cover.height or b.cover_h,
+        percentage    = b.percentage,
+        format        = b.format,
+        -- bf_downloader.downloadBook needs this for the "13.0 MB" subtitle and
+        -- progress bar; without it the popup degrades to a bare "Downloading…".
+        download_size = b.download_size,
+    }
+end
+
+-- Resolved once per batch rather than per book. nil is fine — _slimBook then
+-- stores `authors` unchanged, which is exactly the old behaviour.
+local function _downloaderOrNil()
+    local ok, Downloader = pcall(require, "bf_downloader")
+    return (ok and Downloader and type(Downloader.formatAuthors) == "function")
+        and Downloader or nil
+end
+
 function Cache.put(k, books)
     local s = _cacheOpen()
     if not s then return end
     local slim = {}
     if type(books) == "table" then
+        local Downloader = _downloaderOrNil()
         for i = 1, #books do
             local b = books[i]
             if type(b) == "table" and b.id then
-                -- Raw API has `book.cover = { url, width, height }` — flatten
-                -- so the widget doesn't re-traverse the nested table on paint.
-                local cover = b.cover
-                slim[#slim + 1] = {
-                    id            = b.id,
-                    title         = b.title,
-                    authors       = b.authors,
-                    cover_url     = cover and cover.url    or b.cover_url,
-                    cover_w       = cover and cover.width  or b.cover_w,
-                    cover_h       = cover and cover.height or b.cover_h,
-                    percentage    = b.percentage,
-                    format        = b.format,
-                    -- bf_downloader.downloadBook needs this for the "13.0 MB"
-                    -- subtitle and progress bar; without it the popup degrades
-                    -- to a bare "Downloading…" line.
-                    download_size = b.download_size,
-                }
+                slim[#slim + 1] = _slimBook(b, Downloader)
             end
         end
     end
@@ -2140,27 +2165,13 @@ function BookFusionTab:_fetchNextSearchPage(on_done)
             if on_done then on_done() end
             return
         end
-        -- Flatten each raw API book into the same slim shape Cache.put
-        -- stores for the cached lists (nested `cover = {url, width, height}`
-        -- → flat cover_url / cover_w / cover_h).  BookTile + Covers.getBB
-        -- expect the flat shape; without this, every search result rendered
-        -- as a placeholder because cover_url was always nil.
+        -- Same slim shape the cached lists use — BookTile and Covers.getBB
+        -- read the flat cover_* fields, not the nested `cover` table.
+        local Downloader = _downloaderOrNil()
         for i = 1, #books do
             local b = books[i]
             if type(b) == "table" and b.id then
-                local cover = b.cover
-                self._search_results[#self._search_results + 1] = {
-                    id            = b.id,
-                    title         = b.title,
-                    authors       = b.authors,
-                    cover_url     = cover and cover.url    or b.cover_url,
-                    cover_w       = cover and cover.width  or b.cover_w,
-                    cover_h       = cover and cover.height or b.cover_h,
-                    percentage    = b.percentage,
-                    format        = b.format,
-                    -- See Cache.put: preserved for bf_downloader's progress UI.
-                    download_size = b.download_size,
-                }
+                self._search_results[#self._search_results + 1] = _slimBook(b, Downloader)
             end
         end
         self._search_api_page = next_api_page
