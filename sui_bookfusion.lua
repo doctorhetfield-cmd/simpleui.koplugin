@@ -677,7 +677,26 @@ end
 -- falls back to the BookFusion plugin's missing-image glyph placeholder.
 -- ===========================================================================
 
-local COLOR_COVER_BORDER = Blitbuffer.COLOR_BLACK
+-- Theme colours.
+--
+-- getThemeColor returns nil for any role the user has not set, and today that
+-- is every role — sui_style's theme-writing UI is still commented out, so the
+-- only way a value gets in is a preset import. Every call site therefore keeps
+-- its literal as the `or` fallback, which means rendering is byte-identical
+-- until a theme is actually applied. This is what stops the tab being the one
+-- Simple UI surface still painting hardcoded white once that UI is re-enabled.
+local _ok_style, _SUIStyle = pcall(require, "sui_style")
+
+local function _themeColor(role)
+    if not (_ok_style and _SUIStyle and _SUIStyle.getThemeColor) then return nil end
+    local ok, c = pcall(_SUIStyle.getThemeColor, role)
+    return (ok and c) or nil
+end
+
+-- Resolved once at load rather than per paint. Known wart: a theme imported
+-- mid-session won't reach this until the plugin reloads. The roles read inside
+-- build functions below don't have that limitation.
+local COLOR_COVER_BORDER = _themeColor("separator") or Blitbuffer.COLOR_BLACK
 local COVER_BORDER_SIZE  = 2
 
 -- Bordered box with a centered "missing image" glyph (U+26F6). `title` arg
@@ -888,7 +907,7 @@ local function _pageFrame(sw, content_h, vg)
         bordersize = 0, margin = 0,
         padding_left = UI.SIDE_PAD, padding_right = UI.SIDE_PAD,
         padding_top = 0, padding_bottom = 0,
-        background = Blitbuffer.COLOR_WHITE,
+        background = _themeColor("bg") or Blitbuffer.COLOR_WHITE,
         dimen = Geom:new{ w = sw, h = content_h },
         vg,
     }
@@ -951,6 +970,8 @@ local function _overlayBadge(pct, text_scale)
     -- how RowRenderer renders the same badge on the home screen.
     local pct_int = math.floor((tonumber(pct) or 0) * 100 + 0.5)
     local badge_d, badge_r, pct_fs = _overlayBadgeDims(text_scale)
+    -- Colours deliberately NOT themed: this is the same chip RowRenderer
+    -- paints on the home screen, and the two should stay identical.
     local badge = FrameContainer:new{
         bordersize = 0,
         background = Blitbuffer.gray(0.15),
@@ -991,6 +1012,10 @@ local function _cloudBadge()
     local badge = FrameContainer:new{
         dimen      = Geom:new{ w = side, h = side },
         bordersize = Size.border.thin,
+        -- Also deliberately unthemed: this is a light chip carrying a dark
+        -- glyph, sitting on top of cover art. Routing the background through
+        -- the "bg" role would invert it under a dark theme and the badge would
+        -- disappear into the artwork it is supposed to sit above.
         color      = Blitbuffer.COLOR_DARK_GRAY,
         background = Blitbuffer.COLOR_WHITE,
         radius     = Screen:scaleBySize(2),
@@ -1224,7 +1249,7 @@ function BookFusionTab:init()
     self._body_vg[2] = self:_buildBodyContent()
     self[1] = FrameContainer:new{
         bordersize = 0, padding = 0, margin = 0,
-        background = Blitbuffer.COLOR_WHITE,
+        background = _themeColor("bg") or Blitbuffer.COLOR_WHITE,
         dimen      = Geom:new{ w = sw, h = sh },
         self._body_vg,
     }
@@ -1647,7 +1672,7 @@ function BookFusionTab:_buildLanding(sw, content_h)
 
     -- Section label — bold + small + mid-grey.  Used for both
     -- "Currently Reading" and "Folders" so they read as peers.
-    local SECTION_GRAY = Blitbuffer.gray(0.45)
+    local SECTION_GRAY = _themeColor("text_secondary") or Blitbuffer.gray(0.45)
     local function _sectionLabel(text)
         return LeftContainer:new{
             dimen = Geom:new{ w = inner_w, h = section_lbl_h },
@@ -1744,7 +1769,7 @@ function BookFusionTab:_buildLanding(sw, content_h)
             TextWidget:new{
                 text    = string.format("%d / %d", self._cr_page, total_pages),
                 face    = Font:getFace("cfont", cr_pager_fs),
-                fgcolor = Blitbuffer.gray(0.45),
+                fgcolor = _themeColor("text_secondary") or Blitbuffer.gray(0.45),
             },
         }
         vg[#vg+1] = VerticalSpan:new{ width = cr_pager_gap_below }
@@ -1957,7 +1982,7 @@ function BookFusionTab:_buildSubpage(sw, content_h)
     local pager_label = TextWidget:new{
         text    = string.format("%d / %d", self._grid_page, total_pages),
         face    = Font:getFace("cfont", pager_fs),
-        fgcolor = Blitbuffer.gray(0.45),   -- subtle mid-grey
+        fgcolor = _themeColor("text_secondary") or Blitbuffer.gray(0.45),
     }
     local pager = OverlapGroup:new{
         dimen = Geom:new{ w = inner_w, h = pager_h },
