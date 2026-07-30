@@ -761,10 +761,20 @@ end
 -- before handing it to FreeType, so face.size ends up double-scaled if the
 -- caller pre-scaled. Deriving line_h from face.size (not the requested size)
 -- keeps the N-row layout intact regardless of device scale factor.
+-- Height of one rendered line for `face`, matching what TextBoxWidget will
+-- actually lay out. TextBoxWidget:init computes
+--   line_height_px = Math.round((1 + line_height) * face.size)
+-- with line_height defaulting to 0.3 em. Reading the class default rather
+-- than repeating the 0.3 keeps our vertical budgets in step if KOReader ever
+-- changes it; Math.round is floor(x + 0.5), which is what we do inline.
+local function _lineH(face)
+    return math.floor((1 + TextBoxWidget.line_height) * face.size + 0.5)
+end
+
 local function _titleLabel(title, w, font_size, lines)
     lines = lines or 2
     local face   = Font:getFace("cfont", font_size)
-    local line_h = math.floor((1 + 0.3) * face.size + 0.5)
+    local line_h = _lineH(face)
     return TextBoxWidget:new{
         text                          = title or _("Untitled"),
         face                          = face,
@@ -775,12 +785,82 @@ local function _titleLabel(title, w, font_size, lines)
     }
 end
 
+-- A chevron page-turn button sized into a fixed cell — or, when disabled, an
+-- equally wide blank so the row keeps its geometry at the first and last page
+-- instead of the content shifting sideways.
+--
+-- Serves both pagers: the carousel's (plain HorizontalGroup row, no align) and
+-- the grid's (OverlapGroup, where `align` is the horizontal anchor and the
+-- CenterContainer supplies the vertical one).
+local function _arrowCell(icon, enabled, cb, size, box_h, align, parent)
+    local inner
+    if enabled then
+        inner = IconButton:new{
+            icon        = icon,
+            width       = size,
+            height      = size,
+            padding     = 0,
+            callback    = cb,
+            show_parent = parent,
+        }
+    else
+        inner = HorizontalSpan:new{ width = size }
+    end
+    return CenterContainer:new{
+        dimen         = Geom:new{ w = size, h = box_h },
+        overlap_align = align,
+        inner,
+    }
+end
+
 -- Progress bar height. The bar itself comes from UI.progressBar (sui_core),
 -- which is the same widget every other Simple UI surface draws — so this tab
 -- now also honours the user's flat/framed progress-bar style preference and
 -- the theme's progress colours, both of which the local copy ignored.
 -- Kept as a constant because the carousel's arrow box budgets around it.
 local BAR_BASE_H = Screen:scaleBySize(7)
+
+-- Fit a cover into box_w × budget_h at `aspect` (height ÷ width), preserving
+-- proportions rather than stretching. When the height budget cannot hold a
+-- full-width cover we shrink the WIDTH as well; squashing only the height
+-- would leave uniform-cover mode's scale-to-fill cropping the top and bottom
+-- of every cover on tight layouts.
+--
+-- The floor matters: budget_h goes ≤ 0 on short screens with many grid rows
+-- or a large text scale, and a zero or negative dimension propagates into
+-- Geom. Callers pass their own aspect — the carousel uses 1.55, the subpage
+-- grid 1.5 — which is the only thing that ever differed between the two
+-- copies of this that used to exist.
+local COVER_MIN_H = Screen:scaleBySize(60)
+
+-- Outer frame shared by the subpage grid and the search grid: side-padded to
+-- UI.SIDE_PAD, no border, filling the content area.
+local function _pageFrame(sw, content_h, vg)
+    return FrameContainer:new{
+        bordersize = 0, margin = 0,
+        padding_left = UI.SIDE_PAD, padding_right = UI.SIDE_PAD,
+        padding_top = 0, padding_bottom = 0,
+        background = Blitbuffer.COLOR_WHITE,
+        dimen = Geom:new{ w = sw, h = content_h },
+        vg,
+    }
+end
+
+local function _fitCover(box_w, budget_h, aspect)
+    local cover_w, cover_h
+    if budget_h < math.floor(box_w * aspect) then
+        cover_h = budget_h
+        cover_w = math.floor(cover_h / aspect)
+    else
+        cover_w = box_w
+        cover_h = math.floor(cover_w * aspect)
+    end
+    if cover_h < COVER_MIN_H then
+        cover_h = COVER_MIN_H
+        cover_w = math.max(1, math.floor(cover_h / aspect))
+    end
+    return cover_w, cover_h
+end
 
 -- Round "XX %" badge overlaid on the cover's bottom edge. Half sits inside
 -- the cover and half bleeds below, so the caller must build an OverlapGroup
@@ -1333,7 +1413,7 @@ function BookFusionTab:_buildLanding(sw, content_h)
     if show_title then
         local _tile_title_fs   = math.max(6, math.floor(Screen:scaleBySize(6) * txt_sc))
         local _tile_title_face = Font:getFace("cfont", _tile_title_fs)
-        local _tile_title_lh   = math.floor((1 + 0.3) * _tile_title_face.size + 0.5)
+        local _tile_title_lh   = _lineH(_tile_title_face)
         tile_text_h            = _tile_title_lh * 2 + Screen:scaleBySize(3)  -- 2 lines + rounding margin
     end
     local top_pad         = UI.PAD
@@ -1403,7 +1483,7 @@ function BookFusionTab:_buildLanding(sw, content_h)
         -- Line-height formula matches TextBoxWidget's internal one so the
         -- reserve tracks what the widget actually paints.
         local _cr_pager_face = Font:getFace("cfont", cr_pager_fs)
-        cr_pager_line_h = math.floor((1 + 0.3) * _cr_pager_face.size + 0.5)
+        cr_pager_line_h = _lineH(_cr_pager_face)
         cr_pager_h      = cr_pager_gap_above + cr_pager_line_h + cr_pager_gap_below
     end
 
@@ -1426,28 +1506,7 @@ function BookFusionTab:_buildLanding(sw, content_h)
                    + 3 * button_h + 2 * math.floor(UI.PAD / 2)        -- 3 nav buttons + 2 half-PAD gaps
                    + bot_pad
     local cover_budget = content_h - reserved
-    -- Preserve book aspect (1.55) even when the vertical budget is tight:
-    -- if cover_w × 1.55 exceeds the budget, shrink cover_w to keep the
-    -- display box proportional.  Without this, uniform-cover mode would
-    -- scale-to-fill and crop the top/bottom of every cover on
-    -- short-height screens.
-    local cover_w, cover_h
-    if cover_budget < math.floor(tile_w * 1.55) then
-        cover_h = cover_budget
-        cover_w = math.floor(cover_h / 1.55)
-    else
-        cover_w = tile_w
-        cover_h = math.floor(cover_w * 1.55)
-    end
-    -- Clamp both dimensions and recompute width from the clamped height so
-    -- the aspect stays consistent. Without this, cover_budget can go ≤ 0
-    -- on small screens / large text scales, leaving cover_w ≤ 0 even
-    -- after the cover_h floor — which propagates into BookTile/Geom.
-    local cover_min = Screen:scaleBySize(60)
-    if cover_h < cover_min then
-        cover_h = cover_min
-        cover_w = math.max(1, math.floor(cover_h / 1.55))
-    end
+    local cover_w, cover_h = _fitCover(tile_w, cover_budget, 1.55)
     local tile_h = cover_h + tile_text_h + tile_pct_h + Screen:scaleBySize(8)
 
     -- Current-reading books from cache.
@@ -1518,29 +1577,12 @@ function BookFusionTab:_buildLanding(sw, content_h)
     -- the full tile height.
     local cover_bar_nudge = Screen:scaleBySize(8)   -- lower than pure centre
     local arrow_box_h = cover_h + Screen:scaleBySize(4) + BAR_BASE_H + cover_bar_nudge
-    local function _arrow(icon, enabled, cb)
-        local inner
-        if enabled then
-            inner = IconButton:new{
-                icon        = icon,
-                width       = arrow_w,
-                height      = arrow_w,
-                padding     = 0,
-                callback    = cb,
-                show_parent = self,
-            }
-        else
-            -- Keep the column width so the carousel stays horizontally
-            -- balanced when we're at the first / last page.
-            inner = HorizontalSpan:new{ width = arrow_w }
-        end
-        return CenterContainer:new{
-            dimen = Geom:new{ w = arrow_w, h = arrow_box_h },
-            inner,
-        }
-    end
-    local left_arrow  = _arrow("chevron.left",  self._cr_page > 1,          function() self:_cycleCarousel(-1) end)
-    local right_arrow = _arrow("chevron.right", self._cr_page < total_pages, function() self:_cycleCarousel( 1) end)
+    -- No align: this row is a plain HorizontalGroup, so each arrow's
+    -- CenterContainer only needs to establish its own cover-aligned frame.
+    local left_arrow  = _arrowCell("chevron.left",  self._cr_page > 1,
+        function() self:_cycleCarousel(-1) end, arrow_w, arrow_box_h, nil, self)
+    local right_arrow = _arrowCell("chevron.right", self._cr_page < total_pages,
+        function() self:_cycleCarousel( 1) end, arrow_w, arrow_box_h, nil, self)
 
     -- align = "top" anchors every child at y=0 of the row, so each arrow's
     -- CenterContainer establishes its own cover-aligned vertical frame.
@@ -1674,14 +1716,7 @@ function BookFusionTab:_buildLanding(sw, content_h)
     vg[#vg+1] = VerticalSpan:new{ width = bot_pad }
 
     -- Apply side-padding frame and clamp to content height.
-    return FrameContainer:new{
-        bordersize = 0, margin = 0,
-        padding_left = UI.SIDE_PAD, padding_right = UI.SIDE_PAD,
-        padding_top = 0, padding_bottom = 0,
-        background = Blitbuffer.COLOR_WHITE,
-        dimen = Geom:new{ w = sw, h = content_h },
-        vg,
-    }
+    return _pageFrame(sw, content_h, vg)
 end
 
 -- ---------------------------------------------------------------------------
@@ -1763,7 +1798,7 @@ function BookFusionTab:_buildSubpage(sw, content_h)
     if show_title then
         local _sub_title_fs   = math.max(6, math.floor(Screen:scaleBySize(6) * txt_sc))
         local _sub_title_face = Font:getFace("cfont", _sub_title_fs)
-        local _sub_title_lh   = math.floor((1 + 0.3) * _sub_title_face.size + 0.5)
+        local _sub_title_lh   = _lineH(_sub_title_face)
         title_h_reserve       = _sub_title_lh + Screen:scaleBySize(3)
         cover_title_gap       = Screen:scaleBySize(4)
     end
@@ -1778,23 +1813,7 @@ function BookFusionTab:_buildSubpage(sw, content_h)
     local tile_w         = math.floor((inner_w - (grid_cols - 1) * tile_gap) / grid_cols)
     local tile_budget_h  = math.floor((grid_h - (rows - 1) * row_gap) / rows)
     local cover_h_budget = tile_budget_h - title_h_reserve - cover_title_gap
-    local cover_w, cover_h
-    if cover_h_budget < math.floor(tile_w * 1.5) then
-        -- Height-limited: shrink width to match 1.5 aspect.
-        cover_h = cover_h_budget
-        cover_w = math.floor(cover_h / 1.5)
-    else
-        -- Width-limited: fill tile horizontally, height follows aspect.
-        cover_w = tile_w
-        cover_h = math.floor(cover_w * 1.5)
-    end
-    -- Clamp both dimensions and recompute width from the clamped height
-    -- (cover_h_budget can be ≤ 0 with many rows/cols on a short screen).
-    local cover_min = Screen:scaleBySize(60)
-    if cover_h < cover_min then
-        cover_h = cover_min
-        cover_w = math.max(1, math.floor(cover_h / 1.5))
-    end
+    local cover_w, cover_h = _fitCover(tile_w, cover_h_budget, 1.5)
     local tile_h  = cover_h + cover_title_gap + title_h_reserve
     local per_page = rows * grid_cols
 
@@ -1883,27 +1902,6 @@ function BookFusionTab:_buildSubpage(sw, content_h)
     -- so overlap_align (horizontal) + CenterContainer (vertical) combine
     -- into a proper 2-axis anchoring.
     local arrow_sz = Screen:scaleBySize(30)
-    local function _pagerArrow(icon, enabled, cb, side)
-        local inner
-        if enabled then
-            inner = IconButton:new{
-                icon        = icon,
-                width       = arrow_sz,
-                height      = arrow_sz,
-                padding     = 0,
-                callback    = cb,
-                show_parent = self,
-            }
-        else
-            -- Keep the footprint so the text stays centred even at the edges.
-            inner = HorizontalSpan:new{ width = arrow_sz }
-        end
-        return CenterContainer:new{
-            dimen         = Geom:new{ w = arrow_sz, h = pager_h },
-            overlap_align = side,
-            inner,
-        }
-    end
     local pager_fs = math.max(6, math.floor(Screen:scaleBySize(7) * lbl_sc))
     local pager_label = TextWidget:new{
         text    = string.format("%d / %d", self._grid_page, total_pages),
@@ -1912,13 +1910,15 @@ function BookFusionTab:_buildSubpage(sw, content_h)
     }
     local pager = OverlapGroup:new{
         dimen = Geom:new{ w = inner_w, h = pager_h },
-        _pagerArrow("chevron.left",  self._grid_page > 1,           function() self:_cyclePage(-1) end, "left"),
+        _arrowCell("chevron.left",  self._grid_page > 1,
+            function() self:_cyclePage(-1) end, arrow_sz, pager_h, "left", self),
         CenterContainer:new{
             dimen         = Geom:new{ w = inner_w, h = pager_h },
             overlap_align = "center",
             pager_label,
         },
-        _pagerArrow("chevron.right", self._grid_page < total_pages, function() self:_cyclePage( 1) end, "right"),
+        _arrowCell("chevron.right", self._grid_page < total_pages,
+            function() self:_cyclePage( 1) end, arrow_sz, pager_h, "right", self),
     }
 
     -- Layout: grid at top (with top_pad clearing the title-bar icon tap
@@ -1946,14 +1946,7 @@ function BookFusionTab:_buildSubpage(sw, content_h)
     vg[#vg+1] = pager
     vg[#vg+1] = VerticalSpan:new{ width = bot_pad }
 
-    return FrameContainer:new{
-        bordersize = 0, margin = 0,
-        padding_left = UI.SIDE_PAD, padding_right = UI.SIDE_PAD,
-        padding_top = 0, padding_bottom = 0,
-        background = Blitbuffer.COLOR_WHITE,
-        dimen = Geom:new{ w = sw, h = content_h },
-        vg,
-    }
+    return _pageFrame(sw, content_h, vg)
 end
 
 -- ---------------------------------------------------------------------------
