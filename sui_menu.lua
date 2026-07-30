@@ -3576,6 +3576,29 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     return items
                 end,
             },
+            -- -----------------------------------------------------------------
+            -- BookFusion tab settings.
+            --
+            -- Mounted here rather than at the top level so both settings UIs
+            -- pick it up from one insertion: the classic TouchMenu reaches it
+            -- via Simple UI ▸ Library, and sui_settings_window renders the same
+            -- table through buildPluginMenuScreen. SUI.MenuTable already turns
+            -- a plain sub_item_table into a chevron row, so no sui_build entry
+            -- is needed.
+            --
+            -- BFS.build() returns a complete menu item, so it drops in as-is.
+            -- pcall-wrapped so a fault in the BookFusion settings tree cannot
+            -- take the whole Library menu down with it; on failure this returns
+            -- no value at all, and since it is the last entry in the
+            -- constructor the table simply ends one item shorter.
+            -- -----------------------------------------------------------------
+            (function()
+                local ok_bfs, BFS = pcall(require, "sui_bookfusion_settings")
+                if ok_bfs and BFS and BFS.build then
+                    local ok_build, node = pcall(BFS.build)
+                    if ok_build and type(node) == "table" then return node end
+                end
+            end)(),
         }
     end
     plugin.makeLibraryMenuItems = makeLibraryMenuItems
