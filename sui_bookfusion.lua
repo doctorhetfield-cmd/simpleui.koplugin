@@ -49,6 +49,7 @@ local _               = require("sui_i18n").translate
 
 local UI          = require("sui_core")
 local SUISettings = require("sui_store")
+local Config      = require("sui_config")
 local Screen      = Device.screen
 
 -- Absolute path to this plugin's icons/ directory.  Needed because
@@ -2453,10 +2454,10 @@ function BookFusionTab:onClose()
 end
 
 -- ===========================================================================
--- 7. MODULE API  (entered from sui_quickactions' bookfusion descriptor)
+-- 7. MODULE API  (entered from the quick-action descriptor registered below)
 -- ===========================================================================
 
-function M.show(_on_qa_tap)
+function M.show()
     if M._instance then
         pcall(function() UIManager:close(M._instance) end)
         M._instance = nil
@@ -2470,5 +2471,62 @@ end
 -- without duplicating them.  Intentionally not exposing the internal
 -- BookFusionTab class — settings UI doesn't need it.
 M.Settings = Settings
+
+-- ===========================================================================
+-- 8. REGISTRATION  (Simple UI public extension points)
+-- ===========================================================================
+-- Both registrations run at module load.  main.lua requires this module during
+-- SimpleUIPlugin:init() precisely so they happen before the first tab tap —
+-- QA.execute consults the registry only, with no Config.ALL_ACTIONS fallback.
+--
+-- Registering here is what keeps sui_quickactions.lua and sui_patches.lua at
+-- zero delta against upstream: the tab used to be wired in by patching a
+-- private builtins table and an INJECT_NAMES map inside those two files.
+
+do
+    local ok_qa, QA = pcall(require, "sui_quickactions")
+    if ok_qa and QA and QA.register then
+        QA.register{
+            id          = "bookfusion",
+            label       = _("BookFusion"),
+            icon        = Config.ICON.bookfusion,
+            is_in_place = false,
+            execute     = function(ctx)
+                -- Re-tapping the tab while it is already open returns to the
+                -- landing view instead of tearing the widget down and building
+                -- a fresh one (mirrors how browse_* handle already_active).
+                if ctx and ctx.already_active and M._instance then
+                    if M._instance._view ~= "landing" then
+                        pcall(function() M._instance:_exitSubpage() end)
+                    end
+                    return
+                end
+                M.show()
+            end,
+        }
+    end
+end
+
+do
+    if UI.BarInjection and UI.BarInjection.register then
+        UI.BarInjection.register{
+            id          = "bookfusion",
+            widget_name = "bookfusion",
+            -- Reproduces the guard the old sui_patches hunk had.  The bar
+            -- injection path calls setActiveAndRefreshFM for whatever action id
+            -- we hand back, unconditionally — so when the tab is reached from a
+            -- quick action rather than the bar, return nil and leave the
+            -- currently-lit tab indicator alone.
+            get_active_action = function(_widget)
+                if Config.tabInTabs("bookfusion", Config.loadTabConfig()) then
+                    return "bookfusion"
+                end
+                return nil
+            end,
+            -- is_pageable deliberately unset: the widget exposes no page_num,
+            -- so auto-detection yields false, matching pre-port behaviour.
+        }
+    end
+end
 
 return M
