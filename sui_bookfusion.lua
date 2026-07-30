@@ -501,7 +501,43 @@ end
 
 local Covers = {}
 
-local _bb_cache = {}  -- key = url  → { bb, w, h }
+local _bb_cache = {}  -- key = url  → { bb, w, h, seq }
+local _bb_count = 0
+local _bb_seq   = 0
+
+-- Decoded covers are kept so repaints (page flips, the rebuild that fires as
+-- each cover lands) don't pay the JPEG decode again. Unbounded, that grows for
+-- the whole life of the tab — paging through a few hundred search results ends
+-- up holding every cover ever decoded.
+--
+-- The cap has to comfortably clear the working set or it thrashes and we
+-- re-decode on every rebuild: a 6x7 grid alone is 42 visible tiles. (This is
+-- why sui_config's own BIM_MAX_COVERS = 30 is not the right number to copy.)
+local function _bbCap()
+    return math.max(48, Settings.gridRows() * Settings.gridCols() * 2)
+end
+
+-- Evict the least-recently-used entry by DROPPING it, never by calling
+-- bb:free().
+--
+-- getBB marks every buffer setAllocated(1), which registers an FFI finalizer
+-- (ffi.gc(self, BB.gc)), so LuaJIT frees it once nothing references it. That
+-- matters because ImageWidget only copies the source buffer when it actually
+-- rescales: at scale_factor == 1 -- reachable whenever a cover's decoded size
+-- happens to match its display box -- _render leaves _bb aliased to ours.
+-- Freeing here would black out or crash an on-screen tile. Dropping the
+-- reference lets the widget keep it alive for exactly as long as it needs it.
+local function _bbEvictOldest()
+    local oldest_k, oldest_seq
+    for k, e in pairs(_bb_cache) do
+        if not oldest_seq or (e.seq or 0) < oldest_seq then
+            oldest_k, oldest_seq = k, e.seq or 0
+        end
+    end
+    if not oldest_k then return end
+    _bb_cache[oldest_k] = nil
+    _bb_count = _bb_count - 1
+end
 
 -- Try L0 + L1 synchronously; never triggers network. Always pass explicit
 -- w×h to renderImageData: without dims, the returned BB's memory is owned
@@ -510,7 +546,11 @@ local _bb_cache = {}  -- key = url  → { bb, w, h }
 function Covers.getBB(url, api_w, api_h)
     if not url or url == "" then return nil end
     local entry = _bb_cache[url]
-    if entry then return entry.bb, entry.w, entry.h end
+    if entry then
+        _bb_seq   = _bb_seq + 1
+        entry.seq = _bb_seq          -- touch: keeps the visible page resident
+        return entry.bb, entry.w, entry.h
+    end
     local ok_cc, CC = pcall(require, "bf_covercache")
     if not ok_cc or not CC then return nil end
     local data = CC.read(url)
@@ -545,7 +585,10 @@ function Covers.getBB(url, api_w, api_h)
         return nil
     end
 
-    _bb_cache[url] = { bb = new_bb, w = actual_w, h = actual_h }
+    _bb_seq = _bb_seq + 1
+    _bb_cache[url] = { bb = new_bb, w = actual_w, h = actual_h, seq = _bb_seq }
+    _bb_count = _bb_count + 1
+    while _bb_count > _bbCap() do _bbEvictOldest() end
     return new_bb, actual_w, actual_h
 end
 
@@ -611,7 +654,11 @@ function Covers.fetchMissing(urls, on_done, opts)
     end
 end
 
--- Drop the BB cache (called on widget close so memory is freed).
+-- Drop the whole BB cache (called on widget close so memory is freed).
+--
+-- Unlike eviction this frees eagerly: the widget tree is being torn down, so
+-- reclaiming now rather than at the next GC keeps the peak down on devices
+-- where that matters.
 function Covers.freeAll()
     for k, entry in pairs(_bb_cache) do
         if entry and entry.bb and type(entry.bb.free) == "function" then
@@ -619,6 +666,7 @@ function Covers.freeAll()
         end
         _bb_cache[k] = nil
     end
+    _bb_count = 0
 end
 
 -- ===========================================================================
