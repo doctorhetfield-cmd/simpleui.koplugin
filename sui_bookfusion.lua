@@ -631,10 +631,6 @@ end
 
 local COLOR_COVER_BORDER = Blitbuffer.COLOR_BLACK
 local COVER_BORDER_SIZE  = 2
--- Matches module_currently's palette so the progress bar looks identical to
--- the Home tab's Currently Reading card.
-local COLOR_BAR_BG       = Blitbuffer.gray(0.15)  -- dark track
-local COLOR_BAR_FG       = Blitbuffer.gray(0.75)  -- light fill
 
 -- Bordered box with a centered "missing image" glyph (U+26F6). `title` arg
 -- kept on the signature for caller compatibility but ignored — matches the
@@ -779,28 +775,12 @@ local function _titleLabel(title, w, font_size, lines)
     }
 end
 
--- Progress bar — same shape as the home screen's "simple" bar style
--- (desktop_modules/module_books_shared.SH.progressBar): OverlapGroup stacks
--- a full-width dark track LineWidget under a fill-width light LineWidget.
--- No inline percentage label — user wants just the bar.
+-- Progress bar height. The bar itself comes from UI.progressBar (sui_core),
+-- which is the same widget every other Simple UI surface draws — so this tab
+-- now also honours the user's flat/framed progress-bar style preference and
+-- the theme's progress colours, both of which the local copy ignored.
+-- Kept as a constant because the carousel's arrow box budgets around it.
 local BAR_BASE_H = Screen:scaleBySize(7)
-
-local function _progressBar(pct, w)
-    local bar_h = BAR_BASE_H
-    local fill  = math.max(0, math.min(1, pct or 0))
-    local fw    = math.max(0, math.floor(w * fill))
-    if fw <= 0 then
-        return LineWidget:new{
-            dimen = Geom:new{ w = w, h = bar_h },
-            background = COLOR_BAR_BG,
-        }
-    end
-    return OverlapGroup:new{
-        dimen = Geom:new{ w = w, h = bar_h },
-        LineWidget:new{ dimen = Geom:new{ w = w,  h = bar_h }, background = COLOR_BAR_BG },
-        LineWidget:new{ dimen = Geom:new{ w = fw, h = bar_h }, background = COLOR_BAR_FG },
-    }
-end
 
 -- Round "XX %" badge overlaid on the cover's bottom edge. Half sits inside
 -- the cover and half bleeds below, so the caller must build an OverlapGroup
@@ -1007,7 +987,8 @@ function BookTile:init()
         -- Bar width = cover's actual rendered width (after best-fit scaling),
         -- so it lines up perfectly under the visible cover even when the book
         -- cover's aspect ratio differs from the tile box's aspect.
-        vg[#vg+1] = _progressBar(pct, actual_w)
+        -- Note the argument order: UI.progressBar is (w, pct), not (pct, w).
+        vg[#vg+1] = UI.progressBar(actual_w, pct, BAR_BASE_H)
     end
     -- Title strip is opt-in per surface.  Default true so callers that
     -- haven't migrated to the show_title opt keep the old behaviour.  When
