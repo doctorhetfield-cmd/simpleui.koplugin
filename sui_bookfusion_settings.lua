@@ -62,23 +62,32 @@ local function intSpinItem(opts)
 end
 
 -- Percentage spinner for 0..1 float settings displayed as integer %.
--- opts = { text, key, accessor, min_pct, max_pct, step_pct, default_pct, info }
+-- opts = { text, key, accessor, info,
+--          min_pct, max_pct, step_pct, default_pct,  -- default to the 60..160
+--                                                    -- by 10 range every scale
+--                                                    -- setting here uses
+--          enabled_func }                            -- optional; greys the row
 local function pctSpinItem(opts)
+    local min_pct     = opts.min_pct     or 60
+    local max_pct     = opts.max_pct     or 160
+    local step_pct    = opts.step_pct    or 10
+    local default_pct = opts.default_pct or 100
     return {
         text_func = function()
             return string.format("%s: %d%%", opts.text, math.floor(opts.accessor() * 100 + 0.5))
         end,
         keep_menu_open = true,
+        enabled_func   = opts.enabled_func,
         callback = function(touchmenu_instance)
             UIManager:show(SpinWidget:new{
                 title_text      = opts.text,
                 info_text       = opts.info,
                 value           = math.floor(opts.accessor() * 100 + 0.5),
-                value_min       = opts.min_pct,
-                value_max       = opts.max_pct,
-                value_step      = opts.step_pct,
-                value_hold_step = opts.step_pct,
-                default_value   = opts.default_pct,
+                value_min       = min_pct,
+                value_max       = max_pct,
+                value_step      = step_pct,
+                value_hold_step = step_pct,
+                default_value   = default_pct,
                 unit            = "%",
                 ok_text         = _("Set"),
                 callback        = function(spin)
@@ -106,37 +115,6 @@ end
 -- Menu tree
 -- ---------------------------------------------------------------------------
 
--- Title-scale spinner gated on a "show title" toggle. pctSpinItem doesn't
--- express enabled_func, so we inline the SpinWidget construction here.
-local function titleScaleItem(opts)
-    return {
-        text_func = function()
-            return string.format("%s: %d%%", opts.text,
-                math.floor(opts.accessor() * 100 + 0.5))
-        end,
-        keep_menu_open = true,
-        enabled_func   = opts.enabled_func,
-        callback       = function(touchmenu_instance)
-            UIManager:show(SpinWidget:new{
-                title_text      = opts.text,
-                info_text       = opts.info,
-                value           = math.floor(opts.accessor() * 100 + 0.5),
-                value_min       = 60,
-                value_max       = 160,
-                value_step      = 10,
-                value_hold_step = 10,
-                default_value   = 100,
-                unit            = "%",
-                ok_text         = _("Set"),
-                callback        = function(spin)
-                    saveAndRepaint(opts.key, spin.value / 100)
-                    if touchmenu_instance then touchmenu_instance:updateItems() end
-                end,
-            })
-        end,
-    }
-end
-
 function M.build()
     return {
         text = _("BookFusion"),
@@ -154,7 +132,6 @@ function M.build()
                         text     = _("Label scale"),
                         key      = K("LABEL_SCALE"),
                         accessor = function() return S().labelScale() end,
-                        min_pct = 60, max_pct = 160, step_pct = 10, default_pct = 100,
                         info = _("Scales section headings, folder buttons, page numbers, and empty-state messages.  Does not affect the title bar."),
                     },
                     -- Parent/child pair. Child's checked_func returns false
@@ -199,7 +176,7 @@ function M.build()
                         key      = K("SHOW_CR_TITLE"),
                         accessor = function() return S().showCarouselTitle() end,
                     },
-                    titleScaleItem{
+                    pctSpinItem{
                         text         = _("Title text scale"),
                         key          = K("TEXT_SCALE_CR"),
                         accessor     = function() return S().textScaleCarousel() end,
@@ -261,7 +238,7 @@ function M.build()
                         key      = K("SHOW_FOLDER_TITLE"),
                         accessor = function() return S().showFolderTitle() end,
                     },
-                    titleScaleItem{
+                    pctSpinItem{
                         text         = _("Title text scale"),
                         key          = K("TEXT_SCALE_FOLDER"),
                         accessor     = function() return S().textScaleFolder() end,
