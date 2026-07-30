@@ -946,7 +946,10 @@ end
 -- Returns: badge_widget, badge_r, badge_d — caller uses the latter two
 -- to size its OverlapGroup and to reserve vertical budget in the tile.
 local function _overlayBadge(pct, text_scale)
-    local pct_int = math.floor((tonumber(pct) or 0) * 100)
+    -- Round, don't truncate: at 0.997 this used to render "99", so a book one
+    -- page from the end read as though it still had a percent to go. Matches
+    -- how RowRenderer renders the same badge on the home screen.
+    local pct_int = math.floor((tonumber(pct) or 0) * 100 + 0.5)
     local badge_d, badge_r, pct_fs = _overlayBadgeDims(text_scale)
     local badge = FrameContainer:new{
         bordersize = 0,
