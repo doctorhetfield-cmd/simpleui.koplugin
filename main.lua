@@ -1232,6 +1232,16 @@ function SimpleUIPlugin:init()
                 end
             end
         end
+
+        -- Eagerly load the BookFusion tab so its QA and BarInjection descriptors
+        -- are registered before the first tab tap.  QA.execute and QA.isInPlace
+        -- consult the registry only — there is no Config.ALL_ACTIONS fallback —
+        -- and nothing else in the plugin ever requires this module, so a lazy
+        -- require would leave every tap on the tab toasting "Action not
+        -- available".  Loading it here (rather than at the top of the file)
+        -- keeps the cost off a disabled Simple UI and guarantees sui_config,
+        -- sui_core and sui_store are already resolved.
+        pcall(require, "sui_bookfusion")
     end)
     if not ok then logger.err("simpleui: init failed:", tostring(err)) end
 end
@@ -1248,6 +1258,7 @@ local _PLUGIN_MODULES = {
     "sui_store", "sui_presets", "sui_style",
     "sui_settings_window",
     "sui_quicksettings_bar",
+    "sui_bookfusion", "sui_bookfusion_settings",
     "desktop_modules/moduleregistry",
     "desktop_modules/module_books_shared",
     "desktop_modules/module_clock",

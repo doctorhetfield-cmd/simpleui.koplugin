@@ -76,6 +76,7 @@ M.ICON = {
     author         = _P .. "author.svg",
     series         = _P .. "series.svg",
     tags           = _P .. "tags.svg",
+    bookfusion     = _P .. "bookfusion.svg",
     nav_prev       = _KO .. "chevron.left.svg",
     nav_next       = _KO .. "chevron.right.svg",
     ko_home        = _KO .. "home.svg",
@@ -134,6 +135,7 @@ M.ALL_ACTIONS = {
       browsemeta_mode = "series" },
     { id = "browse_tags",      label = _("Tags"),             icon = M.ICON.tags,
       browsemeta_mode = "tags" },
+    { id = "bookfusion",       label = _("BookFusion"),       icon = M.ICON.bookfusion  },
 }
 
 M.ACTION_BY_ID = {}
