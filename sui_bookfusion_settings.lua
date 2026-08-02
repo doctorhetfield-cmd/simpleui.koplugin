@@ -134,6 +134,20 @@ function M.build()
                         accessor = function() return S().labelScale() end,
                         info = _("Scales section headings, folder buttons, page numbers, and empty-state messages.  Does not affect the title bar."),
                     },
+                    -- Landing-page headings. Kept together here rather than
+                    -- under Carousel/Folders: those sections configure the
+                    -- carousel and the subpage grid, while both of these are
+                    -- landing chrome and sit next to each other on screen.
+                    toggleItem{
+                        text     = _("Show \"Currently Reading\" heading"),
+                        key      = K("SHOW_CR_HEADING"),
+                        accessor = function() return S().showCarouselHeading() end,
+                    },
+                    toggleItem{
+                        text     = _("Show \"Folders\" heading"),
+                        key      = K("SHOW_FOLDER_HEADING"),
+                        accessor = function() return S().showFolderHeading() end,
+                    },
                     -- Parent/child pair. Child's checked_func returns false
                     -- when the parent is off so the tick visibly tracks
                     -- "will this show on screen?", while the raw value is

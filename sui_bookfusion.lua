@@ -81,6 +81,10 @@ local SETK_SHOW_CR_PROGRESS  = "navbar_bookfusion_show_cr_progress"  -- bool  (c
 local SETK_CR_PROGRESS_STYLE = "navbar_bookfusion_cr_progress_style" -- "bar" | "overlay"
 local SETK_SHOW_CR_PAGER     = "navbar_bookfusion_show_cr_pager"     -- bool  (carousel)
 local SETK_SHOW_FOLDER_TITLE = "navbar_bookfusion_show_folder_title" -- bool (folder grid)
+-- The two landing-page section headings, toggled independently. Hiding one
+-- returns its reserved height to the covers rather than leaving a gap.
+local SETK_SHOW_CR_HEADING     = "navbar_bookfusion_show_cr_heading"     -- bool (landing)
+local SETK_SHOW_FOLDER_HEADING = "navbar_bookfusion_show_folder_heading" -- bool (landing)
 local SETK_GRID_COLS         = "navbar_bookfusion_grid_cols"         -- int,   1 .. 7
 local SETK_GRID_ROWS         = "navbar_bookfusion_grid_rows"         -- int,   1 .. 6
 -- Hidden knob: actual fetch_size rounds up to the nearest multiple of the
@@ -123,6 +127,8 @@ function Settings.progressStyleCarousel()
 end
 function Settings.showCarouselPager()    return SUISettings:nilOrTrue(SETK_SHOW_CR_PAGER) end
 function Settings.showFolderTitle()      return SUISettings:nilOrTrue(SETK_SHOW_FOLDER_TITLE) end
+function Settings.showCarouselHeading()  return SUISettings:nilOrTrue(SETK_SHOW_CR_HEADING) end
+function Settings.showFolderHeading()    return SUISettings:nilOrTrue(SETK_SHOW_FOLDER_HEADING) end
 function Settings.gridCols()       return math.floor(_readNum(SETK_GRID_COLS,        4,  1,   7)) end
 function Settings.gridRows()       return math.floor(_readNum(SETK_GRID_ROWS,        2,  1,   6)) end
 function Settings.searchMinFetch() return math.floor(_readNum(SETK_SEARCH_MIN_FETCH, 20, 8, 100)) end
@@ -145,6 +151,8 @@ Settings.KEYS = {
     CR_PROGRESS_STYLE   = SETK_CR_PROGRESS_STYLE,
     SHOW_CR_PAGER       = SETK_SHOW_CR_PAGER,
     SHOW_FOLDER_TITLE   = SETK_SHOW_FOLDER_TITLE,
+    SHOW_CR_HEADING     = SETK_SHOW_CR_HEADING,
+    SHOW_FOLDER_HEADING = SETK_SHOW_FOLDER_HEADING,
     DL_IND_GLOBAL       = SETK_DL_IND_GLOBAL,
     DL_IND_SEARCH       = SETK_DL_IND_SEARCH,
 }
@@ -1564,7 +1572,9 @@ function BookFusionTab:_buildLanding(sw, content_h)
     -- freed vertical space (see tile_h computation below).
     local show_title  = Settings.showCarouselTitle()
     local show_progr  = Settings.showCarouselProgress()
-    local show_pager  = Settings.showCarouselPager()
+    local show_pager    = Settings.showCarouselPager()
+    local show_cr_head  = Settings.showCarouselHeading()
+    local show_fld_head = Settings.showFolderHeading()
     local progr_style = Settings.progressStyleCarousel()
     -- Download indicator is only applied per-book inside the tile loop —
     -- the per-book check is an lfs.attributes call (cheap but not free),
@@ -1680,11 +1690,15 @@ function BookFusionTab:_buildLanding(sw, content_h)
     -- leaving the pager on (text replaced by equivalent empty space).
     local cr_pager_off_gap  = Screen:scaleBySize(15)
     local cr_to_folders_gap = show_pager and cr_pager_h or cr_pager_off_gap
+    -- Headings reserve their own label height plus the gap under them, so a
+    -- hidden one gives the space back to the covers instead of leaving a hole.
+    local cr_head_h  = show_cr_head  and (section_lbl_h + pre_section_gap + Screen:scaleBySize(6)) or 0
+    local fld_head_h = show_fld_head and (section_lbl_h + pre_section_gap) or 0
     local reserved = top_pad
-                   + section_lbl_h + pre_section_gap + Screen:scaleBySize(6) -- CR heading (extra breathing room before covers)
+                   + cr_head_h                                        -- CR heading (extra breathing room before covers)
                    + tile_text_h + tile_pct_h + Screen:scaleBySize(8) -- tile extras
                    + cr_to_folders_gap                                -- pager OR between_sections
-                   + section_lbl_h + pre_section_gap                  -- Folders heading
+                   + fld_head_h                                       -- Folders heading
                    + 3 * button_h + 2 * math.floor(UI.PAD / 2)        -- 3 nav buttons + 2 half-PAD gaps
                    + bot_pad
     local cover_budget = content_h - reserved
@@ -1828,11 +1842,13 @@ function BookFusionTab:_buildLanding(sw, content_h)
     --   bot_pad
     local vg = VerticalGroup:new{ align = "left" }
     vg[#vg+1] = VerticalSpan:new{ width = top_pad }
-    vg[#vg+1] = _sectionLabel(_("Currently Reading"))
-    -- A touch more breathing room than the generic pre_section_gap so the
-    -- covers don't feel crammed under the heading.  Folders still uses
-    -- pre_section_gap below to keep its buttons close to its heading.
-    vg[#vg+1] = VerticalSpan:new{ width = pre_section_gap + Screen:scaleBySize(6) }
+    if show_cr_head then
+        vg[#vg+1] = _sectionLabel(_("Currently Reading"))
+        -- A touch more breathing room than the generic pre_section_gap so the
+        -- covers don't feel crammed under the heading.  Folders still uses
+        -- pre_section_gap below to keep its buttons close to its heading.
+        vg[#vg+1] = VerticalSpan:new{ width = pre_section_gap + Screen:scaleBySize(6) }
+    end
     if #cr_books == 0 then
         -- First-time / after-clear-cache state.  We don't auto-sync (the tab
         -- is fully offline by spec), so nudge the user toward the refresh
@@ -1882,8 +1898,10 @@ function BookFusionTab:_buildLanding(sw, content_h)
     else
         vg[#vg+1] = VerticalSpan:new{ width = cr_pager_off_gap }
     end
-    vg[#vg+1] = _sectionLabel(_("Folders"))
-    vg[#vg+1] = VerticalSpan:new{ width = pre_section_gap }
+    if show_fld_head then
+        vg[#vg+1] = _sectionLabel(_("Folders"))
+        vg[#vg+1] = VerticalSpan:new{ width = pre_section_gap }
+    end
     -- Half-PAD gap between folder buttons — just enough visual breathing
     -- room without making the section feel disconnected.
     local folder_gap = math.floor(UI.PAD / 2)

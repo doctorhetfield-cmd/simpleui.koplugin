@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-07-30 23:45\n"
+"POT-Creation-Date: 2026-08-02 22:43\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -46,7 +46,7 @@ msgstr ""
 msgid "%d min/day"
 msgstr ""
 
-#: sui_bookfusion.lua:827
+#: sui_bookfusion.lua:1092
 #: desktop_modules/sui_book_row.lua:258
 msgid "%d%%"
 msgstr ""
@@ -532,19 +532,23 @@ msgstr ""
 msgid "Book-browser settings"
 msgstr ""
 
-#: sui_bookfusion.lua:1130
-#: sui_bookfusion.lua:2501
-#: sui_bookfusion_settings.lua:142
+#: sui_bookfusion.lua:1400
+#: sui_bookfusion.lua:2686
+#: sui_bookfusion_settings.lua:120
 #: sui_config.lua:138
 msgid "BookFusion"
 msgstr ""
 
-#: sui_bookfusion.lua:344
+#: sui_bookfusion.lua:391
 msgid "BookFusion browse error:"
 msgstr ""
 
-#: sui_bookfusion.lua:1237
+#: sui_bookfusion.lua:1507
 msgid "BookFusion plugin is not installed."
+msgstr ""
+
+#: sui_bookfusion.lua:357
+msgid "BookFusion plugin is not reachable right now."
 msgstr ""
 
 #: sui_quickactions.lua:431
@@ -608,7 +612,7 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
-#: sui_bookfusion.lua:1667
+#: sui_bookfusion.lua:1915
 msgid "Browse BookFusion"
 msgstr ""
 
@@ -680,7 +684,7 @@ msgstr ""
 msgid "CALENDAR"
 msgstr ""
 
-#: sui_bookfusion.lua:2061
+#: sui_bookfusion.lua:2260
 #: sui_browsemeta.lua:1085
 #: sui_browsemeta.lua:1193
 #: sui_browsemeta.lua:1403
@@ -757,7 +761,7 @@ msgstr ""
 msgid "Cards - Transparent"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:188
+#: sui_bookfusion_settings.lua:179
 msgid "Carousel"
 msgstr ""
 
@@ -926,12 +930,16 @@ msgstr ""
 msgid "Could not open zip (invalid format or corrupted)"
 msgstr ""
 
-#: sui_bookfusion.lua:2255
+#: sui_bookfusion.lua:2440
 msgid "Couldn't refresh some BookFusion lists."
 msgstr ""
 
-#: sui_bookfusion.lua:2137
+#: sui_bookfusion.lua:2336
 msgid "Couldn't search BookFusion."
+msgstr ""
+
+#: sui_bookfusion.lua:362
+msgid "Couldn't start device linking."
 msgstr ""
 
 #: sui_presets.lua:208
@@ -960,7 +968,7 @@ msgstr ""
 msgid "Cover for \"%s\""
 msgstr ""
 
-#: sui_bookfusion_settings.lua:191
+#: sui_bookfusion_settings.lua:182
 msgid "Cover scale"
 msgstr ""
 
@@ -996,7 +1004,7 @@ msgstr ""
 msgid "Current streak"
 msgstr ""
 
-#: sui_bookfusion.lua:1601
+#: sui_bookfusion.lua:1846
 #: sui_presets.lua:138
 #: sui_presets.lua:173
 #: desktop_modules/module_currently.lua:285
@@ -1406,8 +1414,8 @@ msgstr ""
 msgid "Fades the wallpaper towards white to improve text readability.\n0% is the default (no lightening)."
 msgstr ""
 
-#: sui_bookfusion.lua:1149
-#: sui_bookfusion.lua:1662
+#: sui_bookfusion.lua:1419
+#: sui_bookfusion.lua:1910
 #: sui_config.lua:124
 #: sui_quickactions.lua:742
 #: sui_quickactions.lua:1973
@@ -1505,8 +1513,8 @@ msgstr ""
 msgid "Folder cover"
 msgstr ""
 
-#: sui_bookfusion.lua:1655
-#: sui_bookfusion_settings.lua:245
+#: sui_bookfusion.lua:1902
+#: sui_bookfusion_settings.lua:236
 msgid "Folders"
 msgstr ""
 
@@ -1572,7 +1580,7 @@ msgstr ""
 msgid "Frontlight not available on this device."
 msgstr ""
 
-#: sui_bookfusion_settings.lua:146
+#: sui_bookfusion_settings.lua:124
 msgid "General"
 msgstr ""
 
@@ -1611,11 +1619,11 @@ msgstr ""
 msgid "Goals"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:254
+#: sui_bookfusion_settings.lua:245
 msgid "Grid columns"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:248
+#: sui_bookfusion_settings.lua:239
 msgid "Grid rows"
 msgstr ""
 
@@ -1805,7 +1813,7 @@ msgstr ""
 msgid "Import preset"
 msgstr ""
 
-#: sui_bookfusion.lua:1238
+#: sui_bookfusion.lua:1508
 msgid "Install it from the KOReader plugins directory to enable this tab."
 msgstr ""
 
@@ -1898,7 +1906,7 @@ msgstr ""
 msgid "Label Size"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:154
+#: sui_bookfusion_settings.lua:132
 msgid "Label scale"
 msgstr ""
 
@@ -1996,11 +2004,11 @@ msgstr ""
 msgid "Lighten Wallpaper"
 msgstr ""
 
-#: sui_bookfusion.lua:1244
+#: sui_bookfusion.lua:1514
 msgid "Link device"
 msgstr ""
 
-#: sui_bookfusion.lua:1243
+#: sui_bookfusion.lua:1513
 msgid "Link your BookFusion account to see your library here."
 msgstr ""
 
@@ -2357,12 +2365,12 @@ msgstr ""
 msgid "No books in this collection."
 msgstr ""
 
-#: sui_bookfusion.lua:1616
-#: sui_bookfusion.lua:1860
+#: sui_bookfusion.lua:1862
+#: sui_bookfusion.lua:2085
 msgid "No books in this list."
 msgstr ""
 
-#: sui_bookfusion.lua:1857
+#: sui_bookfusion.lua:2082
 msgid "No books match your search."
 msgstr ""
 
@@ -2539,7 +2547,7 @@ msgstr ""
 msgid "Noon"
 msgstr ""
 
-#: sui_bookfusion.lua:1242
+#: sui_bookfusion.lua:1512
 msgid "Not linked yet."
 msgstr ""
 
@@ -2754,7 +2762,7 @@ msgstr ""
 msgid "Percentage Text"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:226
+#: sui_bookfusion_settings.lua:217
 msgid "Percentage overlay"
 msgstr ""
 
@@ -2793,8 +2801,8 @@ msgstr ""
 msgid "Placeholder Cover for Bookless Folders"
 msgstr ""
 
-#: sui_bookfusion.lua:1137
-#: sui_bookfusion.lua:1660
+#: sui_bookfusion.lua:1407
+#: sui_bookfusion.lua:1908
 msgid "Plan to Read"
 msgstr ""
 
@@ -2913,7 +2921,7 @@ msgstr ""
 msgid "Progress Bar Type"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:216
+#: sui_bookfusion_settings.lua:207
 #: desktop_modules/module_coverdeck.lua:92
 #: desktop_modules/module_currently.lua:248
 msgid "Progress bar"
@@ -3296,15 +3304,15 @@ msgstr ""
 msgid "Scales all modules and labels together.\n100% is the default size."
 msgstr ""
 
-#: sui_bookfusion_settings.lua:207
+#: sui_bookfusion_settings.lua:198
 msgid "Scales carousel book titles."
 msgstr ""
 
-#: sui_bookfusion_settings.lua:269
+#: sui_bookfusion_settings.lua:260
 msgid "Scales folder / search book titles."
 msgstr ""
 
-#: sui_bookfusion_settings.lua:158
+#: sui_bookfusion_settings.lua:135
 msgid "Scales section headings, folder buttons, page numbers, and empty-state messages.  Does not affect the title bar."
 msgstr ""
 
@@ -3316,12 +3324,12 @@ msgstr ""
 msgid "Scan Subfolders for Covers"
 msgstr ""
 
-#: sui_bookfusion.lua:2066
+#: sui_bookfusion.lua:2265
 #: sui_titlebar.lua:104
 msgid "Search"
 msgstr ""
 
-#: sui_bookfusion.lua:2056
+#: sui_bookfusion.lua:2255
 msgid "Search BookFusion"
 msgstr ""
 
@@ -3329,12 +3337,12 @@ msgstr ""
 msgid "Search Button"
 msgstr ""
 
-#: sui_bookfusion.lua:1145
+#: sui_bookfusion.lua:1415
 msgid "Search: %s"
 msgstr ""
 
-#: sui_bookfusion.lua:1855
-#: sui_bookfusion.lua:2121
+#: sui_bookfusion.lua:2080
+#: sui_bookfusion.lua:2320
 msgid "Searching…"
 msgstr ""
 
@@ -3386,8 +3394,7 @@ msgid "Series Index"
 msgstr ""
 
 #: sui_bookfusion_settings.lua:54
-#: sui_bookfusion_settings.lua:83
-#: sui_bookfusion_settings.lua:130
+#: sui_bookfusion_settings.lua:92
 #: sui_menu.lua:647
 #: sui_menu.lua:908
 msgid "Set"
@@ -3456,6 +3463,14 @@ msgstr ""
 msgid "Show Page Count in Title Bar"
 msgstr ""
 
+#: sui_bookfusion_settings.lua:142
+msgid "Show \"Currently Reading\" heading"
+msgstr ""
+
+#: sui_bookfusion_settings.lua:147
+msgid "Show \"Folders\" heading"
+msgstr ""
+
 #: sui_menu.lua:2500
 msgid "Show a brief \"Closing book…\" notice when closing a book, preventing accidental double-taps while e-ink refreshes."
 msgstr ""
@@ -3464,16 +3479,16 @@ msgstr ""
 msgid "Show a brief \"Loading statistics\xe2\x80\xa6\" notice when opening a statistics window, preventing accidental double-taps while e-ink refreshes."
 msgstr ""
 
-#: sui_bookfusion_settings.lua:198
-#: sui_bookfusion_settings.lua:260
+#: sui_bookfusion_settings.lua:189
+#: sui_bookfusion_settings.lua:251
 msgid "Show book title"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:165
+#: sui_bookfusion_settings.lua:156
 msgid "Show download indicator"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:170
+#: sui_bookfusion_settings.lua:161
 msgid "Show download indicator in search"
 msgstr ""
 
@@ -3490,11 +3505,11 @@ msgstr ""
 msgid "Show on Open"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:236
+#: sui_bookfusion_settings.lua:227
 msgid "Show page number"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:210
+#: sui_bookfusion_settings.lua:201
 msgid "Show progress indicator"
 msgstr ""
 
@@ -3622,7 +3637,7 @@ msgstr ""
 msgid "Small"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:195
+#: sui_bookfusion_settings.lua:186
 msgid "Smaller covers fit more per row; bigger covers show fewer."
 msgstr ""
 
@@ -3779,7 +3794,7 @@ msgstr ""
 msgid "Swipe Indicator"
 msgstr ""
 
-#: sui_bookfusion.lua:2245
+#: sui_bookfusion.lua:2430
 msgid "Syncing…"
 msgstr ""
 
@@ -3883,7 +3898,7 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: sui_bookfusion.lua:1614
+#: sui_bookfusion.lua:1860
 msgid "Tap ↻ to sync your BookFusion library."
 msgstr ""
 
@@ -4050,8 +4065,8 @@ msgstr ""
 msgid "Title strip enabled.\n\nRestart now?"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:203
-#: sui_bookfusion_settings.lua:265
+#: sui_bookfusion_settings.lua:194
+#: sui_bookfusion_settings.lua:256
 msgid "Title text scale"
 msgstr ""
 
@@ -4165,7 +4180,7 @@ msgstr ""
 msgid "UI Font  [%s]"
 msgstr ""
 
-#: sui_bookfusion_settings.lua:149
+#: sui_bookfusion_settings.lua:127
 msgid "Uniform covers"
 msgstr ""
 
@@ -4188,7 +4203,7 @@ msgstr ""
 msgid "Unsupported icon format.\nPlease use a PNG or SVG file."
 msgstr ""
 
-#: sui_bookfusion.lua:748
+#: sui_bookfusion.lua:954
 msgid "Untitled"
 msgstr ""
 
