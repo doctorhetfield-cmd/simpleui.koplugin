@@ -334,12 +334,26 @@ function Data.isDownloaded(book)
     return (ok and path ~= nil) or false
 end
 
+-- Runs the plugin's own link flow. Returns ok, message — the caller shows the
+-- message, since the pcall that stops a fault taking down the tab would
+-- otherwise leave a button that does nothing.
+--
+-- Never type-check onLinkDevice. KOReader wraps every plugin `on*` handler in a
+-- HandlerSandbox (pluginloader.lua) to get usable stack traces, and that is a
+-- callable table, not a function — so `type(...) == "function"` rejects a
+-- perfectly good handler and the button silently dies. Calling it is the only
+-- reliable test.
 function Data.startLink()
     local p = Data.getPlugin()
-    if not p or type(p.onLinkDevice) ~= "function" then return false end
+    if not p then
+        return false, _("BookFusion plugin is not reachable right now.")
+    end
     local ok, err = pcall(function() p:onLinkDevice() end)
-    if not ok then logger.warn("simpleui-bf: startLink failed:", tostring(err)) end
-    return ok
+    if not ok then
+        logger.warn("simpleui-bf: startLink failed:", tostring(err))
+        return false, _("Couldn't start device linking.") .. "\n\n" .. tostring(err)
+    end
+    return true
 end
 
 -- We hold the Browser on a module upvalue instead of letting onSearchBooks
@@ -1489,7 +1503,13 @@ function BookFusionTab:_buildBodyContent()
         return self:_buildEmptyState(sw, body_h,
             _("Not linked yet."),
             _("Link your BookFusion account to see your library here."),
-            { label = _("Link device"), callback = function() Data.startLink() end })
+            { label = _("Link device"), callback = function()
+                local ok, msg = Data.startLink()
+                if not ok and msg then
+                    local InfoMessage = require("ui/widget/infomessage")
+                    UIManager:show(InfoMessage:new{ text = msg, timeout = 5 })
+                end
+            end })
     elseif self._view == "landing" then
         return self:_buildLanding(sw, body_h)
     else
