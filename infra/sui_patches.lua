@@ -1968,6 +1968,15 @@ function M.patchUIManagerShow(plugin)
         local extra_args = n_extra > 0 and { ... } or _EMPTY
         _show_depth = _show_depth + 1
 
+        -- Set true the moment orig_show() has been reached inside the pcall
+        -- below (whether via the passthrough branch or after a full
+        -- injection). If the pcall throws *before* this — e.g. a Bar
+        -- Injection target whose widget structure the injection pipeline
+        -- can't wrap — the error handler shows the widget unadorned rather
+        -- than letting it be swallowed (no orig_show → blank screen, caller
+        -- stuck on the previous view).
+        local navbar_shown = false
+
         -- Wrap in pcall so _show_depth is always decremented even on error.
         local ok, result = pcall(function()
 
@@ -1990,6 +1999,7 @@ function M.patchUIManagerShow(plugin)
                  or _bi_desc ~= nil)
 
         if not should_inject then
+            navbar_shown = true
             if n_extra > 0 then
                 return orig_show(um_self, widget, table.unpack(extra_args))
             else
@@ -2219,6 +2229,7 @@ function M.patchUIManagerShow(plugin)
 
         Bottombar.resizePaginationButtons(widget, Bottombar.getPaginationIconSize())
 
+        navbar_shown = true
         if n_extra > 0 then
             orig_show(um_self, widget, table.unpack(extra_args))
         else
@@ -2287,6 +2298,20 @@ function M.patchUIManagerShow(plugin)
         _show_depth = _show_depth - 1
         if not ok then
             logger.warn("simpleui: UIManager.show error:", tostring(result))
+            -- Injection threw before the widget was shown — show it now,
+            -- unadorned, so it can never be lost. Guarded so a widget that
+            -- errored *after* orig_show is not shown twice.
+            if widget and not navbar_shown and not widget._navbar_show_fallback then
+                widget._navbar_show_fallback = true
+                widget._navbar_skip_inject   = true
+                pcall(function()
+                    if n_extra > 0 then
+                        orig_show(um_self, widget, table.unpack(extra_args))
+                    else
+                        orig_show(um_self, widget)
+                    end
+                end)
+            end
         end
 
         -- Close the homescreen when a different fullscreen widget appears on top.

@@ -9,10 +9,16 @@
 --      as an external module via moduleregistry's public register() API —
 --      no edit to the built-in MODULES list.
 --
---   2. Registers a Bar Injection descriptor so the Simple UI navbar stays
---      visible on the `vnds` plugin's library screen (matched by widget
---      name). Passive: zero effect unless that plugin is installed and its
---      screen actually carries the tag.
+--   2. Registers Bar Injection descriptors so the Simple UI navbar stays
+--      visible on the `vnds` plugin's library screen and on Rakuyomi's
+--      LibraryView (both matched by widget name). Each descriptor also
+--      supplies get_active_action so the bottom bar lights up whichever tab
+--      launches that plugin. Passive: zero effect unless the plugin is
+--      installed and its screen actually carries the tag. Rakuyomi's
+--      LibraryView is a heavily customised MenuCustom widget the injection
+--      pipeline may fail to wrap — sui_patches.lua's show wrapper now shows
+--      the widget unadorned in that case rather than losing it, so the
+--      worst case is "no bar on that screen", never a blank screen.
 --
 --   3. Wraps SH.prefetchBooks so Rakuyomi's downloaded chapter files
 --      (stored under `<koreader>/rakuyomi/…/<chapter>.cbz`, which land in
@@ -38,9 +44,8 @@
 local UIManager = require("ui/uimanager")
 local UI        = require("infra/sui_core")
 
-local ROW_ID          = "rakuyomi_row"
-local ROW_ENABLED_KEY = ROW_ID .. "_enabled"
-local ROW_MODULE      = "modules/module_rakuyomi_row"
+local ROW_ID     = "rakuyomi_row"
+local ROW_MODULE = "modules/module_rakuyomi_row"
 
 local M = {}
 local _installed = false
@@ -55,15 +60,49 @@ local function _registerRow()
 end
 
 -- ---------------------------------------------------------------------------
--- 2. Bar Injection descriptor for the vnds plugin's library screen
+-- 2. Bar Injection descriptors — keep the navbar on vnds / Rakuyomi screens
 -- ---------------------------------------------------------------------------
+
+-- Find the bottom-bar tab (a custom Quick Action) that launches the plugin
+-- named by `needle`, so the injected screen can highlight the matching icon.
+-- Returns the tab id, or nil when the user has no such launcher in the bar
+-- (nothing to highlight — correct, not an error).
+local function _tabIdForPlugin(needle)
+    local ok, Config = pcall(require, "infra/sui_config")
+    if not (ok and Config and type(Config.loadTabConfig) == "function"
+                and type(Config.getCustomQAConfig) == "function") then
+        return nil
+    end
+    local ok_t, tabs = pcall(Config.loadTabConfig)
+    if not (ok_t and type(tabs) == "table") then return nil end
+    needle = needle:lower()
+    for _, id in ipairs(tabs) do
+        if type(id) == "string" and id:match("^custom_qa_%d+$") then
+            local ok_c, cfg = pcall(Config.getCustomQAConfig, id)
+            if ok_c and type(cfg) == "table" then
+                local hay = ((cfg.plugin_key or "") .. " " ..
+                             (cfg.dispatcher_action or "")):lower()
+                if hay:find(needle, 1, true) then return id end
+            end
+        end
+    end
+    return nil
+end
+
 local function _registerBarInjection()
     if not (UI and UI.BarInjection and type(UI.BarInjection.register) == "function") then return end
-    -- is_pageable is left unset so it falls back to the same page_num
-    -- auto-detection used for the native Collections/History cases.
+    -- is_pageable left unset on both: falls back to the same page_num
+    -- auto-detection used for the native Collections/History cases (both
+    -- screens are paginated Menu widgets).
     UI.BarInjection.register{
-        id          = "vnds_library",
-        widget_name = "vnds_library",
+        id                = "vnds_library",
+        widget_name       = "vnds_library",
+        get_active_action = function() return _tabIdForPlugin("vnds") end,
+    }
+    UI.BarInjection.register{
+        id                = "rakuyomi_library_view",
+        widget_name       = "library_view",   -- Rakuyomi's MenuCustom:extend{ name = "library_view" }
+        get_active_action = function() return _tabIdForPlugin("rakuyomi") end,
     }
 end
 
