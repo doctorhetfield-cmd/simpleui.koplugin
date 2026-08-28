@@ -948,8 +948,12 @@ function SimpleUIPlugin:init()
 
         if SUISettings:nilOrTrue("simpleui_enabled") then
             Patches.installAll(self)
-            
+
             pcall(function() QSBar.install() end)
+            -- Rakuyomi integration: home-screen library row, chapter filtering,
+            -- navbar-on-vnds descriptor, and a deferred backend warm-up. Self-
+            -- contained and pcall-guarded — no-op when Rakuyomi isn't present.
+            pcall(function() require("modules/sui_rakuyomi").install(self) end)
             -- Register the TBR button in the Library hold dialog (single book).
             -- addFileDialogButtons is the official KOReader API for this.
             -- The multi-selection button is injected via patchGetPlusDialogButtons
@@ -1310,6 +1314,8 @@ local _PLUGIN_MODULES = {
     "modules/module_new_books",
     "modules/module_tbr",
     "modules/module_feat_coll",
+    "modules/module_rakuyomi_row",
+    "modules/sui_rakuyomi",
     "modules/quotes",
     "infra/sui_custom_screens",
     "engines/sui_screen_engine",
