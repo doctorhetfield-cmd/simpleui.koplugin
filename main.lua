@@ -2178,44 +2178,24 @@ function SimpleUIPlugin:onCloseDocument()
     end
 
     -- Currently Reading: invalidate book data so the next render shows fresh
-    -- progress. Uses surgical invalidation to avoid re-opening every sidecar.
+    -- progress. Always a full discard of the cached book-list state (never a
+    -- surgical per-entry patch): current_fp itself may have changed — the
+    -- just-closed book might not even be the one that becomes "current" next
+    -- (e.g. a different book was already ahead in ReadHistory) — and only a
+    -- fresh prefetchBooks() pass can re-resolve that. Mirrors the Cover Deck
+    -- block below exactly, so both book-list modules stay correct regardless
+    -- of which one (if any) is active alongside the other on a given screen.
     if any_currently_active then
-        local function _partial_invalidate(bs)
-            if not bs then return end
-            -- Drop the entry for the closed book so prefetchBooks() re-reads it.
-            -- current_fp is deliberately left untouched: SH.getBookData() and
-            -- fetchBookStats() both fall back to a synchronous direct re-read
-            -- when their cache is empty, so the closed book's data is already
-            -- fresh (not stale) on the very next render — meaning there is no
-            -- need to blank current_fp while waiting for the next
-            -- prefetchBooks() call, and doing so only cost a visible one-frame
-            -- flash to the empty-state placeholder before the deferred
-            -- refresh replaced it with the resolved book.
-            if bs.prefetched_data and closed_fp then
-                bs.prefetched_data[closed_fp] = nil
-            end
-        end
         for _, id in ipairs(screen_ids) do
             if currently_active_for[id] then
-                -- Skipped when coverdeck is also active on this same screen —
-                -- its block below will discard that screen's _cached_books_state
-                -- entirely, making the partial work redundant.
-                if not coverdeck_active_for[id] then
-                    local inst = ScreenEngine.getInstance(id)
-                    if inst then
-                        _partial_invalidate(inst._cached_books_state)
-                    end
-                    _partial_invalidate(ScreenEngine.getCachedBooksState(id))
-                end
-                -- When this screen is not live, the flat _cached_books_state
-                -- would otherwise be reused verbatim on the next
-                -- ScreenWidget:new{} — including its current_fp, which still
-                -- points at the just-closed book. Since a non-nil cached
-                -- state makes _buildCtx() skip prefetchBooks() entirely, that
-                -- stale current_fp would stick even after a different book
-                -- becomes "current" in the meantime. Discard it so the next
-                -- open is forced to call prefetchBooks() from scratch.
-                if not ScreenEngine.getInstance(id) then
+                local inst = ScreenEngine.getInstance(id)
+                if inst then
+                    inst._cached_books_state = nil
+                else
+                    -- Not currently visible — the flat, id-level state would
+                    -- otherwise be reused verbatim (current_fp included) on
+                    -- the next ScreenWidget:new{}. Discard it so that open is
+                    -- forced to call prefetchBooks() from scratch.
                     ScreenEngine.setCachedBooksState(id, nil)
                 end
                 needs_refresh_for[id] = true
