@@ -33,6 +33,7 @@ local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
 local MAX_RECENT_FPS   = 10
 local MAX_SEC_PER_PAGE = 120  -- matches KOReader statistics query cap
 local BSTATS_CACHE_MAX = 20   -- max md5 entries kept in the stats LRU cache
+local DESC_LINES       = 3    -- fixed line count for the description block
 
 -- ---------------------------------------------------------------------------
 -- Base carousel size, expressed as a percentage of inner_w rather than a
@@ -149,13 +150,14 @@ local _ELEM_LABELS = {
 -- Main list: the top-level arrangeable elements. "covers" is a fixed anchor
 -- (always present, never removable — renders as a divider in the arrange
 -- screen); the rest can be freely reordered and toggled around it.
-local _MAIN_ELEM_DEFAULT_ORDER = { "covers", "title", "author", "progress", "stats" }
+local _MAIN_ELEM_DEFAULT_ORDER = { "covers", "title", "author", "progress", "stats", "description" }
 local _MAIN_ELEM_LABELS = {
     covers   = _("Covers"),
     title    = _("Title"),
     author   = _("Author"),
     progress = _("Progress bar"),
     stats    = _("Statistics"),
+    description = _("Description"),
 }
 
 -- ---------------------------------------------------------------------------
@@ -200,6 +202,9 @@ end
 -- except SETTING_SHOW_FINISHED above, which is read with `== true` so an
 -- unset key defaults to OFF instead.
 local function _showElem(pfx, key)
+    if key == "description" then
+        return SUISettings:readSetting(pfx .. "coverdeck_show_" .. key) == true
+    end
     return SUISettings:nilOrTrue(pfx .. "coverdeck_show_" .. key)
 end
 
@@ -284,6 +289,9 @@ local function getVisibleElements(pfx, bundle)
         show_author = _showElemFrom(bundle, pfx, "author"),
         progress    = _showElemFrom(bundle, pfx, "progress"),
         show_stats  = _showElemFrom(bundle, pfx, "stats"),
+        -- Live read, not _showElemFrom: description is not in the pre-read
+        -- bundle, and must stay opt-in even if a bundle entry is added later.
+        show_description = _showElem(pfx, "description"),
         has_stat    = has_stat,
         stats_order = stats_order,
     }
@@ -768,6 +776,7 @@ function M.build(w, ctx)
     local show_author     = vis.show_author
     local show_progress   = vis.progress
     local show_stats      = vis.show_stats
+    local show_description = vis.show_description
     local stats_order     = vis.stats_order
     local show_progress_badge         = showProgressBadge(pfx)
     local show_progress_badge_on_peeks = showProgressBadgeOnPeeks(pfx)
@@ -1099,6 +1108,37 @@ function M.build(w, ctx)
         stats_widget = stats_w
     end
 
+    -- Description: the centre book's blurb, already HTML-stripped by
+    -- SH.getBookData. TextBoxWidget's max_lines does not clamp, so the line
+    -- budget is converted to a pixel height (same as module_currently).
+    -- Width spans the full inner width; title/author are capped to the
+    -- narrower carousel footprint and would wrap a blurb far too early.
+    local desc_widget
+    if show_description and bd.description and bd.description ~= "" then
+        local desc_line_h = math.floor(1.3 * face_info.size + 0.5)
+        local desc_args = {
+            text      = bd.description,
+            face      = face_info,
+            width     = inner_w,
+            height    = desc_line_h * DESC_LINES,
+            height_adjust = true,
+            height_overflow_show_ellipsis = true,
+            fgcolor   = CLR_TEXT_SUB_EFF,
+        }
+        if ctx.has_wallpaper then
+            local ok_tbx, tbx = pcall(UI.makeAlphaTextBox, desc_args)
+            if ok_tbx then
+                desc_widget = tbx
+            else
+                logger.warn("simpleui: module_coverdeck: makeAlphaTextBox failed, "
+                    .. "falling back to TextBoxWidget: " .. tostring(tbx))
+                desc_widget = TextBoxWidget:new(desc_args)
+            end
+        else
+            desc_widget = TextBoxWidget:new(desc_args)
+        end
+    end
+
     -- Final layout assembly — render each visible main-list element in the
     -- user's chosen order ("covers" is the carousel itself; the rest are
     -- optional widgets). A PAD2 vspan separates any two adjacent elements.
@@ -1121,6 +1161,8 @@ function M.build(w, ctx)
             _appendElem(progress_widget)
         elseif key == "stats" then
             _appendElem(stats_widget)
+        elseif key == "description" then
+            _appendElem(desc_widget)
         end
     end
 
@@ -1301,6 +1343,18 @@ function M.getHeight(ctx)
     if vis.has_stat and vis.show_stats ~= false then
         if has_meta then h = h + PAD2 end
         h        = h + math.floor(Screen:scaleBySize(14) * scale * lbl_scale)
+        has_meta = true
+    end
+
+    if vis.show_description then
+        -- Re-resolve the face: infra/sui_patches wraps Font.getFace to scale
+        -- sizes when global Text Size != 100%, so face.size != the value passed
+        -- in. build() reads face_info the same way, keeping both in step.
+        local desc_face = Font:getFace(SUIStyle.FACE_REGULAR,
+            math.max(7, math.floor(SUIStyle.FS_DETAIL * scale * lbl_scale)))
+        local desc_lh   = math.floor(1.3 * desc_face.size + 0.5)  -- matches desc_widget in build()
+        if has_meta then h = h + PAD2 end
+        h = h + desc_lh * DESC_LINES
         has_meta = true
     end
 
@@ -1619,6 +1673,7 @@ function M.getMenuItems(ctx_menu)
             toggle_item("Author",       "author",   true),
             toggle_item("Progress bar", "progress", true),
             toggle_item("Statistics",   "stats",    true),
+            toggle_item("Description", "description", true),
             {
                 text = _lc("Statistics"),
                 sub_item_table = {
@@ -1664,11 +1719,11 @@ function M.getMenuItems(ctx_menu)
                         on_change   = _saveMainOrder,
                         footer_text = _lc("Add Item"),
                         footer_enabled = function()
-                            return _anyHidden({ "title", "author", "progress", "stats" })
+                            return _anyHidden({ "title", "author", "progress", "stats", "description" })
                         end,
                         footer_action = function(ctx2)
                             local items = _makeAddItemPicker(
-                                { "title", "author", "progress", "stats" }, _MAIN_ELEM_LABELS,
+                                { "title", "author", "progress", "stats", "description" }, _MAIN_ELEM_LABELS,
                                 function(added_key)
                                     local cur = _getMainOrder(pfx)
                                     local new_order = {}
