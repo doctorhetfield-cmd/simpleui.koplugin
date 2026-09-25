@@ -628,6 +628,25 @@ function SUIWindow:close()
         UIManager:close(self._wrapper)
         self._wrapper._sui_window_instance = nil  -- clear marker
     end
+
+    -- Force a full paint of any underlying homescreen. The automatic
+    -- lower-widget refresh after close honours widget.dithered and can
+    -- compose from a partial frame that omits paintTo-only fills (module
+    -- chrome). Clear the dither hint so this pass runs a complete paintTo;
+    -- the next page/layout update will re-set it from cover presence.
+    UIManager:nextTick(function()
+        local stack = UIManager._window_stack
+        if type(stack) ~= "table" then return end
+        for i = #stack, 1, -1 do
+            local w = stack[i] and stack[i].widget
+            if w and w.name == "homescreen" then
+                w.dithered = nil
+                UIManager:setDirty(w, "ui")
+                break
+            end
+        end
+    end)
+
     -- After closing, restore navbar arrows to reflect the underlying widget's
     -- page state.  Deferred to nextTick so the wrapper is already off the stack
     -- when getNavpagerState() runs (otherwise it would still find this window).

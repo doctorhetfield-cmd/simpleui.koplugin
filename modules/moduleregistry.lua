@@ -420,7 +420,7 @@ function Registry.purgeInstanceSettings(inst_id, pfx)
                        -- used by Featured Collection / sui_book_grid.lua:
                        "_coll_name", "_thumb_scale",
                        "_show_progress", "_show_text", "_show_overlay",
-                       "_show_frame", "_solid_bg",
+                       "_show_frame", "_solid_bg", "_backdrop",
                        "_grid_rows", "_grid_cols" }
     for _, s in ipairs(suffixes) do
         SUISettings:set(pfx    .. inst_id .. s, nil)

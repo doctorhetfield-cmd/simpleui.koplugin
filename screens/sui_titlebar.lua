@@ -326,6 +326,36 @@ end
 
 -- Resizes btn to new_w x new_w and zeroes left/right/bottom paddings.
 -- Pass keep_top_pad=true to preserve padding_top (needed for injected buttons).
+-- Rounded scrim behind title-bar icon buttons (wallpaper chrome).
+-- Strength is read at paint time so opacity changes need no re-hook.
+local function _installButtonScrim(btn)
+    if not btn or btn._sui_tb_btn_scrim then return end
+    btn._sui_tb_btn_scrim = true
+    local orig = btn.paintTo
+    if type(orig) ~= "function" then return end
+    function btn:paintTo(bb, x, y)
+        local ok, WP = pcall(require, "features/sui_wallpaper")
+        if ok and WP and WP.getTitlebarButtonBackdropStrength then
+            local strength = WP.getTitlebarButtonBackdropStrength()
+            if strength > 0 and WP.paintBackdrop then
+                local d = self.dimen
+                local bw = (d and d.w) or self.width or 0
+                local bh = (d and d.h) or self.height or 0
+                if bw <= 0 or bh <= 0 then
+                    local sz = self.getSize and self:getSize()
+                    if sz then bw, bh = sz.w, sz.h end
+                end
+                if bw > 0 and bh > 0 then
+                    local Device = require("device")
+                    local radius = math.floor(Device.screen:scaleBySize(12))
+                    WP.paintBackdrop(bb, x, y, bw, bh, strength, radius)
+                end
+            end
+        end
+        return orig(self, bb, x, y)
+    end
+end
+
 local function _resizeAndStrip(btn, new_w, keep_top_pad)
     btn.width  = new_w
     btn.height = new_w
@@ -374,6 +404,7 @@ local function _resizeAndStrip(btn, new_w, keep_top_pad)
     btn.padding_bottom = 0
     if not keep_top_pad then btn.padding_top = 0 end
     btn:update()
+    _installButtonScrim(btn)
 end
 
 -- Snapshots a button's current geometry and optional state into a plain table.

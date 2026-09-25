@@ -125,6 +125,19 @@ end
 
 local M = {}
 
+local function _navbarBackdropStrength()
+    local ok, WP = pcall(require, "features/sui_wallpaper")
+    if ok and WP and WP.getNavbarBackdropStrength then
+        return WP.getNavbarBackdropStrength()
+    end
+    return SUISettings:isTrue("simpleui_navbar_transparent") and 0 or 100
+end
+
+local function _navbarIsTransparent()
+    return _navbarBackdropStrength() <= 0
+end
+
+
 -- Bar colors — derived from the shared style catalog, cached on first
 -- access (kept lazy, via _SUIStyle(), so requiring this module doesn't
 -- force features/sui_style to load at startup).
@@ -150,8 +163,70 @@ function M.sepColor() return _sepColor() end
 -- Priority: transparent > default.
 -- ---------------------------------------------------------------------------
 local function _getBarBg()
-    if M.getBarStyle() == "bare" or SUISettings:isTrue("simpleui_navbar_transparent") then return nil end
-    return _SUIStyle().COLOR.surface
+    if M.getBarStyle() == "bare" or _navbarIsTransparent() then return nil end
+    local s = _navbarBackdropStrength()
+    if s >= 100 then return _SUIStyle().COLOR.surface end
+    -- Partial scrim: no opaque FrameContainer background.
+    return nil
+end
+
+-- Full-width scrim over the entire bottom-bar footprint (TOP_SP + BAR_H +
+-- BOT_SP). Used by the default bar style when strength is 1–99.
+local function _applyNavbarScrim(widget)
+    local s = _navbarBackdropStrength()
+    if s <= 0 or s >= 100 then return widget end
+    local orig_paint = widget.paintTo
+    function widget:paintTo(bb, x, y)
+        local dimen = self.dimen
+        -- Prefer measured height; fall back to TOTAL_H so TOP/BOT padding is
+        -- never left as bare wallpaper when dimen is not yet assigned.
+        local h = (dimen and dimen.h and dimen.h > 0) and dimen.h or M.TOTAL_H()
+        local ok, WP = pcall(require, "features/sui_wallpaper")
+        if ok and WP and WP.paintBackdrop then
+            WP.paintBackdrop(bb, 0, y, Screen:getWidth(), h, s)
+        end
+        return orig_paint(self, bb, x, y)
+    end
+    return widget
+end
+
+-- Dedicated fill + border layer for the framed bar at partial opacity. Owns
+-- width/height so paint never depends on a parent having assigned dimen
+-- (paintTo overrides on FrameContainer were skipped after tab switches /
+-- dithered refreshes). Paints both the scrim and the border through the
+-- shared wallpaper backdrop painter so their rounded corners always match —
+-- mixing this fill with a native FrameContainer border, which rounds
+-- corners with a different algorithm, leaves a sliver of wallpaper showing
+-- through at the corners.
+local _NavbarFill
+local function NavbarFill()
+    if _NavbarFill then return _NavbarFill end
+    local Widget = require("ui/widget/widget")
+    local Geom = require("ui/geometry")
+    _NavbarFill = Widget:extend{
+        width = 0,
+        height = 0,
+        strength = 0,
+        radius = 0,
+        border_sz = 0,
+        border_color = nil,
+    }
+    function _NavbarFill:getSize()
+        return Geom:new{ w = self.width, h = self.height }
+    end
+    function _NavbarFill:paintTo(bb, x, y)
+        local w, h = self.width, self.height
+        if w <= 0 or h <= 0 then return end
+        local ok, WP = pcall(require, "features/sui_wallpaper")
+        if not (ok and WP) then return end
+        if self.strength > 0 and WP.paintBackdrop then
+            WP.paintBackdrop(bb, x, y, w, h, self.strength, self.radius)
+        end
+        if self.border_sz > 0 and WP.paintFrame then
+            WP.paintFrame(bb, x, y, w, h, self.border_sz, self.radius, self.border_color)
+        end
+    end
+    return _NavbarFill
 end
 
 local function _getBarFg()
@@ -462,8 +537,11 @@ end
 -- dimension accessors and that shared builder.
 function M.buildTabCell(action_id, active, tab_w, mode)
     local bar_style = M.getBarStyle()
+    -- Inactive top rule only when the bar fill is fully opaque. With a
+    -- wallpaper scrim (or transparent bar) a solid surface line reads as a
+    -- white strip across the top of the bar.
     local inactive_indicator_color = nil
-    if bar_style == "default" and not SUISettings:isTrue("simpleui_navbar_transparent") then
+    if bar_style == "default" and _navbarBackdropStrength() >= 100 then
         inactive_indicator_color = _getBarBg() or _SUIStyle().COLOR.surface
     end
 
@@ -546,7 +624,7 @@ function M.buildNavpagerArrowCell(is_prev, enabled, tab_w, mode)
     }
 
     local bar_style = M.getBarStyle()
-    if bar_style == "default" and not SUISettings:isTrue("simpleui_navbar_transparent") then
+    if bar_style == "default" and not _navbarIsTransparent() then
         og[#og + 1] = LineWidget():new{
             dimen          = Geom():new{ w = tab_w, h = M.INDIC_H() },
             background     = _getBarBg() or _SUIStyle().COLOR.surface,
@@ -612,18 +690,47 @@ local function _buildBarContainer(hg_args, is_navpager)
         local radius = math.floor(Screen:scaleBySize(12) * _getNavbarScale())
         local border_color = _SUIStyle().COLOR.gray
         local inner_bg = _getBarBg()
-        
-
+        local strength = _navbarBackdropStrength()
         local border_sz = require("features/sui_style").BORDER_SZ
         local hg = HorizontalGroup():new(hg_args)
+
+        -- Content frame: native fill + border when strength is 0 or 100 (a
+        -- single native draw keeps them consistent); at partial strength the
+        -- border moves into NavbarFill below so it shares the scrim's
+        -- rounded-corner geometry.
+        local partial = strength > 0 and strength < 100
         local fc = FrameContainer():new{
-                bordersize = border_sz,
+            bordersize = partial and 0 or border_sz,
             color      = border_color,
-            background = inner_bg,
+            background = (strength >= 100) and inner_bg or nil,
             radius     = radius,
             padding    = 0, margin = 0,
             hg,
         }
+
+        local inner
+        if partial then
+            local sz = fc:getSize()
+            local box_w = math.max(1, sz.w)
+            local box_h = math.max(1, sz.h)
+            local fill = NavbarFill():new{
+                width = box_w,
+                height = box_h,
+                strength = strength,
+                radius = radius,
+                border_sz = border_sz,
+                border_color = border_color,
+            }
+            fill.dimen = Geom():new{ w = box_w, h = box_h }
+            fc.dimen = Geom():new{ w = box_w, h = box_h }
+            inner = OverlapGroup():new{
+                dimen = Geom():new{ w = box_w, h = box_h },
+                fill,
+                fc,
+            }
+        else
+            inner = fc
+        end
 
         local wrapper = FrameContainer():new{
             bordersize     = 0, padding = 0, margin = 0,
@@ -632,10 +739,10 @@ local function _buildBarContainer(hg_args, is_navpager)
             padding_top    = M.TOP_SP(),
             padding_bottom = M.BOT_SP(),
             background     = nil,
-            fc,
+            inner,
         }
-        
-        if is_navpager then 
+
+        if is_navpager then
             wrapper._navpager_has_arrows = true
             wrapper._navpager_hg = hg
         end
@@ -658,7 +765,7 @@ local function _buildBarContainer(hg_args, is_navpager)
     local sep_h = M.SEP_H()
     
     if style == "default" and sep_h > 0 then
-        local sep_bg = SUISettings:isTrue("simpleui_navbar_transparent") and nil or M.sepColor()
+        local sep_bg = _navbarIsTransparent() and nil or M.sepColor()
         local pad_above = M.TOP_SP() - sep_h
         if pad_above > 0 then
             top_vg[#top_vg + 1] = VerticalSpan():new{ width = pad_above }
@@ -690,7 +797,7 @@ local function _buildBarContainer(hg_args, is_navpager)
         wrapper._navpager_hg = hg
     end
     
-    return wrapper
+    return _applyNavbarScrim(wrapper)
 end
 
 -- Assembles the full bottom bar FrameContainer from all tab cells.

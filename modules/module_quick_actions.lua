@@ -140,7 +140,7 @@ end
 -- ---------------------------------------------------------------------------
 -- Core widget builder (shared by all slots)
 -- ---------------------------------------------------------------------------
-local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d, shape, bg, colors, align)
+local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d, shape, bg, colors, align, strength)
     local clr_blk = colors and colors.blk or SUIStyle.COLOR.text_primary
     local clr_sub = colors and colors.sub or CLR_TEXT_SUB
     local ph_fs = math.max(8, math.floor(_BASE_PH_FS * (d.frame_sz / (_BASE_ICON_SZ + _BASE_FRAME_PAD * 2))))
@@ -164,7 +164,8 @@ local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d, shape, bg
     local valid_ids = QA.filterValidIds(action_ids)
     if #valid_ids == 0 then return _placeholder() end
     local n        = #valid_ids
-    local inner_w  = w - PAD * 2
+    -- `w` is already label-aligned via module chrome outer margin.
+    local inner_w  = w
     local lbl_h    = show_labels and d.lbl_h or 0
     local lbl_sp   = show_labels and d.lbl_sp or 0
 
@@ -196,6 +197,7 @@ local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d, shape, bg
             corner_r       = d.corner_r,
             shape          = shape,
             bg             = bg,
+            strength       = strength,
             fgcolor        = clr_blk,
             show_label     = show_labels,
             lbl_sp         = lbl_sp,
@@ -215,7 +217,7 @@ local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d, shape, bg
 
     return FrameContainer:new{
         bordersize   = 0, padding = 0,
-        padding_left = PAD + left_off,
+        padding_left = left_off,
         row,
     }
 end
@@ -226,16 +228,34 @@ end
 local function makeInstance(inst_id)
     -- Keys built at call-time using ctx.pfx — works for any page prefix.
     local slot_suffix = inst_id
-    local SHAPE_KEY   = slot_suffix .. "_shape"
-    local BG_KEY      = slot_suffix .. "_bg"
-    local ALIGN_KEY   = slot_suffix .. "_align"
+    local SHAPE_KEY    = slot_suffix .. "_shape"
+    local BG_KEY       = slot_suffix .. "_bg"
+    local ALIGN_KEY    = slot_suffix .. "_align"
+    local STRENGTH_KEY = slot_suffix .. "_btn_strength"
 
     local function getShape(pfx)
         return SUISettings:readSetting(pfx .. SHAPE_KEY) or "rounded_square"
     end
 
+    -- Color style: solid | flat (transparent folds into strength 0).
     local function getBg(pfx)
-        return SUISettings:readSetting(pfx .. BG_KEY) or "solid"
+        local v = SUISettings:readSetting(pfx .. BG_KEY) or "solid"
+        if v == "transparent" then return "solid" end
+        return v
+    end
+
+    local function getBtnStrength(pfx)
+        local WP = require("features/sui_wallpaper")
+        local v = WP.readBackdropStrength(pfx .. STRENGTH_KEY)
+        if v ~= nil then return v end
+        if SUISettings:readSetting(pfx .. BG_KEY) == "transparent" then
+            return 0
+        end
+        return 100
+    end
+
+    local function setBtnStrength(pfx, n)
+        require("features/sui_wallpaper").saveBackdropStrength(pfx .. STRENGTH_KEY, n)
     end
 
     -- "current" (default) = existing behaviour, icons spread across the full
@@ -503,24 +523,22 @@ local function makeInstance(inst_id)
         -- landscape_factor too would narrow it twice (see GridRenderer.build
         -- in sui_book_grid.lua, which avoids the same double-narrowing for
         -- the same reason).
-        local d           = _getQADims(Config.getModuleScaleRaw(S.id, ctx.pfx), w - PAD * 2)
+        -- `w` is already chrome contentWidth (label-aligned).
+        local d           = _getQADims(Config.getModuleScaleRaw(S.id, ctx.pfx), w)
         local lbl_scale = Config.getItemLabelScale(S.id, ctx.pfx) * lf
         d.lbl_fs = math.max(6, math.floor(d.lbl_fs * lbl_scale))
-        return buildQAWidget(w, qa_ids, show_labels, ctx.on_qa_tap, d, getShape(ctx.pfx), getBg(ctx.pfx), nil, getAlign(ctx.pfx))
+        return buildQAWidget(w, qa_ids, show_labels, ctx.on_qa_tap, d, getShape(ctx.pfx), getBg(ctx.pfx), nil, getAlign(ctx.pfx), getBtnStrength(ctx.pfx))
     end
 
     function S.getHeight(ctx)
         local qa_pfx      = ctx.pfx_qa or ctx.pfx
         local labels_key  = qa_pfx .. slot_suffix .. "_labels"
         local show_labels = SUISettings:nilOrTrue(labels_key)
-        -- getHeight has no real widget width to work with (unlike build()),
-        -- so estimate one the same way other modules in this codebase do —
-        -- ctx.col_w/ctx.inner_w when available, otherwise a screen-width
-        -- estimate — so the height reported here doesn't diverge from what
-        -- build() actually paints once the fit baseline kicks in. Uses the
-        -- RAW module scale for the same reason as S.build above.
-        local w_estimate = ctx.col_w or ctx.inner_w or (Screen:getWidth() - PAD * 2)
-        local d           = _getQADims(Config.getModuleScaleRaw(S.id, ctx.pfx), w_estimate - PAD * 2)
+        -- Estimate content width the same way chrome contentWidth does for a
+        -- full column (outer margin = PAD each side).
+        local col_w = ctx.col_w or ctx.inner_w or (Screen:getWidth() - UI.SIDE_PAD * 2)
+        local content_w = math.max(1, col_w - PAD * 2)
+        local d = _getQADims(Config.getModuleScaleRaw(S.id, ctx.pfx), content_w)
         return (show_labels and (d.frame_sz + d.lbl_sp + d.lbl_h) or d.frame_sz)
     end
 
@@ -606,19 +624,9 @@ local function makeInstance(inst_id)
                     },
                 },
                 {
-                    text = _lc("Button Background"),
+                    text = _lc("Button Style"),
                     enabled_func = function() return getShape(pfx) ~= "bare" end,
                     sub_item_table = {
-                        {
-                            text           = _lc("Transparent"),
-                            radio          = true,
-                            checked_func   = function() return getBg(pfx) == "transparent" end,
-                            keep_menu_open = true,
-                            callback       = function()
-                                SUISettings:saveSetting(pfx .. BG_KEY, "transparent")
-                                refresh()
-                            end,
-                        },
                         {
                             text           = _lc("Solid"),
                             radio          = true,
@@ -641,6 +649,15 @@ local function makeInstance(inst_id)
                         },
                     },
                 },
+                Config.makeBackdropStrengthItem({
+                    title         = _lc("Button Opacity"),
+                    enabled_func  = function() return getShape(pfx) ~= "bare" end,
+                    get           = function() return getBtnStrength(pfx) end,
+                    set           = function(v) setBtnStrength(pfx, v) end,
+                    refresh       = refresh,
+                    default_value = 100,
+                    _lc           = _lc,
+                }),
                 {
                     text = _lc("Alignment"),
                     sub_item_table = {

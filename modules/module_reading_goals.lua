@@ -466,7 +466,8 @@ local function _ringsCardW(scale, inner_w, n, pfx)
     local card_w
     local gap
     if Config.getBentoWidth("reading_goals", pfx or "") < 100 and inner_w and n and n > 0 then
-        local avail_w = math.max(1, inner_w - PAD * 2)
+        -- inner_w is already label-aligned via module chrome outer margin.
+        local avail_w = math.max(1, inner_w)
         local fit_1 = math.max(1, math.floor((avail_w - gap_1 * (n - 1)) / n))
         local base = math.min(max_1, fit_1)
         card_w = math.max(1, math.floor(base * scale))
@@ -909,10 +910,7 @@ function M.build(w, ctx)
     -- a border, a filled background, or both, each adding PAD to every edge.
     -- Computed up front so inner_w below already reserves room for the
     -- border, keeping the box's real outer width equal to `w`.
-    local box = SUIStyle.computeBox(
-        SUISettings:isTrue(ctx.pfx .. "reading_goals_show_frame"),
-        SUISettings:isTrue(ctx.pfx .. "reading_goals_solid_bg"),
-        scale, PAD)
+    local box = { inset_h = 0, inset_v = 0, outer_margin = 0 }
     -- Always keep outer_margin so content lines up with sectionLabel and with
     -- sibling modules that use computeBox/wrapBox (e.g. Currently Reading).
     local inner_w = w - box.inset_h
@@ -1134,7 +1132,7 @@ function M.build(w, ctx)
         end
     end
 
-    local final_frame = SUIStyle.wrapBox(VerticalGroup:new(rows_children), box)
+    local final_frame = VerticalGroup:new(rows_children)
     final_frame._rg_update_funcs = rg_update_funcs
     return final_frame
     end)
@@ -1231,8 +1229,13 @@ function M.getHeight(_ctx)
         local d = _scaledDims(scale)
         h = n * d.goal_row_h + (n > 1 and (n - 1) * d.row_gap or 0)
     end
-    if SUISettings:isTrue(pfx .. "reading_goals_show_frame") or SUISettings:isTrue(pfx .. "reading_goals_solid_bg") then
-        h = h + PAD * 2
+    do
+        local ok, WP = pcall(require, "features/sui_wallpaper")
+        local strength = (ok and WP and WP.getModuleBackdropStrength and WP.getModuleBackdropStrength(pfx, "reading_goals"))
+            or (SUISettings:isTrue(pfx .. "reading_goals_solid_bg") and 100 or 0)
+        if SUISettings:isTrue(pfx .. "reading_goals_show_frame") or strength > 0 then
+            h = h + PAD * 2
+        end
     end
     -- Mirrors build()'s wrapped FrameContainer: bordersize is drawn outside
     -- the padding, so the border itself (not just the padding) grows the
@@ -1583,25 +1586,7 @@ function M.getMenuItems(ctx_menu)
                     },
                 },
                 Config.makeLabelToggleItem("reading_goals", _("Reading Goals"), refresh, _lc),
-                {
-                    text           = _lc("Frame"),
-                    checked_func   = function() return SUISettings:isTrue(ctx_menu.pfx .. "reading_goals_show_frame") end,
-                    keep_menu_open = true,
-                    callback       = function()
-                        SUISettings:saveSetting(ctx_menu.pfx .. "reading_goals_show_frame", not SUISettings:isTrue(ctx_menu.pfx .. "reading_goals_show_frame"))
-                        refresh()
-                    end,
-                },
-                {
-                    text           = _lc("Solid Background"),
-                    checked_func   = function() return SUISettings:isTrue(ctx_menu.pfx .. "reading_goals_solid_bg") end,
-                    keep_menu_open = true,
-                    callback       = function()
-                        SUISettings:saveSetting(ctx_menu.pfx .. "reading_goals_solid_bg", not SUISettings:isTrue(ctx_menu.pfx .. "reading_goals_solid_bg"))
-                        refresh()
-                    end,
-                },
-            },
+                                            },
         },
         {
             text           = _lc("Update Stats Now"),

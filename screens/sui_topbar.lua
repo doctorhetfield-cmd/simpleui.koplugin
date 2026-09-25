@@ -30,6 +30,14 @@ local M = {}
 -- Priority: transparent > default.
 -- ---------------------------------------------------------------------------
 local function _getBarBg()
+    local ok, WP = pcall(require, "features/sui_wallpaper")
+    if ok and WP and WP.getStatusbarBackdropStrength then
+        local s = WP.getStatusbarBackdropStrength()
+        if s <= 0 then return nil end
+        if s >= 100 then return SUIStyle.COLOR.surface end
+        -- Partial scrim: no FrameContainer bg; painted in buildTopbarWidget.
+        return nil, s
+    end
     if SUISettings:isTrue("simpleui_statusbar_transparent") then return nil end
     return SUIStyle.COLOR.surface
 end
@@ -527,12 +535,29 @@ function M.buildTopbarWidget()
         left_w, right_w, center_w,
     }
 
-    return FrameContainer:new{
+    local bar_bg, scrim_strength = _getBarBg()
+    local root = FrameContainer:new{
         bordersize    = 0, padding = 0, margin = 0,
         padding_left  = side_m, padding_right = side_m,
-        background    = _getBarBg(),
+        background    = bar_bg,
         row,
     }
+    if scrim_strength and scrim_strength > 0 and scrim_strength < 100 then
+        local orig_paint = root.paintTo
+        local strength = scrim_strength
+        function root:paintTo(bb, x, y)
+            local dimen = self.dimen or self[1] and self[1].dimen
+            local h = (dimen and dimen.h) or M.TOPBAR_H()
+            -- Full screen width: the bar content is inset with side margins,
+            -- but the backdrop should span edge to edge.
+            local ok, WP = pcall(require, "features/sui_wallpaper")
+            if ok and WP and WP.paintBackdrop then
+                WP.paintBackdrop(bb, 0, y, Screen:getWidth(), h, strength)
+            end
+            return orig_paint(self, bb, x, y)
+        end
+    end
+    return root
 end
 
 local function _showTopbarSettingsWindow(plugin)

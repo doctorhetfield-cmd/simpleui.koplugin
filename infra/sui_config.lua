@@ -12,6 +12,7 @@ local SUISettings       = require("infra/sui_store")
 local SUICoverCache     = require("infra/sui_cover_cache")
 local logger            = require("logger")
 local _ = require("infra/sui_i18n").translate
+local T = require("ffi/util").template
 
 local M = {}
 
@@ -971,6 +972,54 @@ function M.makeScaleItem(opts)
     }
 end
 
+-- Backdrop opacity entry (0–100 %, labelled Transparent / N% / Solid),
+-- shared by every surface drawn over the wallpaper. The dialog documents the
+-- semantic default, which its reset button restores.
+-- opts: {
+--   title         — entry text and dialog title
+--   get / set     — strength accessors (0–100)
+--   refresh       — called with the touch menu once a value is applied
+--   default_value — semantic default strength
+--   info          — optional dialog description (generic one otherwise)
+--   enabled_func  — optional menu enabled state
+--   value_func    — optional override of the value label
+--   _lc           — optional translator (defaults to the plugin translator)
+-- }
+function M.makeBackdropStrengthItem(opts)
+    local _lc = opts._lc or _
+    local function label(strength)
+        return require("features/sui_wallpaper").formatBackdropStrength(strength, _lc)
+    end
+    return {
+        text           = opts.title,
+        enabled_func   = opts.enabled_func,
+        keep_menu_open = true,
+        value_func     = opts.value_func or function() return label(opts.get()) end,
+        callback       = function(touchmenu)
+            local SpinWidget = require("ui/widget/spinwidget")
+            local UIManager  = require("ui/uimanager")
+            local info = opts.info
+                or _lc("0% transparent, 100% solid. Values in between add a scrim over the wallpaper.")
+            UIManager:show(SpinWidget:new{
+                title_text    = opts.title,
+                info_text     = info .. "\n" .. T(_lc("Default: %1"), label(opts.default_value)),
+                value         = opts.get(),
+                value_min     = 0,
+                value_max     = 100,
+                value_step    = 5,
+                unit          = "%",
+                ok_text       = _("Apply"),
+                cancel_text   = _("Cancel"),
+                default_value = opts.default_value,
+                callback      = function(spin)
+                    opts.set(spin.value)
+                    opts.refresh(touchmenu)
+                end,
+            })
+        end,
+    }
+end
+
 -- Generic integer stepper (SpinWidget, no "%" suffix) — for small bounded
 -- counts like grid rows/columns, where makeScaleItem's fixed "%" unit and
 -- SCALE_MIN/MAX defaults don't apply. opts.unit defaults to "" (no suffix
@@ -1214,6 +1263,16 @@ end
 -- ---------------------------------------------------------------------------
 function M.appendModuleChromeItems(items, opts)
     local mod, pfx, refresh, on_change = opts.mod, opts.pfx, opts.refresh, opts.on_change
+    local _lc = opts._lc or _
+
+    -- Per-module Appearance: merge Frame + Background into existing submenu
+    -- when the module already provides one; otherwise append a new one.
+    do
+        local ok, Chrome = pcall(require, "features/sui_module_chrome")
+        if ok and Chrome and mod and mod.id then
+            Chrome.mergeAppearanceIntoItems(items, pfx, mod.id, refresh, _lc)
+        end
+    end
 
     if not mod.no_top_margin then
         items[#items + 1] = M.makeGapItem({

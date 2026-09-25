@@ -119,10 +119,8 @@ local function computeLayout(w, ctx)
     -- a border, a filled background, or both, each adding PAD to every edge.
     -- Computed up front so avail_w below already reserves room for the
     -- border, keeping the box's real outer width equal to `w`.
-    local box = SUIStyle.computeBox(
-        SUISettings:isTrue(pfx .. "heatmap_show_frame"),
-        SUISettings:isTrue(pfx .. "heatmap_solid_bg"),
-        scale, PAD)
+    -- Chrome applied by ModuleChrome on the homescreen.
+    local box = { inset_h = 0, inset_v = 0, outer_margin = 0 }
 
     -- Layout font: only used to size the weekday-label column and, from
     -- that, the grid's own cell size (below) — kept at its original tiny,
@@ -150,14 +148,19 @@ local function computeLayout(w, ctx)
     end
 
     local gap        = Screen:scaleBySize(2)
-    local wd_label_w = HW.getWeekdayLabelWidth(layout_fonts)
+    -- Size the weekday column with the same face used to paint it (display
+    -- fonts). Using the tiny layout face here made cells overflow avail_w
+    -- once the wider display labels were drawn.
+    local wd_label_w = HW.getWeekdayLabelWidth(display_fonts)
     local grid_w     = avail_w - wd_label_w - gap
     -- Half of the original 8px target floor; the hard 2px (half of the
     -- original 4px) underneath it is a legibility backstop, not a
     -- "default size" — it only bites at the very bottom of the Scale range.
     local min_cell      = math.max(Screen:scaleBySize(2), math.floor(Screen:scaleBySize(4) * scale))
-    local autofit_cell  = math.floor((grid_w - (num_cols - 1) * gap) / num_cols)
-    local cell_size     = math.max(min_cell, math.floor(autofit_cell * raw_scale))
+    local autofit_cell  = math.max(1, math.floor((grid_w - (num_cols - 1) * gap) / num_cols))
+    -- Never exceed autofit: a min_cell larger than the fitted size would
+    -- make the grid wider than avail_w and break label alignment.
+    local cell_size     = math.min(autofit_cell, math.max(min_cell, math.floor(autofit_cell * raw_scale)))
 
     -- Row heights below are estimated off the display font, since that's
     -- what's actually rendered for the labels and the legend text.
@@ -258,7 +261,7 @@ function M.build(w, ctx)
     -- supplies the left/right gutter via padding rather than by centering
     -- inside a full-w wrapper, so its real outer width — content + 2*padding
     -- + 2*bordersize — lands on exactly `w`, matching the section label.
-    local box = SUIStyle.wrapBox(body, L.box)
+    local box = body
 
     local tappable = InputContainer:new{
         dimen = Geom:new{ w = w, h = box:getSize().h },
@@ -276,7 +279,10 @@ function M.build(w, ctx)
 end
 
 function M.getHeight(ctx)
-    local L = computeLayout((ctx and (ctx.col_w or ctx.inner_w)) or (Screen:getWidth() - UI.SIDE_PAD * 2), ctx)
+    -- Match chrome contentWidth: full column minus label-aligned outer margins.
+    local col_w = (ctx and (ctx.col_w or ctx.inner_w)) or (Screen:getWidth() - UI.SIDE_PAD * 2)
+    local content_w = math.max(1, col_w - UI.PAD * 2)
+    local L = computeLayout(content_w, ctx)
     return L.body_h
 end
 
@@ -361,25 +367,7 @@ local function _makeAppearanceItem(ctx_menu)
                     ctx_menu.refresh()
                 end,
             },
-            {
-                text           = _lc("Frame"),
-                checked_func   = function() return SUISettings:isTrue(pfx .. "heatmap_show_frame") end,
-                keep_menu_open = true,
-                callback       = function()
-                    SUISettings:saveSetting(pfx .. "heatmap_show_frame", not SUISettings:isTrue(pfx .. "heatmap_show_frame"))
-                    ctx_menu.refresh()
-                end,
-            },
-            {
-                text           = _lc("Solid Background"),
-                checked_func   = function() return SUISettings:isTrue(pfx .. "heatmap_solid_bg") end,
-                keep_menu_open = true,
-                callback       = function()
-                    SUISettings:saveSetting(pfx .. "heatmap_solid_bg", not SUISettings:isTrue(pfx .. "heatmap_solid_bg"))
-                    ctx_menu.refresh()
-                end,
-            },
-        },
+                                },
     }
 end
 

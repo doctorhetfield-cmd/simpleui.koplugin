@@ -131,7 +131,21 @@ local function _toggleDefault(mode) return mode == "on" or mode == "locked_on" e
 local function _toggleLocked(mode)  return mode == "locked_on" or mode == "locked_off" end
 
 function GridRenderer.showFrame(pfx, id) return SUISettings:isTrue(pfx .. id .. "_show_frame") end
-function GridRenderer.solidBg(pfx, id)   return SUISettings:isTrue(pfx .. id .. "_solid_bg") end
+function GridRenderer.solidBg(pfx, id)
+    local ok, WP = pcall(require, "features/sui_wallpaper")
+    if ok and WP and WP.getModuleBackdropStrength then
+        return WP.getModuleBackdropStrength(pfx, id) >= 100
+    end
+    return SUISettings:isTrue(pfx .. id .. "_solid_bg")
+end
+
+function GridRenderer.backdropStrength(pfx, id)
+    local ok, WP = pcall(require, "features/sui_wallpaper")
+    if ok and WP and WP.getModuleBackdropStrength then
+        return WP.getModuleBackdropStrength(pfx, id)
+    end
+    return SUISettings:isTrue(pfx .. id .. "_solid_bg") and 100 or 0
+end
 
 -- ---------------------------------------------------------------------------
 -- Progress style — single enum for how a cell shows reading progress.
@@ -764,10 +778,9 @@ function GridRenderer.build(w, ctx, opts)
     -- module_reading_goals.lua). Computed up front so inner_w below already
     -- reserves room for the border, keeping the box's real outer width
     -- equal to `w`.
-    local box = SUIStyle.computeBox(
-        GridRenderer.showFrame(pfx, id), GridRenderer.solidBg(pfx, id), scale, PAD)
-
-    local inner_w = w - box.inset_h
+    -- Module chrome (frame/background) is applied by the homescreen wrapper.
+    local box = { inset_h = 0, inset_v = 0 }
+    local inner_w = w
 
     -- Cover size: base is the auto-fit size (grid_cols covers + gaps filling
     -- inner_w). Width uses grid_cols, not the item count on this page, so a
@@ -1077,25 +1090,22 @@ function GridRenderer.build(w, ctx, opts)
         -- swipe_area.dimen below), but a partial refresh only reflects
         -- what's in the framebuffer; without something repainting that
         -- area, the previous page's pixels stay there.
-        --
-        -- Only needed WITHOUT a wallpaper: in that case the module's
-        -- widgets are transparent by default (see ScreenWidget:_initLayout)
-        -- and nothing else repaints that area. An opaque layer the size of
-        -- inner_w x row_h, painted BEFORE `row` in an OverlapGroup,
-        -- guarantees that every rebuild repaints the whole area.
-        --
-        -- WITH a wallpaper, content_widget:paintTo already paints the
-        -- wallpaper behind the whole tree on every repaint (including this
-        -- partial one — see the override in _initLayout), which already
-        -- clears any stale pixels on its own; an opaque eraser here would
-        -- just cover the freshly-painted wallpaper with a solid rectangle.
+        -- Erase the row rect before painting content so partial rebuilds
+        -- (pagination / swipe) do not leave stale pixels. With a wallpaper
+        -- this restores the image sub-rect; without it, paints surface.
         local content_row = row
-        if not ctx.has_wallpaper then
-            local eraser_bg = SUIStyle.COLOR.surface
-            local eraser = LineWidget:new{
-                dimen      = Geom:new{ w = inner_w, h = row_h },
-                background = eraser_bg,
+        do
+            local eraser = {
+                dimen = Geom:new{ w = inner_w, h = row_h },
             }
+            function eraser:paintTo(bb, x, y)
+                local ok_wp, WP = pcall(require, "features/sui_wallpaper")
+                if ok_wp and WP and WP.paintEraser then
+                    WP.paintEraser(bb, x, y, self.dimen.w, self.dimen.h)
+                else
+                    bb:paintRect(x, y, self.dimen.w, self.dimen.h, SUIStyle.COLOR.surface)
+                end
+            end
             content_row = OverlapGroup:new{
                 dimen = Geom:new{ w = inner_w, h = row_h },
                 eraser,
@@ -1135,7 +1145,7 @@ function GridRenderer.build(w, ctx, opts)
         content = swipe_area
     end
 
-    local result = SUIStyle.wrapBox(content, box)
+    local result = content
     -- Seed dimen so paintTo can fill absolute x/y in place. Needed for
     -- swipe hit-testing and partial refreshes when this widget is the
     -- direct body child (no menu wrapper).
@@ -1329,9 +1339,8 @@ function GridRenderer.getHeight(_ctx, opts)
     -- Frame border / solid background — computed up front so inner_w below
     -- mirrors build()'s own corrected value exactly (see build()'s comment
     -- on why the border must be reserved here too, not just the padding).
-    local box = SUIStyle.computeBox(
-        GridRenderer.showFrame(pfx, id), GridRenderer.solidBg(pfx, id), scale, PAD)
-    local inner_w = w - box.inset_h
+    local box = { inset_h = 0, inset_v = 0 }
+    local inner_w = w
 
     -- cs uses the raw getters — mirrors build()'s cs above.
     local cs = Config.getModuleScaleRaw(id, pfx) * Config.getThumbScaleRaw(id, pfx)
@@ -1867,30 +1876,13 @@ function GridRenderer.makeModule(spec)
             appearance_group[#appearance_group + 1] = Config.makeLabelToggleItem(id, lbl, refresh, _lc)
         end
 
-        appearance_group[#appearance_group + 1] = {
-            text           = _lc("Frame"),
-            checked_func   = function() return GridRenderer.showFrame(pfx, id) end,
-            keep_menu_open = true,
-            callback       = function()
-                SUISettings:saveSetting(pfx .. id .. "_show_frame", not GridRenderer.showFrame(pfx, id))
-                refresh()
-            end,
-        }
-        appearance_group[#appearance_group + 1] = {
-            text           = _lc("Solid Background"),
-            checked_func   = function() return GridRenderer.solidBg(pfx, id) end,
-            keep_menu_open = true,
-            callback       = function()
-                SUISettings:saveSetting(pfx .. id .. "_solid_bg", not GridRenderer.solidBg(pfx, id))
-                refresh()
-            end,
-        }
-
-        items[#items + 1] = {
-            text_func      = function() return _lc("Appearance") end,
-            separator      = true,
-            sub_item_table = appearance_group,
-        }
+        if #appearance_group > 0 then
+            items[#items + 1] = {
+                text_func      = function() return _lc("Appearance") end,
+                separator      = true,
+                sub_item_table = appearance_group,
+            }
+        end
 
         -- Long Press stays a top-level row (unchanged) — it's already a
         -- single compact row with its own submenu, so nesting it one level

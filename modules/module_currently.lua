@@ -429,12 +429,14 @@ local function _computeCoverDims(w, thumb_scale, ratio)
     return cover_w, cover_h
 end
 
--- Returns true when either the frame border or the solid background is
--- enabled — both add PAD*2 to the module's outer box, in both build() and
--- getHeight(). Centralised so the two setting-key strings are spelled once.
+-- True when frame or module backdrop (>0) needs outer padding.
 local function _hasBox(pfx)
-    return SUISettings:isTrue(pfx .. "currently_show_frame")
-        or SUISettings:isTrue(pfx .. "currently_solid_bg")
+    if SUISettings:isTrue(pfx .. "currently_show_frame") then return true end
+    local ok, WP = pcall(require, "features/sui_wallpaper")
+    if ok and WP and WP.getModuleBackdropStrength then
+        return WP.getModuleBackdropStrength(pfx, "currently") > 0
+    end
+    return SUISettings:isTrue(pfx .. "currently_solid_bg")
 end
 
 
@@ -532,10 +534,8 @@ function M.build(w, ctx)
     -- a border, a filled background, or both, each adding PAD to every edge.
     -- Computed up front so tw0 below already reserves room for the border,
     -- keeping the box's real outer width equal to `w`.
-    local box = SUIStyle.computeBox(
-        SUISettings:isTrue(pfx .. "currently_show_frame"),
-        SUISettings:isTrue(pfx .. "currently_solid_bg"),
-        scale, PAD)
+    -- Chrome applied by ModuleChrome on the homescreen.
+    local box = { inset_h = 0, inset_v = 0, outer_margin = 0 }
     local raw_thumb_scale = c and c.thumb_scale or Config.getThumbScale("currently", pfx)
     local lbl_scale   = (c and c.lbl_scale   or Config.getItemLabelScale("currently", pfx)) * lf
     local bar_style   = c and c.bar_style   or getBarStyle(pfx)
@@ -1101,7 +1101,7 @@ function M.build(w, ctx)
         cover = SH.applyProgressBadge(cover, bd, cover_w, cover_h, color)
     end
 
-    local full_h = content_h + box.inset_v
+    local full_h = content_h
 
     -- Layout: cover on left, text column on right.
     -- The cover is wrapped in a CenterContainer sized to content_h so it
@@ -1130,7 +1130,7 @@ function M.build(w, ctx)
         dimen    = Geom:new{ w = w, h = full_h },
         _fp      = ctx.current_fp,
         _open_fn = ctx.open_fn,
-        [1] = SUIStyle.wrapBox(row, box),
+        [1] = row,
     }
     tappable.ges_events = {
         TapBook = {
@@ -1961,25 +1961,7 @@ function M.getMenuItems(ctx_menu)
             separator      = true,
             sub_item_table = {
                 Config.makeLabelToggleItem("currently", _("Currently Reading"), refresh, _lc),
-                {
-                    text           = _lc("Frame"),
-                    checked_func   = function() return SUISettings:isTrue(pfx .. "currently_show_frame") end,
-                    keep_menu_open = true,
-                    callback       = function()
-                        SUISettings:saveSetting(pfx .. "currently_show_frame", not SUISettings:isTrue(pfx .. "currently_show_frame"))
-                        refresh()
-                    end,
-                },
-                {
-                    text           = _lc("Solid Background"),
-                    checked_func   = function() return SUISettings:isTrue(pfx .. "currently_solid_bg") end,
-                    keep_menu_open = true,
-                    callback       = function()
-                        SUISettings:saveSetting(pfx .. "currently_solid_bg", not SUISettings:isTrue(pfx .. "currently_solid_bg"))
-                        refresh()
-                    end,
-                },
-            },
+                                            },
     }
 
     local progress_badge_group = {

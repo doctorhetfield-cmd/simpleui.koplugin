@@ -7,7 +7,8 @@
 -- 1. HOMESCREEN PRESETS  (SUIPresets)
 -- ══════════════════════════════════════════════════════════════════════════
 -- Saves and restores complete snapshots of the homescreen configuration.
--- Covers: modules, order, quick actions per slot, wallpaper, transparent bars.
+-- Covers: modules, order, quick actions per slot, wallpaper, backdrop
+-- strength (bars, chrome, modules), per-module label visibility.
 -- Does NOT include: topbar/bottombar, the preset storage key itself.
 -- Storage: "simpleui_hs_presets" → { [name] = {k=v, ...}, ... }
 --
@@ -45,24 +46,27 @@ local HS_PRESET_KEY = "simpleui_hs_presets"
 local HS_PREFIXES = {
     "simpleui_hs_",
     "simpleui_style_",
+    "simpleui_hide_label_",  -- per-module instance "hide label" toggle
+    "simpleui_coll_",        -- Collections module: list, badges, cover style, sort, etc.
 }
 
 local HS_EXACT = {
-    ["simpleui_layout"]                 = true,
-    ["simpleui_statusbar_transparent"]  = true,
-    ["simpleui_navbar_transparent"]     = true,
-    ["simpleui_wallpaper_show_in_fm"]   = true,  -- "show wallpaper in file manager" toggle
-    ["simpleui_coll_list"]           = true,
-    ["simpleui_coll_badge_position"] = true,
-    ["simpleui_coll_badge_color"]    = true,
-    ["simpleui_coll_badge_hidden"]   = true,
-    ["simpleui_reading_goals_show_annual"]  = true,
-    ["simpleui_reading_goals_show_monthly"] = true,
-    ["simpleui_reading_goals_show_daily"]   = true,
-    ["simpleui_reading_goals_layout"]       = true,
-    ["simpleui_qa_row_instances"]           = true,
-    ["simpleui_spacer_row_instances"]       = true,
-    ["simpleui_coll_row_instances"]         = true,
+    ["simpleui_layout"]                       = true,
+    ["simpleui_statusbar_transparent"]        = true,
+    ["simpleui_navbar_transparent"]           = true,
+    ["simpleui_statusbar_backdrop"]           = true,
+    ["simpleui_navbar_backdrop"]              = true,
+    ["simpleui_pagination_backdrop"]          = true,
+    ["simpleui_titlebar_button_backdrop"]     = true,
+    ["simpleui_module_backdrop"]              = true,
+    ["simpleui_wallpaper_show_in_fm"]         = true,  -- "show wallpaper in file manager" toggle
+    ["simpleui_reading_goals_show_annual"]    = true,
+    ["simpleui_reading_goals_show_monthly"]   = true,
+    ["simpleui_reading_goals_show_daily"]     = true,
+    ["simpleui_reading_goals_layout"]         = true,
+    ["simpleui_reading_goals_ring_style"]     = true,
+    ["simpleui_qa_row_instances"]             = true,
+    ["simpleui_spacer_row_instances"]         = true,
 }
 
 local function _hsMatchesKey(key)

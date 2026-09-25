@@ -11,6 +11,9 @@
 -- Blitbuffer's own :scale() is nearest-neighbour, so drawing at a larger
 -- size and scaling down would not actually smooth anything.
 --
+-- Also draws rounded fills and borders straight onto a target buffer
+-- (fillRoundedRect / strokeRoundedRect), used by the shared backdrop painter.
+--
 -- Used by modules/module_clock.lua (analogue clock face),
 -- modules/module_reading_goals.lua (goal progress rings),
 -- engines/sui_quickactions_render.lua (quick-action tile background/border),
@@ -255,6 +258,145 @@ function M.paintDownPentagonFill(bb, x, y, w, h, x0, y0, x1, y1)
             M.blendPixel(bb, px, py, 0.5 - d, x0, y0, x1, y1)
         end
     end
+end
+
+-- ---------------------------------------------------------------------------
+-- Direct-to-buffer rounded shapes
+--
+-- Only the four corners of a rounded rectangle need per-pixel coverage; the
+-- interior and the straight edges are plain rectangles. Each shape is drawn
+-- as native rectangle fills plus four corner quadrants blitted from a cached
+-- (2r x 2r) coverage mask, so the cost depends on the radius only, never on
+-- the size of the shape.
+-- ---------------------------------------------------------------------------
+
+local _CORNER_CACHE_MAX = 16
+local _corner_cache     = {}
+local _corner_cache_n   = 0
+
+-- Cache keys: fill masks are keyed by (radius, alpha), stroke masks by
+-- (radius, thickness); the low bit tells the two kinds apart.
+local function _maskKey(is_stroke, radius, param)
+    return (radius * 256 + param) * 2 + (is_stroke and 1 or 0)
+end
+
+local function _cachedMask(key, build)
+    local mask = _corner_cache[key]
+    if mask then return mask end
+    if _corner_cache_n >= _CORNER_CACHE_MAX then
+        for k, m in pairs(_corner_cache) do
+            m:free()
+            _corner_cache[k] = nil
+        end
+        _corner_cache_n = 0
+    end
+    mask = build()
+    _corner_cache[key] = mask
+    _corner_cache_n = _corner_cache_n + 1
+    return mask
+end
+
+-- Returns a 2r x 2r coverage mask (grey = coverage) of a circle of radius r,
+-- scaled by alpha/255.
+local function _buildFillMask(radius, alpha)
+    local size = radius * 2
+    local mask = Blitbuffer.new(size, size, Blitbuffer.TYPE_BB8)
+    mask:fill(Blitbuffer.COLOR_WHITE)
+    M.paintRoundedRectFill(mask, 0, 0, size, size, radius, 0, 0, size - 1, size - 1)
+    mask:invertRect(0, 0, size, size)
+    if alpha < 255 then
+        local scale = alpha / 255
+        for py = 0, size - 1 do
+            for px = 0, size - 1 do
+                local g = mask:getPixel(px, py):getColor8().a
+                if g > 0 then
+                    mask:setPixel(px, py, Blitbuffer.Color8(math.floor(g * scale + 0.5)))
+                end
+            end
+        end
+    end
+    return mask
+end
+
+-- Returns a 2r x 2r coverage mask of a ring of outer radius r and the given
+-- thickness.
+local function _buildStrokeMask(radius, thickness)
+    local size = radius * 2
+    local half = thickness / 2
+    local mask = Blitbuffer.new(size, size, Blitbuffer.TYPE_BB8)
+    mask:fill(Blitbuffer.COLOR_WHITE)
+    M.paintRoundedRectStroke(mask, half, half, size - thickness, size - thickness,
+        radius - half, thickness, 0, 0, size - 1, size - 1)
+    mask:invertRect(0, 0, size, size)
+    return mask
+end
+
+-- Blits the four r x r quadrants of `mask` onto the corners of (x, y, w, h).
+-- Returns false, before drawing anything, when the buffer cannot colour-blit.
+local function _blitCorners(bb, mask, x, y, w, h, r, color)
+    local blit = bb.colorblitFromRGB32 or bb.colorblitFrom
+    if not blit then return false end
+    blit(bb, mask, x,         y,         0, 0, r, r, color)
+    blit(bb, mask, x + w - r, y,         r, 0, r, r, color)
+    blit(bb, mask, x,         y + h - r, 0, r, r, r, color)
+    blit(bb, mask, x + w - r, y + h - r, r, r, r, r, color)
+    return true
+end
+
+-- Corner radius that fits inside a w x h rectangle.
+local function _fitRadius(radius, w, h)
+    return math.min(math.floor(radius), math.floor(w / 2), math.floor(h / 2))
+end
+
+-- Fills a plain rectangle with `color` at `alpha` (0-255): a straight paint
+-- when opaque, a native blend otherwise.
+function M.fillRect(bb, x, y, w, h, color, alpha)
+    if w <= 0 or h <= 0 then return end
+    if alpha < 255 and bb.blendRectRGB32 then
+        local rgb = color:getColorRGB32()
+        bb:blendRectRGB32(x, y, w, h, Blitbuffer.ColorRGB32(rgb.r, rgb.g, rgb.b, alpha))
+    elseif bb.paintRectRGB32 then
+        bb:paintRectRGB32(x, y, w, h, color)
+    else
+        bb:paintRect(x, y, w, h, color)
+    end
+end
+
+-- Fills the rounded rectangle (x, y, w, h, radius) with `color` at `alpha`
+-- (0-255) using anti-aliased corners. Returns false when the corners cannot
+-- be drawn, leaving `bb` untouched.
+function M.fillRoundedRect(bb, x, y, w, h, radius, color, alpha)
+    local r = _fitRadius(radius, w, h)
+    if r <= 0 then
+        M.fillRect(bb, x, y, w, h, color, alpha)
+        return true
+    end
+    local mask = _cachedMask(_maskKey(false, r, alpha), function()
+        return _buildFillMask(r, alpha)
+    end)
+    if not _blitCorners(bb, mask, x, y, w, h, r, color) then return false end
+    M.fillRect(bb, x + r, y,         w - 2 * r, r,         color, alpha)
+    M.fillRect(bb, x + r, y + h - r, w - 2 * r, r,         color, alpha)
+    M.fillRect(bb, x,     y + r,     w,         h - 2 * r, color, alpha)
+    return true
+end
+
+-- Draws an opaque rounded border of `thickness` inside (x, y, w, h) with
+-- anti-aliased corners. Returns false, leaving `bb` untouched, when the
+-- radius is too small for the corner masks or the corners cannot be drawn.
+function M.strokeRoundedRect(bb, x, y, w, h, radius, thickness, color)
+    local r = _fitRadius(radius, w, h)
+    if r <= thickness then return false end
+    local mask = _cachedMask(_maskKey(true, r, thickness), function()
+        return _buildStrokeMask(r, thickness)
+    end)
+    if not _blitCorners(bb, mask, x, y, w, h, r, color) then return false end
+    local edge_w, edge_h = w - 2 * r, h - 2 * r
+    M.fillRect(bb, x + r,             y,                 edge_w,    thickness, color, 255)
+    M.fillRect(bb, x + r,             y + h - thickness, edge_w,    thickness, color, 255)
+    M.fillRect(bb, x,                 y + r,             thickness, edge_h,    color, 255)
+    M.fillRect(bb, x + w - thickness, y + r,             thickness, edge_h,    color, 255)
+    return true
 end
 
 return M

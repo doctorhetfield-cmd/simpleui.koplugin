@@ -4618,6 +4618,37 @@ function M.patchWallpaperFM(plugin)
         end
     end
 
+
+-- Reads the current pagination strength on every paint (like the title bar
+-- button scrim), so a menu created before an opacity change still reflects
+-- it, and a menu created at 0% still picks up a later increase.
+local function _applyPaginationScrim(menu_self)
+    local page_info = menu_self and menu_self.page_info
+    if not page_info or page_info._sui_pagination_scrim then return end
+    page_info._sui_pagination_scrim = true
+    local orig_paint = page_info.paintTo
+    function page_info:paintTo(bb, x, y)
+        local ok, WP = pcall(require, "features/sui_wallpaper")
+        local strength = ok and WP and WP.getPaginationBackdropStrength and WP.getPaginationBackdropStrength() or 0
+        if strength > 0 then
+            local dimen = self.dimen
+            local w = (dimen and dimen.w) or 0
+            local h = (dimen and dimen.h) or 0
+            if w <= 0 or h <= 0 then
+                local sz = self.getSize and self:getSize()
+                if sz then w, h = sz.w, sz.h end
+            end
+            -- Content-sized rounded scrim (same radius as module chrome).
+            if w > 0 and h > 0 then
+                local Device = require("device")
+                local radius = math.floor(Device.screen:scaleBySize(12))
+                WP.paintBackdrop(bb, x, y, w, h, strength, radius)
+            end
+        end
+        return orig_paint(self, bb, x, y)
+    end
+end
+
     -- -----------------------------------------------------------------------
     -- Menu.init background patch
     -- Menu:init (menu.lua ~913) always creates self[1] = FrameContainer with
@@ -4662,6 +4693,8 @@ function M.patchWallpaperFM(plugin)
                 if inner and inner[1] then
                     inner[1].background = nil
                 end
+                -- Optional scrim behind the native page/pagination bar.
+                pcall(_applyPaginationScrim, menu_self)
             end
         end
     end

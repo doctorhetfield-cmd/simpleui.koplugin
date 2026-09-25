@@ -2198,6 +2198,21 @@ end
 -- Wrappers are allocated once per mod.id per Homescreen lifetime and updated
 -- in-place on subsequent page turns (zero new allocations).
 -- ---------------------------------------------------------------------------
+function ScreenWidget:_buildModWidget(mod, col_w, ctx)
+    local ModuleChrome = require("features/sui_module_chrome")
+    local chrome = ModuleChrome.resolve(self._pfx, mod.id)
+    local build_w = ModuleChrome.contentWidth(col_w, chrome)
+    -- Expose the full column width so modules that re-wrap later (clock tick)
+    -- can recover the same chrome geometry the page build used.
+    if ctx then ctx.col_w = col_w end
+    local ok_w, widget = pcall(mod.build, build_w, ctx)
+    if not ok_w then
+        return nil, widget
+    end
+    if not widget then return nil end
+    return ModuleChrome.wrap(widget, chrome, col_w, (ctx and ctx.landscape_factor) or 1)
+end
+
 function ScreenWidget:_makeModWrapper(mod, widget, inner_w)
     local pool = self._wrapper_pool
     local w    = pool[mod.id]
@@ -2480,10 +2495,10 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
         -- _register_cell once the cell's real parent is known.
         local function _emit_mod(mod, col_w)
             if mod.has_covers then page_has_covers = true end
-            local ok_w, widget = pcall(mod.build, col_w, ctx)
-            if not ok_w then
+            local widget, err = self:_buildModWidget(mod, col_w, ctx)
+            if err and not widget then
                 logger.warn("simpleui: screen (" .. tostring(self._id) .. "): build failed for "
-                            .. tostring(mod.id) .. ": " .. tostring(widget))
+                            .. tostring(mod.id) .. ": " .. tostring(err))
                 return nil
             end
             if not widget then return nil end
@@ -2989,7 +3004,7 @@ function ScreenWidget:_refresh(keep_cache, books_only, stats_only)
                                 -- or updateStats returned false because the book's
                                 -- identity changed — see module_currently/
                                 -- module_coverdeck.updateStats).
-                                local new_widget = slot.mod.build(slot.col_w, self._ctx_cache)
+                                local new_widget = self:_buildModWidget(slot.mod, slot.col_w, self._ctx_cache)
                                 if new_widget then
                                     if slot.has_menu then
                                         local wrapper = self._wrapper_pool[id]
@@ -3175,8 +3190,8 @@ function ScreenWidget:_refreshBookModSlot(mod_id)
     local slot = self._book_mod_slots[mod_id]
     if not slot or not slot.mod or type(slot.mod.build) ~= "function" then return false end
 
-    local ok, new_widget = pcall(slot.mod.build, slot.col_w, self._ctx_cache)
-    if not ok or not new_widget then return false end
+    local new_widget = self:_buildModWidget(slot.mod, slot.col_w, self._ctx_cache)
+    if not new_widget then return false end
 
     if slot.has_menu then
         if not (self._wrapper_pool and self._wrapper_pool[mod_id]) then return false end
@@ -4230,14 +4245,17 @@ ScreenEngine.liveScreenIds = _liveScreenIds
 --- instance (the built-in Homescreen plus any Custom Screen left open in
 --- the background — see _liveScreenIds() above). Frees the wallpaper cache
 --- once — it's a shared cache, freeing it per screen would be pointless —
---- then rebuilds each live screen in turn.
+--- then rebuilds each live screen in turn. `opts.keep_wallpaper` skips the
+--- free for changes that leave the wallpaper image untouched.
 ---
 --- Called by screens/sui_homescreen.lua's ScreenEngine.rebuildLayout(), so
 --- every existing caller (sui_wallpaper, sui_style, sui_onboarding,
 --- sui_menu, sui_settings_window) reaches every live screen without
 --- needing to know about screen ids.
-function ScreenEngine.rebuildAllLayouts()
-    SUIWallpaper.freeCache()
+function ScreenEngine.rebuildAllLayouts(opts)
+    if not (opts and opts.keep_wallpaper) then
+        SUIWallpaper.freeCache()
+    end
     for _, id in ipairs(_liveScreenIds()) do
         _rebuildScreenLayout(id)
     end

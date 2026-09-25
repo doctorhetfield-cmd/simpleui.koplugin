@@ -1420,19 +1420,30 @@ M.BORDER_SZ   = math.max(1, Screen:scaleBySize(1))
 -- whether or not the box is currently shown. inset_v has no outer_margin
 -- term: there's no label edge to align against vertically.
 -- ---------------------------------------------------------------------------
-function M.computeBox(show_frame, solid_bg, scale, pad)
-    local has_box   = show_frame or solid_bg
+function M.computeBox(show_frame, solid_bg, scale, pad, backdrop_strength)
+    -- backdrop_strength 0–100: 0 transparent, 1–99 scrim, 100 solid.
+    -- solid_bg remains supported: true ≡ strength 100.
+    local strength = require("features/sui_wallpaper").clampBackdropStrength(backdrop_strength)
+    if strength == nil then
+        strength = solid_bg and 100 or 0
+    end
+    local opaque    = strength >= 100
+    local has_scrim = strength > 0 and strength < 100
+    local has_box   = show_frame or opaque or has_scrim
     local border_sz = show_frame and M.BORDER_SZ or 0
     local inner_pad = has_box and pad or 0
     return {
-        has_box      = has_box,
-        border_sz    = border_sz,
-        radius       = has_box and math.floor(Screen:scaleBySize(12) * (scale or 1)) or 0,
-        border_color = M.COLOR.gray,
-        bg_color     = solid_bg and M.COLOR.surface or nil,
-        outer_margin = pad,
-        inner_pad    = inner_pad,
-        inset_h = pad * 2 + inner_pad * 2 + border_sz * 2,
+        has_box           = has_box,
+        border_sz         = border_sz,
+        radius            = has_box and math.floor(Screen:scaleBySize(12) * (scale or 1)) or 0,
+        border_color      = M.COLOR.gray,
+        bg_color          = opaque and M.COLOR.surface or nil,
+        backdrop_strength = strength,
+        -- Outer margin is applied by module chrome (single source of truth
+        -- for label alignment). computeBox only contributes inner pad/border.
+        outer_margin      = 0,
+        inner_pad         = inner_pad,
+        inset_h = inner_pad * 2 + border_sz * 2,
         inset_v = inner_pad * 2 + border_sz * 2,
     }
 end
@@ -1457,6 +1468,8 @@ function M.wrapBox(content, box)
         padding_bottom = box.has_box and box.inner_pad or 0,
         content,
     }
+    -- Scrim / solid module backdrop is painted by the homescreen module
+    -- wrapper (screen engine) so every module type shares one path.
     if box.outer_margin <= 0 then return inner end
     return HorizontalGroup:new{
         align = "top",

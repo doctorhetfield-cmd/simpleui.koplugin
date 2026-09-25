@@ -2206,8 +2206,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     end
 
     -- Helper: applies a full layout refresh after transparency / wallpaper-visibility changes.
-    -- Mirrors the equivalent helper in the stable 1.5.0 Homescreen menu.
-    local function _applyFullLayoutRefresh()
+    -- Pass `{ keep_wallpaper = true }` when the wallpaper image is unchanged.
+    local function _applyFullLayoutRefresh(opts)
         plugin:_rewrapAllWidgets()
         local Patches = package.loaded["infra/sui_patches"]
         if Patches and Patches.injectWallpaperIntoFullscreenWidget then
@@ -2223,7 +2223,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         end
         local HS = package.loaded["screens/sui_homescreen"]
         if HS and HS.rebuildLayout then
-            HS.rebuildLayout()
+            HS.rebuildLayout(opts)
         end
         local FM = package.loaded["apps/filemanager/filemanager"]
         if FM and FM.instance then
@@ -2233,13 +2233,37 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         end
     end
 
-    local function makeWallpaperMenuItems()
+    local function makeWallpaperMenuItems(ctx_menu)
+        local SUIWallpaper = require("features/sui_wallpaper")
+
+        -- Refreshes the UI once after a backdrop opacity change; the wallpaper
+        -- image itself is untouched.
+        local function refreshOpacity(touchmenu)
+            _applyFullLayoutRefresh({ keep_wallpaper = true })
+            if ctx_menu and ctx_menu.refresh then
+                ctx_menu.refresh()
+            elseif touchmenu and touchmenu.updateItems then
+                touchmenu:updateItems()
+            elseif ctx_menu and ctx_menu.updateItems then
+                ctx_menu:updateItems()
+            end
+        end
+
+        -- Opacity entry available only while a wallpaper is active.
+        local function opacityItem(opts)
+            local extra_enabled = opts.enabled_func
+            opts.enabled_func = function()
+                return SUIWallpaper.isWallpaperActive() and (not extra_enabled or extra_enabled())
+            end
+            opts.refresh = refreshOpacity
+            return Config.makeBackdropStrengthItem(opts)
+        end
+
         return {
             {
                 text           = _("Enable Wallpaper"),
                 checked_func = function() return SUISettings:isTrue("simpleui_style_wallpaper_enabled") end,
                 callback     = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
                     SUIWallpaper.styleSetWallpaperEnabled(not SUISettings:isTrue("simpleui_style_wallpaper_enabled"))
                     _applyFullLayoutRefresh()
                 end,
@@ -2250,7 +2274,6 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 text = _("Select Wallpaper"),
                 enabled_func = function() return SUISettings:isTrue("simpleui_style_wallpaper_enabled") end,
                 sub_item_table_func = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
                     local items = {}
                     items[#items + 1] = {
                         text = _("Browse…"),
@@ -2291,57 +2314,47 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     return items
                 end,
             },
-            -- Transparent status bar (active only when wallpaper is enabled and selected)
-            {
-                text         = _("Transparent status bar"),
-                checked_func = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
-                    return SUIWallpaper.styleStatusbarTransparent()
+            opacityItem({
+                title         = _("Status Bar Opacity"),
+                get           = SUIWallpaper.getStatusbarBackdropStrength,
+                set           = SUIWallpaper.setStatusbarBackdropStrength,
+                default_value = SUIWallpaper.BACKDROP_DEFAULT.statusbar,
+            }),
+            opacityItem({
+                title         = _("Title Bar Button Opacity"),
+                info          = _("0% transparent, 100% solid. Rounded background behind title bar buttons (back, search, menu, …)."),
+                get           = SUIWallpaper.getTitlebarButtonBackdropStrength,
+                set           = SUIWallpaper.setTitlebarButtonBackdropStrength,
+                default_value = SUIWallpaper.BACKDROP_DEFAULT.titlebar_button,
+            }),
+            opacityItem({
+                title         = _("Navigation Bar Opacity"),
+                get           = SUIWallpaper.getNavbarBackdropStrength,
+                set           = SUIWallpaper.setNavbarBackdropStrength,
+                default_value = SUIWallpaper.BACKDROP_DEFAULT.navbar,
+                enabled_func  = function() return Bottombar.getBarStyle() ~= "bare" end,
+                value_func    = function()
+                    if Bottombar.getBarStyle() == "bare" then return "—" end
+                    return SUIWallpaper.formatBackdropStrength(SUIWallpaper.getNavbarBackdropStrength())
                 end,
-                enabled_func = function()
-                    return SUISettings:isTrue("simpleui_style_wallpaper_enabled")
-                        and require("features/sui_wallpaper").styleGetWallpaper() ~= nil
-                end,
-                callback = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
-                    SUIWallpaper.styleSetStatusbarTransparent(not SUIWallpaper.styleStatusbarTransparent())
-                    _applyFullLayoutRefresh()
-                end,
-                keep_menu_open = true,
-            },
-            -- Transparent navigation bar (active only when wallpaper is enabled and selected)
-            {
-                text         = _("Transparent navigation bar"),
-                checked_func = function()
-                    if Bottombar.getBarStyle() == "bare" then return true end
-                    local SUIWallpaper = require("features/sui_wallpaper")
-                    return SUIWallpaper.styleNavbarTransparent()
-                end,
-                enabled_func = function()
-                    return SUISettings:isTrue("simpleui_style_wallpaper_enabled")
-                        and require("features/sui_wallpaper").styleGetWallpaper() ~= nil
-                        and Bottombar.getBarStyle() ~= "bare"
-                end,
-                callback = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
-                    SUIWallpaper.styleSetNavbarTransparent(not SUIWallpaper.styleNavbarTransparent())
-                    _applyFullLayoutRefresh()
-                end,
-                keep_menu_open = true,
-            },
+            }),
+            opacityItem({
+                title         = _("Pagination Bar Opacity"),
+                info          = _("0% transparent, 100% solid. Applies to the native page bar in Library, History, Collections and similar screens."),
+                get           = SUIWallpaper.getPaginationBackdropStrength,
+                set           = SUIWallpaper.setPaginationBackdropStrength,
+                default_value = SUIWallpaper.BACKDROP_DEFAULT.pagination,
+                enabled_func  = function() return SUISettings:nilOrTrue("simpleui_bar_pagination_visible") end,
+            }),
+
             -- Show wallpaper on all FM / overlay screens
             {
                 text         = _("Show wallpaper on all screens"),
                 checked_func = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
                     return SUIWallpaper.styleGetWallpaperShowInFM()
                 end,
-                enabled_func = function()
-                    return SUISettings:isTrue("simpleui_style_wallpaper_enabled")
-                        and require("features/sui_wallpaper").styleGetWallpaper() ~= nil
-                end,
+                enabled_func = SUIWallpaper.isWallpaperActive,
                 callback = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
                     SUIWallpaper.styleSetWallpaperShowInFM(not SUIWallpaper.styleGetWallpaperShowInFM())
                     _applyFullLayoutRefresh()
                 end,
@@ -2351,10 +2364,9 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             {
                 text = _("Stretch to fill screen"),
                 enabled_func = function() return SUISettings:isTrue("simpleui_style_wallpaper_enabled") end,
-                checked_func = function() return require("features/sui_wallpaper").styleGetWallpaperStretch() end,
+                checked_func = function() return SUIWallpaper.styleGetWallpaperStretch() end,
                 keep_menu_open = true,
                 callback = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
                     SUIWallpaper.styleSetWallpaperStretch(not SUIWallpaper.styleGetWallpaperStretch())
                     _applyFullLayoutRefresh()
                 end,
@@ -2362,10 +2374,9 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             {
                 text = _("Auto-rotate"),
                 enabled_func = function() return SUISettings:isTrue("simpleui_style_wallpaper_enabled") end,
-                checked_func = function() return require("features/sui_wallpaper").styleGetWallpaperAutoRotate() end,
+                checked_func = function() return SUIWallpaper.styleGetWallpaperAutoRotate() end,
                 keep_menu_open = true,
                 callback = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
                     SUIWallpaper.styleSetWallpaperAutoRotate(not SUIWallpaper.styleGetWallpaperAutoRotate())
                     _applyFullLayoutRefresh()
                 end,
@@ -2373,10 +2384,9 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             {
                 text = _("Invert in Night Mode"),
                 enabled_func = function() return SUISettings:isTrue("simpleui_style_wallpaper_enabled") end,
-                checked_func = function() return require("features/sui_wallpaper").styleGetWallpaperInvertNight() end,
+                checked_func = function() return SUIWallpaper.styleGetWallpaperInvertNight() end,
                 keep_menu_open = true,
                 callback = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
                     SUIWallpaper.styleSetWallpaperInvertNight(not SUIWallpaper.styleGetWallpaperInvertNight())
                     _applyFullLayoutRefresh()
                 end,
@@ -2386,14 +2396,12 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     return _("Lighten")
                 end,
                 value_func = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
                     local op = SUIWallpaper.styleGetWallpaperOpacity()
                     return op .. "%"
                 end,
                 enabled_func = function() return SUISettings:isTrue("simpleui_style_wallpaper_enabled") end,
                 keep_menu_open = true,
                 callback = function()
-                    local SUIWallpaper = require("features/sui_wallpaper")
                     local SpinWidget = require("ui/widget/spinwidget")
                     UIManager:show(SpinWidget:new{
                         title_text = _("Lighten Wallpaper"),
@@ -2408,7 +2416,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                         default_value = 0,
                         callback = function(spin)
                             SUIWallpaper.styleSetWallpaperOpacity(spin.value)
-                            _applyFullLayoutRefresh()
+                            _applyFullLayoutRefresh({ keep_wallpaper = true })
                         end,
                     })
                 end,
@@ -2741,7 +2749,9 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             -- buildHomeScreenSettings for the equivalent move in the SUIWindow tree.
             {
                 text = _("Wallpaper"),
-                sub_item_table_func = makeWallpaperMenuItems,
+                sub_item_table_func = function(tm)
+                    return makeWallpaperMenuItems(tm)
+                end,
             },
             {
                 text = _("Presets"),

@@ -229,7 +229,9 @@ end
 -- the radii this UI uses. Composited via UI.paintWithAlphaMask, once per
 -- color, so it sits transparently over whatever is beneath (a wallpaper,
 -- when bg_color is nil and only the border is drawn).
-local function _buildRoundedBackdrop(size, corner_r, border_sz, bg_color, border_color)
+-- strength: 0 skip fill, 1–99 scrim via shared backdrop painter, 100 solid AA fill.
+local function _buildRoundedBackdrop(size, corner_r, border_sz, bg_color, border_color, strength)
+    strength = require("features/sui_wallpaper").clampBackdropStrength(strength) or 100
     local widget = WidgetContainer():new{}
     widget.dimen = Geom():new{ w = size, h = size }
 
@@ -241,13 +243,20 @@ local function _buildRoundedBackdrop(size, corner_r, border_sz, bg_color, border
         self.dimen.x, self.dimen.y = x, y
         if size <= 0 then return end
 
+        if bg_color and strength > 0 and strength < 100 then
+            local ok, WP = pcall(require, "features/sui_wallpaper")
+            if ok and WP and WP.paintBackdrop then
+                WP.paintBackdrop(bb, x, y, size, size, strength, corner_r, bg_color)
+            end
+        end
+
         if not self._tmp_bb or self._tmp_bb:getWidth() ~= size then
             if self._tmp_bb then self._tmp_bb:free() end
             self._tmp_bb = Blitbuffer.new(size, size, Blitbuffer.TYPE_BB8)
         end
 
         local ui = UI()
-        if bg_color then
+        if bg_color and strength >= 100 then
             ui.paintWithAlphaMask(self, bb, x, y, size, size, bg_color, function(_w, tmp_bb)
                 AAPaint.paintRoundedRectFill(tmp_bb, 0, 0, size, size, corner_r, 0, 0, size - 1, size - 1)
             end, self._tmp_bb)
@@ -305,6 +314,12 @@ function QARenderer.buildFrame(inner_widget, size, opts)
     local bg    = opts.bg or "solid"
     local is_bare = (shape == "bare")
 
+    -- Fill opacity: explicit opts.strength, else transparent → 0, solid/flat → 100.
+    local strength = require("features/sui_wallpaper").clampBackdropStrength(opts.strength)
+    if strength == nil then
+        strength = (bg == "transparent") and 0 or 100
+    end
+
     local corner_r
     if is_bare then
         corner_r = 0
@@ -315,12 +330,16 @@ function QARenderer.buildFrame(inner_widget, size, opts)
     end
 
     local border_sz = opts.border_sz or style.BORDER_SZ
-    local current_border = (not is_bare and (bg == "solid" or bg == "transparent")) and border_sz or 0
+    -- Border for solid/transparent styles (not flat, not bare).
+    local current_border = (not is_bare and bg ~= "flat") and border_sz or 0
 
     local bg_color = nil
-    if not is_bare then
-        if bg == "flat" then bg_color = style.COLOR.surface_flat
-        elseif bg == "solid" then bg_color = style.COLOR.surface end
+    if not is_bare and strength > 0 then
+        if bg == "flat" then
+            bg_color = style.COLOR.surface_flat
+        else
+            bg_color = style.COLOR.surface
+        end
     end
 
     local content
@@ -352,7 +371,7 @@ function QARenderer.buildFrame(inner_widget, size, opts)
         return content
     end
 
-    local backdrop = _buildRoundedBackdrop(size, corner_r, current_border, bg_color, style.COLOR.gray)
+    local backdrop = _buildRoundedBackdrop(size, corner_r, current_border, bg_color, style.COLOR.gray, strength)
     local overlap = OverlapGroup():new{
         dimen = Geom():new{ w = size, h = size },
         backdrop,
@@ -486,6 +505,7 @@ function QARenderer.buildCell(action_id, spec)
     local frame_widget = QARenderer.buildFrame(icon_widget, frame_sz, {
         shape      = spec.shape,
         bg         = spec.bg,
+        strength   = spec.strength,
         corner_r   = spec.corner_r,
         frame_pad  = spec.frame_pad,
         border_sz  = spec.border_sz,

@@ -16,6 +16,7 @@ local OverlapGroup    = require("ui/widget/overlapgroup")
 local TextWidget      = require("ui/widget/textwidget")
 local UIManager       = require("ui/uimanager")
 local VerticalGroup   = require("ui/widget/verticalgroup")
+local Widget          = require("ui/widget/widget")
 local Screen          = Device.screen
 local _ = require("infra/sui_i18n").translate
 local N_ = require("infra/sui_i18n").ngettext
@@ -68,17 +69,36 @@ local function _clampFs(v, lo, hi)
     return math.max(lo, math.min(hi, math.floor(v)))
 end
 
-local SETTING_TYPE  = "reading_stats_type"   -- suffix: pfx .. "reading_stats_type"
-local SETTING_ALIGN = "reading_stats_align"  -- suffix: pfx .. "reading_stats_align"
+local SETTING_TYPE     = "reading_stats_type"            -- style: cards / flat / list
+local SETTING_ALIGN    = "reading_stats_align"
+local SETTING_CARD_STR = "reading_stats_card_strength"   -- 0–100 fill opacity
 
 local function getType(pfx)
-    return SUISettings:readSetting(pfx .. SETTING_TYPE) or "cards"
+    local t = SUISettings:readSetting(pfx .. SETTING_TYPE) or "cards"
+    -- Legacy alias folded into cards + strength 0.
+    if t == "cards_transparent" then return "cards" end
+    return t
 end
 
 local function getAlign(pfx)
     local v = SUISettings:readSetting(pfx .. SETTING_ALIGN)
     if v == "left" or v == "right" or v == "center" then return v end
     return "center"
+end
+
+local function getCardStrength(pfx)
+    local WP = require("features/sui_wallpaper")
+    local v = WP.readBackdropStrength(pfx .. SETTING_CARD_STR)
+    if v ~= nil then return v end
+    -- Migrate legacy transparent style.
+    if SUISettings:readSetting(pfx .. SETTING_TYPE) == "cards_transparent" then
+        return 0
+    end
+    return 100
+end
+
+local function setCardStrength(pfx, n)
+    require("features/sui_wallpaper").saveBackdropStrength(pfx .. SETTING_CARD_STR, n)
 end
 
 local function _getItems(pfx)
@@ -229,51 +249,77 @@ local function _buildCardInner(stat_id, stats, d, align, clr_blk, clr_sub, max_w
     }
 end
 
--- Cards mode: rounded border, content aligned inside the card.
--- `d` is the scaled-dims table produced once per M.build() call.
+-- Fill layer for stat cards: strength 0–100 via shared backdrop painter.
+-- Fill + optional border in a single widget, both driven by the shared
+-- wallpaper backdrop painter so their rounded corners always match exactly
+-- (mixing this fill with a native FrameContainer border, which rounds
+-- corners with a different algorithm, leaves a sliver of wallpaper showing
+-- through at the corners).
+local CardFill = Widget:extend{
+    width = 0,
+    height = 0,
+    strength = 100,
+    radius = 0,
+    color = nil,
+    show_frame = false,
+}
 
-local function buildStatCardWidget(card_w, stat_id, stats, d, align, colors, transparent)
-    local clr_blk = colors and colors.blk or SUIStyle.COLOR.text_primary
-    local clr_sub = colors and colors.sub or CLR_TEXT_SUB
-    local cc = CenterContainer:new{
-        dimen = Geom:new{ w = card_w, h = d.card_h },
-        _buildCardInner(stat_id, stats, d, align, clr_blk, clr_sub, card_w),
-    }
-    local fc = FrameContainer:new{
-        dimen      = Geom:new{ w = card_w, h = d.card_h },
-        bordersize = SUIStyle.BORDER_SZ,
-        color      = SUIStyle.COLOR.gray,
-        background = not transparent and SUIStyle.COLOR.surface or nil,
-        radius     = d.corner_r,
-        padding    = 0,
-        cc,
-    }
-    local update_fn = function(new_stats)
-        cc[1] = _buildCardInner(stat_id, new_stats, d, align, clr_blk, clr_sub, card_w)
-    end
-    return fc, update_fn
+function CardFill:getSize()
+    return Geom:new{ w = self.width, h = self.height }
 end
 
--- Flat mode: no border, tinted background, content aligned.
-local function buildStatFlatWidget(card_w, stat_id, stats, d, align, colors)
+function CardFill:paintTo(bb, x, y)
+    if self.width <= 0 or self.height <= 0 then return end
+    local ok, WP = pcall(require, "features/sui_wallpaper")
+    if not (ok and WP) then return end
+    if self.strength > 0 and WP.paintBackdrop then
+        WP.paintBackdrop(bb, x, y, self.width, self.height, self.strength, self.radius, self.color)
+    end
+    if self.show_frame and WP.paintFrame then
+        WP.paintFrame(bb, x, y, self.width, self.height, SUIStyle.BORDER_SZ, self.radius, SUIStyle.COLOR.gray)
+    end
+end
+
+-- Cards mode: optional border + strength-based fill.
+-- Flat mode: no border, surface_flat fill at the same strength.
+-- `d` is the scaled-dims table produced once per M.build() call.
+local function buildStatCardWidget(card_w, stat_id, stats, d, align, colors, strength, flat)
     local clr_blk = colors and colors.blk or SUIStyle.COLOR.text_primary
     local clr_sub = colors and colors.sub or CLR_TEXT_SUB
     local cc = CenterContainer:new{
         dimen = Geom:new{ w = card_w, h = d.card_h },
         _buildCardInner(stat_id, stats, d, align, clr_blk, clr_sub, card_w),
     }
+    local fill_color = flat and SUIStyle.COLOR.surface_flat or SUIStyle.COLOR.surface
     local fc = FrameContainer:new{
         dimen      = Geom:new{ w = card_w, h = d.card_h },
         bordersize = 0,
-        background = SUIStyle.COLOR.surface_flat,
-        radius     = d.corner_r,
+        background = nil,
         padding    = 0,
         cc,
+    }
+    local fill = CardFill:new{
+        width = card_w,
+        height = d.card_h,
+        strength = strength or 100,
+        radius = d.corner_r,
+        color = fill_color,
+        show_frame = not flat,
+        dimen = Geom:new{ w = card_w, h = d.card_h },
+    }
+    local card = OverlapGroup:new{
+        dimen = Geom:new{ w = card_w, h = d.card_h },
+        fill,
+        fc,
     }
     local update_fn = function(new_stats)
         cc[1] = _buildCardInner(stat_id, new_stats, d, align, clr_blk, clr_sub, card_w)
     end
-    return fc, update_fn
+    return card, update_fn
+end
+
+local function buildStatFlatWidget(card_w, stat_id, stats, d, align, colors, strength)
+    return buildStatCardWidget(card_w, stat_id, stats, d, align, colors, strength, true)
 end
 local function buildStatListCell(cell_w, stat_id, stats, show_sep, d, align, colors)
     local clr_blk = colors and colors.blk or SUIStyle.COLOR.text_primary
@@ -428,7 +474,8 @@ function M.build(w, ctx)
     -- display type ("list" cells are actually a bit wider, with no gaps
     -- subtracted, so sizing text off the narrower "cards" width is a safe,
     -- conservative basis there too).
-    local avail_w = w - PAD * 2
+    -- `w` is already label-aligned via module chrome outer margin.
+    local avail_w = w
     local item_w  = (n > 0) and math.max(1, math.floor((avail_w - gap * (n - 1)) / n)) or avail_w
 
     -- Value/label text grow and shrink with item_w but are capped relative
@@ -538,20 +585,20 @@ function M.build(w, ctx)
         return tappable
     else
         -- Cards / Flat mode: rounded cards with gaps between them.
-        -- "flat" = no border, tinted background; "cards" = bordered white.
-        local avail_w = w - PAD * 2
+        -- Fill opacity from card_strength; flat uses surface_flat, cards use surface + border.
+        -- `w` is already label-aligned via module chrome outer margin.
+        local avail_w = w
         local card_w  = math.floor((avail_w - d.gap * (n - 1)) / n)
         local row_w   = n * card_w + math.max(0, n - 1) * d.gap
         local offset_x = math.floor((w - row_w) / 2)
         local colors  = { blk = _CLR_TEXT_BLK_EFF, sub = CLR_TEXT_SUB_EFF }
+        local card_strength = getCardStrength(ctx.pfx)
         for i = 1, n do
             local card, update_fn
             if mode == "flat" then
-                card, update_fn = buildStatFlatWidget(card_w, stat_ids[i], stats, d, align, colors)
-            elseif mode == "cards_transparent" then
-                card, update_fn = buildStatCardWidget(card_w, stat_ids[i], stats, d, align, colors, true)
+                card, update_fn = buildStatFlatWidget(card_w, stat_ids[i], stats, d, align, colors, card_strength)
             else
-                card, update_fn = buildStatCardWidget(card_w, stat_ids[i], stats, d, align, colors, false)
+                card, update_fn = buildStatCardWidget(card_w, stat_ids[i], stats, d, align, colors, card_strength, false)
             end
             card = card or FrameContainer:new{
                 dimen = Geom:new{ w = card_w, h = d.card_h },
@@ -811,16 +858,6 @@ function M.getMenuItems(ctx_menu)
                     end,
                 },
                 {
-                    text           = _lc("Cards - Transparent"),
-                    radio          = true,
-                    keep_menu_open = true,
-                    checked_func   = function() return getType(pfx) == "cards_transparent" end,
-                    callback       = function()
-                        SUISettings:saveSetting(pfx .. SETTING_TYPE, "cards_transparent")
-                        refresh()
-                    end,
-                },
-                {
                     text           = _lc("Flat"),
                     radio          = true,
                     keep_menu_open = true,
@@ -842,6 +879,15 @@ function M.getMenuItems(ctx_menu)
                 },
             },
         },
+        Config.makeBackdropStrengthItem({
+            title         = _lc("Card Opacity"),
+            enabled_func  = function() return getType(pfx) ~= "list" end,
+            get           = function() return getCardStrength(pfx) end,
+            set           = function(v) setCardStrength(pfx, v) end,
+            refresh       = refresh,
+            default_value = 100,
+            _lc           = _lc,
+        }),
         {
             text_func  = function() return _lc("Alignment") end,
             value_func = function() return alignLabel(getAlign(pfx)) end,

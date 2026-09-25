@@ -838,10 +838,26 @@ local function _tick()
         -- surgical swap matches the size _updatePage would have built.
         local lf = screen._clock_landscape_factor
 
-        local ok_w, new_widget = pcall(build, inner_w, screen._clock_pfx,
-                                        screen._vspan_pool, lf)
+        local ok_ch, Chrome = pcall(require, "features/sui_module_chrome")
+        local pfx = screen._clock_pfx or "simpleui_hs_"
+        local chrome = ok_ch and Chrome and Chrome.resolve(pfx, "clock") or nil
+        local col_w = screen._clock_col_w
+        if not col_w and chrome then
+            col_w = inner_w + Chrome.outerMargin(chrome) * 2
+                + Chrome.innerPad(chrome) * 2 + Chrome.borderSz(chrome) * 2
+        end
+        col_w = col_w or inner_w
+
+        -- Build at the same content width the page path would use.
+        local build_w = (chrome and Chrome.contentWidth(col_w, chrome)) or inner_w
+        local ok_w, new_widget = pcall(build, build_w, pfx, screen._vspan_pool, lf)
 
         if ok_w and new_widget then
+            -- Re-apply module chrome so the surgical swap keeps the same
+            -- fill/frame width the full page build would have wrapped.
+            if chrome then
+                new_widget = Chrome.wrap(new_widget, chrome, col_w, lf or 1)
+            end
             local target
             if is_wrapped then
                 -- The clock was wrapped in an InputContainer for hold-to-settings.
@@ -937,6 +953,8 @@ function M.build(w, ctx)
     if ctx._screen_widget then
         ctx._screen_widget._clock_pfx      = ctx.pfx
         ctx._screen_widget._clock_inner_w  = w
+        -- Full column width for surgical re-wrap (set by screen engine).
+        ctx._screen_widget._clock_col_w    = ctx.col_w
     end
     return build(w, ctx.pfx, ctx.vspan_pool, ctx.landscape_factor)
 end

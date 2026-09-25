@@ -50,9 +50,10 @@ end
 -- Rebuilds every live screen (built-in + any Custom Screen open in the
 -- background), not just "hs" — every caller (sui_wallpaper, sui_style,
 -- sui_onboarding, sui_menu, sui_settings_window) applies something visually
--- global to the app: wallpaper, bar transparency, style.
-function ScreenEngine.rebuildLayout()
-    ScreenEngine.rebuildAllLayouts()
+-- global to the app: wallpaper, bar transparency, style. Pass
+-- `{ keep_wallpaper = true }` when the wallpaper image itself is unchanged.
+function ScreenEngine.rebuildLayout(opts)
+    ScreenEngine.rebuildAllLayouts(opts)
 end
 
 return ScreenEngine

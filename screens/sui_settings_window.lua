@@ -400,7 +400,11 @@ local function buildScreens(st)
                     local plugin = getPlugin()
                     ctx.push("nested_menu", {
                         title      = _("Wallpaper"),
-                        items_func = plugin and plugin.makeWallpaperMenuItems,
+                        items_func = function()
+                            if not (plugin and plugin.makeWallpaperMenuItems) then return {} end
+                            local SUIWindow = require("engines/sui_window")
+                            return plugin.makeWallpaperMenuItems(SUIWindow.makeCtxMenu(ctx))
+                        end,
                     })
                 end,
             },
