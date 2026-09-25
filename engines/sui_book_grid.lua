@@ -44,6 +44,7 @@ local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local IconWidget      = require("ui/widget/iconwidget")
 local InputContainer  = require("ui/widget/container/inputcontainer")
+local WidgetContainer = require("ui/widget/container/widgetcontainer")
 local LineWidget      = require("ui/widget/linewidget")
 local OverlapGroup    = require("ui/widget/overlapgroup")
 local CenterContainer = require("ui/widget/container/centercontainer")
@@ -1095,9 +1096,15 @@ function GridRenderer.build(w, ctx, opts)
         -- this restores the image sub-rect; without it, paints surface.
         local content_row = row
         do
-            local eraser = {
-                dimen = Geom:new{ w = inner_w, h = row_h },
-            }
+            -- Built as a WidgetContainer instance, not a plain table, so it
+            -- inherits the full widget contract (handleEvent/propagateEvent,
+            -- free, ...) that OverlapGroup expects from every child it holds
+            -- — same pattern as sui_quickactions_render.lua's
+            -- _buildRoundedBackdrop. getSize/paintTo are overridden for this
+            -- widget's custom (non-child-based) appearance.
+            local eraser = WidgetContainer:new{}
+            eraser.dimen = Geom:new{ w = inner_w, h = row_h }
+            function eraser:getSize() return self.dimen end
             function eraser:paintTo(bb, x, y)
                 local ok_wp, WP = pcall(require, "features/sui_wallpaper")
                 if ok_wp and WP and WP.paintEraser then
