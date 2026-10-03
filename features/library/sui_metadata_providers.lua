@@ -147,10 +147,19 @@ local function rawInflate(compressed, uncompressed_size)
             ]]
         end)
         local libz
-        pcall(function()
+        local ok_z = pcall(function()
             libz = ffi.loadlib and ffi.loadlib("z", 1) or ffi.load("z")
+            -- FFI symbol lookup throws when Android's bundled library omits zlib.
+            assert(libz.inflateInit2_ and libz.inflate and libz.inflateEnd)
         end)
-        if not (libz and libz.inflateInit2_) then
+        if not ok_z and is_android then
+            ok_z = pcall(function()
+                local system_lib = ffi.abi("64bit") and "/system/lib64/libz.so" or "/system/lib/libz.so"
+                libz = ffi.load(system_lib)
+                assert(libz.inflateInit2_ and libz.inflate and libz.inflateEnd)
+            end)
+        end
+        if not ok_z then
             _inflate_fn = false
             return nil
         end
