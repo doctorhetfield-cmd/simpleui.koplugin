@@ -3800,6 +3800,17 @@ function ScreenWidget:onCloseWidget()
     -- module_collections's stack/quad builders) -- audited 2026-08-08.
     self:free()
 
+    -- BUGFIX: _label_cache (see sectionLabel) memoizes paginated-row headers,
+    -- chevrons included, under a key that tracks page/npages but not the
+    -- identity of this ScreenWidget. The chevrons' tap callbacks close over
+    -- `self` (pageNavFor -> self:_turnBookModPage), and this instance's
+    -- _ctx_cache is dropped below, so any header cached during this
+    -- instance's lifetime is dead from here on. Without this, reopening the
+    -- screen (e.g. Library tab -> back to Home) lands on the same page 1 and
+    -- sectionLabel() returns the stale header: the "next" chevron silently
+    -- does nothing until a swipe builds a header for a new page/npages key.
+    invalidateLabelCache()
+
     if self._cover_poll_timer then
         UIManager:unschedule(self._cover_poll_timer)
         self._cover_poll_timer = nil
