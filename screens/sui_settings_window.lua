@@ -112,6 +112,23 @@ end
 local _DEFAULT_PFX        = "simpleui_hs_"
 local _DEFAULT_LAYOUT_KEY = "simpleui_layout"
 
+-- Module membership of each layout as of its last load/save, keyed by layout
+-- key. The editor mutates the stored layout table in place, so membership
+-- changes can only be detected against this independent snapshot.
+local _committed_sets = {}
+
+-- Returns the set of module ids placed in a layout.
+local function _activeSet(layout)
+    local set = {}
+    for _, page in ipairs(layout.pages) do
+        for _, entry in ipairs(page.modules) do
+            local mod_id = LayoutService.entryId(entry)
+            if mod_id then set[mod_id] = true end
+        end
+    end
+    return set
+end
+
 function LayoutService.load(pfx, layout_key)
     pfx        = pfx or _DEFAULT_PFX
     layout_key = layout_key or _DEFAULT_LAYOUT_KEY
@@ -120,6 +137,7 @@ function LayoutService.load(pfx, layout_key)
     if type(saved) == "table" and saved.pages then
         local _, changed = _normalizeLayoutModules(saved, pfx)
         if changed then SUISettings:saveSetting(layout_key, saved) end
+        _committed_sets[layout_key] = _activeSet(saved)
         return saved
     end
 
@@ -141,7 +159,9 @@ function LayoutService.load(pfx, layout_key)
 
     table.insert(pages, cur_page)
 
-    return { pages = pages }
+    local layout = { pages = pages }
+    _committed_sets[layout_key] = _activeSet(layout)
+    return layout
 end
 
 function LayoutService.save(layout, pfx, layout_key, screen_id)
@@ -151,16 +171,17 @@ function LayoutService.save(layout, pfx, layout_key, screen_id)
 
     SUISettings:saveSetting(layout_key, layout)
 
+    local active_set = _activeSet(layout)
+    -- Membership before this save, used to apply enable/disable only to the
+    -- modules that were actually added to or removed from the layout.
+    local previous_set = _committed_sets[layout_key] or active_set
+    _committed_sets[layout_key] = active_set
     local flat_order = {}
-    local active_set = {}
 
     for _, page in ipairs(layout.pages) do
         for _, entry in ipairs(page.modules) do
             local mod_id = LayoutService.entryId(entry)
-            if mod_id then
-                table.insert(flat_order, mod_id)
-                active_set[mod_id] = true
-            end
+            if mod_id then table.insert(flat_order, mod_id) end
         end
     end
 
@@ -174,10 +195,19 @@ function LayoutService.save(layout, pfx, layout_key, screen_id)
 
     for _, mod in ipairs(Registry.list()) do
         local is_active = (active_set[mod.id] == true)
-        if type(mod.setEnabled) == "function" then
-            mod.setEnabled(pfx, is_active)
-        elseif mod.enabled_key then
-            SUISettings:saveSetting(pfx .. mod.enabled_key, is_active)
+        -- Modules that stay in (or out of) the layout keep their own settings,
+        -- including per-item visibility.
+        if is_active ~= (previous_set[mod.id] == true) then
+            -- A module taken out of the layout drops its text styles, so adding
+            -- it back later starts from the defaults.
+            if not is_active and mod.text_elems then
+                require("infra/sui_config").resetTextStyles(mod.id, mod.text_elems, pfx)
+            end
+            if type(mod.setEnabled) == "function" then
+                mod.setEnabled(pfx, is_active)
+            elseif mod.enabled_key then
+                SUISettings:saveSetting(pfx .. mod.enabled_key, is_active)
+            end
         end
     end
 
@@ -537,14 +567,17 @@ local function buildScreens(st)
         -- here.
         local cur    = ctx.current()
         local params = cur and cur.params
-        if params and params.pfx and params.pfx ~= st.pfx then
-            st.pfx        = params.pfx
-            st.pfx_qa     = params.pfx_qa or (params.pfx .. "qa_")
-            st.layout_key = params.layout_key or "simpleui_layout"
-            st.screen_id  = params.screen_id or "hs"
+        if params and params.pfx then
+            st.pfx         = params.pfx
+            st.pfx_qa      = params.pfx_qa or (params.pfx .. "qa_")
+            st.layout_key  = params.layout_key or "simpleui_layout"
+            st.screen_id   = params.screen_id or "hs"
             st.screen_name = params.name
-            st.layout     = LayoutService.load(st.pfx, st.layout_key)
-            st.current_page = nil
+            if st.layout_loaded_key ~= st.layout_key then
+                st.layout            = LayoutService.load(st.pfx, st.layout_key)
+                st.layout_loaded_key = st.layout_key
+                st.current_page      = nil
+            end
         end
 
         for p_idx, page in ipairs(st.layout.pages) do
@@ -1128,6 +1161,7 @@ end
 function SettingsWindow:show(on_close)
     local st = {
         layout            = LayoutService.load(),
+        layout_loaded_key = "simpleui_layout",
         current_page      = nil,
         current_module_id = nil,
         -- Which screen's layout/settings st.layout currently holds. Defaults

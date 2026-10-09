@@ -114,29 +114,45 @@ function ChromeBg:paintTo(bb, x, y)
     end
 end
 
+-- Space left of a box narrower than its column, for the given alignment.
+local function leadingGap(free_w, align)
+    if align == "right" then return free_w end
+    if align == "center" then return math.floor(free_w / 2) end
+    return 0
+end
+
+-- Insets `content` to the label column and draws the module chrome around it.
+-- The box spans the column unless `content.fit_align` ("left" | "center" |
+-- "right") is set: the box is then sized to the content and placed in the
+-- column according to that alignment.
 function M.wrap(content, chrome, col_w, scale)
     if not content then return content end
 
     local outer_m = M.outerMargin(chrome)
-    local box_w = math.max(1, col_w - outer_m * 2)
+    local frame_pad = M.innerPad(chrome) + M.borderSz(chrome)
+    local col_box_w = math.max(1, col_w - outer_m * 2)
+
+    local box_w = col_box_w
+    if content.fit_align then
+        box_w = math.min(col_box_w, content:getSize().w + frame_pad * 2)
+    end
+    local free_w = col_box_w - box_w
+    local lead_w = leadingGap(free_w, content.fit_align)
 
     -- Outer inset matching section labels. Cap the content width so a
     -- wide child (e.g. heatmap grid) cannot paint past the label column.
     local function withOuter(widget)
         if outer_m <= 0 then return widget end
-        local inner_w = box_w
-        if widget then
+        if widget and widget.dimen then
             local sz = widget.getSize and widget:getSize()
-            local wh = (sz and sz.h) or (widget.dimen and widget.dimen.h) or 0
-            if widget.dimen then
-                widget.dimen = Geom:new{ w = inner_w, h = widget.dimen.h or wh }
-            end
+            local wh = (sz and sz.h) or 0
+            widget.dimen = Geom:new{ w = box_w, h = widget.dimen.h or wh }
         end
         return HorizontalGroup:new{
             align = "top",
-            HorizontalSpan:new{ width = outer_m },
+            HorizontalSpan:new{ width = outer_m + lead_w },
             widget,
-            HorizontalSpan:new{ width = outer_m },
+            HorizontalSpan:new{ width = outer_m + free_w - lead_w },
         }
     end
 
@@ -145,15 +161,13 @@ function M.wrap(content, chrome, col_w, scale)
         return withOuter(content)
     end
 
-    local inner_p = M.innerPad(chrome)
-    local border = M.borderSz(chrome)
     local radius = M.radius(chrome, scale)
 
     -- Content inset; fill/frame drawn by a sibling under it in OverlapGroup.
     local fc = FrameContainer:new{
         bordersize = 0,
         radius = 0,
-        padding = inner_p + border,
+        padding = frame_pad,
         background = nil,
         content,
     }

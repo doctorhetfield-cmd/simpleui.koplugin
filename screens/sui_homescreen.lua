@@ -27,8 +27,11 @@ local BUILTIN_INSTANCE_CFG = {
     -- Screen has nothing to "onboard" into). Runs once, right after the
     -- built-in Homescreen is first shown.
     on_after_open = function()
+        local logger = require("logger")
+        logger.info("simpleui[diag]: on_after_open onboarding_done=", SUISettings:get("simpleui_onboarding_done"))
         if SUISettings:get("simpleui_onboarding_done") then return end
         local ok, Onboarding = pcall(require, "screens/sui_onboarding")
+        logger.info("simpleui[diag]: onboarding require ok=", ok, ok and "" or tostring(Onboarding))
         if ok and Onboarding then
             Onboarding.show(function()
                 ScreenEngine.rebuildLayout()

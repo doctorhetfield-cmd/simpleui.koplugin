@@ -28,9 +28,63 @@
 --   FilterState.addFilter(state, dimension, value)   -- mutates + returns state
 --   FilterState.withoutDimension(state, dimension)   -- returns a new state
 --   FilterState.isEmpty(state)
+--   FilterState.parseSeries(raw)                     -- name, suffix index
+--   FilterState.seriesKey(name)                      -- comparison key
+--   FilterState.matcher(trail)                       -- row predicate
+--   FilterState.eachFacetValue(row, definition, fn)  -- fn(key, value)
 
 local FilterState = {}
 
+local util = require("util")
+
+-- ---------------------------------------------------------------------------
+-- Series names
+-- ---------------------------------------------------------------------------
+
+-- Engine placeholder that sorts books without a series last.
+local NO_SERIES_PLACEHOLDER = "\u{FFFF}"
+
+-- Splits a raw series string into a normalized name and the index carried by
+-- a trailing " #n" suffix. Whitespace is trimmed and collapsed; an empty
+-- name (or the placeholder) means "no series" and returns nil.
+function FilterState.parseSeries(raw)
+    if type(raw) ~= "string" or raw == NO_SERIES_PLACEHOLDER then return nil end
+    raw = raw:gsub("\u{00A0}", " ")
+    local name, suffix = raw:match("^(.-)%s+#(%d+)%s*$")
+    name = (name or raw):gsub("%s+", " ")
+    name = name:match("^ *(.-) *$")
+    if name == "" then return nil end
+    return name, tonumber(suffix)
+end
+
+-- Unicode-aware lowercasing: the core helper when available, otherwise the
+-- utf8 library wrapper, otherwise plain Lua lowercasing.
+local function _resolveLower()
+    if type(util.stringLower) == "function" then return util.stringLower end
+    local ok, Utf8Proc = pcall(require, "ffi/utf8proc")
+    if ok and type(Utf8Proc.lowercase) == "function" then return Utf8Proc.lowercase end
+    return string.lower
+end
+local _lower = _resolveLower()
+
+-- Comparison key: two names denote the same series when their keys match.
+function FilterState.seriesKey(name)
+    return name and _lower(name)
+end
+
+-- ---------------------------------------------------------------------------
+-- Dimensions
+-- ---------------------------------------------------------------------------
+
+-- Dimension fields:
+--   column      the bookinfo column, and the field name on resolved rows.
+--   multi_value one row can carry several "\n"-separated values.
+--   repeat_mode how repeated picks combine (see FilterState.addFilter).
+--   key_column  (optional) row field holding the comparison key of the
+--               value; values are matched and grouped by key, and the
+--               displayed spelling is the first one seen.
+--   key         (optional) function producing that key from a value.
+--
 -- value == false means "no value for this dimension" (e.g. books with no
 -- series). It is a valid, filterable state — not "no filter".
 FilterState.DIMENSIONS = {
@@ -45,6 +99,8 @@ FilterState.DIMENSIONS = {
         multi_value = false,
         -- "once": a book has exactly one series; a new pick replaces the old one.
         repeat_mode = "once",
+        key_column  = "series_key",
+        key         = FilterState.seriesKey,
     },
     tags = {
         column      = "keywords",
@@ -136,6 +192,57 @@ function FilterState.withoutDimension(state, dimension)
         end
     end
     return clone
+end
+
+-- ---------------------------------------------------------------------------
+-- Matching
+-- ---------------------------------------------------------------------------
+
+local function buildTest(definition, value)
+    local column = definition.column
+    if value == false then
+        return function(row) return row[column] == nil end
+    end
+    if definition.multi_value then
+        local needle = "\n" .. value .. "\n"
+        return function(row)
+            local raw = row[column]
+            return raw ~= nil and ("\n" .. raw .. "\n"):find(needle, 1, true) ~= nil
+        end
+    end
+    local key_column = definition.key_column or column
+    local target = definition.key and definition.key(value) or value
+    return function(row) return row[key_column] == target end
+end
+
+-- Returns a predicate telling whether a resolved row satisfies every entry
+-- of `trail`.
+function FilterState.matcher(trail)
+    local tests = {}
+    for _, entry in ipairs(trail or {}) do
+        tests[#tests + 1] = buildTest(FilterState.DIMENSIONS[entry.dimension], entry.value)
+    end
+    return function(row)
+        for i = 1, #tests do
+            if not tests[i](row) then return false end
+        end
+        return true
+    end
+end
+
+-- Calls fn(key, value) once per facet value `row` contributes to
+-- `definition`: every token of a multi-value field, the single value
+-- otherwise, or (false, false) when the row has none. `key` identifies the
+-- group the value belongs to; `value` is how it is spelled on this row.
+function FilterState.eachFacetValue(row, definition, fn)
+    local raw = row[definition.column]
+    if raw == nil then
+        fn(false, false)
+    elseif definition.multi_value then
+        for token in raw:gmatch("[^\n]+") do fn(token, token) end
+    else
+        fn(row[definition.key_column or definition.column], raw)
+    end
 end
 
 return FilterState

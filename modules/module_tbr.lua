@@ -50,6 +50,7 @@ local GridRenderer = require("engines/sui_book_grid")
 local TBR_MAX       = 5
 local TBR_SETTING   = "simpleui_tbr_list"    -- G_reader_settings key (kept in sync)
 local TBR_COLL_NAME = "To Be Read"      -- KOReader collection name for the TBR list
+local TBR_SORT_STATE  = "simpleui_tbr_sort_state"  -- last applied Sort mode (see GridRenderer.makeSortMenuItem)
 
 -- Setting key for the "auto-remove on finish" toggle (see extraMenuItemsAfter
 -- below and infra/sui_patches.lua's _onStatusChanged). Defaults to on via
@@ -273,81 +274,24 @@ local function _getBookTitle(fp)
     return title
 end
 
--- Last sort mode applied via the "Sort" menu below — same pattern as
--- module_feat_coll.lua's per-instance SORT_KEY. Sorting the TBR list is a
--- one-shot action (GridRenderer.sortCollection rewrites ReadCollection's
--- persisted order, same as manual "Arrange" would), not a live filter — this
--- key exists purely to remember what was last picked, for display
--- (mandatory_func) on the "Sort" row. It has no effect on getTBRList().
-local SORT_KEY = "simpleui_tbr_sort_mode"
-local function getLastSortMode()
-    return SUISettings:readSetting(SORT_KEY)
-end
-local function saveLastSortMode(mode)
-    SUISettings:saveSetting(SORT_KEY, mode)
-end
-
-local SORT_ORDER = { "title_asc", "title_desc", "author_asc", "percent_asc", "percent_desc", "shuffle" }
-
 -- ── Arrange (TBR-specific: uses isTBR/removeTBR, not generic) ─────────
 local function arrangeMenuItems(ctx_menu)
     local _lc          = ctx_menu._
     local refresh       = ctx_menu.refresh
     local SortWidget    = ctx_menu.SortWidget
     local _UIManager    = ctx_menu.UIManager
-    -- Same labels/order as module_feat_coll.lua's Sort menu, reused verbatim
-    -- so the two share one translation instead of forking near-duplicate
-    -- strings. Built from ctx_menu._ (not a module-level _()) so relabeling
-    -- stays correct if the locale changes without a plugin reload — same
-    -- reasoning as module_feat_coll.lua's SORT_LABELS.
-    local SORT_LABELS = {
-        title_asc    = _lc("Title (A–Z)"),
-        title_desc   = _lc("Title (Z–A)"),
-        author_asc   = _lc("Author (A–Z)"),
-        percent_asc  = _lc("% Read (ascending)"),
-        percent_desc = _lc("% Read (descending)"),
-        shuffle      = _lc("Shuffle"),
-    }
-
     return {
-        {
-            -- Row title stays static — the applied mode is surfaced only via
-            -- mandatory_func (native Menu's right-side value) / SUIWindow's
-            -- automatic right_value inference from the checked radio child
-            -- (see the "Row title vs. right-side value" note in
-            -- engines/sui_window.lua's SUIWindow.MenuTable doc block).
-            text_func      = function() return _lc("Sort") end,
-            mandatory_func = function() return SORT_LABELS[getLastSortMode()] or "" end,
-            enabled_func   = function() return getTBRCount() > 1 end,
-            separator      = true,
-            sub_item_table_func = function()
-                local sub = {}
-                for _, mode in ipairs(SORT_ORDER) do
-                    local _m = mode
-                    sub[#sub + 1] = {
-                        text           = SORT_LABELS[_m],
-                        radio          = true,
-                        -- Visual break before the one non-deterministic mode.
-                        separator      = (_m == "shuffle") or nil,
-                        checked_func   = function() return getLastSortMode() == _m end,
-                        keep_menu_open = true,
-                        callback       = function()
-                            -- Reuses the same sortCollection used by Featured
-                            -- Collection — the TBR list is just a regular
-                            -- ReadCollection under the hood (TBR_COLL_NAME).
-                            if GridRenderer.sortCollection(TBR_COLL_NAME, _m) then
-                                saveLastSortMode(_m)
-                                -- Keep the G_reader_settings fallback list in
-                                -- sync with the freshly-written RC order.
-                                _syncSettings(getTBRList())
-                                refresh()
-                            end
-                        end,
-                    }
-                end
-                return sub
-            end,
-        },
+        GridRenderer.makeSortMenuItem({
+            _lc         = _lc,
+            refresh     = refresh,
+            state_key   = TBR_SORT_STATE,
+            getCollName = function() return TBR_COLL_NAME end,
+            getCount    = getTBRCount,
+            separator   = true,
+            -- Keeps the G_reader_settings fallback list in sync with the
+            -- freshly-written ReadCollection order.
+            onSorted    = function() _syncSettings(getTBRList()) end,
+        }),
         {
             text = _lc("Arrange"),
             sub_item_table_func = function()
@@ -649,14 +593,8 @@ local tbr_module = GridRenderer.makeModule{
 -- Merge TBR's data/API functions (getDisplayName, getTBRList, addTBR, ...,
 -- all defined above onto the local M) into tbr_module itself, and return
 -- tbr_module — not M. tbr_module is the exact table GridRenderer.makeModule
--- built internally, and its generated build()/getMenuItems() close over
--- that same table (e.g. Config.applyLabelToggle(mod, lbl) inside build()
--- mutates mod.label in place). Merging the other way around (copying
--- tbr_module's fields onto a separate M and returning M) would leave every
--- module-registry consumer reading a table that build() never touches
--- again after this file first loads — any state build() sets on itself at
--- runtime (starting with the label visibility toggle) would silently never
--- reach the registered module.
+-- built internally, and the functions it generated close over that same
+-- table, so the module registry must hold it rather than a copy.
 for k, v in pairs(M) do tbr_module[k] = v end
 
 return tbr_module

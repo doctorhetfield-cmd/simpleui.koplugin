@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui 2.7.1\n"
-"POT-Creation-Date: 2026-09-19 14:33\n"
-"PO-Revision-Date: 2026-09-20 22:15+0800\n"
+"POT-Creation-Date: 2026-10-07 08:16+0000\n"
+"PO-Revision-Date: 2026-10-02 22:08+0800\n"
 "Last-Translator: gsWang <gs.wang@outlook.com>\n"
 "Language-Team: Chinese (Traditional)\n"
 "Language: zh_TW\n"
@@ -15,120 +15,136 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 3.9\n"
 
-#: modules/module_reading_goals.lua:1325
+#: modules/module_reading_goals.lua:1348
 msgid "  Set Goal  (%d hr/month)"
 msgstr "  設定目標（%d 小時/月）"
 
-#: modules/module_reading_goals.lua:1345
+#: modules/module_reading_goals.lua:1368
 msgid "  Set Goal  (%d min/day)"
 msgstr "  設定目標（%d 分鐘/天）"
 
-#: modules/module_reading_goals.lua:1305
+#: modules/module_reading_goals.lua:1328
 msgid "  Set Goal  (%s)"
 msgstr "  設定目標（%s）"
 
-#: modules/module_reading_goals.lua:1324 modules/module_reading_goals.lua:1344
+#: modules/module_reading_goals.lua:1347 modules/module_reading_goals.lua:1367
 msgid "  Set Goal  (disabled)"
 msgstr "  設定目標（已停用）"
 
-#: modules/module_coverdeck.lua:110 modules/module_currently.lua:367
+#: modules/module_coverdeck.lua:110 modules/module_currently.lua:381
 msgid " et al."
 msgstr " 等"
 
-#: engines/sui_book_grid.lua:480 features/library/sui_foldercovers.lua:1222
+#: engines/sui_book_grid.lua:474 features/library/sui_foldercovers.lua:1233
 msgid " p."
 msgstr " 頁"
 
-#: modules/module_feat_coll.lua:169 modules/module_tbr.lua:307
+#: engines/sui_book_grid.lua:1581
 msgid "% Read (ascending)"
-msgstr "閱讀進度 %（遞增）"
+msgstr "閱讀進度（遞增）"
 
-#: modules/module_feat_coll.lua:170 modules/module_tbr.lua:308
+#: engines/sui_book_grid.lua:1582
 msgid "% Read (descending)"
-msgstr "閱讀進度 %（遞減）"
+msgstr "閱讀進度（遞減）"
 
-#: modules/module_heatmap.lua:222
+#: modules/module_heatmap.lua:225
 msgid "%1 weeks"
 msgstr "%1 週"
 
-#: engines/sui_book_grid.lua:1825 engines/sui_book_grid.lua:1830
+#: engines/sui_book_grid.lua:1913 engines/sui_book_grid.lua:1918
 msgid "%1 × %2"
 msgstr "%1 × %2"
 
-#: features/sui_backup.lua:665
+#: features/sui_backup.lua:662
 msgid "%d files (%s)"
 msgstr "%d 個檔案（%s）"
 
-#: modules/module_reading_goals.lua:1424
+#: modules/module_reading_goals.lua:1447
 msgid "%d hr/month"
 msgstr "%d 小時/月"
 
-#: modules/module_reading_goals.lua:1439
+#: modules/module_reading_goals.lua:1462
 msgid "%d min/day"
 msgstr "%d 分鐘/天"
 
-#: features/sui_backup.lua:663
+#: features/sui_backup.lua:660
 msgid "%d settings"
 msgstr "%d 項設定"
 
-#: engines/sui_book_grid.lua:890
+#: engines/sui_book_grid.lua:881
 msgid "%d%%"
 msgstr "%d%%"
 
-#: engines/sui_book_grid.lua:949 engines/sui_book_grid.lua:961
-#: modules/module_coverdeck.lua:1013 modules/module_currently.lua:853
-#: modules/module_currently.lua:862 modules/module_new_books.lua:138
+#: engines/sui_book_grid.lua:940 engines/sui_book_grid.lua:952
+#: modules/module_coverdeck.lua:1030 modules/module_currently.lua:905
+#: modules/module_currently.lua:914 modules/module_new_books.lua:138
 msgid "%d%% Read"
 msgstr "已讀 %d%%"
 
-#: screens/sui_stats_windows.lua:3419
+#: screens/sui_stats_windows.lua:3422
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d 天 · %d/%d 分鐘（下一次解凍權）"
 
-#: modules/module_currently.lua:958
+#: modules/module_currently.lua:1010
 msgid "%s left"
 msgstr "剩餘 %s"
 
-#: modules/module_coverdeck.lua:1018 modules/module_currently.lua:896
-#: modules/module_currently.lua:897 modules/module_currently.lua:956
-#: modules/module_currently.lua:970 modules/module_reading_goals.lua:835
-#: modules/module_reading_goals.lua:855
+#: modules/module_coverdeck.lua:1035 modules/module_currently.lua:948
+#: modules/module_currently.lua:949 modules/module_currently.lua:1008
+#: modules/module_currently.lua:1022 modules/module_reading_goals.lua:865
+#: modules/module_reading_goals.lua:885
 msgid "%s read"
 msgstr "已讀 %s"
 
-#: modules/module_coverdeck.lua:1024 modules/module_currently.lua:919
-#: modules/module_currently.lua:923
+#: modules/module_coverdeck.lua:1041 modules/module_currently.lua:971
+#: modules/module_currently.lua:975
 msgid "%s remaining"
 msgstr "剩餘 %s"
 
-#: modules/module_quick_actions.lua:485 modules/module_reading_stats.lua:386
+#: modules/module_quick_actions.lua:525 modules/module_reading_stats.lua:440
 msgid "(%d/%d — at limit)"
 msgstr "（%d/%d — 已達上限）"
 
-#: modules/module_feat_coll.lua:95
+#: modules/module_feat_coll.lua:82
 msgid "(collection not found)"
 msgstr "（未找到收藏）"
 
-#: modules/module_collections.lua:1347
+#: screens/sui_menu.lua:2487
+msgid ""
+"0% transparent, 100% solid. Applies to the native page bar in Library, "
+"History, Collections and similar screens."
+msgstr ""
+"0% 透明，100% 純色。套用於「書庫」、「歷史」與「收藏」等原生頁面導覽列。"
+
+#: screens/sui_menu.lua:2486
+msgid "0% transparent, 100% solid. Applies across the full width of the title bar."
+msgstr ""
+
+#: infra/sui_config.lua:1296
+msgid ""
+"0% transparent, 100% solid. Values in between add a scrim over the wallpaper."
+msgstr "0% 透明，100% 純色。介於兩者之間的值會在桌布上疊加一層遮罩。"
+
+#: modules/module_collections.lua:1341
 msgid "4-Cover Grid"
 msgstr "四封面網格"
 
-#: screens/sui_menu.lua:2888
+#: screens/sui_menu.lua:3004
 msgid "4-Cover Grid (Mosaic View Only)"
 msgstr "四封面網格（僅封面牆檢視）"
 
-#: screens/sui_stats_windows.lua:3094
+#: screens/sui_stats_windows.lua:3097
 msgid ""
 "A freeze can only bridge a single missed day right after an active one — "
 "yesterday doesn't qualify."
 msgstr "凍結補簽只能補救連續閱讀日後錯過的第一天 — 昨天不符合補簽資格。"
 
-#: features/sui_presets.lua:937 features/sui_presets.lua:1023
-#: screens/sui_menu.lua:4084 screens/sui_menu.lua:4169
+#: features/sui_presets.lua:946 features/sui_presets.lua:1032
+#: screens/sui_menu.lua:4185 screens/sui_menu.lua:4270
 msgid "A preset named \"%s\" already exists."
 msgstr "名為「%s」的預設檔已存在。"
 
-#: features/sui_presets.lua:878 screens/sui_menu.lua:4030
+#: features/sui_presets.lua:887 screens/sui_menu.lua:4131
 msgid ""
 "A preset named \"%s\" already exists.\n"
 "Overwrite it?"
@@ -136,7 +152,7 @@ msgstr ""
 "名為「%s」的預設檔已存在。\n"
 "要覆蓋它嗎？"
 
-#: screens/sui_menu.lua:1056 screens/sui_menu.lua:1333
+#: screens/sui_menu.lua:1057 screens/sui_menu.lua:1365
 msgid ""
 "A restart is required to apply the new bar size across all layouts.\n"
 "\n"
@@ -146,7 +162,7 @@ msgstr ""
 "\n"
 "要立即重新啟動嗎？"
 
-#: screens/sui_menu.lua:4340
+#: screens/sui_menu.lua:4453
 msgid ""
 "A restart is required to apply the new text size everywhere.\n"
 "\n"
@@ -164,20 +180,20 @@ msgstr "SimpleUI 是 KOReader 的一個插件，提供一個美觀的軟體介�
 msgid "ALL TIME"
 msgstr "所有時間"
 
-#: screens/sui_menu.lua:4593 screens/sui_settings_window.lua:365
-#: screens/sui_settings_window.lua:1082
+#: screens/sui_menu.lua:4702 screens/sui_settings_window.lua:387
+#: screens/sui_settings_window.lua:1108
 msgid "About"
 msgstr "關於"
 
-#: features/sui_quickactions.lua:2510 features/sui_quickactions.lua:2556
+#: features/sui_quickactions.lua:2509 features/sui_quickactions.lua:2555
 msgid "Action"
 msgstr "動作"
 
-#: modules/module_action_list.lua:219
+#: modules/module_action_list.lua:223
 msgid "Action List"
 msgstr "動作清單"
 
-#: features/sui_quickactions.lua:2760
+#: features/sui_quickactions.lua:2759
 msgid "Action Type"
 msgstr "動作類型"
 
@@ -185,178 +201,185 @@ msgstr "動作類型"
 msgid "Action error: %s"
 msgstr "動作錯誤：%s"
 
-#: features/sui_quickactions.lua:2532
+#: features/sui_quickactions.lua:2531
 msgid "Action name…"
-msgstr "動作名稱······"
+msgstr "動作名稱……"
 
 #: features/sui_quickactions.lua:1209
 msgid "Action not available: %s"
 msgstr "動作不可用：%s"
 
-#: screens/sui_quicksettings_bar.lua:1168
-#: screens/sui_quicksettings_bar.lua:1193
+#: screens/sui_quicksettings_bar.lua:1182
+#: screens/sui_quicksettings_bar.lua:1207
 msgid "Add Action"
 msgstr "新增動作"
 
-#: screens/sui_menu.lua:1598 screens/sui_menu.lua:1636
+#: screens/sui_menu.lua:1667 screens/sui_menu.lua:1705
 msgid "Add Button"
 msgstr "新增按鈕"
 
-#: engines/sui_screen_engine.lua:2165 engines/sui_window.lua:850
-#: modules/module_action_list.lua:387 modules/module_action_list.lua:417
-#: modules/module_coverdeck.lua:1466 modules/module_coverdeck.lua:1488
-#: modules/module_coverdeck.lua:1603 modules/module_coverdeck.lua:1621
-#: modules/module_currently.lua:1682 modules/module_currently.lua:1729
-#: modules/module_quick_actions.lua:439 modules/module_quick_actions.lua:469
-#: modules/module_reading_goals.lua:1370 modules/module_reading_goals.lua:1399
-#: modules/module_reading_stats.lua:749 modules/module_reading_stats.lua:778
-#: screens/sui_menu.lua:978 screens/sui_menu.lua:1015 screens/sui_menu.lua:1207
-#: screens/sui_menu.lua:1247 screens/sui_menu.lua:2034
-#: screens/sui_menu.lua:2064 screens/sui_quicksettings_bar.lua:978
-#: screens/sui_settings_window.lua:1090
+#: engines/sui_screen_engine.lua:2172 engines/sui_window.lua:869
+#: modules/module_action_list.lua:411 modules/module_action_list.lua:441
+#: modules/module_coverdeck.lua:1476 modules/module_coverdeck.lua:1498
+#: modules/module_coverdeck.lua:1613 modules/module_coverdeck.lua:1631
+#: modules/module_currently.lua:1706 modules/module_currently.lua:1753
+#: modules/module_quick_actions.lua:479 modules/module_quick_actions.lua:509
+#: modules/module_reading_goals.lua:1393 modules/module_reading_goals.lua:1422
+#: modules/module_reading_stats.lua:811 modules/module_reading_stats.lua:840
+#: screens/sui_menu.lua:979 screens/sui_menu.lua:1016 screens/sui_menu.lua:1239
+#: screens/sui_menu.lua:1279 screens/sui_menu.lua:2133
+#: screens/sui_menu.lua:2163 screens/sui_quicksettings_bar.lua:992
+#: screens/sui_settings_window.lua:1116
 msgid "Add Item"
 msgstr "新增項目"
 
-#: screens/sui_settings_window.lua:1087 screens/sui_settings_window.lua:1230
+#: screens/sui_settings_window.lua:1113 screens/sui_settings_window.lua:1256
 msgid "Add Module"
 msgstr "新增模組"
 
-#: screens/sui_settings_window.lua:1193
+#: screens/sui_settings_window.lua:1219
 msgid "Add Page"
 msgstr "新增頁面"
 
-#: modules/module_action_list.lua:298 modules/module_quick_actions.lua:344
-#: screens/sui_menu.lua:1954 screens/sui_quicksettings_bar.lua:1046
+#: modules/module_action_list.lua:322 modules/module_quick_actions.lua:384
+#: screens/sui_menu.lua:2053 screens/sui_quicksettings_bar.lua:1060
 msgid "Add at least 2 actions to arrange."
 msgstr "請至少新增 2 個動作以進行排序。"
 
-#: modules/module_feat_coll.lua:217 modules/module_tbr.lua:363
+#: modules/module_feat_coll.lua:166 modules/module_tbr.lua:307
 msgid "Add at least 2 books to arrange."
 msgstr "請至少新增 2 本書以進行排序。"
 
-#: modules/module_reading_stats.lua:698
+#: modules/module_reading_stats.lua:760
 msgid "Add at least 2 stats to arrange."
 msgstr "請至少新增 2 項統計數據以進行排序。"
 
-#: modules/module_tbr.lua:589
+#: modules/module_tbr.lua:533
 msgid "Add to To Be Read"
 msgstr "加入待讀清單"
 
-#: modules/module_action_list.lua:460 modules/module_clock.lua:1193
-#: modules/module_quick_actions.lua:645 modules/module_quote.lua:1554
-#: modules/module_reading_stats.lua:846
+#: screens/sui_menu.lua:2541
+msgid "After closing a book"
+msgstr ""
+
+#: modules/module_action_list.lua:476 modules/module_action_list.lua:512
+#: modules/module_clock.lua:1220 modules/module_quick_actions.lua:682
+#: modules/module_quote.lua:1599 modules/module_quote.lua:1664
+#: modules/module_reading_stats.lua:904 modules/module_reading_stats.lua:1032
 msgid "Alignment"
 msgstr "對齊方式"
 
-#: engines/sui_window.lua:3409 screens/sui_settings_window.lua:852
+#: engines/sui_window.lua:3428 screens/sui_settings_window.lua:878
 msgid "All items have already been added."
 msgstr "所有項目皆已新增。"
 
-#: screens/sui_settings_window.lua:830
+#: screens/sui_settings_window.lua:856
 msgid "All modules have already been added."
 msgstr "所有模組皆已新增。"
 
-#: features/sui_quickactions.lua:3541
+#: features/sui_quickactions.lua:3539
 msgid "All recent books are finished."
 msgstr "所有近期書籍皆已讀完。"
 
-#: modules/module_reading_stats.lua:118
+#: modules/module_reading_stats.lua:138
 msgid "All time — Books"
 msgstr "累計 — 書籍"
 
-#: modules/module_reading_stats.lua:117
+#: modules/module_reading_stats.lua:137
 msgid "All time — Time"
 msgstr "累計 — 時間"
 
-#: screens/sui_menu.lua:2560
+#: screens/sui_menu.lua:2674
 msgid "Always"
 msgstr "總是"
 
-#: modules/module_clock.lua:1165 modules/module_clock.lua:1184
+#: modules/module_clock.lua:1192 modules/module_clock.lua:1211
 msgid "Analogue"
 msgstr "模擬"
 
-#: modules/module_reading_goals.lua:1292 modules/module_reading_goals.lua:1358
-#: modules/module_reading_goals.lua:1395 modules/module_reading_goals.lua:1412
+#: modules/module_reading_goals.lua:1315 modules/module_reading_goals.lua:1381
+#: modules/module_reading_goals.lua:1418 modules/module_reading_goals.lua:1435
 msgid "Annual Goal"
 msgstr "年度目標"
 
-#: modules/module_reading_goals.lua:743
+#: modules/module_reading_goals.lua:773
 msgid "Annual Reading Goal"
 msgstr "年度閱讀目標"
 
-#: engines/sui_book_grid.lua:1890 modules/module_currently.lua:1960
-#: modules/module_heatmap.lua:352 modules/module_quick_actions.lua:571
-#: modules/module_reading_goals.lua:1507 screens/sui_menu.lua:1814
-#: screens/sui_menu.lua:1817
+#: features/sui_module_chrome.lua:235 features/sui_module_chrome.lua:238
+#: features/sui_module_chrome.lua:282 infra/sui_config.lua:1113
+#: modules/module_heatmap.lua:358 modules/module_reading_goals.lua:1529
+#: modules/module_reading_goals.lua:1641 screens/sui_menu.lua:1884
+#: screens/sui_menu.lua:1887
 msgid "Appearance"
 msgstr "外觀"
 
-#: features/sui_backup.lua:104
+#: features/sui_backup.lua:105
 msgid "Appearance & Style"
 msgstr "外觀與樣式"
 
-#: infra/sui_config.lua:938 infra/sui_config.lua:972 infra/sui_config.lua:1087
-#: infra/sui_config.lua:1160 modules/module_clock.lua:1237
-#: screens/sui_menu.lua:1040 screens/sui_menu.lua:1317
-#: screens/sui_menu.lua:2406 screens/sui_menu.lua:2478
-#: screens/sui_menu.lua:2510 screens/sui_menu.lua:2936
-#: screens/sui_menu.lua:3297 screens/sui_menu.lua:4334
+#: infra/sui_config.lua:1236 infra/sui_config.lua:1305
+#: infra/sui_config.lua:1339 infra/sui_config.lua:1454
+#: infra/sui_config.lua:1527 modules/module_clock.lua:1264
+#: screens/sui_menu.lua:1041 screens/sui_menu.lua:1349
+#: screens/sui_menu.lua:2602 screens/sui_menu.lua:2634
+#: screens/sui_menu.lua:3398 screens/sui_menu.lua:4447
 msgid "Apply"
 msgstr "套用"
 
 #: infra/sui_core.lua:1125
 msgid "Applying preset…"
-msgstr "正在應用預設…"
+msgstr "正在應用預設……"
 
 #: engines/sui_heatmap_widgets.lua:87
 msgid "Apr"
 msgstr "4月"
 
-#: modules/module_clock.lua:62 screens/sui_stats_windows.lua:2815
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2815
 msgid "April"
 msgstr "4月"
 
-#: modules/module_feat_coll.lua:204 modules/module_feat_coll.lua:278
-#: modules/module_feat_coll.lua:297 modules/module_tbr.lua:352
-#: modules/module_tbr.lua:424 modules/module_tbr.lua:447
+#: modules/module_clock.lua:1066 modules/module_feat_coll.lua:153
+#: modules/module_feat_coll.lua:227 modules/module_feat_coll.lua:246
+#: modules/module_tbr.lua:296 modules/module_tbr.lua:368
+#: modules/module_tbr.lua:391
 msgid "Arrange"
 msgstr "排序"
 
-#: modules/module_action_list.lua:318 modules/module_quick_actions.lua:362
-#: screens/sui_menu.lua:1958
+#: modules/module_action_list.lua:342 modules/module_quick_actions.lua:402
+#: screens/sui_menu.lua:2057
 msgid "Arrange %s"
 msgstr "排序 %s"
 
-#: screens/sui_menu.lua:1554 screens/sui_menu.lua:1561
-#: screens/sui_menu.lua:1738 screens/sui_menu.lua:1753
+#: screens/sui_menu.lua:1623 screens/sui_menu.lua:1630
+#: screens/sui_menu.lua:1807 screens/sui_menu.lua:1822
 msgid "Arrange Buttons"
 msgstr "排序按鈕"
 
-#: modules/module_feat_coll.lua:212 modules/module_feat_coll.lua:246
+#: modules/module_feat_coll.lua:161 modules/module_feat_coll.lua:195
 msgid "Arrange Collection"
 msgstr "排序收藏"
 
-#: engines/sui_screen_engine.lua:2164 modules/module_action_list.lua:291
-#: modules/module_coverdeck.lua:1543 modules/module_coverdeck.lua:1549
-#: modules/module_currently.lua:1555 modules/module_currently.lua:1598
-#: modules/module_quick_actions.lua:337 screens/sui_bottombar.lua:820
+#: engines/sui_screen_engine.lua:2171 modules/module_action_list.lua:315
+#: modules/module_coverdeck.lua:1553 modules/module_coverdeck.lua:1559
+#: modules/module_currently.lua:1579 modules/module_currently.lua:1622
+#: modules/module_quick_actions.lua:377 screens/sui_bottombar.lua:938
 #: screens/sui_menu.lua:694 screens/sui_menu.lua:761 screens/sui_menu.lua:768
-#: screens/sui_menu.lua:1948 screens/sui_quicksettings_bar.lua:977
-#: screens/sui_quicksettings_bar.lua:1038 screens/sui_settings_window.lua:1111
-#: screens/sui_topbar.lua:507
+#: screens/sui_menu.lua:2047 screens/sui_quicksettings_bar.lua:991
+#: screens/sui_quicksettings_bar.lua:1052 screens/sui_settings_window.lua:1137
+#: screens/sui_topbar.lua:586
 msgid "Arrange Items"
 msgstr "排序項目"
 
-#: screens/sui_quicksettings_bar.lua:1062
+#: screens/sui_quicksettings_bar.lua:1076
 msgid "Arrange Quick Settings"
 msgstr "排序快速設定"
 
-#: modules/module_reading_stats.lua:709
+#: modules/module_reading_stats.lua:771
 msgid "Arrange Reading Stats"
 msgstr "排序閱讀統計"
 
-#: modules/module_coverdeck.lua:1564
+#: modules/module_coverdeck.lua:1574
 msgid "Arrange Statistics"
 msgstr "排序統計"
 
@@ -364,11 +387,11 @@ msgstr "排序統計"
 msgid "Arrange Tabs"
 msgstr "排序分頁"
 
-#: modules/module_tbr.lua:357 modules/module_tbr.lua:394
+#: modules/module_tbr.lua:301 modules/module_tbr.lua:338
 msgid "Arrange To Be Read List"
 msgstr "排序待讀清單"
 
-#: features/sui_presets.lua:137
+#: features/sui_presets.lua:142
 msgid "At a Glance"
 msgstr "概覽"
 
@@ -376,50 +399,51 @@ msgstr "概覽"
 msgid "Aug"
 msgstr "8月"
 
-#: modules/module_clock.lua:63 screens/sui_stats_windows.lua:2816
+#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2816
 msgid "August"
 msgstr "8月"
 
-#: modules/module_coverdeck.lua:156 modules/module_currently.lua:300
+#: modules/module_coverdeck.lua:156 modules/module_coverdeck.lua:1642
+#: modules/module_currently.lua:314 modules/module_currently.lua:1984
+#: modules/module_quote.lua:1626 modules/module_quote.lua:1647
 msgid "Author"
 msgstr "作者"
 
-#: modules/module_feat_coll.lua:168 modules/module_library.lua:213
-#: modules/module_tbr.lua:306
+#: engines/sui_book_grid.lua:1580 modules/module_library.lua:210
 msgid "Author (A–Z)"
 msgstr "作者（A–Z）"
 
-#: screens/sui_menu.lua:4396
+#: screens/sui_menu.lua:4509
 msgid "Author: %s"
 msgstr "作者：%s"
 
 #: features/library/sui_library_browse.lua:58
-#: features/sui_quickactions.lua:1004 infra/sui_config.lua:132
+#: features/sui_quickactions.lua:1004 infra/sui_config.lua:133
 msgid "Authors"
 msgstr "作者"
 
-#: modules/module_collections.lua:1356 screens/sui_menu.lua:2899
+#: modules/module_collections.lua:1350 screens/sui_menu.lua:3015
 msgid "Auto (Single ↔ 4-Cover Grid)"
 msgstr "自動（單封面 ↔ 四封面）"
 
-#: features/library/sui_group_actions.lua:48 modules/module_collections.lua:339
+#: features/library/sui_group_actions.lua:51 modules/module_collections.lua:330
 msgid "Auto (first book)"
 msgstr "自動（第一本書）"
 
-#: screens/sui_menu.lua:2363
+#: screens/sui_menu.lua:2456
 msgid "Auto-rotate"
 msgstr "自動旋轉"
 
-#: screens/sui_menu.lua:4401
+#: screens/sui_menu.lua:4514
 msgid "Automatic Update Check"
 msgstr "自動檢查更新"
 
 #: screens/sui_stats_windows.lua:1205 screens/sui_stats_windows.lua:2410
-#: screens/sui_stats_windows.lua:3879
+#: screens/sui_stats_windows.lua:3882
 msgid "Average per day"
 msgstr "每日平均"
 
-#: screens/sui_stats_windows.lua:1207 screens/sui_stats_windows.lua:3881
+#: screens/sui_stats_windows.lua:1207 screens/sui_stats_windows.lua:3884
 msgid "Average per page"
 msgstr "每頁平均"
 
@@ -427,35 +451,44 @@ msgstr "每頁平均"
 msgid "Back"
 msgstr "返回"
 
-#: features/sui_style.lua:93
+#: features/sui_style.lua:94
 msgid "Back Button"
 msgstr "返回按鈕"
+
+#: features/sui_module_chrome.lua:215 features/sui_module_chrome.lua:259
+#: features/sui_module_chrome.lua:270
+msgid "Background Opacity"
+msgstr "背景不透明度"
+
+#: features/sui_module_chrome.lua:271
+msgid "Background width"
+msgstr "背景寬度"
 
 #: features/sui_quickactions.lua:992
 msgid "Backup"
 msgstr "備份"
 
-#: screens/sui_menu.lua:4423
+#: screens/sui_menu.lua:4536
 msgid "Backup & Restore"
 msgstr "備份與恢復"
 
-#: features/sui_backup.lua:641
+#: features/sui_backup.lua:638
 msgid "Backup created"
-msgstr "備份建立於"
+msgstr "備份已建立"
 
-#: features/sui_backup.lua:890 features/sui_backup.lua:1111
+#: features/sui_backup.lua:887 features/sui_backup.lua:1108
 msgid "Backup created:"
 msgstr "備份已建立："
 
-#: features/sui_backup.lua:887 features/sui_backup.lua:1114
+#: features/sui_backup.lua:884 features/sui_backup.lua:1111
 msgid "Backup failed."
 msgstr "備份失敗。"
 
-#: features/sui_backup.lua:949
+#: features/sui_backup.lua:946
 msgid "Backup loaded. Choose what to import, then tap \"Restore Selected…\"."
-msgstr "備份已載入。請選擇要匯入的內容，然後點選「恢復所選…」。"
+msgstr "備份已載入。請選擇要匯入的內容，然後點選「恢復所選……」。"
 
-#: features/sui_backup.lua:1007
+#: features/sui_backup.lua:1004
 msgid ""
 "Backup restored.\n"
 "Restart KOReader now to finish applying all changes?"
@@ -463,68 +496,64 @@ msgstr ""
 "備份已恢復。\n"
 "是否立即重啟 KOReader 以應用所有更改？"
 
-#: features/sui_backup.lua:583
+#: features/sui_backup.lua:580
 msgid ""
 "Backup was made by a newer SimpleUI version. Please update this plugin first."
-msgstr "此備份由更新版本的 Simple UI 建立。請先更新本外掛。"
+msgstr "此備份由更新版本的 SimpleUI 建立。請先更新本外掛。"
 
-#: engines/sui_book_grid.lua:2059 modules/module_collections.lua:1378
-#: screens/sui_menu.lua:3201 screens/sui_menu.lua:3210
-#: screens/sui_menu.lua:3216
+#: engines/sui_book_grid.lua:2108 modules/module_collections.lua:1372
+#: screens/sui_menu.lua:3302 screens/sui_menu.lua:3311
+#: screens/sui_menu.lua:3317
 msgid "Badge"
 msgstr "標記"
 
-#: engines/sui_book_grid.lua:1992 engines/sui_book_grid.lua:1994
-#: modules/module_collections.lua:1422 modules/module_collections.lua:1425
-#: screens/sui_menu.lua:2929
+#: infra/sui_config.lua:1253 infra/sui_config.lua:1255
 msgid "Badge Size"
 msgstr "標記尺寸"
 
-#: screens/sui_menu.lua:2917
+#: screens/sui_menu.lua:3033
 msgid "Badges"
 msgstr "標記"
 
-#: features/library/sui_foldercovers.lua:309 screens/sui_menu.lua:3134
-#: screens/sui_menu.lua:3143 screens/sui_menu.lua:3149
+#: features/library/sui_foldercovers.lua:293 screens/sui_menu.lua:3235
+#: screens/sui_menu.lua:3244 screens/sui_menu.lua:3250
 msgid "Banner"
 msgstr "橫幅"
 
-#: engines/sui_book_grid.lua:1941
+#: engines/sui_book_grid.lua:1995
 msgid "Bar"
 msgstr "條形"
 
-#: engines/sui_book_grid.lua:1943
+#: engines/sui_book_grid.lua:1997
 msgid "Bar + Text"
 msgstr "條形 + 文字"
 
-#: screens/sui_menu.lua:560 screens/sui_menu.lua:1303
+#: screens/sui_menu.lua:560 screens/sui_menu.lua:1103 screens/sui_menu.lua:1335
+#: screens/sui_menu.lua:1445
 msgid "Bar Size"
 msgstr "欄尺寸"
 
-#: screens/sui_menu.lua:1261
+#: screens/sui_menu.lua:1293
 msgid "Bar Style"
-msgstr "欄位樣式"
+msgstr "欄樣式"
 
-#: modules/module_quick_actions.lua:597 screens/sui_menu.lua:1288
-#: screens/sui_quicksettings_bar.lua:1270
+#: modules/module_quick_actions.lua:635 screens/sui_menu.lua:1320
+#: screens/sui_quicksettings_bar.lua:1290
 msgid "Bare"
 msgstr "無邊框"
 
-#: features/sui_backup.lua:114 screens/sui_menu.lua:4555
-#: screens/sui_settings_window.lua:330 screens/sui_settings_window.lua:1079
+#: features/sui_backup.lua:115 screens/sui_menu.lua:4664
+#: screens/sui_settings_window.lua:352 screens/sui_settings_window.lua:1105
 msgid "Bars"
 msgstr "功能欄"
 
-#: infra/sui_config.lua:170 modules/module_clock.lua:239
+#: infra/sui_config.lua:195 modules/module_clock.lua:233
+#: modules/module_clock.lua:1180
 msgid "Battery"
-msgstr "電量"
+msgstr "電池"
 
-#: modules/module_clock.lua:1031 modules/module_clock.lua:1033
-msgid "Battery Size"
-msgstr "電池大小"
-
-#: screens/sui_menu.lua:2764 screens/sui_settings_window.lua:414
-#: screens/sui_settings_window.lua:1092
+#: infra/sui_config.lua:1119 screens/sui_menu.lua:2880
+#: screens/sui_settings_window.lua:440 screens/sui_settings_window.lua:1118
 msgid "Behaviour"
 msgstr "行為"
 
@@ -532,27 +561,44 @@ msgstr "行為"
 msgid "Best streak"
 msgstr "最佳連續"
 
-#: screens/sui_menu.lua:2603
-msgid "Book Cover Transition"
-msgstr "書籍封面過渡"
+#: infra/sui_config.lua:193
+msgid "Bluetooth"
+msgstr "藍牙"
 
-#: features/sui_quickactions.lua:2282
+#: features/sui_style.lua:2095
+msgid "Bold"
+msgstr "粗體"
+
+#: features/sui_style.lua:2097
+msgid "Bold italic"
+msgstr "粗斜體"
+
+#: screens/sui_menu.lua:2717
+msgid "Book Cover Transition"
+msgstr "書籍封面轉場"
+
+#: screens/sui_menu.lua:2546
+#, fuzzy
+msgid "Book Folder"
+msgstr "資料夾"
+
+#: features/sui_quickactions.lua:2281
 msgid "Book Info"
 msgstr "書籍資訊"
 
-#: infra/sui_config.lua:1276
+#: infra/sui_config.lua:1653
 msgid "Book Menu"
 msgstr "圖書選單"
 
-#: screens/sui_stats_windows.lua:3932
+#: screens/sui_stats_windows.lua:3935
 msgid "Book Statistics"
 msgstr "書籍統計"
 
-#: main.lua:1134
+#: main.lua:1148
 msgid "Book statistics"
 msgstr "書籍統計"
 
-#: screens/sui_settings_window.lua:338
+#: screens/sui_settings_window.lua:360
 msgid "Book-browser settings"
 msgstr "圖書瀏覽器設定"
 
@@ -564,29 +610,30 @@ msgstr "書籤瀏覽器"
 msgid "Bookmark browser requires a newer KOReader. Please update."
 msgstr "書籤瀏覽器需要更新版本的 KOReader，請更新。"
 
-#: features/sui_quickactions.lua:862 infra/sui_config.lua:124
+#: features/sui_quickactions.lua:862 infra/sui_config.lua:125
 msgid "Bookmarks"
 msgstr "書籤"
 
-#: modules/module_feat_coll.lua:254 modules/module_library.lua:293
+#: modules/module_feat_coll.lua:203 modules/module_library.lua:290
 msgid "Books"
 msgstr "書籍"
 
-#: modules/module_reading_goals.lua:744
+#: modules/module_reading_goals.lua:774
 msgid "Books to read in %s:"
 msgstr "%s 年預計閱讀書籍："
 
-#: modules/module_collections.lua:1399 screens/sui_menu.lua:2952
-#: screens/sui_menu.lua:2959 screens/sui_menu.lua:2974
-#: screens/sui_menu.lua:3365 screens/sui_menu.lua:3384
+#: modules/module_collections.lua:1393 screens/sui_menu.lua:3053
+#: screens/sui_menu.lua:3060 screens/sui_menu.lua:3075
+#: screens/sui_menu.lua:3466 screens/sui_menu.lua:3485
 msgid "Bottom"
 msgstr "底部"
 
-#: screens/sui_menu.lua:1372 screens/sui_menu.lua:1373
+#: screens/sui_menu.lua:1409 screens/sui_menu.lua:1410
+#: screens/sui_menu.lua:1448
 msgid "Bottom Margin"
 msgstr "底邊距"
 
-#: screens/sui_menu.lua:2604
+#: screens/sui_menu.lua:2718
 msgid ""
 "Briefly show the book cover full-screen when opening or closing a book, "
 "masking the page-layout flash. Normally requires the book to already be "
@@ -598,8 +645,8 @@ msgstr ""
 "瀏覽器建立索引（封面需在網格/清單檢視中至少出現過一次）— 詳見下方的「高畫質封"
 "面」以包含未建立索引的書籍。"
 
-#: features/sui_quickactions.lua:928 infra/sui_config.lua:127
-#: infra/sui_config.lua:169
+#: features/sui_quickactions.lua:928 infra/sui_config.lua:128
+#: infra/sui_config.lua:194
 msgid "Brightness"
 msgstr "亮度"
 
@@ -607,23 +654,23 @@ msgstr "亮度"
 msgid "Browse"
 msgstr "瀏覽"
 
-#: features/sui_style.lua:108
+#: features/sui_style.lua:109
 msgid "Browse Button (author)"
 msgstr "瀏覽按鈕（作者）"
 
-#: features/sui_style.lua:102
+#: features/sui_style.lua:103
 msgid "Browse Button (default)"
 msgstr "瀏覽按鈕（預設）"
 
-#: features/sui_style.lua:114
+#: features/sui_style.lua:115
 msgid "Browse Button (series)"
 msgstr "瀏覽按鈕（系列）"
 
-#: features/sui_style.lua:120
+#: features/sui_style.lua:121
 msgid "Browse Button (tags)"
 msgstr "瀏覽按鈕（標籤）"
 
-#: features/sui_style.lua:1293
+#: features/sui_style.lua:1311
 msgid "Browse Icons"
 msgstr "瀏覽圖示"
 
@@ -636,158 +683,162 @@ msgstr "瀏覽方式"
 msgid "Browse by Authors/Series/Tags not available."
 msgstr "依作者/系列/標籤瀏覽功能不可用。"
 
-#: screens/sui_titlebar.lua:1000
+#: screens/sui_titlebar.lua:1031
 msgid "Browse library"
-msgstr "書庫瀏覽瀏覽方式"
+msgstr "書庫瀏覽方式"
 
-#: features/sui_quickactions.lua:2223 screens/sui_menu.lua:2256
-#: screens/sui_menu.lua:3796
+#: features/sui_quickactions.lua:2222 screens/sui_menu.lua:2387
+#: screens/sui_menu.lua:3897
 msgid "Browse…"
-msgstr "瀏覽…"
+msgstr "瀏覽……"
 
-#: modules/module_quick_actions.lua:609 screens/sui_quicksettings_bar.lua:1283
+#: screens/sui_quicksettings_bar.lua:1303
 msgid "Button Background"
 msgstr "按鈕背景"
 
-#: screens/sui_menu.lua:1825
+#: modules/module_quick_actions.lua:673
+msgid "Button Opacity"
+msgstr "按鈕不透明度"
+
+#: screens/sui_menu.lua:1895 screens/sui_menu.lua:1917
 msgid "Button Size"
 msgstr "按鈕尺寸"
 
-#: modules/module_quick_actions.lua:574 screens/sui_quicksettings_bar.lua:1247
+#: modules/module_quick_actions.lua:647
+msgid "Button Style"
+msgstr "按鈕樣式"
+
+#: modules/module_quick_actions.lua:612 screens/sui_quicksettings_bar.lua:1267
 msgid "Button Type"
 msgstr "按鈕類型"
 
-#: screens/sui_titlebar.lua:1004
+#: screens/sui_titlebar.lua:1035
 msgid "By author"
 msgstr "依作者"
 
-#: screens/sui_menu.lua:2643
+#: screens/sui_menu.lua:2757
 msgid ""
 "By default the cover is stretched to fill the whole screen, which can "
 "distort it if its proportions don't match your screen's. When on, the cover "
 "keeps its original proportions instead, centered over a black background."
 msgstr ""
-"預設情況下封面會拉伸填滿整個螢幕，若比例不符可能會變形。開啟此選項後，封面將"
-"保持原始比例並於黑色背景中央顯示。"
+"預設情況下，封面會拉伸以填滿整個畫面；如果封面的長寬比與螢幕不符，可能會導致"
+"變形。開啟後，封面將保持原始比例，並以黑色背景置中顯示。"
 
-#: screens/sui_titlebar.lua:1005
+#: screens/sui_titlebar.lua:1036
 msgid "By series"
 msgstr "依系列"
 
-#: screens/sui_titlebar.lua:1006
+#: screens/sui_titlebar.lua:1037
 msgid "By tags"
 msgstr "依標籤"
 
-#: screens/sui_heatmap_popup.lua:140 screens/sui_stats_windows.lua:3115
+#: screens/sui_heatmap_popup.lua:140 screens/sui_stats_windows.lua:3118
 msgid "CALENDAR"
-msgstr "行事曆"
+msgstr "日曆"
 
-#: modules/module_heatmap.lua:342
+#: modules/module_heatmap.lua:348
 msgid "Calendar"
 msgstr "日曆"
 
-#: features/library/sui_group_actions.lua:71
-#: features/library/sui_group_actions.lua:101
-#: features/library/sui_library_browse.lua:826
+#: features/library/sui_group_actions.lua:74
+#: features/library/sui_group_actions.lua:107
+#: features/library/sui_library_browse.lua:801
 #: features/library/sui_library_search.lua:70
 #: features/library/sui_library_search.lua:207
-#: features/library/sui_series_grouping.lua:377 features/sui_backup.lua:995
-#: features/sui_backup.lua:1094 features/sui_presets.lua:850
-#: features/sui_presets.lua:880 features/sui_presets.lua:910
-#: features/sui_presets.lua:927 features/sui_presets.lua:955
-#: features/sui_presets.lua:995 features/sui_presets.lua:1013
-#: features/sui_presets.lua:1042 features/sui_quickactions.lua:529
-#: features/sui_quickactions.lua:1646 features/sui_quickactions.lua:1979
-#: features/sui_quickactions.lua:2131 features/sui_quickactions.lua:2152
-#: features/sui_quickactions.lua:2262 features/sui_quickactions.lua:2547
-#: features/sui_quickactions.lua:2618 features/sui_quickactions.lua:2644
-#: features/sui_quickactions.lua:2669 features/sui_quickactions.lua:2747
-#: features/sui_quickactions.lua:2771 features/sui_quickactions.lua:3084
-#: features/sui_quickactions.lua:3479 features/sui_style.lua:1311
-#: infra/sui_config.lua:939 infra/sui_config.lua:973 infra/sui_config.lua:1088
-#: infra/sui_config.lua:1161 infra/sui_updater.lua:500
-#: infra/sui_updater.lua:517 modules/module_clock.lua:1238
-#: modules/module_collections.lua:365 modules/module_quote.lua:1300
-#: modules/module_reading_goals.lua:731 screens/sui_menu.lua:650
-#: screens/sui_menu.lua:911 screens/sui_menu.lua:1041 screens/sui_menu.lua:1318
-#: screens/sui_menu.lua:2407 screens/sui_menu.lua:2479
-#: screens/sui_menu.lua:2511 screens/sui_menu.lua:2937
-#: screens/sui_menu.lua:3298 screens/sui_menu.lua:4004
-#: screens/sui_menu.lua:4032 screens/sui_menu.lua:4061
-#: screens/sui_menu.lua:4078 screens/sui_menu.lua:4104
-#: screens/sui_menu.lua:4145 screens/sui_menu.lua:4163
-#: screens/sui_menu.lua:4190 screens/sui_menu.lua:4335
-#: screens/sui_menu.lua:4440 screens/sui_settings_window.lua:483
-#: screens/sui_settings_window.lua:1170 screens/sui_stats_windows.lua:649
-#: screens/sui_stats_windows.lua:772 screens/sui_titlebar.lua:1007
+#: features/library/sui_series_grouping.lua:382 features/sui_backup.lua:992
+#: features/sui_backup.lua:1091 features/sui_presets.lua:859
+#: features/sui_presets.lua:889 features/sui_presets.lua:919
+#: features/sui_presets.lua:936 features/sui_presets.lua:964
+#: features/sui_presets.lua:1004 features/sui_presets.lua:1022
+#: features/sui_presets.lua:1051 features/sui_quickactions.lua:529
+#: features/sui_quickactions.lua:1645 features/sui_quickactions.lua:1978
+#: features/sui_quickactions.lua:2130 features/sui_quickactions.lua:2151
+#: features/sui_quickactions.lua:2261 features/sui_quickactions.lua:2546
+#: features/sui_quickactions.lua:2617 features/sui_quickactions.lua:2643
+#: features/sui_quickactions.lua:2668 features/sui_quickactions.lua:2746
+#: features/sui_quickactions.lua:2770 features/sui_quickactions.lua:3082
+#: features/sui_quickactions.lua:3477 features/sui_style.lua:1329
+#: infra/sui_config.lua:1237 infra/sui_config.lua:1306
+#: infra/sui_config.lua:1340 infra/sui_config.lua:1455
+#: infra/sui_config.lua:1528 infra/sui_updater.lua:500
+#: infra/sui_updater.lua:517 modules/module_clock.lua:1265
+#: modules/module_collections.lua:356 modules/module_quote.lua:1342
+#: modules/module_reading_goals.lua:761 screens/sui_menu.lua:650
+#: screens/sui_menu.lua:912 screens/sui_menu.lua:1042 screens/sui_menu.lua:1350
+#: screens/sui_menu.lua:2603 screens/sui_menu.lua:2635
+#: screens/sui_menu.lua:3399 screens/sui_menu.lua:4105
+#: screens/sui_menu.lua:4133 screens/sui_menu.lua:4162
+#: screens/sui_menu.lua:4179 screens/sui_menu.lua:4205
+#: screens/sui_menu.lua:4246 screens/sui_menu.lua:4264
+#: screens/sui_menu.lua:4291 screens/sui_menu.lua:4448
+#: screens/sui_menu.lua:4553 screens/sui_settings_window.lua:509
+#: screens/sui_settings_window.lua:1196 screens/sui_stats_windows.lua:649
+#: screens/sui_stats_windows.lua:772 screens/sui_titlebar.lua:1038
 msgid "Cancel"
 msgstr "取消"
 
-#: modules/module_reading_stats.lua:804
+#: modules/module_reading_stats.lua:895 modules/module_reading_stats.lua:1032
+msgid "Card Opacity"
+msgstr "卡片不透明度"
+
+#: modules/module_reading_stats.lua:863
 msgid "Cards"
 msgstr "卡片"
 
-#: modules/module_reading_stats.lua:814
-msgid "Cards - Transparent"
-msgstr "卡片 - 透明"
-
-#: modules/module_action_list.lua:68 modules/module_action_list.lua:470
-#: modules/module_clock.lua:168 modules/module_clock.lua:1205
-#: modules/module_quote.lua:127 modules/module_quote.lua:1564
-#: modules/module_reading_goals.lua:121 modules/module_reading_goals.lua:1573
-#: modules/module_reading_stats.lua:93 modules/module_reading_stats.lua:860
-#: screens/sui_menu.lua:710 screens/sui_menu.lua:941 screens/sui_menu.lua:3364
-#: screens/sui_menu.lua:3377
+#: modules/module_action_list.lua:68 modules/module_action_list.lua:486
+#: modules/module_clock.lua:162 modules/module_clock.lua:1232
+#: modules/module_quote.lua:124 modules/module_quote.lua:1609
+#: modules/module_reading_goals.lua:143 modules/module_reading_goals.lua:1595
+#: modules/module_reading_stats.lua:113 modules/module_reading_stats.lua:918
+#: screens/sui_menu.lua:710 screens/sui_menu.lua:942 screens/sui_menu.lua:3465
+#: screens/sui_menu.lua:3478
 msgid "Center"
 msgstr "置中"
 
-#: screens/sui_menu.lua:4412
+#: screens/sui_menu.lua:4525
 msgid "Check for Updates"
 msgstr "檢查更新"
 
 #: infra/sui_updater.lua:633
 msgid "Checking for updates…"
-msgstr "正在檢查更新······"
+msgstr "正在檢查更新……"
 
-#: features/sui_backup.lua:964
+#: features/sui_backup.lua:961
 msgid "Choose backup file"
 msgstr "選擇備份檔案"
 
-#: features/sui_backup.lua:1140
+#: features/sui_backup.lua:1137
 msgid "Choose backup file…"
-msgstr "選擇備份檔案…"
+msgstr "選擇備份檔案……"
 
 #: engines/sui_asset_browser.lua:91
 msgid "Choose file"
 msgstr "選擇檔案"
 
-#: features/sui_quickactions.lua:2236
+#: features/sui_quickactions.lua:2235
 msgid "Choose icon"
 msgstr "選擇圖示"
 
-#: screens/sui_menu.lua:3806
+#: screens/sui_menu.lua:3907
 msgid "Choose icon pack"
 msgstr "選擇圖示包"
 
-#: screens/sui_menu.lua:2263
+#: screens/sui_menu.lua:2395
 msgid "Choose wallpaper"
 msgstr "選擇桌布"
 
-#: screens/sui_onboarding.lua:55
+#: screens/sui_onboarding.lua:54
 msgid "Choose your initial layout"
 msgstr "選擇初始版面配置"
 
-#: features/sui_presets.lua:150 features/sui_presets.lua:215
-#: infra/sui_config.lua:167 modules/module_clock.lua:237
-#: modules/module_clock.lua:740
+#: features/sui_presets.lua:155 features/sui_presets.lua:219
+#: infra/sui_config.lua:191 modules/module_clock.lua:231
+#: modules/module_clock.lua:767 modules/module_clock.lua:1180
 msgid "Clock"
 msgstr "時鐘"
 
-#: modules/module_clock.lua:1013 modules/module_clock.lua:1015
-msgid "Clock Size"
-msgstr "時鐘大小"
-
-#: modules/module_clock.lua:1161
+#: modules/module_clock.lua:1188
 msgid "Clock Style"
 msgstr "時鐘樣式"
 
@@ -795,60 +846,60 @@ msgstr "時鐘樣式"
 msgid "Close"
 msgstr "關閉"
 
-#: screens/sui_menu.lua:2556
+#: screens/sui_menu.lua:2670
 msgid "Closing Book Notice"
 msgstr "關閉書籍提示"
 
-#: main.lua:1891
+#: main.lua:1886
 msgid "Closing book…"
-msgstr "正在關閉書籍······"
+msgstr "正在關閉書籍……"
 
-#: features/sui_quickactions.lua:2177
+#: features/sui_quickactions.lua:2176
 msgid "Codepoint out of valid Unicode range (0–10FFFF)."
 msgstr "碼位超出有效的 Unicode 範圍（0–10FFFF）。"
 
-#: features/sui_quickactions.lua:2620 features/sui_quickactions.lua:2763
+#: features/sui_quickactions.lua:2619 features/sui_quickactions.lua:2762
 msgid "Collection"
 msgstr "收藏"
 
-#: modules/module_collections.lua:1486
+#: modules/module_collections.lua:1476
 msgid "Collection Menu"
 msgstr "收藏選單"
 
-#: features/library/sui_group_actions.lua:127
+#: features/library/sui_group_actions.lua:146
 msgid "Collection \"%1\" created with %2 books."
-msgstr "已建立包含 %2 本書的收藏「%1」。"
+msgstr "已建立收藏集「%1」，包含 %2 本書。"
 
-#: features/library/sui_group_actions.lua:113
+#: features/library/sui_group_actions.lua:119
 msgid "Collection already exists: %1"
 msgstr "收藏已存在：%1"
 
-#: modules/module_collections.lua:326 modules/module_collections.lua:332
+#: modules/module_collections.lua:317 modules/module_collections.lua:323
 msgid "Collection is empty."
 msgstr "收藏為空。"
 
-#: features/sui_quickactions.lua:3173
+#: features/sui_quickactions.lua:3171
 msgid "Collection not available: %s"
 msgstr "收藏不可用：%s"
 
-#: modules/module_feat_coll.lua:125
+#: modules/module_feat_coll.lua:112
 msgid "Collection: "
 msgstr "收藏："
 
-#: modules/module_feat_coll.lua:125
+#: modules/module_feat_coll.lua:112
 msgid "Collection: (none)"
 msgstr "收藏：（無）"
 
 #: features/sui_quickactions.lua:515 features/sui_quickactions.lua:751
-#: features/sui_quickactions.lua:2284 infra/sui_config.lua:118
-#: modules/module_collections.lua:1188 modules/module_collections.lua:1207
-#: modules/module_collections.lua:1216 modules/module_collections.lua:1269
-#: modules/module_collections.lua:1477 modules/module_collections.lua:1478
-#: modules/module_coverdeck.lua:1390
+#: features/sui_quickactions.lua:2283 infra/sui_config.lua:119
+#: modules/module_collections.lua:1182 modules/module_collections.lua:1201
+#: modules/module_collections.lua:1210 modules/module_collections.lua:1263
+#: modules/module_collections.lua:1466 modules/module_collections.lua:1467
+#: modules/module_coverdeck.lua:1400
 msgid "Collections"
 msgstr "收藏"
 
-#: infra/sui_patches.lua:1426
+#: infra/sui_patches.lua:1375
 msgid "Collections (%1)"
 msgstr "收藏（%1）"
 
@@ -856,57 +907,61 @@ msgstr "收藏（%1）"
 msgid "Collections not available."
 msgstr "收藏不可用。"
 
-#: features/sui_style.lua:170
+#: features/sui_style.lua:171
 msgid "Collections: Back Button"
 msgstr "收藏：返回按鈕"
 
-#: screens/sui_menu.lua:2997 screens/sui_menu.lua:3051
-#: screens/sui_menu.lua:3105 screens/sui_menu.lua:3172
-#: screens/sui_menu.lua:3239 screens/sui_menu.lua:3393
+#: screens/sui_menu.lua:3098 screens/sui_menu.lua:3152
+#: screens/sui_menu.lua:3206 screens/sui_menu.lua:3273
+#: screens/sui_menu.lua:3340 screens/sui_menu.lua:3494
 msgid "Color"
 msgstr "顏色"
 
-#: infra/sui_config.lua:1145 infra/sui_config.lua:1153
+#: infra/sui_config.lua:1512 infra/sui_config.lua:1520
 msgid "Column Width (Bento Grid)"
 msgstr "列寬（Bento 網格）"
 
-#: engines/sui_book_grid.lua:1836
+#: engines/sui_book_grid.lua:1924
 msgid "Columns"
 msgstr "列"
 
-#: modules/module_currently.lua:2026 modules/module_reading_goals.lua:1519
-#: screens/sui_menu.lua:1828
+#: modules/module_currently.lua:2044 modules/module_reading_goals.lua:1541
+#: screens/sui_menu.lua:1898
 msgid "Compact"
 msgstr "緊湊"
 
-#: features/sui_quickactions.lua:2130
+#: features/sui_quickactions.lua:2129
 msgid "Confirm"
 msgstr "確認"
 
-#: features/sui_quickactions.lua:784 infra/sui_config.lua:121
-#: screens/sui_onboarding.lua:254 screens/sui_onboarding.lua:260
-#: screens/sui_onboarding.lua:266
+#: infra/sui_config.lua:1094
+msgid "Content"
+msgstr "內容"
+
+#: features/sui_quickactions.lua:784 infra/sui_config.lua:122
+#: screens/sui_onboarding.lua:252 screens/sui_onboarding.lua:258
+#: screens/sui_onboarding.lua:264
 msgid "Continue"
 msgstr "繼續"
 
-#: features/sui_backup.lua:1112
+#: features/sui_backup.lua:1109
 msgid "Copy this file somewhere safe (e.g. over USB)."
 msgstr "請將此檔案複製到安全位置（例如透過 USB）。"
 
-#: engines/sui_book_grid.lua:1945
+#: engines/sui_book_grid.lua:1999
 msgid "Corner Badge"
 msgstr "角落徽章"
 
-#: features/sui_backup.lua:881 features/sui_backup.lua:956
-#: features/sui_backup.lua:1083
+#: features/sui_backup.lua:878 features/sui_backup.lua:953
+#: features/sui_backup.lua:1080
 msgid "Could not determine backup folder."
 msgstr "無法確定備份資料夾。"
 
-#: features/sui_style.lua:1991
+#: features/sui_style.lua:2270
 msgid "Could not determine packs folder"
 msgstr "無法確定圖示包資料夾"
 
-#: features/sui_backup.lua:528
+#: features/sui_backup.lua:525
 msgid "Could not open backup file for writing"
 msgstr "無法開啟備份檔案進行寫入"
 
@@ -914,188 +969,195 @@ msgstr "無法開啟備份檔案進行寫入"
 msgid "Could not open statistics database."
 msgstr "無法開啟統計資料庫。"
 
-#: features/sui_style.lua:1993
+#: features/sui_style.lua:2272
 msgid "Could not open zip (invalid format or corrupted)"
-msgstr "無法開啟 ZIP 檔（格式無效或已損壞）"
+msgstr "無法開啟 .zip 檔（格式無效或已損壞）"
 
-#: features/sui_backup.lua:540
+#: features/sui_backup.lua:537
 msgid "Could not write backup file"
 msgstr "無法寫入備份檔案"
 
-#: features/sui_presets.lua:170 features/sui_presets.lua:188
-#: modules/module_coverdeck.lua:575
+#: features/sui_presets.lua:175 features/sui_presets.lua:193
+#: modules/module_coverdeck.lua:574
 msgid "Cover Deck"
 msgstr "封面卡牌"
 
-#: screens/sui_menu.lua:2869
+#: screens/sui_menu.lua:2985
 msgid "Cover Settings"
 msgstr "封面設定"
 
-#: engines/sui_book_grid.lua:1789 engines/sui_book_grid.lua:1791
-#: modules/module_coverdeck.lua:1286 modules/module_coverdeck.lua:1287
-#: modules/module_currently.lua:1459 modules/module_currently.lua:1460
+#: engines/sui_book_grid.lua:1877 engines/sui_book_grid.lua:1879
+#: modules/module_coverdeck.lua:1304 modules/module_coverdeck.lua:1305
+#: modules/module_currently.lua:1495 modules/module_currently.lua:1496
 msgid "Cover Size"
 msgstr "封面尺寸"
 
-#: modules/module_currently.lua:1486 modules/module_currently.lua:1487
+#: modules/module_currently.lua:1510 modules/module_currently.lua:1511
 msgid "Cover Spacing"
 msgstr "封面間距"
 
-#: modules/module_collections.lua:1333
+#: modules/module_collections.lua:1327
 msgid "Cover Style"
 msgstr "封面樣式"
 
-#: modules/module_collections.lua:369
+#: modules/module_collections.lua:360
 msgid "Cover for \"%s\""
 msgstr "「%s」的封面"
+
+#: infra/sui_compat_check.lua:212
+msgid ""
+"CoverBrowser plugin is not enabled, some features will not work correctly."
+msgstr "封面瀏覽器外掛未啟用，部分功能將無法正常運作。"
 
 #: modules/module_coverdeck.lua:154
 msgid "Covers"
 msgstr "封面"
 
-#: features/library/sui_group_actions.lua:106
-#: screens/sui_settings_window.lua:1175
+#: features/library/sui_group_actions.lua:112
+#: screens/sui_settings_window.lua:1201
 msgid "Create"
 msgstr "建立"
 
-#: features/sui_quickactions.lua:1682 features/sui_quickactions.lua:2991
+#: features/sui_quickactions.lua:1681 features/sui_quickactions.lua:2989
 msgid "Create Quick Action"
 msgstr "建立快速動作"
 
-#: screens/sui_settings_window.lua:1158
+#: screens/sui_settings_window.lua:1184
 msgid "Create Screen"
 msgstr "建立螢幕"
 
-#: features/library/sui_foldercovers.lua:726
-#: features/library/sui_library_browse.lua:819
-#: features/library/sui_series_grouping.lua:369
+#: features/library/sui_foldercovers.lua:714
+#: features/library/sui_foldercovers.lua:729
+#: features/library/sui_library_browse.lua:794
+#: features/library/sui_series_grouping.lua:374
 msgid "Create collection"
 msgstr "建立收藏"
 
-#: screens/sui_settings_window.lua:1165
+#: screens/sui_settings_window.lua:1191
 msgid "Create screen"
 msgstr "建立螢幕"
 
-#: features/sui_backup.lua:878 features/sui_backup.lua:1108
+#: features/sui_backup.lua:875 features/sui_backup.lua:1105
 msgid "Creating backup…"
-msgstr "正在建立備份…"
+msgstr "正在建立備份……"
 
 #: screens/sui_stats_windows.lua:2178 screens/sui_stats_windows.lua:2198
 msgid "Current streak"
 msgstr "當前連續"
 
-#: features/sui_presets.lua:138 features/sui_presets.lua:150
-#: features/sui_presets.lua:215 modules/module_currently.lua:375
-#: modules/module_currently.lua:376 modules/module_currently.lua:507
-#: modules/module_currently.lua:1963
+#: features/sui_presets.lua:143 features/sui_presets.lua:155
+#: features/sui_presets.lua:219 modules/module_currently.lua:389
+#: modules/module_currently.lua:390 modules/module_currently.lua:558
+#: modules/module_currently.lua:2089
 msgid "Currently Reading"
 msgstr "正在閱讀"
 
-#: infra/sui_config.lua:2105
+#: infra/sui_config.lua:2488
 msgid "Custom"
 msgstr "自訂"
 
-#: features/sui_quickactions.lua:1948 features/sui_quickactions.lua:1951
+#: features/sui_quickactions.lua:1947 features/sui_quickactions.lua:1950
 msgid "Custom Actions"
 msgstr "自訂動作"
 
-#: modules/module_quote.lua:1451
+#: modules/module_quote.lua:1496
 msgid "Custom File"
 msgstr "自訂檔案"
 
-#: modules/module_quote.lua:1500
+#: modules/module_quote.lua:1545
 msgid "Custom File + My Highlights"
-msgstr "自訂檔案 + 我的劃線"
+msgstr "自訂檔案 + 我的標註"
 
-#: features/sui_quickactions.lua:1575 features/sui_quickactions.lua:1679
+#: features/sui_quickactions.lua:1574 features/sui_quickactions.lua:1678
 msgid "Custom Quick Actions"
 msgstr "自定義快捷操作"
 
 #: infra/sui_custom_screens.lua:158
 msgid "Custom Screen"
-msgstr "自定義螢幕"
+msgstr "自訂螢幕"
 
-#: features/sui_quickactions.lua:1958 features/sui_quickactions.lua:1961
+#: features/sui_quickactions.lua:1957 features/sui_quickactions.lua:1960
 msgid "Custom Screens"
-msgstr "自定義螢幕"
+msgstr "自訂螢幕"
 
-#: screens/sui_settings_window.lua:434
+#: screens/sui_settings_window.lua:460
 msgid "Custom Screens unavailable."
-msgstr "自定義螢幕不可用。"
+msgstr "自訂螢幕不可用。"
 
-#: infra/sui_config.lua:173 screens/sui_menu.lua:642 screens/sui_menu.lua:904
+#: infra/sui_config.lua:198 screens/sui_menu.lua:642 screens/sui_menu.lua:905
 msgid "Custom Text"
 msgstr "自訂文字"
 
-#: features/sui_backup.lua:125
+#: features/sui_backup.lua:126
 msgid "Custom actions, rows and dispatcher bindings"
-msgstr "自定義操作、操作行與排程器繫結"
+msgstr "自訂操作、操作行與排程器繫結"
 
-#: features/sui_backup.lua:146
+#: features/sui_backup.lua:147
 msgid "Custom icons"
-msgstr "自定義圖示"
+msgstr "自訂圖示"
 
-#: features/sui_backup.lua:140
+#: features/sui_backup.lua:141
 msgid "Custom quotes"
-msgstr "自定義名言"
+msgstr "自訂名言"
 
-#: screens/sui_onboarding.lua:173
+#: screens/sui_onboarding.lua:172
 msgid "Custom wallpapers and icons"
 msgstr "自訂桌布與圖示"
 
-#: screens/sui_onboarding.lua:165
+#: screens/sui_onboarding.lua:164
 msgid "Customize even more"
-msgstr "進一步自訂"
+msgstr "更多自訂選項"
 
-#: screens/sui_stats_windows.lua:2725 screens/sui_stats_windows.lua:3357
+#: screens/sui_stats_windows.lua:2725 screens/sui_stats_windows.lua:3360
 msgid "DAY STREAK"
-msgstr "連續閱讀天數"
+msgstr "連續天數"
 
-#: modules/module_reading_goals.lua:1332 modules/module_reading_goals.lua:1360
-#: modules/module_reading_goals.lua:1397 modules/module_reading_goals.lua:1442
+#: modules/module_reading_goals.lua:1355 modules/module_reading_goals.lua:1383
+#: modules/module_reading_goals.lua:1420 modules/module_reading_goals.lua:1465
 msgid "Daily Goal"
 msgstr "每日目標"
 
-#: modules/module_reading_goals.lua:777
+#: modules/module_reading_goals.lua:807
 msgid "Daily Reading Goal"
 msgstr "每日閱讀目標"
 
-#: modules/module_reading_stats.lua:114
+#: modules/module_reading_stats.lua:134
 msgid "Daily avg — Pages"
 msgstr "每日平均 — 頁數"
 
-#: modules/module_reading_stats.lua:113
+#: modules/module_reading_stats.lua:133
 msgid "Daily avg — Time"
 msgstr "每日平均 — 時間"
 
-#: engines/sui_book_grid.lua:1916 modules/module_collections.lua:1408
-#: modules/module_coverdeck.lua:1674 modules/module_currently.lua:2000
-#: screens/sui_menu.lua:2999 screens/sui_menu.lua:3004
-#: screens/sui_menu.lua:3053 screens/sui_menu.lua:3058
-#: screens/sui_menu.lua:3107 screens/sui_menu.lua:3112
-#: screens/sui_menu.lua:3174 screens/sui_menu.lua:3179
-#: screens/sui_menu.lua:3241 screens/sui_menu.lua:3246
-#: screens/sui_menu.lua:3395 screens/sui_menu.lua:3407
+#: engines/sui_book_grid.lua:1970 modules/module_collections.lua:1402
+#: modules/module_coverdeck.lua:1674 modules/module_currently.lua:2010
+#: screens/sui_menu.lua:3100 screens/sui_menu.lua:3105
+#: screens/sui_menu.lua:3154 screens/sui_menu.lua:3159
+#: screens/sui_menu.lua:3208 screens/sui_menu.lua:3213
+#: screens/sui_menu.lua:3275 screens/sui_menu.lua:3280
+#: screens/sui_menu.lua:3342 screens/sui_menu.lua:3347
+#: screens/sui_menu.lua:3496 screens/sui_menu.lua:3508
 msgid "Dark"
 msgstr "深色"
 
-#: features/sui_presets.lua:214
+#: screens/sui_menu.lua:2467
+#, fuzzy
+msgid "Darken"
+msgstr "深色"
+
+#: features/sui_presets.lua:218
 msgid "Dashboard"
 msgstr "儀表板"
 
-#: modules/module_clock.lua:238
+#: modules/module_clock.lua:232 modules/module_clock.lua:1180
 msgid "Date"
 msgstr "日期"
 
-#: modules/module_clock.lua:1022 modules/module_clock.lua:1024
-msgid "Date Size"
-msgstr "日期大小"
-
-#: modules/module_library.lua:214
+#: modules/module_library.lua:211
 msgid "Date added (newest)"
 msgstr "新增日期（最新）"
 
-#: modules/module_library.lua:215
+#: modules/module_library.lua:212
 msgid "Date added (oldest)"
 msgstr "新增日期（最早）"
 
@@ -1107,11 +1169,11 @@ msgstr "完讀日期"
 msgid "Date started"
 msgstr "開始日期"
 
-#: screens/sui_stats_windows.lua:945 screens/sui_stats_windows.lua:3648
+#: screens/sui_stats_windows.lua:945 screens/sui_stats_windows.lua:3651
 msgid "Days"
 msgstr "天數"
 
-#: modules/module_coverdeck.lua:144 modules/module_currently.lua:305
+#: modules/module_coverdeck.lua:144 modules/module_currently.lua:319
 msgid "Days of reading"
 msgstr "閱讀天數"
 
@@ -1119,119 +1181,132 @@ msgstr "閱讀天數"
 msgid "Dec"
 msgstr "12月"
 
-#: modules/module_clock.lua:64 screens/sui_stats_windows.lua:2817
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2817
 msgid "December"
 msgstr "12月"
 
-#: features/sui_quickactions.lua:2201 features/sui_quickactions.lua:2487
-#: modules/module_currently.lua:1510 modules/module_currently.lua:2024
-#: modules/module_reading_goals.lua:1511 screens/sui_menu.lua:459
-#: screens/sui_menu.lua:588 screens/sui_menu.lua:1264 screens/sui_menu.lua:1829
-#: screens/sui_titlebar.lua:1003
+#: features/sui_quickactions.lua:2200 features/sui_quickactions.lua:2486
+#: features/sui_style.lua:2072 features/sui_style.lua:2119
+#: infra/sui_config.lua:941 modules/module_currently.lua:1534
+#: modules/module_currently.lua:2042 modules/module_reading_goals.lua:1533
+#: screens/sui_menu.lua:459 screens/sui_menu.lua:588 screens/sui_menu.lua:1296
+#: screens/sui_menu.lua:1899 screens/sui_titlebar.lua:1034
 msgid "Default"
 msgstr "預設"
 
-#: features/sui_quickactions.lua:2488
+#: features/sui_quickactions.lua:2487
 msgid "Default (Folder)"
 msgstr "預設（資料夾）"
 
-#: features/sui_quickactions.lua:2489
+#: features/sui_quickactions.lua:2488
 msgid "Default (Plugin)"
 msgstr "預設（外掛程式）"
 
-#: features/sui_quickactions.lua:2490
+#: features/sui_quickactions.lua:2489
 msgid "Default (System)"
 msgstr "預設（系統）"
 
-#: modules/module_quote.lua:1387
+#: modules/module_quote.lua:1432
 msgid "Default Quotes"
 msgstr "預設佳句"
 
-#: features/sui_style.lua:177
+#: infra/sui_config.lua:1299
+msgid "Default: %1"
+msgstr "預設：%1"
+
+#: features/sui_style.lua:178
 msgid "Default: Folder"
 msgstr "預設：資料夾"
 
-#: features/sui_style.lua:195
+#: features/sui_style.lua:196
 msgid "Default: Group"
 msgstr "預設：群組"
 
-#: features/sui_style.lua:183
+#: features/sui_style.lua:184
 msgid "Default: Plugin"
 msgstr "預設：外掛程式"
 
-#: features/sui_style.lua:189
+#: features/sui_style.lua:190
 msgid "Default: System"
 msgstr "預設：系統"
 
-#: engines/sui_window.lua:1941 engines/sui_window.lua:2870
-#: features/library/sui_book_hold_dialog.lua:151 features/sui_presets.lua:951
-#: features/sui_presets.lua:954 features/sui_presets.lua:994
-#: features/sui_quickactions.lua:1645 features/sui_quickactions.lua:3078
-#: features/sui_quickactions.lua:3083 screens/sui_menu.lua:4100
-#: screens/sui_menu.lua:4103 screens/sui_menu.lua:4144
-#: screens/sui_settings_window.lua:510 screens/sui_settings_window.lua:555
-#: screens/sui_settings_window.lua:685
+#: engines/sui_window.lua:1960 engines/sui_window.lua:2889
+#: features/library/sui_book_hold_dialog.lua:151 features/sui_presets.lua:960
+#: features/sui_presets.lua:963 features/sui_presets.lua:1003
+#: features/sui_quickactions.lua:1644 features/sui_quickactions.lua:3076
+#: features/sui_quickactions.lua:3081 screens/sui_menu.lua:4201
+#: screens/sui_menu.lua:4204 screens/sui_menu.lua:4245
+#: screens/sui_settings_window.lua:536 screens/sui_settings_window.lua:581
+#: screens/sui_settings_window.lua:711
 msgid "Delete"
 msgstr "刪除"
 
-#: screens/sui_menu.lua:4439
+#: screens/sui_menu.lua:4552
 msgid "Delete Settings"
 msgstr "刪除設定"
 
-#: screens/sui_settings_window.lua:508
+#: screens/sui_settings_window.lua:534
 msgid "Delete \"%s\"? This removes its layout, modules and Quick Action."
 msgstr "要刪除「%s」嗎？這將移除其佈局、模組和快捷操作。"
 
-#: features/sui_presets.lua:953 features/sui_presets.lua:993
-#: screens/sui_menu.lua:4102 screens/sui_menu.lua:4143
+#: features/sui_presets.lua:962 features/sui_presets.lua:1002
+#: screens/sui_menu.lua:4203 screens/sui_menu.lua:4244
 msgid "Delete preset \"%s\"?"
 msgstr "要刪除預設檔「%s」嗎？"
 
-#: features/sui_quickactions.lua:1644 features/sui_quickactions.lua:3082
+#: features/sui_quickactions.lua:1643 features/sui_quickactions.lua:3080
 msgid "Delete quick action \"%s\"?"
 msgstr "要刪除快速動作「%s」嗎？"
 
-#: modules/module_currently.lua:302
+#: modules/module_currently.lua:316 modules/module_currently.lua:1986
 msgid "Description"
 msgstr "描述"
 
-#: modules/module_reading_goals.lua:1541 modules/module_reading_goals.lua:1553
+#: modules/module_reading_goals.lua:1304
+msgid "Detail"
+msgstr "詳情"
+
+#: modules/module_reading_goals.lua:1563 modules/module_reading_goals.lua:1575
 msgid "Detail Below Ring"
 msgstr "詳情置於環下方"
 
-#: modules/module_reading_goals.lua:1541 modules/module_reading_goals.lua:1545
+#: modules/module_reading_goals.lua:1563 modules/module_reading_goals.lua:1567
 msgid "Detail Inside Ring"
 msgstr "詳情置於環內"
 
-#: features/sui_quickactions.lua:2287
+#: features/sui_quickactions.lua:2286
 msgid "Dictionary Lookup"
 msgstr "查字典"
 
-#: modules/module_clock.lua:1166 modules/module_clock.lua:1170
+#: modules/module_clock.lua:1193 modules/module_clock.lua:1197
 msgid "Digital"
 msgstr "數位"
 
-#: screens/sui_menu.lua:2497
+#: screens/sui_menu.lua:2621
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
 msgstr "請先停用「鎖定縮放」以設定自訂標籤縮放。"
 
-#: infra/sui_config.lua:924
+#: infra/sui_config.lua:1222
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
 msgstr "請先停用「鎖定縮放」以設定個別模組縮放。"
 
-#: infra/sui_config.lua:171
+#: infra/sui_config.lua:196
 msgid "Disk Usage"
 msgstr "磁碟使用量"
 
-#: features/sui_quickactions.lua:3132
+#: features/sui_quickactions.lua:3130
 msgid "Dispatcher not available."
 msgstr "調度器不可用。"
 
-#: screens/sui_menu.lua:3565
+#: screens/sui_menu.lua:3666
 msgid "Display"
 msgstr "顯示"
 
-#: features/sui_quickactions.lua:2738
+#: screens/sui_menu.lua:4389
+msgid "Don't Invert Colored Icons in Night Mode"
+msgstr "在夜間模式下不反轉彩色圖標"
+
+#: features/sui_quickactions.lua:2737
 msgid "Done"
 msgstr "完成"
 
@@ -1253,82 +1328,86 @@ msgstr "下載錯誤："
 
 #: infra/sui_updater.lua:414
 msgid "Downloading Simple UI %s…"
-msgstr "正在下載 SimpleUI %s······"
+msgstr "正在下載 SimpleUI %s……"
 
-#: modules/module_currently.lua:1513
+#: modules/module_currently.lua:1537
 msgid "Dynamic"
 msgstr "動態"
 
-#: features/sui_quickactions.lua:3065
+#: features/sui_quickactions.lua:3063
 msgid "Edit"
 msgstr "編輯"
 
-#: screens/sui_menu.lua:634 screens/sui_menu.lua:636 screens/sui_menu.lua:898
+#: screens/sui_menu.lua:634 screens/sui_menu.lua:636 screens/sui_menu.lua:899
 msgid "Edit Custom Text"
 msgstr "編輯自訂文字"
 
-#: screens/sui_menu.lua:2191 screens/sui_settings_window.lua:379
+#: screens/sui_menu.lua:2290 screens/sui_settings_window.lua:401
 msgid "Edit Home Screen Layout"
 msgstr "編輯主螢幕布局"
 
-#: features/sui_quickactions.lua:2405
+#: features/sui_quickactions.lua:2404
 msgid "Edit Quick Action"
 msgstr "編輯快速動作"
 
-#: modules/module_clock.lua:317
+#: modules/module_clock.lua:311
 msgid "Eight"
 msgstr "八"
 
-#: modules/module_clock.lua:320
+#: modules/module_clock.lua:314
 msgid "Eighteen"
 msgstr "十八"
 
-#: modules/module_clock.lua:318
+#: modules/module_clock.lua:312
 msgid "Eleven"
 msgstr "十一"
 
-#: screens/sui_menu.lua:891
+#: screens/sui_menu.lua:892
 msgid "Empty"
 msgstr "空白"
+
+#: infra/sui_compat_check.lua:186
+msgid "Enable"
+msgstr "啟用"
 
 #: features/sui_quickactions.lua:1012 features/sui_quickactions.lua:1030
 #: features/sui_quickactions.lua:1048
 msgid "Enable 'Browse by Author / Series / Tags' in the library menu first."
 msgstr "請先在書庫選單中啟用「依作者/系列/標籤瀏覽」。"
 
-#: screens/sui_menu.lua:2820
+#: screens/sui_menu.lua:2936
 msgid "Enable Browse by Author / Series / Tags"
 msgstr "啟用依作者/系列/標籤瀏覽"
 
-#: screens/sui_menu.lua:2804
+#: screens/sui_menu.lua:2920
 msgid "Enable Library Custom Covers"
 msgstr "啟用書庫自訂封面"
 
-#: screens/sui_menu.lua:1110
+#: screens/sui_menu.lua:1142
 msgid "Enable Navigation Bar"
 msgstr "啟用導覽欄"
 
-#: screens/sui_quicksettings_bar.lua:1106
+#: screens/sui_quicksettings_bar.lua:1120
 msgid "Enable Quick Settings Bar"
 msgstr "啟用快速設定欄"
 
-#: screens/sui_menu.lua:838
+#: screens/sui_menu.lua:839
 msgid "Enable Status Bar"
 msgstr "啟用狀態欄"
 
-#: screens/sui_menu.lua:1779
+#: screens/sui_menu.lua:1849
 msgid "Enable Title Bar"
 msgstr "啟用標題欄"
 
-#: screens/sui_menu.lua:2239
+#: screens/sui_menu.lua:2429
 msgid "Enable Wallpaper"
 msgstr "啟用桌布"
 
-#: features/sui_style.lua:1789
+#: features/sui_style.lua:1912
 msgid "Enable custom UI font"
 msgstr "啟用自訂介面字型"
 
-#: features/sui_quickactions.lua:2149
+#: features/sui_quickactions.lua:2148
 msgid ""
 "Enter the Unicode codepoint (hex) of a Nerd Fonts symbol.\n"
 "You can look up codes with wakamaifondue.com using the file:\n"
@@ -1340,7 +1419,7 @@ msgstr ""
 "  /koreader/fonts/nerdfonts/symbols.ttf\n"
 "留空並按下確定可移除 Nerd Font 圖示。"
 
-#: screens/sui_menu.lua:3867
+#: screens/sui_menu.lua:3968
 msgid "Error applying pack:"
 msgstr "套用圖示包時發生錯誤："
 
@@ -1352,23 +1431,23 @@ msgstr "檢查更新時發生錯誤。"
 msgid "Error checking for updates: "
 msgstr "檢查更新時發生錯誤："
 
-#: features/sui_presets.lua:1122 screens/sui_menu.lua:4272
+#: features/sui_presets.lua:1131 screens/sui_menu.lua:4373
 msgid "Error exporting preset: "
 msgstr "匯出預設檔時發生錯誤："
 
-#: features/sui_style.lua:2040
+#: features/sui_style.lua:2319
 msgid "Error extracting zip: "
-msgstr "解壓縮 ZIP 時發生錯誤："
+msgstr "解壓縮 .zip 時發生錯誤："
 
-#: features/sui_presets.lua:1096 screens/sui_menu.lua:4245
+#: features/sui_presets.lua:1105 screens/sui_menu.lua:4346
 msgid "Error importing preset: "
 msgstr "匯入預設檔時發生錯誤："
 
-#: modules/module_reading_goals.lua:1150
+#: modules/module_reading_goals.lua:1179
 msgid "Error in Reading Goals: check crash.log"
 msgstr "閱讀目標發生錯誤：請檢查 crash.log"
 
-#: screens/sui_menu.lua:3785
+#: screens/sui_menu.lua:3886
 msgid "Error installing pack:"
 msgstr "安裝圖示包時發生錯誤："
 
@@ -1380,23 +1459,23 @@ msgstr "排除於目標之外"
 msgid "Excluded"
 msgstr "已排除"
 
-#: features/sui_backup.lua:1099
+#: features/sui_backup.lua:1096
 msgid "Export"
 msgstr "匯出"
 
-#: features/sui_backup.lua:1125
+#: features/sui_backup.lua:1122
 msgid "Export Full Backup…"
-msgstr "匯出完整備份…"
+msgstr "匯出完整備份……"
 
-#: features/sui_backup.lua:1078
+#: features/sui_backup.lua:1075
 msgid "Export now…"
-msgstr "立即匯出…"
+msgstr "立即匯出……"
 
-#: features/sui_presets.lua:1110 screens/sui_menu.lua:4259
+#: features/sui_presets.lua:1119 screens/sui_menu.lua:4360
 msgid "Export preset"
 msgstr "匯出預設檔"
 
-#: screens/sui_settings_window.lua:390 screens/sui_settings_window.lua:1078
+#: screens/sui_settings_window.lua:412 screens/sui_settings_window.lua:1104
 msgid "Extra Custom Screens"
 msgstr "額外自定義螢幕"
 
@@ -1408,23 +1487,23 @@ msgstr "特小"
 msgid "Extraction error: "
 msgstr "解壓縮錯誤："
 
-#: screens/sui_stats_windows.lua:3469
+#: screens/sui_stats_windows.lua:3472
 msgid "FREEZES"
 msgstr "凍結權"
 
-#: screens/sui_menu.lua:4432
+#: screens/sui_menu.lua:4545
 msgid "Factory Reset"
 msgstr "恢復原廠設定"
 
-#: screens/sui_menu.lua:3274
+#: screens/sui_menu.lua:3375
 msgid "Fade Finished Books"
 msgstr "淡化完讀書籍"
 
-#: screens/sui_menu.lua:3290
+#: screens/sui_menu.lua:3391
 msgid "Fade Intensity"
 msgstr "淡化強度"
 
-#: screens/sui_menu.lua:3291
+#: screens/sui_menu.lua:3392
 msgid ""
 "Fades finished book covers towards white.\n"
 "50% is the default."
@@ -1432,16 +1511,19 @@ msgstr ""
 "將已讀完書籍的封面朝白色淡化。\n"
 "預設值為 50%。"
 
-#: screens/sui_menu.lua:2400
-msgid ""
-"Fades the wallpaper towards white to improve text readability.\n"
-"0% is the default (no lightening)."
+#: screens/sui_menu.lua:2468
+msgid "Fades the wallpaper towards black."
+msgstr ""
+
+#: screens/sui_menu.lua:2462
+#, fuzzy
+msgid "Fades the wallpaper towards white to improve text readability."
 msgstr ""
 "將桌布朝白色淡化以提高文字可讀性。\n"
 "預設值為 0%（不加亮）。"
 
-#: features/sui_quickactions.lua:849 features/sui_quickactions.lua:2283
-#: infra/sui_config.lua:123 modules/module_coverdeck.lua:1372
+#: features/sui_quickactions.lua:849 features/sui_quickactions.lua:2282
+#: infra/sui_config.lua:124 modules/module_coverdeck.lua:1382
 msgid "Favorites"
 msgstr "我的最愛"
 
@@ -1449,11 +1531,11 @@ msgstr "我的最愛"
 msgid "Favorites not available."
 msgstr "我的最愛不可用。"
 
-#: modules/module_feat_coll.lua:370 modules/module_feat_coll.lua:426
+#: modules/module_feat_coll.lua:319 modules/module_feat_coll.lua:375
 msgid "Featured Collection"
 msgstr "精選收藏"
 
-#: modules/module_feat_coll.lua:87
+#: modules/module_feat_coll.lua:74
 msgid "Featured Collection — tap to configure"
 msgstr "精選收藏 — 點選以組態"
 
@@ -1461,19 +1543,19 @@ msgstr "精選收藏 — 點選以組態"
 msgid "Feb"
 msgstr "2月"
 
-#: modules/module_clock.lua:62 screens/sui_stats_windows.lua:2815
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2815
 msgid "February"
 msgstr "2月"
 
 #: features/sui_quickactions.lua:460
 msgid "Fetching bookmarks…"
-msgstr "正在抓取書籤······"
+msgstr "正在抓取書籤……"
 
-#: modules/module_clock.lua:319
+#: modules/module_clock.lua:313
 msgid "Fifteen"
 msgstr "十五"
 
-#: modules/module_clock.lua:325
+#: modules/module_clock.lua:319
 msgid "Fifty"
 msgstr "五十"
 
@@ -1481,125 +1563,133 @@ msgstr "五十"
 msgid "File Manager not available."
 msgstr "檔案管理器不可用。"
 
-#: features/sui_quickactions.lua:2285
+#: features/sui_quickactions.lua:2284
 msgid "File Search"
 msgstr "檔案搜尋"
 
-#: features/sui_backup.lua:566
+#: features/sui_backup.lua:563
 msgid "File not found."
 msgstr "檔案未找到。"
 
-#: features/sui_style.lua:1987
+#: features/sui_style.lua:2266
 msgid "File not found: "
 msgstr "未找到檔案："
 
-#: modules/module_library.lua:216
+#: modules/module_library.lua:213
 msgid "File size (largest)"
 msgstr "檔案大小（最大）"
 
-#: modules/module_library.lua:217
+#: modules/module_library.lua:214
 msgid "File size (smallest)"
 msgstr "檔案大小（最小）"
 
 #: engines/sui_asset_browser.lua:274
 msgid "Filter by name…"
-msgstr "按名稱篩選…"
+msgstr "按名稱篩選……"
 
-#: screens/sui_menu.lua:3267
+#: screens/sui_menu.lua:3368
 msgid "Finished Books"
 msgstr "完讀書籍"
 
-#: modules/module_clock.lua:316
+#: modules/module_clock.lua:310
 msgid "Five"
 msgstr "五"
 
-#: modules/module_quote.lua:1579
+#: modules/module_quote.lua:1633 modules/module_quote.lua:1664
 msgid "Fixed Height"
 msgstr "固定高度"
 
-#: modules/module_quick_actions.lua:633 modules/module_reading_stats.lua:824
-#: screens/sui_menu.lua:4356 screens/sui_quicksettings_bar.lua:1307
+#: modules/module_quick_actions.lua:661 modules/module_reading_stats.lua:873
+#: screens/sui_menu.lua:4469 screens/sui_quicksettings_bar.lua:1327
 msgid "Flat"
 msgstr "扁平"
 
-#: modules/module_library.lua:292
+#: modules/module_library.lua:289
 msgid "Flat Library"
 msgstr "平面書庫"
 
-#: features/sui_quickactions.lua:2761
+#: features/sui_quickactions.lua:2760
 msgid "Folder"
 msgstr "資料夾"
 
-#: screens/sui_menu.lua:2874
+#: screens/sui_menu.lua:2990
 msgid "Folder Cover Type"
 msgstr "資料夾封面類型"
 
-#: features/sui_style.lua:1296
+#: features/sui_style.lua:1314
 msgid "Folder Covers"
 msgstr "資料夾封面"
 
-#: features/sui_style.lua:202
+#: features/sui_style.lua:203
 msgid "Folder Covers: Empty Folder"
 msgstr "資料夾封面：空資料夾"
 
-#: screens/sui_menu.lua:3311
+#: screens/sui_menu.lua:3412
 msgid "Folder Name"
 msgstr "資料夾名稱"
 
-#: screens/sui_menu.lua:3420
+#: screens/sui_menu.lua:3521
 msgid "Folder Name Text Size"
 msgstr "資料夾名稱文字大小"
 
-#: features/sui_quickactions.lua:2286
+#: features/sui_quickactions.lua:2285
 msgid "Folder Shortcuts"
 msgstr "資料夾捷徑"
 
-#: features/library/sui_foldercovers.lua:647
-#: features/library/sui_group_actions.lua:76
+#: features/library/sui_foldercovers.lua:631
+#: features/library/sui_group_actions.lua:79
 #: features/library/sui_library_browse.lua:366
-#: features/library/sui_series_grouping.lua:87
+#: features/library/sui_series_grouping.lua:91
 msgid "Folder cover"
 msgstr "資料夾封面"
 
-#: features/sui_backup.lua:120
+#: features/sui_backup.lua:121
 msgid "Folder covers, browse modes, series grouping"
 msgstr "資料夾封面、瀏覽模式與系列分組"
 
-#: engines/sui_book_grid.lua:1915 modules/module_coverdeck.lua:1673
-#: modules/module_currently.lua:1999
+#: engines/sui_book_grid.lua:1969 modules/module_coverdeck.lua:1673
+#: modules/module_currently.lua:2009
 msgid "Follow Library"
-msgstr "依書庫設定"
+msgstr "跟隨書庫設定"
 
-#: features/sui_backup.lua:105
+#: infra/sui_config.lua:965 screens/sui_quicksettings_bar.lua:1250
+msgid "Font"
+msgstr "字型"
+
+#: modules/module_quote.lua:1662 modules/module_reading_stats.lua:1030
+msgid "Fonts"
+msgstr "字型"
+
+#: features/sui_backup.lua:106
 msgid "Fonts, icon assignments, icon presets"
 msgstr "字型、圖示分配與圖示預設"
 
-#: modules/module_clock.lua:325
+#: modules/module_clock.lua:319
 msgid "Forty"
 msgstr "四十"
 
-#: modules/module_clock.lua:316
+#: modules/module_clock.lua:310
 msgid "Four"
 msgstr "四"
 
-#: modules/module_clock.lua:319
+#: modules/module_clock.lua:313
 msgid "Fourteen"
 msgstr "十四"
 
-#: engines/sui_book_grid.lua:1871 modules/module_currently.lua:1965
-#: modules/module_heatmap.lua:365 modules/module_reading_goals.lua:1587
+#: features/sui_module_chrome.lua:205 features/sui_module_chrome.lua:258
+#: features/sui_module_chrome.lua:270
 msgid "Frame"
 msgstr "外框"
 
-#: screens/sui_menu.lua:1276 screens/sui_menu.lua:4367
+#: screens/sui_menu.lua:1308 screens/sui_menu.lua:4480
 msgid "Framed"
 msgstr "帶外框"
 
-#: modules/module_reading_stats.lua:903 modules/module_reading_stats.lua:908
+#: modules/module_reading_stats.lua:961 modules/module_reading_stats.lua:966
 msgid "Freezes"
-msgstr "凍結權"
+msgstr "凍結"
 
-#: screens/sui_stats_windows.lua:3075
+#: screens/sui_stats_windows.lua:3078
 msgid ""
 "Freezes can only cover a single missed day, and only right after an active "
 "one. Tap yesterday's cell to use one, when eligible."
@@ -1610,15 +1700,16 @@ msgstr ""
 msgid "Fri"
 msgstr "週五"
 
-#: modules/module_clock.lua:59
+#: modules/module_clock.lua:55
 msgid "Friday"
 msgstr "星期五"
 
-#: screens/sui_quicksettings_bar.lua:320 screens/sui_quicksettings_bar.lua:342
+#: screens/sui_quicksettings_bar.lua:334 screens/sui_quicksettings_bar.lua:356
 msgid "Frontlight"
 msgstr "前光"
 
-#: screens/sui_quicksettings_bar.lua:1202
+#: screens/sui_quicksettings_bar.lua:1216
+#: screens/sui_quicksettings_bar.lua:1362
 msgid "Frontlight Slider"
 msgstr "前光滑桿"
 
@@ -1626,23 +1717,23 @@ msgstr "前光滑桿"
 msgid "Frontlight not available on this device."
 msgstr "此裝置不支援前光。"
 
-#: features/sui_backup.lua:649
+#: features/sui_backup.lua:646
 msgid "General — %d settings"
 msgstr "常規 — %d 項設定"
 
-#: screens/sui_menu.lua:2575
+#: screens/sui_menu.lua:2689
 msgid "Gesture Only"
 msgstr "僅限手勢"
 
-#: screens/sui_menu.lua:4320 screens/sui_menu.lua:4327
+#: screens/sui_menu.lua:4433 screens/sui_menu.lua:4440
 msgid "Global Text Size"
 msgstr "全域文字大小"
 
-#: screens/sui_settings_window.lua:352
+#: screens/sui_settings_window.lua:374
 msgid "Global custom actions & icons"
 msgstr "全域性自定義操作與圖示"
 
-#: screens/sui_menu.lua:4328
+#: screens/sui_menu.lua:4441
 msgid ""
 "Global scale applied to all of KOReader's interface text — menus, dialogs, "
 "titles, and Simple UI. It does not change the book's reading font size, "
@@ -1655,7 +1746,7 @@ msgstr ""
 "預設大小為 100%。當所選介面字型（見上方「介面字型」）顯示偏大或偏小時，可透過"
 "此項調整。"
 
-#: screens/sui_menu.lua:2472
+#: screens/sui_menu.lua:2596
 msgid ""
 "Global scale for all modules.\n"
 "Individual overrides in Module Settings take precedence.\n"
@@ -1665,40 +1756,40 @@ msgstr ""
 "模組設定中的個別覆蓋設定優先套用。\n"
 "預設大小為 100%。"
 
-#: screens/sui_onboarding.lua:166
+#: screens/sui_onboarding.lua:165
 msgid "Go to Settings > Home Screen to edit your layout whenever you want."
-msgstr "您可以隨時前往 設定 → 主螢幕 來修改版面配置。"
+msgstr "您可以隨時前往「主螢幕」來修改版面配置。"
 
-#: modules/module_reading_goals.lua:1289 modules/module_reading_goals.lua:1354
-#: modules/module_reading_goals.lua:1368
+#: modules/module_reading_goals.lua:1312 modules/module_reading_goals.lua:1377
+#: modules/module_reading_goals.lua:1391
 msgid "Goals"
 msgstr "目標"
 
-#: features/sui_backup.lua:129
+#: features/sui_backup.lua:130
 msgid "Goals & Streaks"
 msgstr "目標與連續閱讀"
 
-#: engines/sui_book_grid.lua:1823 engines/sui_book_grid.lua:1834
+#: engines/sui_book_grid.lua:1911 engines/sui_book_grid.lua:1922
 msgid "Grid size"
 msgstr "網格大小"
 
-#: features/sui_quickactions.lua:2416 features/sui_quickactions.lua:2744
+#: features/sui_quickactions.lua:2415 features/sui_quickactions.lua:2743
 msgid "Group"
 msgstr "群組"
 
-#: screens/sui_menu.lua:2856
+#: screens/sui_menu.lua:2972
 msgid "Group by Book Series"
 msgstr "依叢書系列分組"
 
-#: features/sui_quickactions.lua:2769
+#: features/sui_quickactions.lua:2768
 msgid "Group of Quick Actions"
 msgstr "快速動作群組"
 
-#: features/sui_quickactions.lua:2751
+#: features/sui_quickactions.lua:2750
 msgid "Group: select actions"
 msgstr "群組：選擇動作"
 
-#: modules/module_currently.lua:1521
+#: modules/module_currently.lua:1545
 msgid ""
 "Grows or shrinks the cover so its height always matches the text column, "
 "keeping the cover's proportions.\n"
@@ -1710,7 +1801,7 @@ msgstr ""
 "封面與文字之間的間距保持為上述設定。\n"
 "“封面大小”設定仍在此基礎上疊加生效，且封面永遠不會小於其 100% 大小。"
 
-#: screens/sui_menu.lua:1311
+#: screens/sui_menu.lua:1343
 msgid ""
 "Height of the bottom navigation bar.\n"
 "100% is the default size."
@@ -1728,7 +1819,7 @@ msgstr ""
 "100% 為預設大小。\n"
 "點擊箭頭可進行微調，長按可大幅調整。"
 
-#: screens/sui_menu.lua:1034
+#: screens/sui_menu.lua:1035
 msgid ""
 "Height of the top status bar.\n"
 "100% is the default size."
@@ -1736,17 +1827,17 @@ msgstr ""
 "頂部狀態欄的高度。\n"
 "預設大小為 100%。"
 
-#: modules/module_collections.lua:1381 screens/sui_menu.lua:480
-#: screens/sui_menu.lua:539 screens/sui_menu.lua:2951 screens/sui_menu.lua:2958
-#: screens/sui_menu.lua:2985 screens/sui_menu.lua:3025
-#: screens/sui_menu.lua:3031 screens/sui_menu.lua:3042
-#: screens/sui_menu.lua:3079 screens/sui_menu.lua:3085
-#: screens/sui_menu.lua:3096 screens/sui_menu.lua:3317
-#: screens/sui_menu.lua:3348
+#: modules/module_collections.lua:1375 screens/sui_menu.lua:480
+#: screens/sui_menu.lua:539 screens/sui_menu.lua:3052 screens/sui_menu.lua:3059
+#: screens/sui_menu.lua:3086 screens/sui_menu.lua:3126
+#: screens/sui_menu.lua:3132 screens/sui_menu.lua:3143
+#: screens/sui_menu.lua:3180 screens/sui_menu.lua:3186
+#: screens/sui_menu.lua:3197 screens/sui_menu.lua:3418
+#: screens/sui_menu.lua:3449
 msgid "Hidden"
 msgstr "隱藏"
 
-#: modules/module_collections.lua:1370
+#: modules/module_collections.lua:1364
 msgid "Hide Book Spine"
 msgstr "隱藏書脊"
 
@@ -1754,20 +1845,20 @@ msgstr "隱藏書脊"
 msgid "Hide Currently Reading book"
 msgstr "隱藏正在閱讀的書籍"
 
-#: screens/sui_menu.lua:3522
+#: screens/sui_menu.lua:3623
 msgid "Hide Folder Book Spine"
 msgstr "隱藏資料夾書脊"
 
-#: modules/module_quick_actions.lua:386 modules/module_quick_actions.lua:539
-#: screens/sui_menu.lua:1981 screens/sui_quicksettings_bar.lua:1235
+#: modules/module_quick_actions.lua:426 modules/module_quick_actions.lua:577
+#: screens/sui_menu.lua:2080 screens/sui_quicksettings_bar.lua:1255
 msgid "Hide Label"
 msgstr "隱藏標籤"
 
-#: screens/sui_menu.lua:3516
+#: screens/sui_menu.lua:3617
 msgid "Hide Selection Underline"
 msgstr "隱藏選取底線"
 
-#: screens/sui_menu.lua:1079
+#: screens/sui_menu.lua:1080
 msgid "Hide Wi-Fi Icon When Off"
 msgstr "關閉時隱藏 Wi-Fi 圖示"
 
@@ -1779,16 +1870,16 @@ msgstr ""
 "隱藏主螢幕上的分頁欄。\n"
 "當導覽分頁器啟用時不可用。"
 
-#: screens/sui_menu.lua:2630
+#: screens/sui_menu.lua:2744
 msgid "High-Quality Cover"
 msgstr "高畫質封面"
 
-#: screens/sui_stats_windows.lua:1210 screens/sui_stats_windows.lua:3884
+#: screens/sui_stats_windows.lua:1210 screens/sui_stats_windows.lua:3887
 msgid "Highlights"
-msgstr "劃線"
+msgstr "標註"
 
 #: features/sui_quickactions.lua:508 features/sui_quickactions.lua:763
-#: features/sui_quickactions.lua:2281 infra/sui_config.lua:119
+#: features/sui_quickactions.lua:2280 infra/sui_config.lua:120
 msgid "History"
 msgstr "歷史紀錄"
 
@@ -1796,18 +1887,18 @@ msgstr "歷史紀錄"
 msgid "History not available."
 msgstr "歷史紀錄不可用。"
 
-#: features/sui_quickactions.lua:704 infra/sui_config.lua:117
+#: features/sui_quickactions.lua:704 infra/sui_config.lua:118
 msgid "Home"
 msgstr "首頁"
 
-#: engines/sui_screen_engine.lua:1371 features/sui_backup.lua:109
-#: infra/sui_patches.lua:1151 infra/sui_patches.lua:1178
-#: screens/sui_menu.lua:4560 screens/sui_settings_window.lua:323
-#: screens/sui_settings_window.lua:1077
+#: engines/sui_screen_engine.lua:1375 features/sui_backup.lua:110
+#: infra/sui_patches.lua:1117 infra/sui_patches.lua:1127
+#: screens/sui_menu.lua:2544 screens/sui_menu.lua:4669
+#: screens/sui_settings_window.lua:345 screens/sui_settings_window.lua:1103
 msgid "Home Screen"
 msgstr "主螢幕"
 
-#: screens/sui_settings_window.lua:1093
+#: screens/sui_settings_window.lua:1119
 msgid "Home Screen Presets"
 msgstr "主螢幕預設檔"
 
@@ -1823,7 +1914,7 @@ msgstr "主資料夾"
 msgid "Home folder + subfolders"
 msgstr "主資料夾 + 子資料夾"
 
-#: screens/sui_menu.lua:2717
+#: screens/sui_menu.lua:2831
 msgid "Home key opens Home Screen"
 msgstr "主頁鍵打開主頁"
 
@@ -1831,7 +1922,7 @@ msgstr "主頁鍵打開主頁"
 msgid "Homescreen not available."
 msgstr "主螢幕不可用。"
 
-#: modules/module_currently.lua:1488
+#: modules/module_currently.lua:1512
 msgid ""
 "Horizontal space between the cover and the text.\n"
 "100% is the default spacing."
@@ -1839,11 +1930,11 @@ msgstr ""
 "封面與文字之間的水平間距。\n"
 "預設間距為 100%。"
 
-#: modules/module_reading_goals.lua:766
+#: modules/module_reading_goals.lua:796
 msgid "Hours per month:"
 msgstr "每月小時數："
 
-#: modules/module_heatmap.lua:296
+#: modules/module_heatmap.lua:302
 msgid ""
 "How many weeks of history to include, and (in Calendar view) how many weeks "
 "the grid shows — this count is unaffected by Scale, which only resizes the "
@@ -1854,31 +1945,33 @@ msgstr ""
 "定影響，縮放只改變格子大小。在時段檢視中，此設定只改變有多少歷史資料參與深淺"
 "渲染——網格本身固定每小時一欄。"
 
-#: features/sui_quickactions.lua:2441 features/sui_quickactions.lua:2445
+#: features/sui_quickactions.lua:2440 features/sui_quickactions.lua:2444
 msgid "Icon"
 msgstr "圖示"
 
-#: screens/sui_menu.lua:3705
+#: screens/sui_menu.lua:3806
 msgid "Icon Packs"
 msgstr "圖示包"
 
-#: screens/sui_menu.lua:3882
+#: screens/sui_menu.lua:3983
 msgid "Icon Presets"
 msgstr "圖示預設檔"
 
-#: screens/sui_menu.lua:1346 screens/sui_menu.lua:1347
+#: screens/sui_menu.lua:1103 screens/sui_menu.lua:1378
+#: screens/sui_menu.lua:1379 screens/sui_menu.lua:1446
 msgid "Icon Size"
 msgstr "圖示尺寸"
 
-#: features/sui_backup.lua:147
+#: features/sui_backup.lua:148
+#, fuzzy
 msgid "Icon files and installed packs from sui_icons/"
-msgstr "sui_icons/ 中的圖示檔案與已安裝包"
+msgstr "來自 sui_icons 資料夾中的圖示檔案與已安裝包"
 
-#: features/sui_quickactions.lua:2437
+#: features/sui_quickactions.lua:2436
 msgid "Icon: Default"
 msgstr "圖示：預設"
 
-#: screens/sui_menu.lua:208 screens/sui_menu.lua:3651
+#: screens/sui_menu.lua:208 screens/sui_menu.lua:3752
 msgid "Icons"
 msgstr "圖示"
 
@@ -1886,34 +1979,49 @@ msgstr "圖示"
 msgid "Icons only"
 msgstr "僅圖示"
 
-#: screens/sui_settings_window.lua:345
+#: screens/sui_menu.lua:4390
+msgid ""
+"Icons that contain color keep their original colors in night mode instead of "
+"being inverted.\n"
+"Monochrome icons are not affected and keep following the interface colors.\n"
+"Requires a color screen."
+msgstr ""
+"包含顏色的圖標在夜間模式下將保持其原始顏色，而不是被反轉。\n"
+"單色圖標不受影響，繼續遵循介面配色。\n"
+"需要彩色螢幕。"
+
+#: screens/sui_settings_window.lua:367
 msgid "Icons, fonts and appearance"
 msgstr "圖示、字型與外觀"
 
-#: screens/sui_onboarding.lua:170
+#: screens/sui_onboarding.lua:169
 msgid ""
 "If you selected the Momentum Preset, long press the Reading Goal module to "
 "choose and set your reading goals."
 msgstr ""
 "若您選擇了「動量」預設檔，請長按「閱讀目標」模組以選擇並設定您的閱讀目標。"
 
-#: features/sui_backup.lua:1135
+#: features/sui_backup.lua:1132
 msgid "Import Backup…"
-msgstr "匯入備份…"
+msgstr "匯入備份……"
 
-#: features/sui_presets.lua:1073 screens/sui_menu.lua:4221
+#: features/sui_presets.lua:1082 screens/sui_menu.lua:4322
 msgid "Import preset"
 msgstr "匯入預設檔"
 
-#: screens/sui_menu.lua:3790
-msgid "Install pack from ZIP"
-msgstr "從 ZIP 安裝圖示包"
+#: infra/sui_compat_check.lua:306
+msgid "Incompatible items have been disabled:"
+msgstr "不相容的項目已停用："
 
-#: screens/sui_menu.lua:3283
+#: screens/sui_menu.lua:3891
+msgid "Install pack from ZIP"
+msgstr "從 .zip 安裝圖示包"
+
+#: screens/sui_menu.lua:3384
 msgid "Intensity"
 msgstr "強度"
 
-#: screens/sui_menu.lua:1508
+#: screens/sui_menu.lua:1577
 msgid ""
 "Invalid arrangement.\n"
 "Keep items between the Left and Right separators."
@@ -1929,31 +2037,36 @@ msgstr ""
 "排序無效。\n"
 "請保持左、中、右分隔符號的順序。"
 
-#: features/sui_presets.lua:430 features/sui_presets.lua:610
+#: features/sui_presets.lua:436 features/sui_presets.lua:619
 msgid "Invalid data"
 msgstr "無效的資料"
 
-#: features/sui_quickactions.lua:2180
+#: features/sui_quickactions.lua:2179
 msgid "Invalid input. Please enter 1–6 hexadecimal digits (0–9, A–F)."
 msgstr "輸入無效。請輸入 1–6 位十六進位數字（0–9, A–F）。"
 
-#: features/sui_presets.lua:426 features/sui_presets.lua:606
+#: features/sui_presets.lua:432 features/sui_presets.lua:615
 msgid "Invalid preset file"
 msgstr "無效的預設檔"
 
-#: screens/sui_menu.lua:2374
+#: screens/sui_menu.lua:2458
 msgid "Invert in Night Mode"
 msgstr "夜間模式下反相"
 
-#: modules/module_clock.lua:1045 modules/module_clock.lua:1068
-#: modules/module_clock.lua:1077 modules/module_clock.lua:1115
-#: modules/module_coverdeck.lua:1540 modules/module_coverdeck.lua:1580
-#: modules/module_coverdeck.lua:1594 modules/module_currently.lua:1653
-#: modules/module_currently.lua:1658 modules/module_currently.lua:1681
-#: modules/module_reading_stats.lua:694 modules/module_reading_stats.lua:715
-#: modules/module_reading_stats.lua:737 screens/sui_menu.lua:857
-#: screens/sui_menu.lua:862 screens/sui_menu.lua:951 screens/sui_menu.lua:1991
-#: screens/sui_menu.lua:1996 screens/sui_menu.lua:2022
+#: features/sui_style.lua:2096
+msgid "Italic"
+msgstr "斜體"
+
+#: infra/sui_config.lua:1089 modules/module_clock.lua:1089
+#: modules/module_clock.lua:1098 modules/module_clock.lua:1136
+#: modules/module_coverdeck.lua:1550 modules/module_coverdeck.lua:1590
+#: modules/module_coverdeck.lua:1604 modules/module_currently.lua:1677
+#: modules/module_currently.lua:1682 modules/module_currently.lua:1705
+#: modules/module_reading_stats.lua:756 modules/module_reading_stats.lua:777
+#: modules/module_reading_stats.lua:799 screens/sui_menu.lua:858
+#: screens/sui_menu.lua:863 screens/sui_menu.lua:952 screens/sui_menu.lua:1112
+#: screens/sui_menu.lua:2090 screens/sui_menu.lua:2095
+#: screens/sui_menu.lua:2121
 msgid "Items"
 msgstr "項目"
 
@@ -1961,7 +2074,7 @@ msgstr "項目"
 msgid "Jan"
 msgstr "1月"
 
-#: modules/module_clock.lua:62 screens/sui_stats_windows.lua:2815
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2815
 msgid "January"
 msgstr "1月"
 
@@ -1969,7 +2082,7 @@ msgstr "1月"
 msgid "Jul"
 msgstr "7月"
 
-#: modules/module_clock.lua:63 screens/sui_stats_windows.lua:2816
+#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2816
 msgid "July"
 msgstr "7月"
 
@@ -1977,11 +2090,11 @@ msgstr "7月"
 msgid "Jun"
 msgstr "6月"
 
-#: modules/module_clock.lua:63 screens/sui_stats_windows.lua:2816
+#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2816
 msgid "June"
 msgstr "6月"
 
-#: modules/module_quick_actions.lua:648
+#: modules/module_quick_actions.lua:685
 msgid "Justified"
 msgstr "兩端對齊"
 
@@ -1993,139 +2106,145 @@ msgstr "KOReader"
 msgid "LAST 7 DAYS"
 msgstr "過去 7 天"
 
-#: modules/module_quick_actions.lua:556 screens/sui_quicksettings_bar.lua:1224
+#: infra/sui_config.lua:1028 modules/module_action_list.lua:510
+#: modules/module_action_list.lua:525 modules/module_collections.lua:1468
+#: modules/module_quick_actions.lua:598 modules/module_reading_goals.lua:1304
+#: modules/module_reading_stats.lua:854 modules/module_reading_stats.lua:1015
+#: screens/sui_quicksettings_bar.lua:1238
 msgid "Label"
 msgstr "標籤"
 
-#: screens/sui_menu.lua:2503
+#: screens/sui_menu.lua:1401
+msgid "Label Font"
+msgstr "標籤字型"
+
+#: screens/sui_menu.lua:2627
 msgid "Label Scale"
 msgstr "標籤縮放"
 
-#: screens/sui_menu.lua:1359 screens/sui_menu.lua:1360
+#: screens/sui_menu.lua:1389 screens/sui_menu.lua:1390
+#: screens/sui_menu.lua:1447
 msgid "Label Size"
 msgstr "標籤尺寸"
 
-#: screens/sui_menu.lua:2492
+#: screens/sui_menu.lua:2616
 msgid "Labels"
 msgstr "標籤"
 
-#: screens/sui_menu.lua:1830
+#: screens/sui_menu.lua:1900
 msgid "Large"
 msgstr "大"
 
-#: features/sui_backup.lua:1031
+#: features/sui_backup.lua:1028
 msgid "Last backup: %s%s"
 msgstr "上次備份：%s%s"
 
-#: features/sui_backup.lua:1028
+#: features/sui_backup.lua:1025
 msgid "Last backup: never"
 msgstr "上次備份：從未"
 
-#: features/sui_backup.lua:1009 infra/sui_updater.lua:449
-#: screens/sui_menu.lua:444 screens/sui_menu.lua:847 screens/sui_menu.lua:1058
-#: screens/sui_menu.lua:1119 screens/sui_menu.lua:1335
-#: screens/sui_menu.lua:1794 screens/sui_menu.lua:3448
-#: screens/sui_menu.lua:3471 screens/sui_menu.lua:3493
-#: screens/sui_menu.lua:4342 screens/sui_menu.lua:4544
-#: screens/sui_quicksettings_bar.lua:1120
+#: features/sui_backup.lua:1006 infra/sui_updater.lua:449
+#: screens/sui_menu.lua:444 screens/sui_menu.lua:848 screens/sui_menu.lua:1059
+#: screens/sui_menu.lua:1151 screens/sui_menu.lua:1367
+#: screens/sui_menu.lua:1864 screens/sui_menu.lua:3549
+#: screens/sui_menu.lua:3572 screens/sui_menu.lua:3594
+#: screens/sui_menu.lua:4455 screens/sui_menu.lua:4653
+#: screens/sui_quicksettings_bar.lua:1134
 msgid "Later"
 msgstr "稍後"
 
-#: modules/module_currently.lua:1507 modules/module_reading_goals.lua:1509
+#: modules/module_currently.lua:1531 modules/module_reading_goals.lua:1531
 msgid "Layout"
 msgstr "版面配置"
 
-#: screens/sui_settings_window.lua:1084 screens/sui_settings_window.lua:1085
+#: screens/sui_settings_window.lua:1110 screens/sui_settings_window.lua:1111
 msgid "Layout Editor"
 msgstr "版面編輯器"
 
-#: features/sui_backup.lua:110
+#: features/sui_backup.lua:111
 msgid "Layout, modules, custom screens, presets"
 msgstr "佈局、模組、自定義螢幕與預設"
 
-#: screens/sui_settings_window.lua:324
+#: screens/sui_settings_window.lua:346
 msgid "Layout, wallpaper, presets and behaviour"
 msgstr "佈局、桌布、預設與行為"
 
-#: modules/module_action_list.lua:66 modules/module_action_list.lua:464
-#: modules/module_clock.lua:166 modules/module_clock.lua:1198
-#: modules/module_quick_actions.lua:658 modules/module_quote.lua:125
-#: modules/module_quote.lua:1558 modules/module_reading_goals.lua:119
-#: modules/module_reading_goals.lua:1568 modules/module_reading_stats.lua:91
-#: modules/module_reading_stats.lua:850 screens/sui_menu.lua:704
-#: screens/sui_menu.lua:937 screens/sui_menu.lua:1475 screens/sui_menu.lua:1682
+#: modules/module_action_list.lua:66 modules/module_action_list.lua:480
+#: modules/module_clock.lua:160 modules/module_clock.lua:1225
+#: modules/module_quick_actions.lua:695 modules/module_quote.lua:122
+#: modules/module_quote.lua:1603 modules/module_reading_goals.lua:141
+#: modules/module_reading_goals.lua:1590 modules/module_reading_stats.lua:111
+#: modules/module_reading_stats.lua:908 screens/sui_menu.lua:704
+#: screens/sui_menu.lua:938 screens/sui_menu.lua:1544 screens/sui_menu.lua:1751
 msgid "Left"
 msgstr "靠左"
 
-#: engines/sui_heatmap_widgets.lua:375 modules/module_heatmap.lua:176
+#: engines/sui_heatmap_widgets.lua:375 modules/module_heatmap.lua:179
 msgid "Less"
 msgstr "較少"
 
-#: features/sui_backup.lua:119 features/sui_quickactions.lua:675
-#: infra/sui_config.lua:116 infra/sui_config.lua:376 screens/sui_menu.lua:4564
-#: screens/sui_settings_window.lua:337 screens/sui_settings_window.lua:1080
-#: screens/sui_titlebar.lua:1089
+#: features/sui_backup.lua:120 features/sui_quickactions.lua:675
+#: infra/sui_config.lua:117 infra/sui_config.lua:444 screens/sui_menu.lua:2545
+#: screens/sui_menu.lua:4673 screens/sui_settings_window.lua:359
+#: screens/sui_settings_window.lua:1106 screens/sui_titlebar.lua:1120
 msgid "Library"
 msgstr "書庫"
 
-#: screens/sui_menu.lua:1802 screens/sui_menu.lua:1805
+#: screens/sui_menu.lua:1872 screens/sui_menu.lua:1875
+#: screens/sui_menu.lua:1915
 msgid "Library Buttons"
 msgstr "書庫按鈕"
 
-#: features/sui_presets.lua:187
+#: features/sui_presets.lua:192
 msgid "Library View"
 msgstr "書庫檢視"
 
-#: engines/sui_book_grid.lua:1917 modules/module_collections.lua:1415
-#: modules/module_coverdeck.lua:1675 modules/module_currently.lua:2001
-#: screens/sui_menu.lua:2999 screens/sui_menu.lua:3011
-#: screens/sui_menu.lua:3053 screens/sui_menu.lua:3065
-#: screens/sui_menu.lua:3107 screens/sui_menu.lua:3119
-#: screens/sui_menu.lua:3174 screens/sui_menu.lua:3186
-#: screens/sui_menu.lua:3241 screens/sui_menu.lua:3253
-#: screens/sui_menu.lua:3395 screens/sui_menu.lua:3400
+#: engines/sui_book_grid.lua:1971 modules/module_collections.lua:1409
+#: modules/module_coverdeck.lua:1675 modules/module_currently.lua:2011
+#: screens/sui_menu.lua:3100 screens/sui_menu.lua:3112
+#: screens/sui_menu.lua:3154 screens/sui_menu.lua:3166
+#: screens/sui_menu.lua:3208 screens/sui_menu.lua:3220
+#: screens/sui_menu.lua:3275 screens/sui_menu.lua:3287
+#: screens/sui_menu.lua:3342 screens/sui_menu.lua:3354
+#: screens/sui_menu.lua:3496 screens/sui_menu.lua:3501
 msgid "Light"
 msgstr "淺色"
 
-#: screens/sui_menu.lua:2386
+#: screens/sui_menu.lua:2461
 msgid "Lighten"
 msgstr "加亮"
 
-#: screens/sui_menu.lua:2399
-msgid "Lighten Wallpaper"
-msgstr "加亮桌布"
-
-#: modules/module_reading_stats.lua:834
+#: modules/module_reading_stats.lua:883
 msgid "List"
 msgstr "清單"
 
 #: screens/sui_stats_windows.lua:2491
 msgid "Loading statistics…"
-msgstr "正在載入統計資料······"
+msgstr "正在載入統計資料……"
 
-#: screens/sui_menu.lua:2451
+#: screens/sui_menu.lua:2575
 msgid "Lock Scale"
 msgstr "鎖定縮放"
 
-#: infra/sui_config.lua:1278
+#: infra/sui_config.lua:1655
 msgid "Long Press"
 msgstr "長按"
 
-#: screens/sui_onboarding.lua:161
+#: screens/sui_onboarding.lua:160
 msgid "Long press to customize"
 msgstr "長按以自訂"
 
-#: features/sui_backup.lua:521 features/sui_backup.lua:570
-#: features/sui_presets.lua:409 features/sui_presets.lua:421
-#: features/sui_presets.lua:589 features/sui_presets.lua:601
+#: features/sui_backup.lua:518 features/sui_backup.lua:567
+#: features/sui_presets.lua:415 features/sui_presets.lua:427
+#: features/sui_presets.lua:598 features/sui_presets.lua:610
 msgid "LuaSettings module unavailable"
 msgstr "LuaSettings 模組不可用"
 
-#: screens/sui_onboarding.lua:127
+#: screens/sui_onboarding.lua:126
 msgid "Make it yours"
 msgstr "打造您的專屬風格"
 
-#: screens/sui_menu.lua:2718
+#: screens/sui_menu.lua:2832
 msgid ""
 "Makes the device's physical Home key open the SimpleUI Home Screen — while "
 "reading and while browsing files — instead of KOReader's native Home "
@@ -2135,37 +2254,37 @@ msgstr ""
 "使裝置的實體主頁鍵打開 SimpleUI 主頁，無論是在閱讀時還是在瀏覽檔案時，而非 "
 "KOReader 的原生主頁行為。檔案瀏覽器標題列的主頁圖示仍會進入主資料夾。"
 
-#: features/sui_presets.lua:898 features/sui_presets.lua:974
-#: features/sui_presets.lua:979 screens/sui_menu.lua:4049
-#: screens/sui_menu.lua:4123 screens/sui_menu.lua:4128
+#: features/sui_presets.lua:907 features/sui_presets.lua:983
+#: features/sui_presets.lua:988 screens/sui_menu.lua:4150
+#: screens/sui_menu.lua:4224 screens/sui_menu.lua:4229
 msgid "Manage presets"
 msgstr "管理預設檔"
 
-#: modules/module_collections.lua:525
+#: modules/module_collections.lua:516
 msgid "Manual order"
 msgstr "手動排序"
 
-#: modules/module_reading_goals.lua:1499
+#: modules/module_reading_goals.lua:1521
 msgid "Manually Tracked Books"
-msgstr "手動追蹤的書籍"
+msgstr "手動匯入的書籍"
 
-#: modules/module_reading_goals.lua:1487
+#: modules/module_reading_goals.lua:1509
 msgid "Manually Tracked Books  (%s)"
-msgstr "手動追蹤的書籍（%s）"
+msgstr "手動匯入的書籍（%s）"
 
 #: engines/sui_heatmap_widgets.lua:87
 msgid "Mar"
 msgstr "3月"
 
-#: modules/module_clock.lua:62 screens/sui_stats_windows.lua:2815
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2815
 msgid "March"
 msgstr "3月"
 
-#: screens/sui_quicksettings_bar.lua:367 screens/sui_quicksettings_bar.lua:473
+#: screens/sui_quicksettings_bar.lua:381 screens/sui_quicksettings_bar.lua:487
 msgid "Max"
 msgstr "最大"
 
-#: engines/sui_heatmap_widgets.lua:87 modules/module_clock.lua:63
+#: engines/sui_heatmap_widgets.lua:87 modules/module_clock.lua:59
 #: screens/sui_stats_windows.lua:2816
 msgid "May"
 msgstr "5月"
@@ -2174,15 +2293,15 @@ msgstr "5月"
 msgid "Menu"
 msgstr "選單"
 
-#: features/sui_style.lua:81
+#: features/sui_style.lua:82
 msgid "Menu Button"
 msgstr "選單按鈕"
 
-#: modules/module_clock.lua:386
+#: modules/module_clock.lua:380
 msgid "Midnight"
 msgstr "午夜"
 
-#: features/sui_presets.lua:149
+#: features/sui_presets.lua:154
 msgid "Mindful Reading"
 msgstr "專注閱讀"
 
@@ -2194,7 +2313,7 @@ msgstr "導覽分頁器模式下至少需要 1 個分頁。"
 msgid "Minimum 2 tabs required. Select another tab first."
 msgstr "至少需要 2 個分頁。請先選擇另一個分頁。"
 
-#: modules/module_reading_goals.lua:778
+#: modules/module_reading_goals.lua:808
 msgid "Minutes per day:"
 msgstr "每日分鐘數："
 
@@ -2202,27 +2321,27 @@ msgstr "每日分鐘數："
 msgid "Mode"
 msgstr "模式"
 
-#: screens/sui_menu.lua:2469
+#: screens/sui_menu.lua:2593
 msgid "Module Scale"
 msgstr "模組縮放"
 
-#: infra/sui_config.lua:1275 screens/sui_menu.lua:2198
+#: infra/sui_config.lua:1652 screens/sui_menu.lua:2297
 msgid "Module Settings"
 msgstr "模組設定"
 
-#: screens/sui_menu.lua:3709
+#: screens/sui_menu.lua:3810
 msgid "Module unavailable"
 msgstr "模組不可用"
 
-#: screens/sui_menu.lua:2462 screens/sui_menu.lua:2737
+#: screens/sui_menu.lua:2586 screens/sui_menu.lua:2851
 msgid "Modules"
 msgstr "模組"
 
-#: screens/sui_menu.lua:2186
+#: screens/sui_menu.lua:2285
 msgid "Modules  (%d)"
 msgstr "模組（%d）"
 
-#: engines/sui_screen_engine.lua:2781
+#: engines/sui_screen_engine.lua:2818
 msgid ""
 "Modules exceed the visible area.\n"
 "Move some to another page or adjust the scale."
@@ -2230,7 +2349,7 @@ msgstr ""
 "模組已超出可見區域。\n"
 "請將部分模組移動至其他頁面或調整縮放比例。"
 
-#: features/sui_presets.lua:169
+#: features/sui_presets.lua:174
 msgid "Momentum"
 msgstr "動量"
 
@@ -2238,16 +2357,16 @@ msgstr "動量"
 msgid "Mon"
 msgstr "週一"
 
-#: modules/module_clock.lua:58
+#: modules/module_clock.lua:54
 msgid "Monday"
 msgstr "星期一"
 
-#: modules/module_reading_goals.lua:1312 modules/module_reading_goals.lua:1359
-#: modules/module_reading_goals.lua:1396 modules/module_reading_goals.lua:1427
+#: modules/module_reading_goals.lua:1335 modules/module_reading_goals.lua:1382
+#: modules/module_reading_goals.lua:1419 modules/module_reading_goals.lua:1450
 msgid "Monthly Goal"
 msgstr "每月目標"
 
-#: modules/module_reading_goals.lua:765
+#: modules/module_reading_goals.lua:795
 msgid "Monthly Reading Goal"
 msgstr "每月閱讀目標"
 
@@ -2255,57 +2374,61 @@ msgstr "每月閱讀目標"
 msgid "More"
 msgstr "更多"
 
-#: main.lua:1083
+#: main.lua:1097
 msgid "More by %s (%d)"
 msgstr "%s 的更多作品（%d）"
 
-#: engines/sui_window.lua:2853
+#: engines/sui_window.lua:2872
 msgid "Move down"
 msgstr "下移"
 
-#: engines/sui_window.lua:2847 screens/sui_settings_window.lua:704
-#: screens/sui_settings_window.lua:739
+#: engines/sui_window.lua:2866 screens/sui_settings_window.lua:730
+#: screens/sui_settings_window.lua:765
 msgid "Move to page"
 msgstr "移動至頁面"
 
-#: engines/sui_window.lua:2850
+#: engines/sui_window.lua:2869
 msgid "Move up"
 msgstr "上移"
 
-#: modules/module_quote.lua:1407
+#: modules/module_quote.lua:1452
 msgid "My Highlights"
-msgstr "我的劃線"
+msgstr "我的標註"
 
-#: features/sui_presets.lua:796 features/sui_presets.lua:801
+#: features/sui_presets.lua:805 features/sui_presets.lua:810
 msgid "My Presets"
 msgstr "我的預設檔"
 
-#: features/sui_quickactions.lua:2532
+#: features/sui_quickactions.lua:2531
 msgid "Name"
 msgstr "名稱"
 
-#: modules/module_collections.lua:526
+#: modules/module_collections.lua:517
 msgid "Name (A–Z)"
 msgstr "名稱（A–Z）"
 
-#: modules/module_collections.lua:527
+#: modules/module_collections.lua:518
 msgid "Name (Z–A)"
 msgstr "名稱（Z–A）"
 
-#: features/library/sui_foldercovers.lua:314 screens/sui_menu.lua:3135
-#: screens/sui_menu.lua:3144 screens/sui_menu.lua:3156
+#: features/library/sui_foldercovers.lua:298 screens/sui_menu.lua:3236
+#: screens/sui_menu.lua:3245 screens/sui_menu.lua:3257
 msgid "Native"
 msgstr "原生"
 
-#: screens/sui_bottombar.lua:821 screens/sui_menu.lua:2773
+#: screens/sui_bottombar.lua:939 screens/sui_menu.lua:2889
 msgid "Navigation Bar"
 msgstr "導覽欄"
 
-#: screens/sui_menu.lua:1310
+#: screens/sui_menu.lua:2494
+msgid "Navigation Bar Opacity"
+msgstr "導覽欄不透明度"
+
+#: screens/sui_menu.lua:1342
 msgid "Navigation Bar Size"
 msgstr "導覽欄尺寸"
 
-#: screens/sui_menu.lua:1118
+#: screens/sui_menu.lua:1150
 msgid ""
 "Navigation Bar will be %s after restart.\n"
 "\n"
@@ -2315,11 +2438,11 @@ msgstr ""
 "\n"
 "要立即重新啟動嗎？"
 
-#: features/sui_backup.lua:115
+#: features/sui_backup.lua:116
 msgid "Navigation, status, title and quick settings bars"
 msgstr "導航欄、狀態列、標題欄與快捷設定欄"
 
-#: features/sui_style.lua:1295 screens/sui_menu.lua:469
+#: features/sui_style.lua:1313 screens/sui_menu.lua:469
 msgid "Navpager"
 msgstr "導覽分頁器"
 
@@ -2333,73 +2456,73 @@ msgstr ""
 "\n"
 "要立即重新啟動嗎？"
 
-#: features/sui_style.lua:161
+#: features/sui_style.lua:162
 msgid "Navpager: Next"
 msgstr "導覽分頁器：下一頁"
 
-#: features/sui_style.lua:155
+#: features/sui_style.lua:156
 msgid "Navpager: Previous"
 msgstr "導覽分頁器：上一頁"
 
-#: features/sui_quickactions.lua:2146
+#: features/sui_quickactions.lua:2145
 msgid "Nerd Font Icon"
 msgstr "Nerd Font 圖示"
 
-#: features/sui_quickactions.lua:2211
+#: features/sui_quickactions.lua:2210
 msgid "Nerd Font symbol…"
-msgstr "Nerd Font 符號······"
+msgstr "Nerd Font 符號……"
 
 #: features/sui_quickactions.lua:275
 msgid "Network manager unavailable."
 msgstr "網路管理員不可用。"
 
-#: screens/sui_menu.lua:2586
+#: screens/sui_menu.lua:2700
 msgid "Never"
 msgstr "永不"
 
-#: engines/sui_book_grid.lua:537 features/library/sui_cover_widgets.lua:467
-#: features/library/sui_foldercovers.lua:1263
-#: features/library/sui_foldercovers.lua:1911 modules/module_new_books.lua:137
+#: engines/sui_book_grid.lua:531 features/library/sui_cover_widgets.lua:467
+#: features/library/sui_foldercovers.lua:1274
+#: features/library/sui_foldercovers.lua:1921 modules/module_new_books.lua:137
 msgid "New"
 msgstr "新"
 
-#: engines/sui_book_grid.lua:2072
+#: engines/sui_book_grid.lua:2121
 msgid "New Badge Color"
 msgstr "新徽章顏色"
 
-#: screens/sui_menu.lua:3198
+#: screens/sui_menu.lua:3299
 msgid "New Book"
 msgstr "新書"
 
-#: engines/sui_book_grid.lua:2064 engines/sui_book_grid.lua:2077
+#: engines/sui_book_grid.lua:2113 engines/sui_book_grid.lua:2126
 msgid "New Book Badge"
 msgstr "新書徽章"
 
 #: modules/module_new_books.lua:82 modules/module_new_books.lua:83
 msgid "New Books"
-msgstr "新進書籍"
+msgstr "新書"
 
-#: features/sui_quickactions.lua:2405
+#: features/sui_quickactions.lua:2404
 msgid "New Quick Action"
 msgstr "新增快速動作"
 
-#: features/library/sui_group_actions.lua:97
+#: features/library/sui_group_actions.lua:103
 msgid "New collection name"
 msgstr "新收藏名稱"
 
-#: screens/sui_bottombar.lua:501
+#: screens/sui_bottombar.lua:588
 msgid "Next"
 msgstr "下一頁"
 
-#: features/sui_quickactions.lua:937 infra/sui_config.lua:128
+#: features/sui_quickactions.lua:937 infra/sui_config.lua:129
 msgid "Night Mode"
 msgstr "夜間模式"
 
-#: modules/module_clock.lua:317
+#: modules/module_clock.lua:311
 msgid "Nine"
 msgstr "九"
 
-#: modules/module_clock.lua:321
+#: modules/module_clock.lua:315
 msgid "Nineteen"
 msgstr "十九"
 
@@ -2407,11 +2530,11 @@ msgstr "十九"
 msgid "No"
 msgstr "取消"
 
-#: modules/module_quote.lua:1464 modules/module_quote.lua:1513
+#: modules/module_quote.lua:1509 modules/module_quote.lua:1558
 msgid "No .lua files found in sui_quotes/"
 msgstr "在 sui_quotes/ 中未找到 .lua 檔案"
 
-#: screens/sui_menu.lua:3828
+#: screens/sui_menu.lua:3929
 msgid ""
 "No .zip files found.\n"
 "Place .zip files in:\n"
@@ -2421,14 +2544,14 @@ msgstr ""
 "請將 .zip 檔案放至：\n"
 "%1"
 
-#: screens/sui_quicksettings_bar.lua:1138
-#: screens/sui_quicksettings_bar.lua:1158
+#: screens/sui_quicksettings_bar.lua:1152
+#: screens/sui_quicksettings_bar.lua:1172
 msgid "No actions active yet."
 msgstr "尚無啟用的動作。"
 
-#: features/sui_quickactions.lua:1681 modules/module_action_list.lua:95
+#: features/sui_quickactions.lua:1680 modules/module_action_list.lua:95
 #: modules/module_action_list.lua:114 modules/module_quick_actions.lua:150
-#: screens/sui_settings_window.lua:657
+#: screens/sui_settings_window.lua:683
 msgid "No actions configured"
 msgstr "未設定任何動作"
 
@@ -2437,15 +2560,15 @@ msgstr "未設定任何動作"
 msgid "No actions configured  —  long press to configure"
 msgstr "未設定任何動作 — 長按以設定"
 
-#: screens/sui_quicksettings_bar.lua:279
+#: screens/sui_quicksettings_bar.lua:293
 msgid ""
 "No actions configured.\n"
 "Go to Bars → Quick Settings Bar."
 msgstr ""
 "未設定任何動作。\n"
-"請前往 功能欄 → 快速設定欄。"
+"請前往「功能欄」>「快速設定欄」進行設定。"
 
-#: features/sui_backup.lua:1170
+#: features/sui_backup.lua:1167
 msgid "No backup loaded yet."
 msgstr "尚未載入備份。"
 
@@ -2457,66 +2580,67 @@ msgstr "歷史紀錄中沒有書籍。"
 msgid "No books finished in %s"
 msgstr "%s 年尚未讀完任何書籍"
 
-#: features/library/sui_foldercovers.lua:651
+#: features/library/sui_foldercovers.lua:635
+#: features/library/sui_foldercovers.lua:738
 msgid "No books found in this folder."
 msgstr "此資料夾中未找到書籍。"
 
-#: features/library/sui_series_grouping.lua:91
-#: features/library/sui_series_grouping.lua:104
+#: features/library/sui_series_grouping.lua:95
+#: features/library/sui_series_grouping.lua:108
 msgid "No books found in this series."
 msgstr "此系列中未找到書籍。"
 
-#: features/library/sui_group_actions.lua:36
-#: features/library/sui_group_actions.lua:90
+#: features/library/sui_group_actions.lua:39
+#: features/library/sui_group_actions.lua:96
 #: features/library/sui_library_browse.lua:370
 #: features/library/sui_library_browse.lua:392
 msgid "No books found."
 msgstr "未找到書籍。"
 
-#: modules/module_tbr.lua:402 modules/module_tbr.lua:427
-#: modules/module_tbr.lua:502
+#: modules/module_tbr.lua:346 modules/module_tbr.lua:371
+#: modules/module_tbr.lua:446
 msgid "No books in To Be Read list."
 msgstr "待讀清單中沒有書籍。"
 
-#: modules/module_feat_coll.lua:257 modules/module_feat_coll.lua:281
-#: modules/module_feat_coll.lua:350
+#: modules/module_feat_coll.lua:206 modules/module_feat_coll.lua:230
+#: modules/module_feat_coll.lua:299
 msgid "No books in this collection."
 msgstr "此收藏中沒有書籍。"
 
-#: engines/sui_screen_engine.lua:441
+#: engines/sui_screen_engine.lua:445
 msgid "No books opened yet"
 msgstr "尚未開啟任何書籍"
 
-#: modules/module_coverdeck.lua:631 modules/module_currently.lua:475
+#: modules/module_coverdeck.lua:636 modules/module_currently.lua:526
 msgid "No books to show yet — open a book to see it here."
 msgstr "暫無可顯示的書籍 — 開啟一本書後即可在此看到。"
 
-#: modules/module_feat_coll.lua:407 screens/sui_settings_window.lua:669
+#: modules/module_feat_coll.lua:356 screens/sui_settings_window.lua:695
 msgid "No collection selected"
 msgstr "未選擇收藏"
 
-#: modules/module_feat_coll.lua:406
+#: modules/module_feat_coll.lua:355
 msgid "No collection selected  —  long press to configure"
 msgstr "未選擇收藏 — 長按以設定"
 
-#: modules/module_coverdeck.lua:1342
+#: modules/module_coverdeck.lua:1352
 msgid "No collections found"
 msgstr "未找到收藏"
 
-#: modules/module_collections.lua:1271 modules/module_collections.lua:1439
-#: modules/module_feat_coll.lua:134
+#: modules/module_collections.lua:1265 modules/module_collections.lua:1428
+#: modules/module_feat_coll.lua:121
 msgid "No collections found."
 msgstr "未找到收藏。"
 
-#: modules/module_collections.lua:1524
+#: modules/module_collections.lua:1514
 msgid "No collections selected"
 msgstr "未選擇收藏"
 
-#: modules/module_collections.lua:1523
+#: modules/module_collections.lua:1513
 msgid "No collections selected  —  long press to configure"
 msgstr "未選擇收藏 — 長按以設定"
 
-#: modules/module_quote.lua:928
+#: modules/module_quote.lua:979
 msgid ""
 "No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder "
 "and select it in Settings."
@@ -2524,9 +2648,9 @@ msgstr ""
 "未找到自訂佳句。請將 .lua 檔案新增至外掛程式的 sui_quotes/ 資料夾，並於設定中"
 "選取它。"
 
-#: screens/sui_settings_window.lua:441
+#: screens/sui_settings_window.lua:467
 msgid "No custom screens yet."
-msgstr "暫無自定義螢幕。"
+msgstr "暫無自訂螢幕。"
 
 #: infra/sui_updater.lua:498
 msgid ""
@@ -2538,7 +2662,7 @@ msgstr ""
 "\n"
 "要開啟發行頁面嗎？"
 
-#: features/sui_presets.lua:401 features/sui_presets.lua:581
+#: features/sui_presets.lua:407 features/sui_presets.lua:590
 msgid "No export directory"
 msgstr "無匯出目錄"
 
@@ -2546,70 +2670,70 @@ msgstr "無匯出目錄"
 msgid "No filepath."
 msgstr "無檔案路徑。"
 
-#: features/sui_quickactions.lua:3210
+#: features/sui_quickactions.lua:3208
 msgid ""
 "No folder, collection or plugin configured.\n"
 "Go to Simple UI → Settings → Quick Actions to set one."
 msgstr ""
 "未設定資料夾、收藏或外掛程式。\n"
-"請前往 Simple UI → 設定 → 快速動作 進行設定。"
+"請前往「設定」>「快速動作」進行設定。"
 
-#: features/sui_style.lua:1804
+#: features/sui_style.lua:1927
 msgid "No fonts found."
 msgstr "未找到字型。"
 
-#: modules/module_quote.lua:1000
+#: modules/module_quote.lua:1055
 msgid "No highlights found. Open a book and highlight some passages."
-msgstr "未找到劃線。請開啟書籍並劃線劃重點。"
+msgstr "未找到標註。請開啟書籍並劃重點標註。"
 
 #: features/library/sui_library_search.lua:187
 msgid "No home folder set."
 msgstr "主資料夾未設定"
 
-#: features/sui_quickactions.lua:2246
+#: features/sui_quickactions.lua:2245
 msgid "No icons found in:"
 msgstr "未在此處找到圖示："
 
-#: engines/sui_window.lua:2521 engines/sui_window.lua:3170
+#: engines/sui_window.lua:2540 engines/sui_window.lua:3189
 msgid "No items available."
 msgstr "沒有可用項目。"
 
-#: engines/sui_window.lua:3080 modules/module_action_list.lua:352
-#: modules/module_action_list.lua:377 modules/module_clock.lua:1080
-#: modules/module_collections.lua:1219 modules/module_coverdeck.lua:1588
-#: modules/module_coverdeck.lua:1596 modules/module_currently.lua:1675
-#: modules/module_currently.lua:1759 modules/module_currently.lua:1891
-#: modules/module_currently.lua:1934 modules/module_quick_actions.lua:404
-#: modules/module_quick_actions.lua:429 modules/module_reading_goals.lua:1362
-#: modules/module_reading_goals.lua:1369 modules/module_reading_stats.lua:718
-#: modules/module_reading_stats.lua:739 screens/sui_menu.lua:875
-#: screens/sui_menu.lua:953 screens/sui_menu.lua:1145 screens/sui_menu.lua:1196
-#: screens/sui_menu.lua:1591 screens/sui_menu.lua:1698
-#: screens/sui_menu.lua:1999 screens/sui_menu.lua:2024
+#: engines/sui_window.lua:3099 modules/module_action_list.lua:376
+#: modules/module_action_list.lua:401 modules/module_clock.lua:1101
+#: modules/module_collections.lua:1213 modules/module_coverdeck.lua:1598
+#: modules/module_coverdeck.lua:1606 modules/module_currently.lua:1699
+#: modules/module_currently.lua:1783 modules/module_currently.lua:1915
+#: modules/module_currently.lua:1958 modules/module_quick_actions.lua:444
+#: modules/module_quick_actions.lua:469 modules/module_reading_goals.lua:1385
+#: modules/module_reading_goals.lua:1392 modules/module_reading_stats.lua:780
+#: modules/module_reading_stats.lua:801 screens/sui_menu.lua:876
+#: screens/sui_menu.lua:954 screens/sui_menu.lua:1177 screens/sui_menu.lua:1228
+#: screens/sui_menu.lua:1660 screens/sui_menu.lua:1767
+#: screens/sui_menu.lua:2098 screens/sui_menu.lua:2123
 msgid "No items selected."
 msgstr "未選取任何項目。"
 
-#: modules/module_clock.lua:1117
+#: modules/module_clock.lua:1138
 msgid "No items."
 msgstr "暫無項目。"
 
-#: screens/sui_settings_window.lua:575 screens/sui_settings_window.lua:750
+#: screens/sui_settings_window.lua:601 screens/sui_settings_window.lua:776
 msgid "No modules"
 msgstr "無模組"
 
-#: screens/sui_settings_window.lua:736
+#: screens/sui_settings_window.lua:762
 msgid "No other pages available."
 msgstr "沒有其他可用頁面。"
 
-#: screens/sui_menu.lua:3849
+#: screens/sui_menu.lua:3950
 msgid "No packs found."
 msgstr "未找到圖示包。"
 
-#: features/sui_quickactions.lua:2627
+#: features/sui_quickactions.lua:2626
 msgid "No plugins found."
 msgstr "未找到外掛程式。"
 
-#: features/sui_presets.lua:1080 screens/sui_menu.lua:4229
+#: features/sui_presets.lua:1089 screens/sui_menu.lua:4330
 msgid ""
 "No preset files found.\n"
 "Place .lua files in:\n"
@@ -2619,15 +2743,15 @@ msgstr ""
 "請將 .lua 檔案放至：\n"
 "%1"
 
-#: features/sui_presets.lua:1057 screens/sui_menu.lua:4205
+#: features/sui_presets.lua:1066 screens/sui_menu.lua:4306
 msgid "No presets found."
 msgstr "未找到預設檔。"
 
-#: modules/module_quote.lua:962
+#: modules/module_quote.lua:1015
 msgid "No quotes found."
 msgstr "未找到佳句。"
 
-#: features/sui_quickactions.lua:3523
+#: features/sui_quickactions.lua:3521
 msgid "No recent books."
 msgstr "沒有近期書籍。"
 
@@ -2636,58 +2760,58 @@ msgid "No results for: %1"
 msgstr "沒有關於「%1」的搜尋結果"
 
 #: screens/sui_stats_windows.lua:168 screens/sui_stats_windows.lua:202
-#: screens/sui_stats_windows.lua:3565
+#: screens/sui_stats_windows.lua:3568
 msgid "No statistics found for this book."
 msgstr "未找到這本書的統計數據。"
 
-#: modules/module_coverdeck.lua:1463
+#: modules/module_coverdeck.lua:1473
 msgid "No statistics selected."
 msgstr "未選擇統計項目。"
 
-#: modules/module_reading_stats.lua:465
+#: modules/module_reading_stats.lua:527
 msgid "No stats selected"
 msgstr "未選擇統計項目"
 
-#: modules/module_reading_stats.lua:464
+#: modules/module_reading_stats.lua:526
 msgid "No stats selected  —  long press to configure"
 msgstr "未選擇統計項目 — 長按以設定"
 
-#: features/sui_quickactions.lua:2653
+#: features/sui_quickactions.lua:2652
 msgid "No system actions found."
 msgstr "未找到系統動作。"
 
-#: screens/sui_menu.lua:2287
+#: screens/sui_menu.lua:2418
 msgid "No wallpapers found."
 msgstr "未找到桌布。"
 
-#: engines/sui_book_grid.lua:1940 engines/sui_book_grid.lua:2058
-#: features/library/sui_foldercovers.lua:319 features/sui_quickactions.lua:2525
-#: screens/sui_menu.lua:3136 screens/sui_menu.lua:3145
-#: screens/sui_menu.lua:3163 screens/sui_menu.lua:3203
-#: screens/sui_menu.lua:3212 screens/sui_menu.lua:3230
+#: engines/sui_book_grid.lua:1994 engines/sui_book_grid.lua:2107
+#: features/library/sui_foldercovers.lua:303 features/sui_quickactions.lua:2524
+#: screens/sui_menu.lua:3237 screens/sui_menu.lua:3246
+#: screens/sui_menu.lua:3264 screens/sui_menu.lua:3304
+#: screens/sui_menu.lua:3313 screens/sui_menu.lua:3331
 msgid "None"
 msgstr "無"
 
-#: modules/module_clock.lua:389
+#: modules/module_clock.lua:383
 msgid "Noon"
 msgstr "中午"
 
-#: features/sui_backup.lua:575 features/sui_backup.lua:579
-#: features/sui_backup.lua:589 features/sui_backup.lua:774
-#: features/sui_backup.lua:931
+#: features/sui_backup.lua:572 features/sui_backup.lua:576
+#: features/sui_backup.lua:586 features/sui_backup.lua:771
+#: features/sui_backup.lua:928
 msgid "Not a valid backup file."
 msgstr "不是有效的備份檔案。"
 
-#: modules/module_reading_goals.lua:1410 modules/module_reading_goals.lua:1425
-#: modules/module_reading_goals.lua:1440
+#: modules/module_reading_goals.lua:1433 modules/module_reading_goals.lua:1448
+#: modules/module_reading_goals.lua:1463
 msgid "Not set"
 msgstr "未設定"
 
-#: screens/sui_stats_windows.lua:1211 screens/sui_stats_windows.lua:3885
+#: screens/sui_stats_windows.lua:1211 screens/sui_stats_windows.lua:3888
 msgid "Notes"
 msgstr "筆記"
 
-#: features/sui_backup.lua:986
+#: features/sui_backup.lua:983
 msgid "Nothing selected to import."
 msgstr "未選擇任何要匯入的內容。"
 
@@ -2695,27 +2819,27 @@ msgstr "未選擇任何要匯入的內容。"
 msgid "Nov"
 msgstr "11月"
 
-#: modules/module_clock.lua:64 screens/sui_stats_windows.lua:2817
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2817
 msgid "November"
 msgstr "11月"
 
-#: engines/sui_book_grid.lua:1807 engines/sui_book_grid.lua:1808
+#: engines/sui_book_grid.lua:1895 engines/sui_book_grid.lua:1896
 msgid "Number of Books"
 msgstr "圖書數量"
 
-#: screens/sui_menu.lua:2949
+#: screens/sui_menu.lua:3050
 msgid "Number of Books in Folder"
 msgstr "資料夾中的書籍數量"
 
-#: screens/sui_menu.lua:3023
+#: screens/sui_menu.lua:3124
 msgid "Number of Pages"
 msgstr "頁數"
 
-#: modules/module_clock.lua:407
+#: modules/module_clock.lua:401
 msgid "O'Clock"
 msgstr "點鐘"
 
-#: features/sui_quickactions.lua:2159
+#: features/sui_quickactions.lua:2158 infra/sui_compat_check.lua:207
 msgid "OK"
 msgstr "確定"
 
@@ -2723,26 +2847,26 @@ msgstr "確定"
 msgid "Oct"
 msgstr "10月"
 
-#: modules/module_clock.lua:64 screens/sui_stats_windows.lua:2817
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2817
 msgid "October"
 msgstr "10月"
 
-#: engines/sui_book_grid.lua:2025 engines/sui_book_grid.lua:2051
-#: modules/module_coverdeck.lua:1685 modules/module_currently.lua:2033
-#: screens/sui_menu.lua:1439 screens/sui_menu.lua:1649
-#: screens/sui_menu.lua:3269 screens/sui_menu.lua:3434
-#: screens/sui_menu.lua:4526
+#: engines/sui_book_grid.lua:2074 engines/sui_book_grid.lua:2100
+#: modules/module_coverdeck.lua:1720 modules/module_currently.lua:2051
+#: screens/sui_menu.lua:1508 screens/sui_menu.lua:1718
+#: screens/sui_menu.lua:3370 screens/sui_menu.lua:3535
+#: screens/sui_menu.lua:4637
 msgid "Off"
 msgstr "關閉"
 
-#: modules/module_clock.lua:352
+#: modules/module_clock.lua:346
 msgid "Oh"
 msgstr "零"
 
-#: engines/sui_book_grid.lua:2025 engines/sui_book_grid.lua:2051
-#: modules/module_coverdeck.lua:1685 modules/module_currently.lua:2033
-#: screens/sui_menu.lua:1439 screens/sui_menu.lua:1649
-#: screens/sui_menu.lua:4526
+#: engines/sui_book_grid.lua:2074 engines/sui_book_grid.lua:2100
+#: modules/module_coverdeck.lua:1720 modules/module_currently.lua:2051
+#: screens/sui_menu.lua:1508 screens/sui_menu.lua:1718
+#: screens/sui_menu.lua:4637
 msgid "On"
 msgstr "開啟"
 
@@ -2750,22 +2874,22 @@ msgstr "開啟"
 msgid "On side covers too"
 msgstr "兩側封面也顯示"
 
-#: modules/module_clock.lua:315
+#: modules/module_clock.lua:309
 msgid "One"
 msgstr "一"
 
-#: engines/sui_screen_engine.lua:791 features/library/sui_library_search.lua:69
+#: engines/sui_screen_engine.lua:795 features/library/sui_library_search.lua:69
 #: features/library/sui_library_search.lua:142
-#: features/sui_quickactions.lua:3478 modules/module_quote.lua:1299
+#: features/sui_quickactions.lua:3476 modules/module_quote.lua:1341
 #: screens/sui_stats_windows.lua:771
 msgid "Open"
 msgstr "開啟"
 
-#: modules/module_collections.lua:1105
+#: modules/module_collections.lua:1099
 msgid "Open Module Settings"
 msgstr "開啟模組設定"
 
-#: engines/sui_screen_engine.lua:450
+#: engines/sui_screen_engine.lua:454
 msgid "Open a book to get started"
 msgstr "開啟一本書即可開始"
 
@@ -2777,39 +2901,39 @@ msgstr "在瀏覽器中開啟"
 msgid "Open module settings"
 msgstr "開啟模組設定"
 
-#: engines/sui_screen_engine.lua:790 features/library/sui_library_search.lua:68
-#: features/sui_quickactions.lua:3477 modules/module_quote.lua:1298
+#: engines/sui_screen_engine.lua:794 features/library/sui_library_search.lua:68
+#: features/sui_quickactions.lua:3475 modules/module_quote.lua:1340
 #: screens/sui_stats_windows.lua:769
 msgid "Open this file?"
 msgstr "要開啟此檔案嗎？"
 
 #: features/library/sui_book_hold_dialog.lua:387
 msgid "Open with…"
-msgstr "開啟方式······"
+msgstr "開啟方式……"
 
-#: screens/sui_menu.lua:2668
+#: screens/sui_menu.lua:2782
 msgid "Overflow Warning"
 msgstr "溢出警告"
 
-#: screens/sui_menu.lua:2913
+#: screens/sui_menu.lua:3029
 msgid "Overlays"
 msgstr "重疊圖層"
 
-#: features/sui_presets.lua:879 features/sui_presets.lua:909
-#: features/sui_presets.lua:1041 screens/sui_menu.lua:4031
-#: screens/sui_menu.lua:4060 screens/sui_menu.lua:4189
+#: features/sui_presets.lua:888 features/sui_presets.lua:918
+#: features/sui_presets.lua:1050 screens/sui_menu.lua:4132
+#: screens/sui_menu.lua:4161 screens/sui_menu.lua:4290
 msgid "Overwrite"
 msgstr "覆蓋"
 
-#: features/sui_presets.lua:908 features/sui_presets.lua:1040
+#: features/sui_presets.lua:917 features/sui_presets.lua:1049
 msgid "Overwrite preset \"%s\" with the current homescreen settings?"
 msgstr "要以目前的主螢幕設定覆蓋預設檔「%s」嗎？"
 
-#: screens/sui_menu.lua:4059 screens/sui_menu.lua:4188
+#: screens/sui_menu.lua:4160 screens/sui_menu.lua:4289
 msgid "Overwrite preset \"%s\" with the current icon settings?"
 msgstr "要以目前的圖示設定覆蓋預設檔「%s」嗎？"
 
-#: screens/sui_menu.lua:3864
+#: screens/sui_menu.lua:3965
 msgid ""
 "Pack \"%s\" applied.\n"
 "%d icons replaced."
@@ -2817,7 +2941,7 @@ msgstr ""
 "已套用圖示包「%s」。\n"
 "已替換 %d 個圖示。"
 
-#: screens/sui_menu.lua:3782
+#: screens/sui_menu.lua:3883
 msgid ""
 "Pack \"%s\" installed.\n"
 "You can now apply it from the list."
@@ -2825,34 +2949,34 @@ msgstr ""
 "已安裝圖示包「%s」。\n"
 "您現在可以從清單中套用它。"
 
-#: features/sui_style.lua:2045
+#: features/sui_style.lua:2324
 msgid "Pack folder not accessible: "
 msgstr "無法存取圖示包資料夾："
 
-#: engines/sui_screen_engine.lua:2036 engines/sui_window.lua:1416
-#: infra/sui_patches.lua:2290 infra/sui_patches.lua:2887
+#: engines/sui_screen_engine.lua:2043 engines/sui_window.lua:1435
+#: infra/sui_patches.lua:2239 infra/sui_patches.lua:2835
 msgid "Page %1 of %2"
 msgstr "第 %1 頁，共 %2 頁"
 
-#: screens/sui_settings_window.lua:549 screens/sui_settings_window.lua:713
-#: screens/sui_settings_window.lua:1099
+#: screens/sui_settings_window.lua:575 screens/sui_settings_window.lua:739
+#: screens/sui_settings_window.lua:1125
 msgid "Page %d"
 msgstr "第 %d 頁"
 
-#: screens/sui_settings_window.lua:548 screens/sui_settings_window.lua:712
-#: screens/sui_settings_window.lua:1098
+#: screens/sui_settings_window.lua:574 screens/sui_settings_window.lua:738
+#: screens/sui_settings_window.lua:1124
 msgid "Page 1 (Home)"
 msgstr "第 1 頁（首頁）"
 
-#: screens/sui_stats_windows.lua:947 screens/sui_stats_windows.lua:3650
+#: screens/sui_stats_windows.lua:947 screens/sui_stats_windows.lua:3653
 msgid "Pages"
 msgstr "頁數"
 
-#: engines/sui_book_grid.lua:2007 engines/sui_book_grid.lua:2023
+#: engines/sui_book_grid.lua:2056 engines/sui_book_grid.lua:2072
 msgid "Pages Badge"
 msgstr "頁數徽章"
 
-#: engines/sui_book_grid.lua:2018
+#: engines/sui_book_grid.lua:2067
 msgid "Pages Badge Color"
 msgstr "頁數徽章顏色"
 
@@ -2864,9 +2988,13 @@ msgstr "每日頁數"
 msgid "Pages read"
 msgstr "已讀頁數"
 
-#: features/sui_style.lua:1294 screens/sui_menu.lua:2775
+#: features/sui_style.lua:1312 screens/sui_menu.lua:2891
 msgid "Pagination Bar"
 msgstr "分頁欄"
+
+#: screens/sui_menu.lua:2486
+msgid "Pagination Bar Opacity"
+msgstr "分頁欄不透明度"
 
 #: screens/sui_menu.lua:486
 msgid ""
@@ -2898,124 +3026,140 @@ msgstr ""
 "\n"
 "要立即重新啟動嗎？"
 
-#: features/sui_style.lua:142
+#: features/sui_style.lua:143
 msgid "Pagination: First Page"
 msgstr "分頁：第一頁"
 
-#: features/sui_style.lua:148
+#: features/sui_style.lua:149
 msgid "Pagination: Last Page"
 msgstr "分頁：最後一頁"
 
-#: features/sui_style.lua:136
+#: features/sui_style.lua:137
 msgid "Pagination: Next Page"
 msgstr "分頁：下一頁"
 
-#: features/sui_style.lua:130
+#: features/sui_style.lua:131
 msgid "Pagination: Previous Page"
 msgstr "分頁：上一頁"
 
-#: features/sui_quickactions.lua:2581
+#: features/sui_quickactions.lua:2580
 msgid "Path chooser not available."
 msgstr "路徑選擇器不可用。"
 
-#: features/sui_style.lua:2034
+#: features/sui_style.lua:2313
 msgid "Path does not exist: "
 msgstr "路徑不存在："
 
-#: modules/module_coverdeck.lua:143 modules/module_currently.lua:304
-#: modules/module_currently.lua:1634
+#: modules/module_reading_goals.lua:1304
+msgid "Percentage"
+msgstr "百分比"
+
+#: modules/module_coverdeck.lua:143 modules/module_currently.lua:318
+#: modules/module_currently.lua:1658
 msgid "Percentage read"
 msgstr "閱讀百分比"
 
-#: modules/module_reading_goals.lua:754
+#: modules/module_reading_goals.lua:784
 msgid "Physical Books — %s"
 msgstr "實體書 — %s"
 
-#: modules/module_reading_goals.lua:755
+#: modules/module_reading_goals.lua:785
 msgid "Physical books read this year:"
 msgstr "今年閱讀的實體書數量："
 
-#: modules/module_quote.lua:1489 modules/module_quote.lua:1538
+#: modules/module_quote.lua:1534 modules/module_quote.lua:1583
 msgid "Place .lua files in the plugin's sui_quotes/ folder"
 msgstr "請將 .lua 檔案放至外掛程式的 sui_quotes/ 資料夾"
 
-#: screens/sui_menu.lua:3850
+#: screens/sui_menu.lua:3951
 msgid "Place a folder or .zip in:"
 msgstr "請將資料夾或 .zip 放至："
 
-#: screens/sui_menu.lua:2289
+#: screens/sui_menu.lua:2420
 msgid "Place images in:"
 msgstr "請將圖片放至："
 
-#: screens/sui_onboarding.lua:174
+#: screens/sui_onboarding.lua:173
 msgid ""
 "Place your files in koreader/settings/simpleui/sui_wallpapers or sui_icons."
 msgstr ""
-"請將您的檔案放至 koreader/settings/simpleui/sui_wallpapers 或 sui_icons。"
+"請將您的檔案放至 koreader/settings/simpleui/sui_wallpapers 或 sui_icons 資料"
+"夾。"
 
-#: screens/sui_menu.lua:3532
+#: screens/sui_menu.lua:3633
 msgid "Placeholder Cover for Bookless Folders"
 msgstr "無書籍資料夾的預設佔位封面"
+
+#: infra/sui_compat_check.lua:235
+msgid ""
+"Please delete the Project: Title plugin from your plugins folder and restart "
+"KOReader."
+msgstr ""
+"請從你的外掛資料夾中刪除「Project: Title」外掛，然後重新啟動 KOReader。"
 
 #: screens/sui_stats_windows.lua:667
 msgid "Please enter a date in YYYY-MM-DD format."
 msgstr "請輸入 YYYY-MM-DD 格式的日期。"
 
-#: features/sui_presets.lua:861 screens/sui_menu.lua:4015
+#: features/sui_presets.lua:870 screens/sui_menu.lua:4116
 msgid "Please enter a name for the preset."
 msgstr "請輸入預設檔的名稱。"
 
-#: features/sui_quickactions.lua:2552
+#: infra/sui_compat_check.lua:196
+msgid "Please restart KOReader for the change to take effect."
+msgstr "請重新啟動 KOReader 以使變更生效。"
+
+#: features/sui_quickactions.lua:2551
 msgid "Please select an action."
 msgstr "請選擇一個動作。"
 
-#: features/sui_quickactions.lua:2646 features/sui_quickactions.lua:2765
+#: features/sui_quickactions.lua:2645 features/sui_quickactions.lua:2764
 msgid "Plugin"
 msgstr "外掛程式"
 
-#: features/sui_quickactions.lua:3156
+#: features/sui_quickactions.lua:3154
 msgid "Plugin error: %s"
 msgstr "外掛程式錯誤：%s"
 
-#: features/sui_quickactions.lua:3158
+#: features/sui_quickactions.lua:3156
 msgid "Plugin not available: %s"
 msgstr "外掛程式不可用：%s"
 
-#: screens/sui_menu.lua:2956 screens/sui_menu.lua:3360
+#: screens/sui_menu.lua:3057 screens/sui_menu.lua:3461
 msgid "Position"
 msgstr "位置"
 
-#: features/sui_quickactions.lua:970 infra/sui_config.lua:130
+#: features/sui_quickactions.lua:970 infra/sui_config.lua:131
 msgid "Power"
 msgstr "電源"
 
-#: screens/sui_menu.lua:2642
+#: screens/sui_menu.lua:2756
 msgid "Preserve Cover Proportions"
 msgstr "保持封面比例"
 
-#: screens/sui_menu.lua:2693
+#: screens/sui_menu.lua:2807
 msgid "Preserve Deleted Books in Statistics"
 msgstr "在統計數據中保留已刪除的書籍"
 
-#: features/sui_presets.lua:1093 screens/sui_menu.lua:4240
+#: features/sui_presets.lua:1102 screens/sui_menu.lua:4341
 msgid "Preset \"%s\" imported."
 msgstr "已匯入預設檔「%s」。"
 
-#: features/sui_presets.lua:744 features/sui_presets.lua:822
-#: screens/sui_menu.lua:3978
+#: features/sui_presets.lua:753 features/sui_presets.lua:831
+#: screens/sui_menu.lua:4079
 msgid "Preset \"%s\" not found."
 msgstr "未找到預設檔「%s」。"
 
-#: features/sui_presets.lua:872 screens/sui_menu.lua:4022
+#: features/sui_presets.lua:881 screens/sui_menu.lua:4123
 msgid "Preset \"%s\" saved."
 msgstr "已儲存預設檔「%s」。"
 
-#: features/sui_presets.lua:915 features/sui_presets.lua:1047
-#: screens/sui_menu.lua:4066 screens/sui_menu.lua:4195
+#: features/sui_presets.lua:924 features/sui_presets.lua:1056
+#: screens/sui_menu.lua:4167 screens/sui_menu.lua:4296
 msgid "Preset \"%s\" updated."
 msgstr "已更新預設檔「%s」。"
 
-#: features/sui_presets.lua:1120 screens/sui_menu.lua:4270
+#: features/sui_presets.lua:1129 screens/sui_menu.lua:4371
 msgid ""
 "Preset exported to:\n"
 "%s"
@@ -3023,109 +3167,122 @@ msgstr ""
 "預設檔已匯出至：\n"
 "%s"
 
-#: features/sui_presets.lua:847 screens/sui_menu.lua:4001
+#: features/sui_presets.lua:856 screens/sui_menu.lua:4102
 msgid "Preset name"
 msgstr "預設檔名稱"
 
-#: features/sui_presets.lua:403 features/sui_presets.lua:583
+#: features/sui_presets.lua:409 features/sui_presets.lua:592
 msgid "Preset not found"
 msgstr "未找到預設檔"
 
-#: screens/sui_menu.lua:2747 screens/sui_settings_window.lua:408
+#: screens/sui_menu.lua:2863 screens/sui_settings_window.lua:434
 msgid "Presets"
 msgstr "預設檔"
 
-#: screens/sui_settings_window.lua:909
+#: screens/sui_settings_window.lua:935
 msgid "Presets module unavailable."
 msgstr "預設檔模組不可用。"
 
-#: screens/sui_onboarding.lua:162
+#: screens/sui_onboarding.lua:161
 msgid ""
 "Press and hold any element on the screen (like modules or bars) to quickly "
 "customize its settings."
 msgstr "長按螢幕上的任何元素（如模組或功能欄）即可快速自訂其設定。"
 
-#: screens/sui_bottombar.lua:501
+#: screens/sui_bottombar.lua:588
 msgid "Prev"
 msgstr "上一頁"
 
-#: screens/sui_menu.lua:3131
+#: screens/sui_menu.lua:3232
 msgid "Progress"
 msgstr "進度"
 
-#: modules/module_coverdeck.lua:1650 modules/module_coverdeck.lua:1683
-#: modules/module_currently.lua:1987 modules/module_currently.lua:2031
+#: modules/module_coverdeck.lua:1650 modules/module_coverdeck.lua:1718
+#: modules/module_currently.lua:1997 modules/module_currently.lua:2049
 msgid "Progress Badge"
 msgstr "進度與徽章"
 
-#: engines/sui_book_grid.lua:1966 modules/module_coverdeck.lua:1670
-#: modules/module_currently.lua:1996
+#: engines/sui_book_grid.lua:2020 modules/module_coverdeck.lua:1670
+#: modules/module_currently.lua:2006
 msgid "Progress Badge Color"
 msgstr "進度徽章顏色"
 
-#: screens/sui_menu.lua:4353
+#: screens/sui_menu.lua:4466
 msgid "Progress Bar Type"
 msgstr "進度條類型"
 
-#: engines/sui_book_grid.lua:1971
+#: engines/sui_book_grid.lua:2025
 msgid "Progress Indicator"
 msgstr "進度指示器"
 
-#: engines/sui_book_grid.lua:1958
+#: engines/sui_book_grid.lua:2012
 msgid "Progress Style"
 msgstr "進度樣式"
 
-#: engines/sui_book_grid.lua:2091
+#: engines/sui_book_grid.lua:2176 modules/module_currently.lua:1987
+msgid "Progress Text"
+msgstr "進度文字"
+
+#: infra/sui_config.lua:1118
 msgid "Progress and Badges"
 msgstr "進度與徽章"
 
-#: modules/module_currently.lua:2010
+#: modules/module_currently.lua:2028
 msgid "Progress and Stats"
 msgstr "進度與統計"
 
-#: modules/module_coverdeck.lua:157 modules/module_currently.lua:303
+#: modules/module_coverdeck.lua:157 modules/module_currently.lua:317
 msgid "Progress bar"
 msgstr "進度條"
 
-#: modules/module_currently.lua:2013
+#: modules/module_currently.lua:2031
 msgid "Progress bar style"
 msgstr "進度條樣式"
 
-#: features/sui_backup.lua:124 features/sui_quickactions.lua:1586
-#: features/sui_quickactions.lua:3421 modules/module_action_list.lua:344
-#: modules/module_action_list.lua:349 modules/module_action_list.lua:375
-#: modules/module_quick_actions.lua:396 modules/module_quick_actions.lua:401
-#: modules/module_quick_actions.lua:427 modules/module_quick_actions.lua:538
-#: screens/sui_menu.lua:2175 screens/sui_menu.lua:4581
-#: screens/sui_quicksettings_bar.lua:1130
-#: screens/sui_quicksettings_bar.lua:1135
-#: screens/sui_quicksettings_bar.lua:1156 screens/sui_settings_window.lua:351
+#: infra/sui_compat_check.lua:234
+msgid "Project: Title is not compatible with Simple UI."
+msgstr "Project: Title 與 SimpleUI 不相容。"
+
+#: infra/sui_config.lua:1101
+msgid "Proportions"
+msgstr "比例"
+
+#: features/sui_backup.lua:125 features/sui_quickactions.lua:1585
+#: features/sui_quickactions.lua:3419 modules/module_action_list.lua:368
+#: modules/module_action_list.lua:373 modules/module_action_list.lua:399
+#: modules/module_quick_actions.lua:436 modules/module_quick_actions.lua:441
+#: modules/module_quick_actions.lua:467 modules/module_quick_actions.lua:576
+#: screens/sui_menu.lua:2274 screens/sui_menu.lua:4690
+#: screens/sui_quicksettings_bar.lua:1144
+#: screens/sui_quicksettings_bar.lua:1149
+#: screens/sui_quicksettings_bar.lua:1170
+#: screens/sui_quicksettings_bar.lua:1360 screens/sui_settings_window.lua:373
 msgid "Quick Actions"
 msgstr "快速動作"
 
-#: screens/sui_menu.lua:4585
+#: screens/sui_menu.lua:4694
 msgid "Quick Actions  (%d/%d — %d left)"
 msgstr "快速動作（%d/%d — 剩餘 %d 個）"
 
-#: screens/sui_menu.lua:4583
+#: screens/sui_menu.lua:4692
 msgid "Quick Actions  (%d/%d — at limit)"
 msgstr "快速動作（%d/%d — 已達上限）"
 
-#: features/sui_quickactions.lua:1568 features/sui_quickactions.lua:1970
-#: screens/sui_menu.lua:3688
+#: features/sui_quickactions.lua:1567 features/sui_quickactions.lua:1969
+#: screens/sui_menu.lua:3789
 msgid "Quick Actions Icons"
 msgstr "快速動作圖示"
 
-#: modules/module_quick_actions.lua:252 modules/module_quick_actions.lua:308
-#: modules/module_quick_actions.lua:692 screens/sui_menu.lua:1925
+#: modules/module_quick_actions.lua:291 modules/module_quick_actions.lua:348
+#: modules/module_quick_actions.lua:735 screens/sui_menu.lua:2024
 msgid "Quick Actions Row"
 msgstr "快速動作行"
 
-#: screens/sui_menu.lua:2777 screens/sui_quicksettings_bar.lua:979
+#: screens/sui_menu.lua:2893 screens/sui_quicksettings_bar.lua:993
 msgid "Quick Settings Bar"
 msgstr "快速設定欄"
 
-#: screens/sui_onboarding.lua:236 screens/sui_onboarding.lua:237
+#: screens/sui_onboarding.lua:235 screens/sui_onboarding.lua:236
 msgid "Quick Tips"
 msgstr "快速提示"
 
@@ -3135,38 +3292,42 @@ msgstr "結束"
 
 #: features/sui_quickactions.lua:623
 msgid "Quitting…"
-msgstr "正在結束…"
+msgstr "正在結束……"
 
-#: features/sui_presets.lua:150 features/sui_presets.lua:215
-#: modules/module_quote.lua:1117
+#: modules/module_quote.lua:1626 modules/module_quote.lua:1647
+msgid "Quote"
+msgstr "引文"
+
+#: features/sui_presets.lua:155 features/sui_presets.lua:219
+#: modules/module_quote.lua:1172
 msgid "Quote of the Day"
 msgstr "每日佳句"
 
-#: features/sui_backup.lua:141
+#: features/sui_backup.lua:142
 msgid "Quote pool files from sui_quotes/"
 msgstr "sui_quotes 中的名言庫檔案"
 
-#: modules/module_quote.lua:1429
+#: modules/module_quote.lua:1474
 msgid "Quotes + My Highlights"
-msgstr "佳句 + 我的劃線"
+msgstr "佳句 + 我的標註"
 
-#: infra/sui_config.lua:172
+#: infra/sui_config.lua:197
 msgid "RAM Usage"
 msgstr "記憶體使用量"
 
-#: features/sui_quickactions.lua:802 infra/sui_config.lua:122
-#: modules/module_library.lua:218
+#: features/sui_quickactions.lua:802 infra/sui_config.lua:123
+#: modules/module_library.lua:215
 msgid "Random"
 msgstr "隨機"
 
-#: features/sui_presets.lua:170 features/sui_presets.lua:216
-#: modules/module_reading_goals.lua:872 modules/module_reading_goals.lua:873
-#: modules/module_reading_goals.lua:899 modules/module_reading_goals.lua:1585
+#: features/sui_presets.lua:175 features/sui_presets.lua:220
+#: modules/module_reading_goals.lua:902 modules/module_reading_goals.lua:903
+#: modules/module_reading_goals.lua:930 modules/module_reading_goals.lua:1607
 msgid "Reading Goals"
 msgstr "閱讀目標"
 
-#: modules/module_heatmap.lua:206 modules/module_heatmap.lua:207
-#: modules/module_heatmap.lua:226 modules/module_heatmap.lua:354
+#: modules/module_heatmap.lua:209 modules/module_heatmap.lua:210
+#: modules/module_heatmap.lua:229 modules/module_heatmap.lua:360
 #: screens/sui_heatmap_popup.lua:193
 msgid "Reading Heatmap"
 msgstr "閱讀熱力圖"
@@ -3175,16 +3336,16 @@ msgstr "閱讀熱力圖"
 msgid "Reading Insights"
 msgstr "閱讀洞察"
 
-#: features/sui_presets.lua:170 features/sui_presets.lua:216
-#: modules/module_reading_stats.lua:360
+#: features/sui_presets.lua:175 features/sui_presets.lua:220
+#: modules/module_reading_stats.lua:407
 msgid "Reading Stats"
 msgstr "閱讀統計"
 
-#: features/sui_backup.lua:130
+#: features/sui_backup.lua:131
 msgid "Reading goals, streak mode and freeze bank"
 msgstr "閱讀目標、連續模式與凍結額度"
 
-#: modules/module_reading_stats.lua:904 modules/module_reading_stats.lua:918
+#: modules/module_reading_stats.lua:962 modules/module_reading_stats.lua:976
 msgid "Real streak only"
 msgstr "僅真實連續"
 
@@ -3192,47 +3353,51 @@ msgstr "僅真實連續"
 msgid "Reboot"
 msgstr "重新啟動"
 
-#: features/sui_quickactions.lua:775 features/sui_quickactions.lua:3584
-#: infra/sui_config.lua:120
+#: features/sui_quickactions.lua:775 features/sui_quickactions.lua:3582
+#: infra/sui_config.lua:121
 msgid "Recent"
 msgstr "近期"
 
-#: features/sui_presets.lua:138 features/sui_presets.lua:188
-#: modules/module_coverdeck.lua:1368 modules/module_recent.lua:15
+#: features/sui_presets.lua:143 features/sui_presets.lua:193
+#: modules/module_coverdeck.lua:1378 modules/module_recent.lua:15
 #: modules/module_recent.lua:16
 msgid "Recent Books"
 msgstr "近期書籍"
 
-#: modules/module_tbr.lua:589
+#: features/sui_style.lua:2094
+msgid "Regular"
+msgstr "標準體"
+
+#: modules/module_tbr.lua:533
 msgid "Remove from To Be Read"
 msgstr "從待讀清單中移除"
 
-#: modules/module_tbr.lua:526
+#: modules/module_tbr.lua:470
 msgid "Remove from list when finished"
 msgstr "完成後從清單中移除"
 
-#: engines/sui_window.lua:1938 engines/sui_window.lua:2859
-#: features/sui_presets.lua:921 features/sui_presets.lua:928
-#: features/sui_presets.lua:1014 screens/sui_menu.lua:4072
-#: screens/sui_menu.lua:4079 screens/sui_menu.lua:4164
+#: engines/sui_window.lua:1957 engines/sui_window.lua:2878
+#: features/sui_presets.lua:930 features/sui_presets.lua:937
+#: features/sui_presets.lua:1023 screens/sui_menu.lua:4173
+#: screens/sui_menu.lua:4180 screens/sui_menu.lua:4265
 msgid "Rename"
 msgstr "重新命名"
 
-#: features/sui_presets.lua:924 features/sui_presets.lua:1010
-#: screens/sui_menu.lua:4075 screens/sui_menu.lua:4160
+#: features/sui_presets.lua:933 features/sui_presets.lua:1019
+#: screens/sui_menu.lua:4176 screens/sui_menu.lua:4261
 msgid "Rename \"%s\""
 msgstr "重新命名「%s」"
 
-#: screens/sui_settings_window.lua:478
+#: screens/sui_settings_window.lua:504
 msgid "Rename screen"
 msgstr "重新命名螢幕"
 
-#: screens/sui_menu.lua:2619
+#: screens/sui_menu.lua:2733
 msgid ""
 "Replaces the \"Closing book…\" notice above with the cover for that close, "
 "when a cover is available."
 msgstr ""
-"關閉書籍時，若有封面可用，則以該書的封面取代上述「正在關閉書籍······」提示。"
+"關閉書籍時，若有封面可用，則以該書的封面取代上述「正在關閉書籍……」提示。"
 
 #: screens/sui_menu.lua:472
 msgid ""
@@ -3245,78 +3410,79 @@ msgstr ""
 "當沒有上一頁或下一頁時，箭頭會變暗。\n"
 "啟用導航分頁器時，可組態的標籤最少 1 個，最多 4 個。"
 
-#: features/sui_quickactions.lua:1978 features/sui_style.lua:1310
-#: screens/sui_menu.lua:2530 screens/sui_stats_windows.lua:653
+#: features/sui_quickactions.lua:1977 features/sui_style.lua:1328
+#: screens/sui_menu.lua:2654 screens/sui_stats_windows.lua:653
 msgid "Reset"
 msgstr "重設"
 
-#: features/sui_quickactions.lua:1972 features/sui_style.lua:1304
+#: features/sui_quickactions.lua:1971 features/sui_style.lua:1322
 msgid "Reset All"
 msgstr "全部重設"
 
-#: features/sui_quickactions.lua:2830
+#: features/sui_quickactions.lua:2829
 msgid "Reset All Quick Action Icons"
 msgstr "重設所有快速動作圖示"
 
-#: features/sui_style.lua:1076
+#: features/sui_style.lua:1094
 msgid "Reset All System Icons"
 msgstr "重設所有系統圖示"
 
-#: features/sui_quickactions.lua:1977
+#: features/sui_quickactions.lua:1976
 msgid "Reset all Quick Actions icons to default?"
 msgstr "要將所有快速動作圖示重設為預設值嗎？"
 
-#: screens/sui_menu.lua:2529
+#: screens/sui_menu.lua:2653
 msgid "Reset all scales to default (100%)? This cannot be undone."
 msgstr "要將所有縮放比例重設為預設值（100%）嗎？此操作無法復原。"
 
-#: features/sui_style.lua:1309
+#: features/sui_style.lua:1327
 msgid "Reset all system icons to default?"
 msgstr "要將所有系統圖示重設為預設值嗎？"
 
-#: screens/sui_menu.lua:2524
+#: screens/sui_menu.lua:2648
 msgid "Reset to Default Scale"
 msgstr "重設為預設縮放比例"
 
 #: features/sui_quickactions.lua:600 infra/sui_updater.lua:448
-#: screens/sui_menu.lua:444 screens/sui_menu.lua:847 screens/sui_menu.lua:1057
-#: screens/sui_menu.lua:1119 screens/sui_menu.lua:1334
-#: screens/sui_menu.lua:1793 screens/sui_menu.lua:3448
-#: screens/sui_menu.lua:3471 screens/sui_menu.lua:3493
-#: screens/sui_menu.lua:4341 screens/sui_menu.lua:4544
-#: screens/sui_quicksettings_bar.lua:1120
+#: screens/sui_menu.lua:444 screens/sui_menu.lua:848 screens/sui_menu.lua:1058
+#: screens/sui_menu.lua:1151 screens/sui_menu.lua:1366
+#: screens/sui_menu.lua:1863 screens/sui_menu.lua:3549
+#: screens/sui_menu.lua:3572 screens/sui_menu.lua:3594
+#: screens/sui_menu.lua:4454 screens/sui_menu.lua:4653
+#: screens/sui_quicksettings_bar.lua:1134
 msgid "Restart"
 msgstr "重新啟動"
 
-#: features/sui_backup.lua:1008
+#: features/sui_backup.lua:1005 infra/sui_compat_check.lua:197
+#: infra/sui_compat_check.lua:310
 msgid "Restart now"
 msgstr "立即重啟"
 
-#: features/sui_style.lua:1796 features/sui_style.lua:1840
+#: features/sui_style.lua:1919 features/sui_style.lua:1959
 msgid "Restart to fully apply the UI font change."
 msgstr "重新啟動以完全套用介面字型變更。"
 
 #: features/sui_quickactions.lua:602
 msgid "Restarting…"
-msgstr "正在重啟…"
+msgstr "正在重啟……"
 
-#: features/sui_backup.lua:994
+#: features/sui_backup.lua:991
 msgid "Restore"
 msgstr "恢復"
 
-#: features/sui_backup.lua:1162
+#: features/sui_backup.lua:1159
 msgid "Restore Selected…"
-msgstr "恢復所選…"
+msgstr "恢復所選……"
 
-#: features/sui_backup.lua:999
+#: features/sui_backup.lua:996
 msgid "Restore failed."
 msgstr "恢復失敗。"
 
-#: features/sui_backup.lua:857
+#: features/sui_backup.lua:854
 msgid "Restore failed. Your previous configuration was kept unchanged."
 msgstr "恢復失敗。您之前的配置保持不變。"
 
-#: features/sui_backup.lua:993
+#: features/sui_backup.lua:990
 msgid ""
 "Restore this backup? Existing settings for these categories will be "
 "replaced. Saved presets are merged — yours are kept."
@@ -3324,54 +3490,50 @@ msgstr ""
 "是否恢復此備份？這些分類的現有設定將被替換。已儲存的預設將合併，您原有的預設"
 "會予以保留。"
 
-#: screens/sui_menu.lua:2544
-msgid "Return to Book Folder"
-msgstr "返回書籍資料夾"
-
-#: screens/sui_menu.lua:2435
+#: screens/sui_menu.lua:2559
 msgid "Return to Home Screen on Wakeup"
 msgstr "喚醒時返回主螢幕"
 
-#: engines/sui_book_grid.lua:2060 screens/sui_menu.lua:3202
-#: screens/sui_menu.lua:3211 screens/sui_menu.lua:3223
+#: engines/sui_book_grid.lua:2109 screens/sui_menu.lua:3303
+#: screens/sui_menu.lua:3312 screens/sui_menu.lua:3324
 msgid "Ribbon"
 msgstr "絲帶"
 
-#: modules/module_action_list.lua:67 modules/module_action_list.lua:476
-#: modules/module_clock.lua:167 modules/module_clock.lua:1212
-#: modules/module_quick_actions.lua:668 modules/module_quote.lua:126
-#: modules/module_quote.lua:1570 modules/module_reading_goals.lua:120
-#: modules/module_reading_goals.lua:1578 modules/module_reading_stats.lua:92
-#: modules/module_reading_stats.lua:870 screens/sui_menu.lua:716
-#: screens/sui_menu.lua:945 screens/sui_menu.lua:1490 screens/sui_menu.lua:1688
+#: modules/module_action_list.lua:67 modules/module_action_list.lua:492
+#: modules/module_clock.lua:161 modules/module_clock.lua:1239
+#: modules/module_quick_actions.lua:705 modules/module_quote.lua:123
+#: modules/module_quote.lua:1615 modules/module_reading_goals.lua:142
+#: modules/module_reading_goals.lua:1600 modules/module_reading_stats.lua:112
+#: modules/module_reading_stats.lua:928 screens/sui_menu.lua:716
+#: screens/sui_menu.lua:946 screens/sui_menu.lua:1559 screens/sui_menu.lua:1757
 msgid "Right"
 msgstr "靠右"
 
-#: modules/module_reading_goals.lua:1564
+#: modules/module_reading_goals.lua:1586
 msgid "Ring Alignment"
 msgstr "環對齊方式"
 
-#: modules/module_reading_goals.lua:1538
+#: modules/module_reading_goals.lua:1560
 msgid "Ring Style"
 msgstr "環樣式"
 
-#: modules/module_reading_goals.lua:1527
+#: modules/module_reading_goals.lua:1549
 msgid "Rings"
 msgstr "圓環"
 
-#: modules/module_quick_actions.lua:577 screens/sui_quicksettings_bar.lua:1250
+#: modules/module_quick_actions.lua:615 screens/sui_quicksettings_bar.lua:1270
 msgid "Round"
 msgstr "圓形"
 
-#: engines/sui_book_grid.lua:1944
+#: engines/sui_book_grid.lua:1998
 msgid "Round Overlay"
 msgstr "圓形疊加層"
 
-#: modules/module_quick_actions.lua:587 screens/sui_quicksettings_bar.lua:1260
+#: modules/module_quick_actions.lua:625 screens/sui_quicksettings_bar.lua:1280
 msgid "Rounded Square"
 msgstr "圓角矩形"
 
-#: engines/sui_book_grid.lua:1844
+#: engines/sui_book_grid.lua:1932
 msgid "Rows"
 msgstr "行"
 
@@ -3379,83 +3541,52 @@ msgstr "行"
 msgid "Sat"
 msgstr "週六"
 
-#: modules/module_clock.lua:59
+#: modules/module_clock.lua:55
 msgid "Saturday"
 msgstr "星期六"
 
-#: features/sui_presets.lua:855 features/sui_quickactions.lua:2549
-#: modules/module_reading_goals.lua:731 screens/sui_menu.lua:4009
-#: screens/sui_settings_window.lua:488 screens/sui_stats_windows.lua:662
+#: features/sui_presets.lua:864 features/sui_quickactions.lua:2548
+#: modules/module_reading_goals.lua:761 screens/sui_menu.lua:4110
+#: screens/sui_settings_window.lua:514 screens/sui_stats_windows.lua:662
 msgid "Save"
 msgstr "儲存"
 
-#: features/sui_presets.lua:840 screens/sui_menu.lua:3994
+#: features/sui_presets.lua:849 screens/sui_menu.lua:4095
 msgid "Save as new preset"
 msgstr "儲存為新預設檔"
 
-#: features/sui_backup.lua:1089
+#: features/sui_backup.lua:1086
 msgid "Save backup as"
 msgstr "備份另存為"
 
-#: screens/sui_menu.lua:3999
+#: screens/sui_menu.lua:4100
 msgid "Save icon preset"
 msgstr "儲存圖示預設檔"
 
-#: features/sui_presets.lua:845
+#: features/sui_presets.lua:854
 msgid "Save preset"
 msgstr "儲存預設檔"
 
-#: engines/sui_book_grid.lua:1772 engines/sui_book_grid.lua:1774
-#: modules/module_action_list.lua:431 modules/module_action_list.lua:433
-#: modules/module_clock.lua:1004 modules/module_clock.lua:1006
-#: modules/module_coverdeck.lua:1277 modules/module_coverdeck.lua:1279
-#: modules/module_currently.lua:1445 modules/module_currently.lua:1447
-#: modules/module_heatmap.lua:309 modules/module_heatmap.lua:311
-#: modules/module_quick_actions.lua:544 modules/module_quick_actions.lua:546
-#: modules/module_quote.lua:1349 modules/module_quote.lua:1353
-#: modules/module_reading_goals.lua:1250 modules/module_reading_goals.lua:1252
-#: modules/module_reading_stats.lua:655 modules/module_reading_stats.lua:657
-#: screens/sui_menu.lua:2447
+#: engines/sui_book_grid.lua:1868 engines/sui_book_grid.lua:1870
+#: modules/module_action_list.lua:455 modules/module_action_list.lua:457
+#: modules/module_clock.lua:1053 modules/module_clock.lua:1055
+#: modules/module_coverdeck.lua:1295 modules/module_coverdeck.lua:1297
+#: modules/module_currently.lua:1481 modules/module_currently.lua:1483
+#: modules/module_heatmap.lua:315 modules/module_heatmap.lua:317
+#: modules/module_quick_actions.lua:585 modules/module_quick_actions.lua:587
+#: modules/module_quote.lua:1394 modules/module_quote.lua:1398
+#: modules/module_quote.lua:1660 modules/module_reading_goals.lua:1285
+#: modules/module_reading_goals.lua:1287 modules/module_reading_stats.lua:717
+#: modules/module_reading_stats.lua:719 modules/module_reading_stats.lua:1028
+#: screens/sui_menu.lua:2571
 msgid "Scale"
 msgstr "縮放比例"
 
-#: modules/module_currently.lua:1474
-msgid ""
-"Scale for all text elements (title, author, progress, time).\n"
-"100% is the default size."
-msgstr ""
-"所有文字元素（標題、作者、進度、時間）的縮放比例。\n"
-"預設大小為 100%。"
-
-#: modules/module_clock.lua:1034
-msgid ""
-"Scale for the battery text only.\n"
-"100% is the default size."
-msgstr ""
-"僅電池文字的比例。\n"
-"預設大小為 100%。"
-
-#: modules/module_quick_actions.lua:561
-msgid ""
-"Scale for the button label text.\n"
-"100% is the default size."
-msgstr ""
-"按鈕標籤文字的縮放比例。\n"
-"預設大小為 100%。"
-
-#: modules/module_clock.lua:1016
-msgid ""
-"Scale for the clock face only.\n"
-"100% is the default size."
-msgstr ""
-"僅時鐘表盤的比例。\n"
-"預設大小為 100%。"
-
-#: modules/module_collections.lua:1426
+#: modules/module_collections.lua:1418
 msgid "Scale for the collection count badge."
 msgstr "收藏計數徽章的縮放。"
 
-#: modules/module_currently.lua:1461
+#: modules/module_currently.lua:1497
 msgid ""
 "Scale for the cover thumbnail only.\n"
 "100% is the default size.\n"
@@ -3467,7 +3598,7 @@ msgstr ""
 "啟用「動態封面大小」後，此設定將相對於其目前動態大小縮放封面，且封面永遠不會"
 "小於其 100% 大小。"
 
-#: modules/module_coverdeck.lua:1288
+#: modules/module_coverdeck.lua:1306
 msgid ""
 "Scale for the cover thumbnails only.\n"
 "100% is the default size."
@@ -3475,7 +3606,7 @@ msgstr ""
 "僅適用於封面縮圖的縮放比例。\n"
 "預設大小為 100%。"
 
-#: engines/sui_book_grid.lua:1792
+#: engines/sui_book_grid.lua:1880
 msgid ""
 "Scale for the cover thumbnails only.\n"
 "Text and progress bar follow the module scale.\n"
@@ -3485,15 +3616,7 @@ msgstr ""
 "文字與進度條跟隨模組縮放。\n"
 "預設大小為 100%。"
 
-#: modules/module_clock.lua:1025
-msgid ""
-"Scale for the date text only.\n"
-"100% is the default size."
-msgstr ""
-"僅日期文字的比例。\n"
-"預設大小為 100%。"
-
-#: screens/sui_menu.lua:3421
+#: screens/sui_menu.lua:3522
 msgid ""
 "Scale for the folder name overlay text.\n"
 "100% is the default size."
@@ -3501,7 +3624,7 @@ msgstr ""
 "資料夾名稱重疊文字的縮放比例。\n"
 "預設大小為 100%。"
 
-#: modules/module_action_list.lua:442 screens/sui_quicksettings_bar.lua:1229
+#: screens/sui_quicksettings_bar.lua:1243
 msgid ""
 "Scale for the label text.\n"
 "100% is the default size."
@@ -3509,7 +3632,7 @@ msgstr ""
 "標籤文字的縮放比例。\n"
 "預設大小為 100%。"
 
-#: screens/sui_menu.lua:2930
+#: screens/sui_menu.lua:3039
 msgid ""
 "Scale for the library badges (progress, pages, etc.).\n"
 "100% is the default size."
@@ -3517,35 +3640,23 @@ msgstr ""
 "書庫標記（進度、頁數等）的縮放比例。\n"
 "預設大小為 100%。"
 
-#: engines/sui_book_grid.lua:1783
-msgid ""
-"Scale for the percentage read text.\n"
-"100% is the default size."
+#: modules/module_coverdeck.lua:1682 modules/module_currently.lua:2018
+msgid "Scale for the progress badge."
 msgstr ""
-"閱讀百分比文字的縮放比例。\n"
-"預設大小為 100%。"
 
-#: modules/module_reading_goals.lua:1268
-msgid ""
-"Scale for the text inside the rings.\n"
-"100% is the default size."
-msgstr ""
-"環內文字的比例。\n"
-"預設大小為 100%。"
-
-#: engines/sui_book_grid.lua:1995
+#: engines/sui_book_grid.lua:2047
 msgid ""
 "Scale for this module's corner badges (progress, pages, series, new book)."
 msgstr "此模組角落徽章（進度、頁數、系列、新書）的縮放。"
 
-#: modules/module_coverdeck.lua:1280
+#: modules/module_coverdeck.lua:1298
 msgid "Scale for this module."
 msgstr "此模組的縮放比例。"
 
-#: engines/sui_book_grid.lua:1775 modules/module_action_list.lua:434
-#: modules/module_clock.lua:1007 modules/module_currently.lua:1448
-#: modules/module_quick_actions.lua:547 modules/module_quote.lua:1355
-#: modules/module_reading_goals.lua:1253 modules/module_reading_stats.lua:658
+#: engines/sui_book_grid.lua:1871 modules/module_action_list.lua:458
+#: modules/module_clock.lua:1056 modules/module_currently.lua:1484
+#: modules/module_quick_actions.lua:588 modules/module_quote.lua:1400
+#: modules/module_reading_goals.lua:1288 modules/module_reading_stats.lua:720
 msgid ""
 "Scale for this module.\n"
 "100% is the default size."
@@ -3553,7 +3664,7 @@ msgstr ""
 "此模組的縮放比例。\n"
 "預設大小為 100%。"
 
-#: modules/module_heatmap.lua:312
+#: modules/module_heatmap.lua:318
 msgid ""
 "Scale for this module.\n"
 "100% is the default size. Capped at 100% here: the grid always has as many "
@@ -3565,15 +3676,7 @@ msgstr ""
 "預設大小為 100%。此處上限為 100%：網格的列數始終與「顯示週數」一致（在時間段"
 "檢視中則固定為 24 列），格子一旦放大到超出其自適應大小，網格就會溢位卡片。"
 
-#: modules/module_coverdeck.lua:1296
-msgid ""
-"Scale for title and statistics text.\n"
-"100% is the default size."
-msgstr ""
-"標題與統計文字的縮放比例。\n"
-"預設大小為 100%。"
-
-#: screens/sui_menu.lua:2471
+#: screens/sui_menu.lua:2595
 msgid ""
 "Scales all modules and labels together.\n"
 "100% is the default size."
@@ -3581,7 +3684,7 @@ msgstr ""
 "同時縮放所有模組與標籤。\n"
 "預設大小為 100%。"
 
-#: screens/sui_menu.lua:2504
+#: screens/sui_menu.lua:2628
 msgid ""
 "Scales the section label text above each module.\n"
 "100% is the default size."
@@ -3589,21 +3692,27 @@ msgstr ""
 "縮放各模組上方的區塊標籤文字。\n"
 "預設大小為 100%。"
 
-#: screens/sui_menu.lua:3545
+#: screens/sui_menu.lua:3646
 msgid "Scan Subfolders for Covers"
 msgstr "掃描子資料夾以獲取封面"
 
-#: screens/sui_settings_window.lua:480 screens/sui_settings_window.lua:1167
+#: screens/sui_settings_window.lua:506 screens/sui_settings_window.lua:1193
 msgid "Screen name"
 msgstr "螢幕名稱"
 
+#: screens/sui_menu.lua:2542
+msgid ""
+"Screen shown after closing a book. Gestures and quick actions that name a "
+"destination always open that destination."
+msgstr ""
+
 #: features/library/sui_library_search.lua:208
-#: features/sui_quickactions.lua:887 infra/sui_config.lua:125
+#: features/sui_quickactions.lua:887 infra/sui_config.lua:126
 #: screens/sui_titlebar.lua:104
 msgid "Search"
 msgstr "搜尋"
 
-#: features/sui_style.lua:87
+#: features/sui_style.lua:88
 msgid "Search Button"
 msgstr "搜尋按鈕"
 
@@ -3619,20 +3728,20 @@ msgstr "書庫搜尋"
 msgid "Search results: %1"
 msgstr "搜尋結果：%1"
 
-#: engines/sui_window.lua:1927 engines/sui_window.lua:2844
+#: engines/sui_window.lua:1946 engines/sui_window.lua:2863
 msgid "Select"
 msgstr "選取"
 
-#: features/sui_presets.lua:751 features/sui_presets.lua:759
-#: features/sui_presets.lua:764 screens/sui_menu.lua:3985
+#: features/sui_presets.lua:760 features/sui_presets.lua:768
+#: features/sui_presets.lua:773 screens/sui_menu.lua:4086
 msgid "Select Preset"
 msgstr "選擇預設檔"
 
-#: screens/sui_menu.lua:2250
+#: screens/sui_menu.lua:2439
 msgid "Select Wallpaper"
 msgstr "選擇桌布"
 
-#: modules/module_collections.lua:1192
+#: modules/module_collections.lua:1186
 msgid "Select at least 2 collections to arrange."
 msgstr "請至少選擇 2 個收藏以進行排序。"
 
@@ -3640,73 +3749,75 @@ msgstr "請至少選擇 2 個收藏以進行排序。"
 msgid "Sep"
 msgstr "9月"
 
-#: modules/module_clock.lua:64 screens/sui_stats_windows.lua:2817
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2817
 msgid "September"
 msgstr "9月"
 
 #: features/library/sui_library_browse.lua:59
-#: features/sui_quickactions.lua:1022 infra/sui_config.lua:134
-#: modules/module_currently.lua:301
+#: features/sui_quickactions.lua:1022 infra/sui_config.lua:135
+#: modules/module_currently.lua:315 modules/module_currently.lua:1985
 msgid "Series"
 msgstr "系列"
 
-#: engines/sui_book_grid.lua:2033 engines/sui_book_grid.lua:2049
+#: engines/sui_book_grid.lua:2082 engines/sui_book_grid.lua:2098
 msgid "Series Badge"
 msgstr "系列徽章"
 
-#: engines/sui_book_grid.lua:2044
+#: engines/sui_book_grid.lua:2093
 msgid "Series Badge Color"
 msgstr "系列徽章顏色"
 
-#: screens/sui_menu.lua:3077
+#: screens/sui_menu.lua:3178
 msgid "Series Index"
 msgstr "系列索引"
 
-#: screens/sui_menu.lua:655 screens/sui_menu.lua:912
+#: screens/sui_menu.lua:655 screens/sui_menu.lua:913
 msgid "Set"
 msgstr "設定"
 
-#: modules/module_reading_goals.lua:1416 modules/module_reading_goals.lua:1431
-#: modules/module_reading_goals.lua:1446
+#: modules/module_reading_goals.lua:1439 modules/module_reading_goals.lua:1454
+#: modules/module_reading_goals.lua:1469
 msgid "Set Goal"
 msgstr "設定目標"
 
-#: modules/module_collections.lua:1097
+#: modules/module_collections.lua:1091
 msgid "Set collection cover"
 msgstr "設定收藏封面"
 
-#: features/library/sui_foldercovers.lua:684
-#: features/library/sui_library_browse.lua:811
-#: features/library/sui_series_grouping.lua:357
+#: features/library/sui_foldercovers.lua:668
+#: features/library/sui_library_browse.lua:786
+#: features/library/sui_series_grouping.lua:362
 msgid "Set folder cover"
 msgstr "設定資料夾封面"
 
-#: screens/sui_onboarding.lua:169
+#: screens/sui_onboarding.lua:168
 msgid "Set your reading goal"
 msgstr "設定您的閱讀目標"
 
-#: features/sui_quickactions.lua:980 infra/sui_config.lua:131
+#: features/sui_quickactions.lua:980 infra/sui_config.lua:132
 msgid "Settings"
 msgstr "設定"
 
-#: screens/sui_settings_window.lua:299 screens/sui_settings_window.lua:304
+#: screens/sui_settings_window.lua:321 screens/sui_settings_window.lua:326
 msgid "Settings not found."
 msgstr "未找到設定。"
 
-#: screens/sui_menu.lua:1088 screens/sui_menu.lua:1390
-#: screens/sui_menu.lua:2680 screens/sui_quicksettings_bar.lua:1320
+#: screens/sui_menu.lua:1089 screens/sui_menu.lua:1116
+#: screens/sui_menu.lua:1427 screens/sui_menu.lua:2794
+#: screens/sui_quicksettings_bar.lua:1340
+#: screens/sui_quicksettings_bar.lua:1364
 msgid "Settings on Long Tap"
 msgstr "長按開啟設定"
 
-#: modules/module_clock.lua:317
+#: modules/module_clock.lua:311
 msgid "Seven"
 msgstr "七"
 
-#: modules/module_clock.lua:320
+#: modules/module_clock.lua:314
 msgid "Seventeen"
 msgstr "十七"
 
-#: infra/sui_config.lua:1154
+#: infra/sui_config.lua:1521
 msgid ""
 "Share of the row this module occupies.\n"
 "100% = full width. Modules under 100% share a row when their widths fit "
@@ -3716,19 +3827,19 @@ msgstr ""
 "100% 表示整行寬度。寬度小於 100% 的模組，若寬度合適則會共用同一行（Bento 網"
 "格）。"
 
-#: modules/module_clock.lua:1149
+#: modules/module_clock.lua:1170
 msgid "Show Battery"
-msgstr "顯示電量"
+msgstr "顯示電池"
 
-#: modules/module_clock.lua:1137
+#: modules/module_clock.lua:1158
 msgid "Show Clock"
 msgstr "顯示時鐘"
 
-#: modules/module_clock.lua:1143
+#: modules/module_clock.lua:1164
 msgid "Show Date"
 msgstr "顯示日期"
 
-#: modules/module_action_list.lua:451
+#: modules/module_action_list.lua:467 modules/module_action_list.lua:512
 msgid "Show Icon"
 msgstr "顯示圖示"
 
@@ -3736,43 +3847,43 @@ msgstr "顯示圖示"
 msgid "Show Page Count in Title Bar"
 msgstr "在標題欄顯示頁數"
 
-#: screens/sui_menu.lua:2557
+#: screens/sui_menu.lua:2671
 msgid ""
 "Show a brief \"Closing book…\" notice when closing a book, preventing "
 "accidental double-taps while e-ink refreshes."
 msgstr ""
-"關閉書籍時顯示短暫的「正在關閉書籍······」提示，防止電子墨水螢幕刷新時誤觸。"
+"關閉書籍時顯示短暫的「正在關閉書籍……」提示，防止電子墨水螢幕刷新時誤觸。"
 
-#: screens/sui_menu.lua:2657
+#: screens/sui_menu.lua:2771
 msgid ""
 "Show a brief \"Loading statistics…\" notice when opening a statistics "
 "window, preventing accidental double-taps while e-ink refreshes."
 msgstr ""
-"開啟統計視窗時，顯示短暫的「正在載入統計資料······」提示，以防止電子墨水屏重"
-"新整理期間發生誤觸。"
+"開啟統計視窗時，顯示短暫的「正在載入統計資料……」提示，以防止電子墨水屏重新整"
+"理期間發生誤觸。"
 
-#: modules/module_coverdeck.lua:1691 modules/module_library.lua:345
+#: modules/module_coverdeck.lua:1695 modules/module_library.lua:342
 #: modules/module_recent.lua:54
 msgid "Show finished books"
 msgstr "顯示已讀完書籍"
 
-#: modules/module_heatmap.lua:356
+#: modules/module_heatmap.lua:362
 msgid "Show legend"
 msgstr "顯示圖例"
 
-#: screens/sui_menu.lua:2618
+#: screens/sui_menu.lua:2732
 msgid "Show on Close"
 msgstr "關閉時顯示"
 
-#: screens/sui_menu.lua:2607
+#: screens/sui_menu.lua:2721
 msgid "Show on Open"
 msgstr "開啟時顯示"
 
-#: infra/sui_config.lua:1367
+#: infra/sui_config.lua:1750
 msgid "Show section label"
 msgstr "顯示區塊標籤"
 
-#: screens/sui_menu.lua:2334
+#: screens/sui_menu.lua:2444
 msgid "Show wallpaper on all screens"
 msgstr "在所有畫面顯示桌布"
 
@@ -3797,20 +3908,20 @@ msgstr ""
 "目前頁面的圓點會填滿，其餘圓點變暗。\n"
 "選擇導覽分頁器時恆常啟用。"
 
-#: modules/module_feat_coll.lua:171 modules/module_tbr.lua:309
+#: engines/sui_book_grid.lua:1583
 msgid "Shuffle"
 msgstr "隨機排序"
 
-#: modules/module_library.lua:273
+#: modules/module_library.lua:270
 msgid "Shuffle now"
 msgstr "立即隨機播放"
 
-#: modules/module_currently.lua:2015
+#: modules/module_currently.lua:2033
 msgid "Simple"
 msgstr "簡約"
 
-#: _meta.lua:5 main.lua:2515 main.lua:2528 screens/sui_menu.lua:4526
-#: screens/sui_menu.lua:4615
+#: _meta.lua:5 main.lua:2510 main.lua:2523 screens/sui_menu.lua:4637
+#: screens/sui_menu.lua:4724
 msgid "Simple UI"
 msgstr "Simple UI"
 
@@ -3832,11 +3943,11 @@ msgstr ""
 "SimpleUI %s 已可更新！\n"
 "目前版本為 %s。"
 
-#: screens/sui_settings_window.lua:1076
+#: screens/sui_settings_window.lua:1102
 msgid "Simple UI Settings"
 msgstr "SimpleUI 設定"
 
-#: screens/sui_onboarding.lua:134
+#: screens/sui_onboarding.lua:133
 msgid ""
 "Simple UI is designed to be simple and flexible. Here are a few tips to get "
 "the most out of it."
@@ -3846,7 +3957,7 @@ msgstr "SimpleUI 旨在提供簡單且靈活的體驗。以下是一些協助您
 msgid "Simple UI is up to date (%s)."
 msgstr "SimpleUI 已是最新版本（%s）。"
 
-#: main.lua:181
+#: main.lua:198
 msgid ""
 "Simple UI was updated (%s → %s).\n"
 "\n"
@@ -3856,7 +3967,7 @@ msgstr ""
 "\n"
 "建議重啟以完整應用所有更改。"
 
-#: screens/sui_menu.lua:4543
+#: screens/sui_menu.lua:4652
 msgid ""
 "Simple UI will be %s after restart.\n"
 "\n"
@@ -3866,53 +3977,50 @@ msgstr ""
 "\n"
 "要立即重新啟動嗎？"
 
-#: main.lua:887
+#: main.lua:904
 msgid "Simple UI: Go to Homescreen"
 msgstr "SimpleUI：前往主螢幕"
 
-#: main.lua:893
+#: main.lua:910
 msgid "Simple UI: Go to Library"
 msgstr "SimpleUI：前往書庫"
 
-#: main.lua:917
+#: main.lua:934
 msgid "Simple UI: Navigation Bar"
 msgstr "SimpleUI：導航欄"
 
-#: main.lua:911
+#: main.lua:928
 msgid "Simple UI: Recent"
 msgstr "SimpleUI：近期"
 
-#: main.lua:905
+#: main.lua:922
 msgid "Simple UI: Settings"
 msgstr "SimpleUI：設定"
 
-#: main.lua:899
+#: main.lua:916
 msgid "Simple UI: Toggle Homescreen / Library"
 msgstr "SimpleUI：切換主螢幕/書庫"
 
-#: modules/module_collections.lua:1337 screens/sui_menu.lua:2877
+#: modules/module_collections.lua:1331 screens/sui_menu.lua:2993
 msgid "Single Cover"
-msgstr "單一封面"
+msgstr "單封面"
 
-#: modules/module_clock.lua:316
+#: modules/module_clock.lua:310
 msgid "Six"
 msgstr "六"
 
-#: modules/module_clock.lua:320
+#: modules/module_clock.lua:314
 msgid "Sixteen"
 msgstr "十六"
 
-#: engines/sui_book_grid.lua:1856 modules/module_action_list.lua:428
-#: modules/module_clock.lua:1157 modules/module_coverdeck.lua:1633
-#: modules/module_currently.lua:1950 modules/module_quick_actions.lua:559
-#: modules/module_quick_actions.lua:560 modules/module_reading_goals.lua:1281
-#: screens/sui_menu.lua:1026 screens/sui_menu.lua:2921
-#: screens/sui_quicksettings_bar.lua:1227
-#: screens/sui_quicksettings_bar.lua:1228
+#: infra/sui_config.lua:974 modules/module_action_list.lua:452
+#: modules/module_action_list.lua:504 screens/sui_menu.lua:1027
+#: screens/sui_menu.lua:3037 screens/sui_quicksettings_bar.lua:1241
+#: screens/sui_quicksettings_bar.lua:1242
 msgid "Size"
 msgstr "尺寸"
 
-#: screens/sui_menu.lua:1348
+#: screens/sui_menu.lua:1380
 msgid ""
 "Size of the tab icons.\n"
 "100% is the default size."
@@ -3920,7 +4028,7 @@ msgstr ""
 "分頁圖示的尺寸。\n"
 "預設大小為 100%。"
 
-#: screens/sui_menu.lua:1361
+#: screens/sui_menu.lua:1391
 msgid ""
 "Size of the tab label text.\n"
 "100% is the default size."
@@ -3928,14 +4036,16 @@ msgstr ""
 "分頁標籤文字的尺寸。\n"
 "預設大小為 100%。"
 
-#: modules/module_reading_stats.lua:791
+#: engines/sui_book_grid.lua:2178 modules/module_action_list.lua:526
+#: modules/module_clock.lua:1181 modules/module_coverdeck.lua:1643
+#: modules/module_currently.lua:1989 modules/module_quick_actions.lua:599
+#: modules/module_quote.lua:1627 modules/module_quote.lua:1648
+#: modules/module_reading_goals.lua:1305 modules/module_reading_stats.lua:1016
 msgid ""
-"Size of the text inside the stat cards.\n"
-"Does not affect card size or padding.\n"
+"Size of this text.\n"
 "100% is the default size."
 msgstr ""
-"統計卡片內部文字的大小。\n"
-"不影響卡片尺寸或內邊距。\n"
+"此文字的大小。\n"
 "預設大小為 100%。"
 
 #: features/sui_quickactions.lua:613
@@ -3946,26 +4056,25 @@ msgstr "休眠"
 msgid "Small"
 msgstr "小"
 
-#: modules/module_quick_actions.lua:623 screens/sui_menu.lua:3318
-#: screens/sui_menu.lua:3322 screens/sui_quicksettings_bar.lua:1297
+#: modules/module_quick_actions.lua:651 screens/sui_menu.lua:3419
+#: screens/sui_menu.lua:3423 screens/sui_quicksettings_bar.lua:1317
 msgid "Solid"
 msgstr "實色"
 
-#: engines/sui_book_grid.lua:1880 modules/module_currently.lua:1974
-#: modules/module_heatmap.lua:374 modules/module_reading_goals.lua:1596
+#: features/sui_module_chrome.lua:272
 msgid "Solid Background"
 msgstr "實色背景"
 
-#: modules/module_collections.lua:1311 modules/module_feat_coll.lua:175
-#: modules/module_library.lua:239 modules/module_tbr.lua:319
+#: engines/sui_book_grid.lua:1596 modules/module_collections.lua:1305
+#: modules/module_library.lua:236
 msgid "Sort"
 msgstr "排序"
 
-#: modules/module_coverdeck.lua:1378 modules/module_quote.lua:1381
+#: modules/module_coverdeck.lua:1388 modules/module_quote.lua:1426
 msgid "Source"
 msgstr "來源"
 
-#: screens/sui_menu.lua:1374
+#: screens/sui_menu.lua:1411
 msgid ""
 "Space below the bottom navigation bar.\n"
 "100% is the default spacing."
@@ -3981,32 +4090,30 @@ msgstr "間距區塊"
 msgid "Spacer Size"
 msgstr "間距區塊尺寸"
 
-#: modules/module_clock.lua:1223 modules/module_clock.lua:1230
+#: modules/module_clock.lua:1250 modules/module_clock.lua:1257
 msgid "Spacing"
 msgstr "間距"
 
-#: screens/sui_onboarding.lua:272
+#: screens/sui_onboarding.lua:270
 msgid "Start using Simple UI"
 msgstr "開始使用 SimpleUI"
 
-#: infra/sui_patches.lua:1178 infra/sui_patches.lua:1180
+#: infra/sui_patches.lua:1127 infra/sui_patches.lua:1129
+#: screens/sui_menu.lua:2531
 msgid "Start with"
 msgstr "預設開啟"
 
-#: screens/sui_menu.lua:2424
-msgid "Start with Home Screen"
-msgstr "預設開啟主螢幕"
-
-#: screens/sui_onboarding.lua:62
+#: screens/sui_onboarding.lua:61
 msgid "Start with a ready-made layout. You can change everything later."
-msgstr "從現成版面配置開始。您隨後可以修改任何設定。"
+msgstr "從現成版面配置開始。隨後可以修改任何設定。"
 
-#: modules/module_coverdeck.lua:158 modules/module_coverdeck.lua:1461
-#: modules/module_coverdeck.lua:1494 modules/module_coverdeck.lua:1561
+#: modules/module_coverdeck.lua:158 modules/module_coverdeck.lua:1471
+#: modules/module_coverdeck.lua:1504 modules/module_coverdeck.lua:1571
+#: modules/module_coverdeck.lua:1642
 msgid "Statistics"
 msgstr "統計"
 
-#: screens/sui_menu.lua:2656
+#: screens/sui_menu.lua:2770
 msgid "Statistics Loading Notice"
 msgstr "載入統計提示"
 
@@ -4018,30 +4125,34 @@ msgstr "統計資料庫函式庫不可用。"
 msgid "Statistics plugin not available."
 msgstr "統計外掛程式不可用。"
 
-#: features/sui_quickactions.lua:949 infra/sui_config.lua:129
-#: modules/module_currently.lua:1669 modules/module_currently.lua:1751
-#: modules/module_currently.lua:1812
+#: features/sui_quickactions.lua:949 infra/sui_config.lua:130
+#: modules/module_currently.lua:1693 modules/module_currently.lua:1775
+#: modules/module_currently.lua:1836
 msgid "Stats"
 msgstr "統計"
 
-#: modules/module_currently.lua:2022
+#: modules/module_currently.lua:2040
 msgid "Stats layout"
 msgstr "統計版面配置"
 
-#: modules/module_coverdeck.lua:1718 modules/module_currently.lua:2066
-#: modules/module_reading_goals.lua:1625 modules/module_reading_stats.lua:949
+#: modules/module_coverdeck.lua:1744 modules/module_currently.lua:2084
+#: modules/module_reading_goals.lua:1629 modules/module_reading_stats.lua:1007
 msgid "Stats updated successfully."
 msgstr "統計數據更新成功。"
 
-#: screens/sui_menu.lua:2772
+#: screens/sui_menu.lua:2888
 msgid "Status Bar"
 msgstr "狀態欄"
 
-#: screens/sui_menu.lua:1033
+#: screens/sui_menu.lua:2473
+msgid "Status Bar Opacity"
+msgstr "狀態欄不透明度"
+
+#: screens/sui_menu.lua:1034
 msgid "Status Bar Size"
 msgstr "狀態欄尺寸"
 
-#: screens/sui_menu.lua:846
+#: screens/sui_menu.lua:847
 msgid ""
 "Status Bar will be %s after restart.\n"
 "\n"
@@ -4051,40 +4162,42 @@ msgstr ""
 "\n"
 "要立即重新啟動嗎？"
 
-#: modules/module_reading_stats.lua:130
+#: modules/module_reading_stats.lua:150
 msgid "Status — Abandoned"
 msgstr "狀態 — 擱置"
 
-#: modules/module_reading_stats.lua:129
+#: modules/module_reading_stats.lua:149
 msgid "Status — Reading"
 msgstr "狀態 — 在讀"
 
-#: modules/module_reading_stats.lua:128
+#: modules/module_reading_stats.lua:148
 msgid "Status — Unread"
 msgstr "狀態 — 未讀"
 
-#: screens/sui_settings_window.lua:331
+#: screens/sui_settings_window.lua:353
 msgid "Status, title, navigation and pagination"
 msgstr "狀態欄、標題欄、導覽欄與分頁欄"
 
-#: modules/module_reading_stats.lua:119 screens/sui_stats_windows.lua:3494
+#: modules/module_reading_stats.lua:139 screens/sui_stats_windows.lua:3497
 msgid "Streak"
 msgstr "連續閱讀"
 
-#: modules/module_reading_stats.lua:900
+#: modules/module_reading_stats.lua:958 modules/module_reading_stats.lua:1034
 msgid "Streak Mode"
 msgstr "連續模式"
 
-#: screens/sui_menu.lua:2352
+#: screens/sui_menu.lua:2454
 msgid "Stretch to fill screen"
 msgstr "拉伸以填滿螢幕"
 
-#: modules/module_reading_stats.lua:801 screens/sui_menu.lua:4572
-#: screens/sui_settings_window.lua:344 screens/sui_settings_window.lua:1081
+#: infra/sui_config.lua:967 modules/module_reading_stats.lua:860
+#: modules/module_reading_stats.lua:1032 screens/sui_menu.lua:4681
+#: screens/sui_settings_window.lua:366 screens/sui_settings_window.lua:1107
 msgid "Style"
 msgstr "樣式"
 
-#: screens/sui_menu.lua:1808 screens/sui_menu.lua:1811
+#: screens/sui_menu.lua:1878 screens/sui_menu.lua:1881
+#: screens/sui_menu.lua:1915
 msgid "Sub-page Buttons"
 msgstr "子頁面按鈕"
 
@@ -4092,25 +4205,25 @@ msgstr "子頁面按鈕"
 msgid "Sun"
 msgstr "週日"
 
-#: modules/module_clock.lua:58
+#: modules/module_clock.lua:54
 msgid "Sunday"
 msgstr "星期日"
 
-#: screens/sui_menu.lua:1069
+#: screens/sui_menu.lua:1070
 msgid "Swipe Indicator"
 msgstr "滑動指示器"
 
-#: features/sui_quickactions.lua:1938 features/sui_quickactions.lua:1941
-#: features/sui_quickactions.lua:2671 features/sui_quickactions.lua:2767
+#: features/sui_quickactions.lua:1937 features/sui_quickactions.lua:1940
+#: features/sui_quickactions.lua:2670 features/sui_quickactions.lua:2766
 msgid "System Actions"
 msgstr "系統動作"
 
-#: features/sui_style.lua:1302 screens/sui_menu.lua:3657
-#: screens/sui_menu.lua:3665
+#: features/sui_style.lua:1320 screens/sui_menu.lua:3758
+#: screens/sui_menu.lua:3766
 msgid "System Icons"
 msgstr "系統圖示"
 
-#: features/sui_quickactions.lua:3129
+#: features/sui_quickactions.lua:3127
 msgid "System action error: %s"
 msgstr "系統動作錯誤：%s"
 
@@ -4130,90 +4243,86 @@ msgstr "時段"
 msgid "TODAY'S SUMMARY"
 msgstr "今日摘要"
 
-#: features/sui_style.lua:1297
+#: features/sui_style.lua:1315
 msgid "Tab Bar"
 msgstr "分頁欄"
 
-#: screens/sui_menu.lua:1257
+#: screens/sui_menu.lua:1289
 msgid "Tab Style"
 msgstr "分頁樣式"
 
-#: features/sui_style.lua:1253
+#: features/sui_style.lua:1271
 msgid "Tab bar icons must be PNG or SVG."
 msgstr "分頁欄圖示必須為 PNG 或 SVG 格式。"
 
-#: features/sui_style.lua:263
+#: features/sui_style.lua:264
 msgid "Tab: Back to File Browser"
 msgstr "分頁：返回檔案瀏覽器"
 
-#: features/sui_style.lua:242
+#: features/sui_style.lua:243
 msgid "Tab: File Browser Settings"
 msgstr "分頁：檔案瀏覽器設定"
 
-#: features/sui_style.lua:214
+#: features/sui_style.lua:215
 msgid "Tab: Menu"
 msgstr "分頁：選單"
 
-#: features/sui_style.lua:249
+#: features/sui_style.lua:250
 msgid "Tab: Reader Navigation"
 msgstr "分頁：閱讀器導覽"
 
-#: features/sui_style.lua:256
+#: features/sui_style.lua:257
 msgid "Tab: Reader Typeset"
 msgstr "分頁：閱讀器排版"
 
-#: features/sui_style.lua:235
+#: features/sui_style.lua:236
 msgid "Tab: Search"
 msgstr "分頁：搜尋"
 
-#: features/sui_style.lua:221
+#: features/sui_style.lua:222
 msgid "Tab: Settings"
 msgstr "分頁：設定"
 
-#: features/sui_style.lua:270
+#: features/sui_style.lua:271
 msgid "Tab: SimpleUI Quick Settings"
-msgstr "分頁：SimpleUI 快速設定"
+msgstr "分頁：快速設定"
 
-#: features/sui_style.lua:228
+#: features/sui_style.lua:229
 msgid "Tab: Tools"
 msgstr "分頁：工具"
 
-#: screens/sui_menu.lua:1142 screens/sui_menu.lua:1194
+#: screens/sui_menu.lua:1174 screens/sui_menu.lua:1226
 msgid "Tabs"
 msgstr "分頁"
 
-#: screens/sui_menu.lua:1136
+#: screens/sui_menu.lua:1168
 msgid "Tabs  (%d/%d — %d left)"
 msgstr "分頁（%d/%d — 剩餘 %d 個）"
 
-#: screens/sui_menu.lua:1134
+#: screens/sui_menu.lua:1166
 msgid "Tabs  (%d/%d — at limit)"
 msgstr "分頁（%d/%d — 已達上限）"
 
 #: features/library/sui_library_browse.lua:60
-#: features/sui_quickactions.lua:1040 infra/sui_config.lua:136
+#: features/sui_quickactions.lua:1040 infra/sui_config.lua:137
 msgid "Tags"
 msgstr "標籤"
 
-#: screens/sui_settings_window.lua:442
+#: screens/sui_settings_window.lua:468
 msgid "Tap \"Create Screen\" below to add one."
 msgstr "點選下方的「建立螢幕」以新增一個。"
 
-#: modules/module_clock.lua:318
+#: modules/module_clock.lua:312
 msgid "Ten"
 msgstr "十"
 
-#: engines/sui_book_grid.lua:1942 screens/sui_menu.lua:208
+#: engines/sui_book_grid.lua:1996 infra/sui_config.lua:1012
+#: modules/module_quote.lua:1662 modules/module_reading_stats.lua:1030
+#: screens/sui_menu.lua:208
 msgid "Text"
 msgstr "文字"
 
-#: engines/sui_book_grid.lua:1781 engines/sui_book_grid.lua:1782
-#: modules/module_action_list.lua:440 modules/module_action_list.lua:441
-#: modules/module_coverdeck.lua:1294 modules/module_coverdeck.lua:1295
-#: modules/module_currently.lua:1472 modules/module_currently.lua:1473
-#: modules/module_reading_goals.lua:1265 modules/module_reading_goals.lua:1267
-#: modules/module_reading_stats.lua:789 modules/module_reading_stats.lua:790
-#: screens/sui_menu.lua:3418
+#: screens/sui_menu.lua:3519
 msgid "Text Size"
 msgstr "文字大小"
 
@@ -4221,7 +4330,7 @@ msgstr "文字大小"
 msgid "Text only"
 msgstr "僅文字"
 
-#: screens/sui_quicksettings_bar.lua:1117
+#: screens/sui_quicksettings_bar.lua:1131
 msgid ""
 "The Quick Settings Bar will be %s after restart.\n"
 "\n"
@@ -4231,7 +4340,7 @@ msgstr ""
 "\n"
 "要立即重新啟動嗎？"
 
-#: screens/sui_menu.lua:2631
+#: screens/sui_menu.lua:2745
 msgid ""
 "The cover shown right as a book opens normally comes from the library's "
 "cached thumbnail, which can look soft on higher-resolution screens. When on, "
@@ -4246,27 +4355,27 @@ msgstr ""
 "面（否則將不顯示封面），代價是打開書籍時會多一次短暫停頓，因為檔案需要被讀取"
 "兩次。關閉時的封面不受影響：其始終從已打開的書籍中讀取完整品質封面。"
 
-#: main.lua:1335 screens/sui_bottombar.lua:1823
+#: main.lua:1349 screens/sui_bottombar.lua:1941
 msgid "The navigation bar is already available on this screen."
 msgstr "此螢幕已提供導航欄。"
 
-#: infra/sui_patches.lua:1324
+#: infra/sui_patches.lua:1273
 msgid "The «To Be Read» collection cannot be renamed."
 msgstr "「待讀」收藏無法重新命名。"
 
-#: modules/module_clock.lua:319
+#: modules/module_clock.lua:313
 msgid "Thirteen"
 msgstr "十三"
 
-#: modules/module_clock.lua:324
+#: modules/module_clock.lua:318
 msgid "Thirty"
 msgstr "三十"
 
-#: features/sui_backup.lua:941
+#: features/sui_backup.lua:938
 msgid "This backup contains no settings or files."
 msgstr "此備份不包含任何設定或檔案。"
 
-#: modules/module_tbr.lua:600
+#: modules/module_tbr.lua:544
 msgid ""
 "This book is marked as Finished, so it can't be added to To Be Read.\n"
 "Change its status to Reading or On Hold first."
@@ -4274,36 +4383,36 @@ msgstr ""
 "此書已標記為「讀完」，無法新增到「待讀」。\n"
 "請先將其狀態改為「在讀」或「擱置」。"
 
-#: features/sui_quickactions.lua:3327 features/sui_quickactions.lua:3405
+#: features/sui_quickactions.lua:3325 features/sui_quickactions.lua:3403
 msgid ""
 "This group is empty.\n"
 "Add actions to it from Settings → Quick Actions."
 msgstr ""
 "此群組為空。\n"
-"請前往 設定 → 快速動作 新增動作。"
+"請前往「設定」>「快速動作」新增動作。"
 
-#: modules/module_reading_stats.lua:116
+#: modules/module_reading_stats.lua:136
 msgid "This month — Pages"
 msgstr "本月 — 頁數"
 
-#: modules/module_reading_stats.lua:115
+#: modules/module_reading_stats.lua:135
 msgid "This month — Time"
 msgstr "本月 — 時間"
 
-#: features/sui_presets.lua:865 features/sui_presets.lua:933
-#: features/sui_presets.lua:1019
+#: features/sui_presets.lua:874 features/sui_presets.lua:942
+#: features/sui_presets.lua:1028
 msgid "This name is reserved by a built-in preset."
 msgstr "此名稱為內建預設檔保留。"
 
-#: modules/module_reading_stats.lua:112
+#: modules/module_reading_stats.lua:132
 msgid "This week — Pages"
 msgstr "本週 — 頁數"
 
-#: modules/module_reading_stats.lua:111
+#: modules/module_reading_stats.lua:131
 msgid "This week — Time"
 msgstr "本週 — 時間"
 
-#: screens/sui_menu.lua:4438
+#: screens/sui_menu.lua:4551
 msgid ""
 "This will delete all Simple UI settings and restart KOReader.\n"
 "Are you sure?"
@@ -4311,7 +4420,7 @@ msgstr ""
 "這將刪除所有 SimpleUI 設定並重新啟動 KOReader。\n"
 "您確定要繼續嗎？"
 
-#: modules/module_clock.lua:315
+#: modules/module_clock.lua:309
 msgid "Three"
 msgstr "三"
 
@@ -4319,42 +4428,45 @@ msgstr "三"
 msgid "Thu"
 msgstr "週四"
 
-#: modules/module_clock.lua:59
+#: modules/module_clock.lua:55
 msgid "Thursday"
 msgstr "星期四"
 
-#: modules/module_heatmap.lua:221 modules/module_heatmap.lua:343
+#: modules/module_heatmap.lua:224 modules/module_heatmap.lua:349
 msgid "Time of day"
 msgstr "時段"
 
-#: modules/module_coverdeck.lua:145 modules/module_currently.lua:306
+#: modules/module_coverdeck.lua:145 modules/module_currently.lua:320
 msgid "Time read"
 msgstr "閱讀時間"
 
-#: modules/module_coverdeck.lua:146 modules/module_currently.lua:307
+#: modules/module_coverdeck.lua:146 modules/module_currently.lua:321
 msgid "Time remaining"
 msgstr "剩餘時間"
 
-#: modules/module_coverdeck.lua:155 modules/module_currently.lua:299
+#: modules/module_coverdeck.lua:155 modules/module_coverdeck.lua:1642
+#: modules/module_currently.lua:313 modules/module_currently.lua:1983
 #: screens/sui_titlebar.lua:106
 msgid "Title"
 msgstr "標題"
 
-#: modules/module_feat_coll.lua:166 modules/module_library.lua:211
-#: modules/module_tbr.lua:304
+#: engines/sui_book_grid.lua:1578 modules/module_library.lua:208
 msgid "Title (A–Z)"
 msgstr "標題（A–Z）"
 
-#: modules/module_feat_coll.lua:167 modules/module_library.lua:212
-#: modules/module_tbr.lua:305
+#: engines/sui_book_grid.lua:1579 modules/module_library.lua:209
 msgid "Title (Z–A)"
 msgstr "標題（Z–A）"
 
-#: features/sui_style.lua:1292 screens/sui_menu.lua:2774
+#: features/sui_style.lua:1310 screens/sui_menu.lua:2890
 msgid "Title Bar"
 msgstr "標題欄"
 
-#: screens/sui_menu.lua:1790
+#: screens/sui_menu.lua:2485
+msgid "Title Bar Opacity"
+msgstr ""
+
+#: screens/sui_menu.lua:1860
 msgid ""
 "Title Bar will be %s after restart.\n"
 "\n"
@@ -4364,90 +4476,90 @@ msgstr ""
 "\n"
 "要立即重新啟動嗎？"
 
-#: screens/sui_menu.lua:3480
+#: screens/sui_menu.lua:3581
 msgid "Title and Author"
 msgstr "標題與作者"
 
-#: screens/sui_menu.lua:3431
+#: screens/sui_menu.lua:3532
 msgid "Title and Author Below Covers"
 msgstr "封面下方顯示標題與作者"
 
-#: screens/sui_menu.lua:3492
+#: screens/sui_menu.lua:3593
 msgid ""
 "Title and author strip enabled.\n"
 "\n"
 "Restart now?"
 msgstr ""
-"標題與作者條已啟用。\n"
+"標題與作者欄已啟用。\n"
 "\n"
 "要立即重新啟動嗎？"
 
-#: screens/sui_menu.lua:3458
+#: screens/sui_menu.lua:3559
 msgid "Title only"
 msgstr "僅標題"
 
-#: screens/sui_menu.lua:3447
+#: screens/sui_menu.lua:3548
 msgid ""
 "Title strip disabled.\n"
 "\n"
 "Restart now?"
 msgstr ""
-"標題條已停用。\n"
+"標題欄已停用。\n"
 "\n"
 "要立即重新啟動嗎？"
 
-#: screens/sui_menu.lua:3470
+#: screens/sui_menu.lua:3571
 msgid ""
 "Title strip enabled.\n"
 "\n"
 "Restart now?"
 msgstr ""
-"標題條已啟用。\n"
+"標題欄已啟用。\n"
 "\n"
 "要立即重新啟動嗎？"
 
-#: modules/module_coverdeck.lua:1370 modules/module_tbr.lua:560
-#: modules/module_tbr.lua:620 modules/module_tbr.lua:621
+#: modules/module_coverdeck.lua:1380 modules/module_tbr.lua:504
+#: modules/module_tbr.lua:564 modules/module_tbr.lua:565
 msgid "To Be Read"
 msgstr "待讀"
 
-#: modules/module_tbr.lua:398
+#: modules/module_tbr.lua:342
 msgid "To Be Read Books"
 msgstr "待讀書籍"
 
-#: modules/module_reading_goals.lua:970 modules/module_reading_goals.lua:1066
-#: modules/module_reading_goals.lua:1068 modules/module_reading_goals.lua:1122
-#: modules/module_reading_goals.lua:1125
+#: modules/module_reading_goals.lua:999 modules/module_reading_goals.lua:1095
+#: modules/module_reading_goals.lua:1097 modules/module_reading_goals.lua:1151
+#: modules/module_reading_goals.lua:1154
 msgid "Today"
 msgstr "今天"
 
-#: modules/module_reading_stats.lua:110
+#: modules/module_reading_stats.lua:130
 msgid "Today — Pages"
 msgstr "今日 — 頁數"
 
-#: modules/module_reading_stats.lua:109
+#: modules/module_reading_stats.lua:129
 msgid "Today — Time"
 msgstr "今日 — 時間"
 
-#: engines/sui_window.lua:2862
+#: engines/sui_window.lua:2881
 msgid "Toggle"
 msgstr "切換"
 
-#: modules/module_collections.lua:1391 screens/sui_menu.lua:2952
-#: screens/sui_menu.lua:2959 screens/sui_menu.lua:2963
-#: screens/sui_menu.lua:3363 screens/sui_menu.lua:3370
+#: modules/module_collections.lua:1385 screens/sui_menu.lua:3053
+#: screens/sui_menu.lua:3060 screens/sui_menu.lua:3064
+#: screens/sui_menu.lua:3464 screens/sui_menu.lua:3471
 msgid "Top"
 msgstr "頂部"
 
-#: screens/sui_topbar.lua:508
+#: screens/sui_topbar.lua:587
 msgid "Top Bar"
 msgstr "頂部欄"
 
-#: infra/sui_config.lua:1196
+#: infra/sui_config.lua:1573
 msgid "Top Margin"
 msgstr "頂邊距"
 
-#: screens/sui_stats_windows.lua:943 screens/sui_stats_windows.lua:3646
+#: screens/sui_stats_windows.lua:943 screens/sui_stats_windows.lua:3649
 msgid "Total"
 msgstr "總計"
 
@@ -4455,61 +4567,53 @@ msgstr "總計"
 msgid "Total time"
 msgstr "總時間"
 
-#: features/sui_backup.lua:673
+#: features/sui_backup.lua:670
 msgid "Total: %d settings, %d files (%s)"
 msgstr "總計：%d 項設定、%d 個檔案（%s）"
 
-#: modules/module_quick_actions.lua:613 screens/sui_menu.lua:3318
-#: screens/sui_menu.lua:3335 screens/sui_quicksettings_bar.lua:1287
+#: screens/sui_menu.lua:3419 screens/sui_menu.lua:3436
+#: screens/sui_quicksettings_bar.lua:1307
 msgid "Transparent"
 msgstr "透明"
-
-#: screens/sui_menu.lua:2314
-msgid "Transparent navigation bar"
-msgstr "透明導覽欄"
-
-#: screens/sui_menu.lua:2296
-msgid "Transparent status bar"
-msgstr "透明狀態欄"
 
 #: screens/sui_stats_windows.lua:2805
 msgid "Tue"
 msgstr "週二"
 
-#: modules/module_clock.lua:58
+#: modules/module_clock.lua:54
 msgid "Tuesday"
 msgstr "星期二"
 
-#: modules/module_clock.lua:318
+#: modules/module_clock.lua:312
 msgid "Twelve"
 msgstr "十二"
 
-#: modules/module_clock.lua:324
+#: modules/module_clock.lua:318
 msgid "Twenty"
 msgstr "二十"
 
-#: modules/module_clock.lua:315
+#: modules/module_clock.lua:309
 msgid "Two"
 msgstr "二"
 
-#: modules/module_heatmap.lua:340 screens/sui_menu.lua:3140
-#: screens/sui_menu.lua:3207
+#: modules/module_heatmap.lua:346 screens/sui_menu.lua:3241
+#: screens/sui_menu.lua:3308
 msgid "Type"
 msgstr "類型"
 
-#: screens/sui_menu.lua:4290 screens/sui_menu.lua:4293
+#: screens/sui_menu.lua:4403 screens/sui_menu.lua:4406
 msgid "UI Font"
 msgstr "介面字型"
 
-#: screens/sui_menu.lua:4297
+#: screens/sui_menu.lua:4410
 msgid "UI Font  (default)"
-msgstr "介面字型（預設）"
+msgstr "介面字型 [預設]"
 
-#: screens/sui_menu.lua:4299
+#: screens/sui_menu.lua:4412
 msgid "UI Font  [%s]"
 msgstr "介面字型 [%s]"
 
-#: screens/sui_menu.lua:3507
+#: screens/sui_menu.lua:3608
 msgid "Uniformize Covers (2:3)"
 msgstr "統一封面比例（2:3）"
 
@@ -4517,12 +4621,12 @@ msgstr "統一封面比例（2:3）"
 msgid "Unknown error."
 msgstr "未知錯誤。"
 
-#: features/sui_style.lua:2043
+#: features/sui_style.lua:2322
 msgid "Unsupported format (use a folder or a .zip file)"
 msgstr "不支援的格式（請使用資料夾或 .zip 檔案）"
 
-#: features/sui_quickactions.lua:107 features/sui_quickactions.lua:1882
-#: features/sui_style.lua:1059 features/sui_style.lua:1246
+#: features/sui_quickactions.lua:107 features/sui_quickactions.lua:1881
+#: features/sui_style.lua:1077 features/sui_style.lua:1264
 msgid ""
 "Unsupported icon format.\n"
 "Please use a PNG or SVG file."
@@ -4530,12 +4634,13 @@ msgstr ""
 "不支援的圖示格式。\n"
 "請使用 PNG 或 SVG 檔案。"
 
-#: engines/sui_window.lua:1935 engines/sui_window.lua:2856
+#: engines/sui_window.lua:1954 engines/sui_window.lua:2875
 msgid "Update"
 msgstr "更新"
 
-#: modules/module_coverdeck.lua:1700 modules/module_currently.lua:2048
-#: modules/module_reading_goals.lua:1607 modules/module_reading_stats.lua:931
+#: modules/module_coverdeck.lua:1727 modules/module_currently.lua:2066
+#: modules/module_reading_goals.lua:1611 modules/module_reading_goals.lua:1647
+#: modules/module_reading_stats.lua:989 modules/module_reading_stats.lua:1036
 msgid "Update Stats Now"
 msgstr "立即更新統計"
 
@@ -4547,19 +4652,19 @@ msgstr "已取消更新。"
 msgid "Update check cancelled."
 msgstr "已取消檢查更新。"
 
-#: features/sui_presets.lua:906 screens/sui_menu.lua:4057
+#: features/sui_presets.lua:915 screens/sui_menu.lua:4158
 msgid "Update with current settings"
 msgstr "以目前設定更新"
 
-#: screens/sui_menu.lua:4416
+#: screens/sui_menu.lua:4529
 msgid "Updater module not found."
 msgstr "未找到更新器模組。"
 
-#: screens/sui_stats_windows.lua:3103
+#: screens/sui_stats_windows.lua:3106
 msgid "Use freeze"
 msgstr "使用凍結權"
 
-#: features/sui_quickactions.lua:2129
+#: features/sui_quickactions.lua:2128
 msgid "Use this Nerd Font icon?"
 msgstr "使用此 Nerd Font 圖示嗎？"
 
@@ -4571,15 +4676,19 @@ msgstr ""
 "主螢幕使用標準 KOReader 分頁欄。\n"
 "當導覽分頁器啟用時不可用。"
 
-#: screens/sui_settings_window.lua:366
+#: modules/module_reading_stats.lua:854 modules/module_reading_stats.lua:1015
+msgid "Value"
+msgstr "數值"
+
+#: screens/sui_settings_window.lua:388
 msgid "Version, author and updates"
 msgstr "版本、作者與更新"
 
-#: screens/sui_menu.lua:4391
+#: screens/sui_menu.lua:4504
 msgid "Version: %s"
 msgstr "版本：%s"
 
-#: infra/sui_config.lua:1198
+#: infra/sui_config.lua:1575
 msgid ""
 "Vertical space above this module.\n"
 "100% is the default spacing."
@@ -4587,7 +4696,7 @@ msgstr ""
 "此模組上方的垂直間距。\n"
 "預設間距為 100%。"
 
-#: modules/module_clock.lua:1231
+#: modules/module_clock.lua:1258
 msgid ""
 "Vertical space between items.\n"
 "100% is the default spacing."
@@ -4595,44 +4704,45 @@ msgstr ""
 "項目之間的垂直間距。\n"
 "預設間距為 100%。"
 
-#: screens/sui_menu.lua:3029 screens/sui_menu.lua:3083
-#: screens/sui_menu.lua:3315
+#: screens/sui_menu.lua:3130 screens/sui_menu.lua:3184
+#: screens/sui_menu.lua:3416
 msgid "Visibility"
 msgstr "可見性"
 
-#: screens/sui_menu.lua:3025 screens/sui_menu.lua:3031
-#: screens/sui_menu.lua:3035 screens/sui_menu.lua:3079
-#: screens/sui_menu.lua:3085 screens/sui_menu.lua:3089
+#: screens/sui_menu.lua:3126 screens/sui_menu.lua:3132
+#: screens/sui_menu.lua:3136 screens/sui_menu.lua:3180
+#: screens/sui_menu.lua:3186 screens/sui_menu.lua:3190
 msgid "Visible"
 msgstr "顯示"
 
-#: screens/sui_stats_windows.lua:2726 screens/sui_stats_windows.lua:3364
+#: screens/sui_stats_windows.lua:2726 screens/sui_stats_windows.lua:3367
 msgid "WEEK STREAK"
-msgstr "連續閱讀週數"
+msgstr "連續週數"
 
-#: modules/module_clock.lua:332
+#: modules/module_clock.lua:326
 msgid "WORD_CLOCK_TENS_SEP"
 msgstr ""
 
-#: features/sui_backup.lua:134 screens/sui_menu.lua:2743
-#: screens/sui_settings_window.lua:396 screens/sui_settings_window.lua:402
+#: features/sui_backup.lua:135 screens/sui_menu.lua:2857
+#: screens/sui_settings_window.lua:418 screens/sui_settings_window.lua:424
 msgid "Wallpaper"
 msgstr "桌布"
 
-#: features/sui_backup.lua:135
+#: features/sui_backup.lua:136
 msgid "Wallpaper settings and image files"
 msgstr "桌布設定與圖片檔案"
 
-#: screens/sui_quicksettings_bar.lua:424 screens/sui_quicksettings_bar.lua:445
-#: screens/sui_quicksettings_bar.lua:456
+#: screens/sui_quicksettings_bar.lua:438 screens/sui_quicksettings_bar.lua:459
+#: screens/sui_quicksettings_bar.lua:470
 msgid "Warmth"
 msgstr "暖光"
 
-#: screens/sui_quicksettings_bar.lua:1213
+#: screens/sui_quicksettings_bar.lua:1227
+#: screens/sui_quicksettings_bar.lua:1362
 msgid "Warmth Slider"
 msgstr "暖光滑桿"
 
-#: screens/sui_menu.lua:2669
+#: screens/sui_menu.lua:2783
 msgid "Warn when modules on a page exceed the available screen height."
 msgstr "當頁面上的模組超出可用螢幕高度時發出警告。"
 
@@ -4640,23 +4750,23 @@ msgstr "當頁面上的模組超出可用螢幕高度時發出警告。"
 msgid "Wed"
 msgstr "週三"
 
-#: modules/module_clock.lua:58
+#: modules/module_clock.lua:54
 msgid "Wednesday"
 msgstr "星期三"
 
-#: modules/module_heatmap.lua:291 modules/module_heatmap.lua:295
+#: modules/module_heatmap.lua:297 modules/module_heatmap.lua:301
 msgid "Weeks shown"
 msgstr "顯示週數"
 
-#: screens/sui_onboarding.lua:234 screens/sui_onboarding.lua:235
+#: screens/sui_onboarding.lua:233 screens/sui_onboarding.lua:234
 msgid "Welcome to Simple UI"
-msgstr "歡迎使用 Simple UI"
+msgstr "歡迎使用 SimpleUI"
 
 #: infra/sui_updater.lua:493
 msgid "What's new:"
 msgstr "更新內容："
 
-#: screens/sui_menu.lua:2694
+#: screens/sui_menu.lua:2808
 msgid ""
 "When a finished book is deleted from the device (file or folder), keep it "
 "counted in the Books Read statistics on the Home Screen.\n"
@@ -4669,13 +4779,7 @@ msgstr ""
 "\n"
 "狀態改回「在讀」或「擱置」的書籍會自動從此清單中移除。"
 
-#: screens/sui_menu.lua:2545
-msgid ""
-"When closing a book from the Home Screen, go back to the folder where the "
-"book is located instead of the Library home folder."
-msgstr "從主螢幕關閉書籍時，返回該書籍所在的資料夾，而非藏書首頁資料夾。"
-
-#: screens/sui_menu.lua:2681
+#: screens/sui_menu.lua:2795
 msgid ""
 "When enabled, long-pressing a module on the home screen opens its settings "
 "menu.\n"
@@ -4684,7 +4788,7 @@ msgstr ""
 "啟用時，長按主螢幕上的模組可開啟其設定選單。\n"
 "停用此選項可防止長按時彈出設定選單。"
 
-#: screens/sui_quicksettings_bar.lua:1321
+#: screens/sui_quicksettings_bar.lua:1341
 msgid ""
 "When enabled, long-pressing the Quick Settings Bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
@@ -4692,7 +4796,7 @@ msgstr ""
 "啟用時，長按快速設定欄可開啟其設定選單。\n"
 "停用此選項可防止長按時彈出設定選單。"
 
-#: screens/sui_menu.lua:1391
+#: screens/sui_menu.lua:1428
 msgid ""
 "When enabled, long-pressing the navigation bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
@@ -4700,7 +4804,7 @@ msgstr ""
 "啟用後，長按導航欄會開啟其設定選單。\n"
 "停用此項可防止長按時出現設定選單。"
 
-#: screens/sui_menu.lua:1089
+#: screens/sui_menu.lua:1090
 msgid ""
 "When enabled, long-pressing the top bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
@@ -4708,13 +4812,13 @@ msgstr ""
 "啟用時，長按頂欄可開啟其設定選單。\n"
 "停用此選項可防止長按時彈出設定選單。"
 
-#: screens/sui_menu.lua:2436
+#: screens/sui_menu.lua:2560
 msgid ""
 "When waking the device from sleep/suspend, always return to the Home Screen "
 "— even if a book was open when it went to sleep."
 msgstr "將裝置從休眠/待機中喚醒時，一律返回主螢幕 — 即使休眠前正開啟著書籍。"
 
-#: features/sui_quickactions.lua:912 infra/sui_config.lua:126
+#: features/sui_quickactions.lua:912 infra/sui_config.lua:127
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
@@ -4722,7 +4826,7 @@ msgstr "Wi-Fi"
 msgid "Wi-Fi off"
 msgstr "Wi-Fi 關閉"
 
-#: infra/sui_config.lua:168
+#: infra/sui_config.lua:192
 msgid "WiFi"
 msgstr "Wi-Fi"
 
@@ -4730,15 +4834,15 @@ msgstr "Wi-Fi"
 msgid "WiFi not available on this device."
 msgstr "此裝置不支援 Wi-Fi。"
 
-#: features/sui_quickactions.lua:2288
+#: features/sui_quickactions.lua:2287
 msgid "Wikipedia Lookup"
 msgstr "維基百科查詢"
 
-#: modules/module_currently.lua:2017
+#: modules/module_currently.lua:2035
 msgid "With percentage"
 msgstr "附帶百分比"
 
-#: modules/module_clock.lua:1164 modules/module_clock.lua:1177
+#: modules/module_clock.lua:1191 modules/module_clock.lua:1204
 msgid "Word"
 msgstr "文字"
 
@@ -4746,19 +4850,19 @@ msgstr "文字"
 msgid "Yes"
 msgstr "確定"
 
-#: screens/sui_stats_windows.lua:3092
+#: screens/sui_stats_windows.lua:3095
 msgid "Yesterday is already covered by a freeze."
 msgstr "昨天已使用凍結權覆蓋。"
 
-#: screens/sui_stats_windows.lua:3090
+#: screens/sui_stats_windows.lua:3093
 msgid "You already read yesterday — there's nothing to freeze."
 msgstr "您昨天已完成閱讀 — 無需使用凍結權。"
 
-#: screens/sui_stats_windows.lua:3084
+#: screens/sui_stats_windows.lua:3087
 msgid "You don't have any freezes available yet."
 msgstr "您目前沒有可用的凍結權。"
 
-#: screens/sui_stats_windows.lua:3101
+#: screens/sui_stats_windows.lua:3104
 msgid ""
 "You have %d freeze(s) available.\n"
 "Use one to cover %s?"
@@ -4766,11 +4870,11 @@ msgstr ""
 "您有 %d 個可用的凍結權。\n"
 "要使用一個來覆蓋 %s 嗎？"
 
-#: modules/module_quote.lua:1002
+#: modules/module_quote.lua:1057
 msgid "Your highlights"
-msgstr "您的劃線"
+msgstr "您的標註"
 
-#: modules/module_reading_stats.lua:130
+#: modules/module_reading_stats.lua:150
 msgid "abandoned"
 msgstr "擱置"
 
@@ -4790,11 +4894,11 @@ msgstr "8月"
 msgid "august"
 msgstr "八月"
 
-#: modules/module_reading_stats.lua:118 screens/sui_stats_windows.lua:2301
+#: modules/module_reading_stats.lua:138 screens/sui_stats_windows.lua:2301
 msgid "books finished"
-msgstr "本讀完書籍"
+msgstr "讀完書籍數"
 
-#: modules/module_reading_stats.lua:113
+#: modules/module_reading_stats.lua:133
 msgid "daily avg (7 days)"
 msgstr "日平均（近 7 天）"
 
@@ -4806,21 +4910,21 @@ msgstr "12月"
 msgid "december"
 msgstr "十二月"
 
-#: features/sui_quickactions.lua:1874 features/sui_quickactions.lua:2942
+#: features/sui_quickactions.lua:1873 features/sui_quickactions.lua:2940
 msgid "default"
 msgstr "預設"
 
-#: screens/sui_menu.lua:846 screens/sui_menu.lua:1118 screens/sui_menu.lua:1791
-#: screens/sui_menu.lua:4543 screens/sui_quicksettings_bar.lua:1118
+#: screens/sui_menu.lua:847 screens/sui_menu.lua:1150 screens/sui_menu.lua:1861
+#: screens/sui_menu.lua:4652 screens/sui_quicksettings_bar.lua:1132
 msgid "disabled"
 msgstr "已停用"
 
-#: features/sui_backup.lua:667
+#: features/sui_backup.lua:664
 msgid "empty"
 msgstr "空"
 
-#: screens/sui_menu.lua:846 screens/sui_menu.lua:1118 screens/sui_menu.lua:1791
-#: screens/sui_menu.lua:4543 screens/sui_quicksettings_bar.lua:1118
+#: screens/sui_menu.lua:847 screens/sui_menu.lua:1150 screens/sui_menu.lua:1861
+#: screens/sui_menu.lua:4652 screens/sui_quicksettings_bar.lua:1132
 msgid "enabled"
 msgstr "已啟用"
 
@@ -4832,11 +4936,11 @@ msgstr "2月"
 msgid "february"
 msgstr "二月"
 
-#: features/sui_style.lua:1989
+#: features/sui_style.lua:2268
 msgid "ffi/archiver not available in this KOReader version"
-msgstr "此 KOReader 版本不可用 ffi/archiver"
+msgstr "目前的 KOReader 版本不支援 ffi/archiver 模块"
 
-#: features/sui_quickactions.lua:2148
+#: features/sui_quickactions.lua:2147
 msgid "hex code, e.g. E001"
 msgstr "十六進位碼，例如 E001"
 
@@ -4844,7 +4948,7 @@ msgstr "十六進位碼，例如 E001"
 msgid "hours read"
 msgstr "小時閱讀時間"
 
-#: modules/module_reading_stats.lua:129
+#: modules/module_reading_stats.lua:149
 msgid "in progress"
 msgstr "進行中"
 
@@ -4889,12 +4993,12 @@ msgstr "三月"
 msgid "may"
 msgstr "5月"
 
-#: modules/module_reading_stats.lua:121
+#: modules/module_reading_stats.lua:141
 msgid "no streak"
 msgstr "無連續紀錄"
 
-#: features/sui_quickactions.lua:1624 features/sui_quickactions.lua:3038
-#: features/sui_quickactions.lua:3057
+#: features/sui_quickactions.lua:1623 features/sui_quickactions.lua:3036
+#: features/sui_quickactions.lua:3055
 msgid "not configured"
 msgstr "未設定"
 
@@ -4914,43 +5018,43 @@ msgstr "10月"
 msgid "october"
 msgstr "十月"
 
-#: modules/module_reading_stats.lua:115
+#: modules/module_reading_stats.lua:135
 msgid "of reading this month"
 msgstr "本月閱讀時間"
 
-#: modules/module_reading_stats.lua:111
+#: modules/module_reading_stats.lua:131
 msgid "of reading this week"
 msgstr "本週閱讀時間"
 
-#: modules/module_reading_stats.lua:109
+#: modules/module_reading_stats.lua:129
 msgid "of reading today"
 msgstr "今日閱讀時間"
 
-#: modules/module_reading_stats.lua:117
+#: modules/module_reading_stats.lua:137
 msgid "of reading, all time"
 msgstr "累計閱讀時間"
 
-#: features/sui_style.lua:2032
+#: features/sui_style.lua:2311
 msgid "pack_path not provided"
-msgstr "未提供 pack_path"
+msgstr "未提供 pack_path 參數"
 
 #: screens/sui_stats_windows.lua:2300 screens/sui_stats_windows.lua:2615
 msgid "pages read"
-msgstr "頁已讀"
+msgstr "已讀頁數"
 
-#: modules/module_reading_stats.lua:116
+#: modules/module_reading_stats.lua:136
 msgid "pages read this month"
 msgstr "本月已讀頁數"
 
-#: modules/module_reading_stats.lua:112
+#: modules/module_reading_stats.lua:132
 msgid "pages read this week"
 msgstr "本週已讀頁數"
 
-#: modules/module_reading_stats.lua:110
+#: modules/module_reading_stats.lua:130
 msgid "pages read today"
 msgstr "今日已讀頁數"
 
-#: modules/module_reading_stats.lua:114
+#: modules/module_reading_stats.lua:134
 msgid "pages/day (7 days)"
 msgstr "頁/天（7 天）"
 
@@ -4966,7 +5070,7 @@ msgstr "9月"
 msgid "september"
 msgstr "九月"
 
-#: modules/module_reading_stats.lua:128
+#: modules/module_reading_stats.lua:148
 msgid "unread"
 msgstr "未讀"
 
@@ -4974,27 +5078,27 @@ msgstr "未讀"
 msgid "⬆ Update available: %s"
 msgstr "⬆ 有可用更新：%s"
 
-#: modules/module_action_list.lua:333 modules/module_quick_actions.lua:376
-#: modules/module_reading_stats.lua:889 screens/sui_menu.lua:350
-#: screens/sui_menu.lua:1971
+#: modules/module_action_list.lua:357 modules/module_quick_actions.lua:416
+#: modules/module_reading_stats.lua:947 screens/sui_menu.lua:350
+#: screens/sui_menu.lua:2070
 msgid "  (%d left)"
 msgid_plural "  (%d left)"
 msgstr[0] "  （剩餘 %d 個）"
 msgstr[1] "  （剩餘 %d 個）"
 
-#: modules/module_reading_goals.lua:1304
+#: modules/module_reading_goals.lua:1327
 msgid "  Set Goal  (%d book in %s)"
 msgid_plural "  Set Goal  (%d books in %s)"
 msgstr[0] "  設定目標（讀 %d 本書在 %s 年）"
 msgstr[1] "  設定目標（讀 %d 本書在 %s 年）"
 
-#: modules/module_reading_goals.lua:819
+#: modules/module_reading_goals.lua:849
 msgid "%d book"
 msgid_plural "%d books"
 msgstr[0] "%d 本書"
 msgstr[1] "%d 本書"
 
-#: modules/module_reading_goals.lua:1409
+#: modules/module_reading_goals.lua:1432
 msgid "%d book in %s"
 msgid_plural "%d books in %s"
 msgstr[0] "讀 %d 本書在 %s 年"
@@ -5012,27 +5116,27 @@ msgid_plural "%d days"
 msgstr[0] "%d 天"
 msgstr[1] "%d 天"
 
-#: modules/module_coverdeck.lua:1016 modules/module_currently.lua:879
-#: modules/module_currently.lua:880 modules/module_currently.lua:960
+#: modules/module_coverdeck.lua:1033 modules/module_currently.lua:931
+#: modules/module_currently.lua:932 modules/module_currently.lua:1012
 msgid "%d day of reading"
 msgid_plural "%d days of reading"
 msgstr[0] "閱讀 %d 天"
 msgstr[1] "閱讀 %d 天"
 
-#: screens/sui_stats_windows.lua:3410
+#: screens/sui_stats_windows.lua:3413
 msgid "%d freeze available"
 msgid_plural "%d freezes available"
 msgstr[0] "%d 個可用的凍結權"
 msgstr[1] "%d 個可用的凍結權"
 
-#: modules/module_reading_goals.lua:1495
+#: modules/module_reading_goals.lua:1517
 msgid "%d in %s"
 msgid_plural "%d in %s"
 msgstr[0] "%d 本在 %s 年"
 msgstr[1] "%d 本在 %s 年"
 
-#: features/sui_quickactions.lua:1616 features/sui_quickactions.lua:3030
-#: features/sui_quickactions.lua:3051
+#: features/sui_quickactions.lua:1615 features/sui_quickactions.lua:3028
+#: features/sui_quickactions.lua:3049
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d 個項目"
@@ -5044,44 +5148,44 @@ msgid_plural "%d weeks"
 msgstr[0] "%d 週"
 msgstr[1] "%d 週"
 
-#: modules/module_reading_goals.lua:817
+#: modules/module_reading_goals.lua:847
 msgid "%d/%d book"
 msgid_plural "%d/%d books"
 msgstr[0] "%d/%d 本書"
 msgstr[1] "%d/%d 本書"
 
-#: modules/module_collections.lua:1575
+#: modules/module_collections.lua:1565
 msgid "(%d collection)"
 msgid_plural "(%d collections)"
 msgstr[0] "（%d 個收藏）"
 msgstr[1] "（%d 個收藏）"
 
-#: modules/module_quick_actions.lua:486 modules/module_reading_stats.lua:387
+#: modules/module_quick_actions.lua:526 modules/module_reading_stats.lua:441
 msgid "(%d/%d — %d left)"
 msgid_plural "(%d/%d — %d left)"
 msgstr[0] "（%d/%d — 剩餘 %d 個）"
 msgstr[1] "（%d/%d — 剩餘 %d 個）"
 
-#: features/sui_quickactions.lua:2522
+#: features/sui_quickactions.lua:2521
 msgid "Group (%d item)"
 msgid_plural "Group (%d items)"
 msgstr[0] "群組（%d 個項目）"
 msgstr[1] "群組（%d 個項目）"
 
-#: modules/module_reading_goals.lua:1486
+#: modules/module_reading_goals.lua:1508
 msgid "Manually Tracked Books  (%d in %s)"
 msgid_plural "Manually Tracked Books  (%d in %s)"
 msgstr[0] "手動匯入的書籍（%d 本在 %s 年）"
 msgstr[1] "手動匯入的書籍（%d 本在 %s 年）"
 
-#: screens/sui_quicksettings_bar.lua:1094
-#: screens/sui_quicksettings_bar.lua:1180
+#: screens/sui_quicksettings_bar.lua:1108
+#: screens/sui_quicksettings_bar.lua:1194
 msgid "Maximum of %d slot reached. Remove one first."
 msgid_plural "Maximum of %d slots reached. Remove one first."
 msgstr[0] "最多 %d 個欄位，請先移除一個。"
 msgstr[1] "最多 %d 個欄位，請先移除一個。"
 
-#: screens/sui_menu.lua:644 screens/sui_menu.lua:906
+#: screens/sui_menu.lua:644 screens/sui_menu.lua:907
 msgid ""
 "Text shown in the top bar.\n"
 "Maximum %d character."
@@ -5095,30 +5199,30 @@ msgstr[1] ""
 "頂部欄顯示的文字。\n"
 "最多 %d 個字元。"
 
-#: modules/module_action_list.lua:276 modules/module_action_list.lua:403
-#: modules/module_quick_actions.lua:323 modules/module_quick_actions.lua:455
-#: screens/sui_menu.lua:1936 screens/sui_menu.lua:2050
+#: modules/module_action_list.lua:300 modules/module_action_list.lua:427
+#: modules/module_quick_actions.lua:363 modules/module_quick_actions.lua:495
+#: screens/sui_menu.lua:2035 screens/sui_menu.lua:2149
 msgid "The maximum of %d action per module has been reached. Remove one first."
 msgid_plural ""
 "The maximum of %d actions per module has been reached. Remove one first."
 msgstr[0] "每個模組最多 %d 個動作，請先移除一個。"
 msgstr[1] "每個模組最多 %d 個動作，請先移除一個。"
 
-#: features/sui_quickactions.lua:1686 features/sui_quickactions.lua:2995
+#: features/sui_quickactions.lua:1685 features/sui_quickactions.lua:2993
 msgid "The maximum of %d quick action has been reached. Delete one first."
 msgid_plural ""
 "The maximum of %d quick actions has been reached. Delete one first."
 msgstr[0] "最多 %d 個快速動作，請先刪除一個。"
 msgstr[1] "最多 %d 個快速動作，請先刪除一個。"
 
-#: modules/module_reading_stats.lua:683 modules/module_reading_stats.lua:763
+#: modules/module_reading_stats.lua:745 modules/module_reading_stats.lua:825
 msgid "The maximum of %d stat per row has been reached. Remove one first."
 msgid_plural ""
 "The maximum of %d stats per row has been reached. Remove one first."
 msgstr[0] "每行最多 %d 個統計項，請先移除一項。"
 msgstr[1] "每行最多 %d 個統計項，請先移除一項。"
 
-#: screens/sui_menu.lua:379 screens/sui_menu.lua:1229
+#: screens/sui_menu.lua:379 screens/sui_menu.lua:1261
 msgid "The maximum of %d tab has been reached. Remove one first."
 msgid_plural "The maximum of %d tabs has been reached. Remove one first."
 msgstr[0] "最多 %d 個標籤，請先移除一個。"
@@ -5130,7 +5234,7 @@ msgid_plural "days read"
 msgstr[0] "天已讀"
 msgstr[1] "天已讀"
 
-#: modules/module_reading_stats.lua:122
+#: modules/module_reading_stats.lua:142
 msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "連續閱讀天數"
@@ -5141,3 +5245,17 @@ msgid "page read"
 msgid_plural "pages read"
 msgstr[0] "頁已讀"
 msgstr[1] "頁已讀"
+
+#~ msgid "Return to Book Folder"
+#~ msgstr "返回書籍資料夾"
+
+#~ msgid "Start with Home Screen"
+#~ msgstr "啟動時顯示主螢幕"
+
+#~ msgid ""
+#~ "When closing a book from the Home Screen, go back to the folder where the "
+#~ "book is located instead of the Library home folder."
+#~ msgstr "從主螢幕關閉書籍時，返回該書籍所在的資料夾，而非藏書首頁資料夾。"
+
+#~ msgid "Lighten Wallpaper"
+#~ msgstr "加亮桌布"

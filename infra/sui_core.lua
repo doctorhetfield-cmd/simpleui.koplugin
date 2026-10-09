@@ -152,13 +152,13 @@ local _rotation_generation = 0
 -- MOD_GAP          : vertical gap inserted by _buildContent after each module
 -- PAD              : standard horizontal/vertical padding inside modules
 -- PAD2             : smaller padding (half of PAD)
--- SIDE_PAD         : left/right inset of the homescreen content area
+-- SIDE_PAD()       : left/right inset of the homescreen content area
+--                    (derived from SIDE_M, defined below)
 -- ---------------------------------------------------------------------------
 
 M.PAD           = Screen:scaleBySize(14)
 M.PAD2          = Screen:scaleBySize(8)
 M.MOD_GAP       = Screen:scaleBySize(23)   -- includes former LABEL_PAD_TOP (8px)
-M.SIDE_PAD      = Screen:scaleBySize(14)
 M.LABEL_PAD_TOP = 0                         -- absorbed into MOD_GAP
 M.LABEL_PAD_BOT = M.PAD2                    -- padding_bottom of sectionLabel (was 4px, now 8px)
 local _ok_ss, _SUIStyle_core = pcall(require, "features/sui_style")
@@ -215,14 +215,14 @@ end
 --- current rotation.
 function M.getPortraitInnerW()
     local portrait_w = M.getPortraitDims()
-    return portrait_w - M.SIDE_PAD * 2
+    return M.getInnerW(portrait_w)
 end
 
 --- Width of one column in the two-column landscape spread. `inner_w`
 --- defaults to a live read; pass it explicitly when the caller already
 --- has its own authoritative value.
 function M.getSpreadColWidth(inner_w)
-    inner_w = inner_w or (Screen:getWidth() - M.SIDE_PAD * 2)
+    inner_w = inner_w or M.getInnerW()
     return math.floor((inner_w - M.PAD) / 2)
 end
 
@@ -287,7 +287,7 @@ function M.resolveMenuItems(items)
 end
 
 -- ---------------------------------------------------------------------------
--- Side margin shared by topbar and bottombar
+-- Screen edge margin
 -- ---------------------------------------------------------------------------
 
 local function _cached(key, fn)
@@ -295,8 +295,28 @@ local function _cached(key, fn)
     return _dim[key]
 end
 
+-- Horizontal margin of every full-width surface: top bar, title bar, bottom
+-- bar, library pages, home screen and custom screens. It is a layout constant
+-- of its own and does not depend on which bars are enabled.
 function M.SIDE_M()
-    return _cached("side_m", function() return Screen:scaleBySize(24) end)
+    return _cached("side_m", function() return Screen:scaleBySize(24) - 3 end)
+end
+
+-- Left/right inset of the homescreen content area. Modules add PAD of their
+-- own on top, so the content edge lands on SIDE_M.
+function M.SIDE_PAD()
+    return _cached("side_pad", function() return M.SIDE_M() - M.PAD end)
+end
+
+-- Width between the side margins of a screen `screen_w` wide (default: live).
+function M.getUsableW(screen_w)
+    return (screen_w or Screen:getWidth()) - M.SIDE_M() * 2
+end
+
+-- Width of the homescreen content area of a screen `screen_w` wide
+-- (default: live).
+function M.getInnerW(screen_w)
+    return (screen_w or Screen:getWidth()) - M.SIDE_PAD() * 2
 end
 
 -- ---------------------------------------------------------------------------
@@ -323,9 +343,6 @@ function M.invalidateDimCache()
             end
         end
     end
-    -- Clear the section-label widget cache: labels embed inner_w in their key
-    -- and must be rebuilt after a screen rotation changes inner_w (fix #6).
-    if hs and hs.invalidateLabelCache then hs.invalidateLabelCache() end
 end
 
 -- ---------------------------------------------------------------------------
@@ -374,14 +391,29 @@ end
 -- Content area dimensions
 -- ---------------------------------------------------------------------------
 
-function M.getContentHeight()
-    local topbar_on = SUISettings:nilOrTrue("simpleui_topbar_enabled")
-    return Screen:getHeight() - _BB().TOTAL_H() - (topbar_on and _TB().TOTAL_TOP_H() or 0)
+-- Height of the band reserved at the top of every screen. It is reserved
+-- whether or not the status bar is shown, so content keeps the same top limit
+-- when the bar is toggled. It follows the status bar size setting.
+function M.getTopInset()
+    return _TB().TOTAL_TOP_H()
 end
 
+-- Top edge of the content area.
 function M.getContentTop()
-    local topbar_on = SUISettings:nilOrTrue("simpleui_topbar_enabled")
-    return topbar_on and _TB().TOTAL_TOP_H() or 0
+    return M.getTopInset()
+end
+
+-- Height of the content area: between the top inset and the bottom bar.
+function M.getContentHeight()
+    return Screen:getHeight() - _BB().TOTAL_H() - M.getTopInset()
+end
+
+-- Sizes a widget (or its constructor attrs) to the content area and marks it
+-- as sized, so it is not reduced a second time.
+function M.fitToContentArea(target)
+    target.height                 = M.getContentHeight()
+    target.y                      = M.getContentTop()
+    target._navbar_height_reduced = true
 end
 
 -- ---------------------------------------------------------------------------
@@ -423,7 +455,7 @@ function M.wrapWithNavbar(inner_widget, active_action_id, tabs, force_no_arrows)
     -- Read both settings once — used multiple times below.
     local topbar_on = SUISettings:nilOrTrue("simpleui_topbar_enabled")
     local navbar_on = SUISettings:nilOrTrue("simpleui_bar_enabled")
-    local topbar_top = topbar_on and Topbar.TOTAL_TOP_H() or 0
+    local topbar_top = M.getTopInset()
     local navbar_h   = Bottombar.TOTAL_H()
     local content_h  = screen_h - topbar_top - navbar_h
 
@@ -483,7 +515,6 @@ end
 -- ---------------------------------------------------------------------------
 
 function M.applyNavbarState(widget, container, bar, topbar, bar_idx, topbar_on, topbar_idx, tabs)
-    local Topbar = _TB()
     widget._navbar_container         = container
     widget._navbar_bar               = bar
     widget._navbar_topbar            = topbar
@@ -492,7 +523,6 @@ function M.applyNavbarState(widget, container, bar, topbar, bar_idx, topbar_on, 
     widget._navbar_bar_idx           = bar_idx
     widget._navbar_bar_idx_topbar_on = topbar_on
     widget._navbar_content_h         = M.getContentHeight()
-    widget._navbar_topbar_h          = topbar_on and Topbar.TOTAL_TOP_H() or 0
 end
 
 -- ---------------------------------------------------------------------------

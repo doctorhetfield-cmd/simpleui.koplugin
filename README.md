@@ -2,12 +2,66 @@
 
 A clean, distraction-free UI plugin for KOReader that transforms your reading experience. SimpleUI adds a **dedicated Home Screen**, a customisable Navigation Bar, a top status bar, and a reworked library title bar, giving you instant access to your library, history, collections, and reading stats without navigating through nested menus.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Features](#features)
+  - [Home Screen](#home-screen)
+  - [Custom Screens](#custom-screens)
+  - [Navigation Bar](#navigation-bar)
+  - [Top Status Bar](#top-status-bar)
+  - [Quick Settings Bar](#quick-settings-bar)
+  - [Custom Title Bar](#custom-title-bar)
+  - [Folder Covers](#folder-covers)
+  - [Reading Stats & Streaks](#reading-stats--streaks)
+  - [Quick Actions](#quick-actions)
+  - [Settings](#settings)
+  - [Backup & Restore](#backup--restore)
+  - [Factory Reset](#factory-reset)
+- [Translations](#translations)
+  - [Included languages](#included-languages)
+  - [Adding a new language](#adding-a-new-language)
+  - [Notes for translators](#notes-for-translators)
+- [Icon Packs](#icon-packs)
+  - [Where to place packs](#where-to-place-packs)
+  - [Applying a pack](#applying-a-pack)
+  - [File-name conventions](#file-name-conventions)
+  - [Optional manifest (`pack.lua`)](#optional-manifest-packlua)
+  - [Typical pack structure](#typical-pack-structure)
+  - [Notes for pack authors](#notes-for-pack-authors)
+  - [Custom Icons Folder](#custom-icons-folder)
+- [Contributing](#contributing)
+- [License](#license)
+
 <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; max-width: 1000px; justify-content: center;">
 <img src="https://github.com/user-attachments/assets/4ea92760-c2bf-488b-9f5a-1f663157c97f" width="240" height="324" alt="simpleUI1" style="object-fit: contain;" />
 <img src="https://github.com/user-attachments/assets/a1a7a2c7-6c0f-484e-b6fa-c78474661480" width="240" height="324" alt="simpleUI2" style="object-fit: contain;" />
 <img src="https://github.com/user-attachments/assets/1707f5c2-e367-47b8-90a9-9a9549bd9e67" width="240" height="324" alt="simpleUI3" style="object-fit: contain;" />
 <img src="https://github.com/user-attachments/assets/fd443a96-e12c-4dc7-9e69-103c444458af" width="240" height="324" alt="simpleUI4" style="object-fit: contain;" />
 </div>
+
+---
+
+## Installation
+
+> **Install from the latest release, not from _Code → Download ZIP_.** The repository download extracts to a folder such as `simpleui.koplugin-main`, which KOReader does not recognise as this plugin. The release ZIP already contains a correctly named `simpleui.koplugin` folder.
+
+1. Open the [latest release](https://github.com/doctorhetfield-cmd/simpleui.koplugin/releases/latest) page
+2. Scroll down to **Assets** and click **`simpleui.koplugin.zip`** to download it (ignore *Source code (zip)* and *Source code (tar.gz)*)
+3. Extract the ZIP on your computer. You should get a folder named exactly `simpleui.koplugin` with `main.lua` and `_meta.lua` directly inside. Some extraction tools add a wrapper folder with the same name (`simpleui.koplugin/simpleui.koplugin`); if that happens, copy the inner folder, the one that holds `main.lua`
+4. Connect your device to your computer and copy the `simpleui.koplugin` folder to the `plugins/` directory of your KOReader installation:
+   * Kobo: `/.adds/koreader/plugins`
+   * Kindle: `/koreader/plugins`
+   * Android: `koreader/plugins` at the root of onboard storage.
+5. Restart KOReader — Simple UI enables itself automatically and, on this first launch only, walks you through a short **Welcome Screen** (pick a starter layout, a few quick tips) before landing on your new Home Screen
+6. From there, tap the **Settings** button (gear icon) on the Navigation Bar any time to open the SUI Settings Window and configure the plugin further
+
+> **Tip:** If the plugin does not appear after restarting, check that the folder is named exactly `simpleui.koplugin`, sits directly inside `plugins/`, and is not nested (`plugins/simpleui.koplugin/simpleui.koplugin`).
+
+> **Tip:** If you skip or close the Welcome Screen, tap the **Home Screen** tab in the Navigation Bar to open your new home screen.
+
+> **Tip:** "Start with Home Screen" is already on after the Welcome Screen finishes, so KOReader opens directly to your Home Screen every time you turn on your device. You can toggle it any time from the Settings button under **Home Screen → Behaviour → Start with Home Screen**.
+
 ---
 
 ## Features
@@ -135,24 +189,7 @@ Found under **About → Factory Reset**. This wipes every Simple UI setting — 
 
 ---
 
-## Installation
-
-1. Download this repository as a ZIP — click **Code → Download ZIP**
-2. Extract the folder and confirm it is named `simpleui.koplugin`
-3. Copy the folder to the `plugins/` directory on your KOReader device:
-   * Kobo: `/.adds/koreader/plugins`
-   * Kindle: `/koreader/plugins`
-   * Android: `koreader/plugins` at the root of onboard storage.
-4. Restart KOReader — Simple UI enables itself automatically and, on this first launch only, walks you through a short **Welcome Screen** (pick a starter layout, a few quick tips) before landing on your new Home Screen
-5. From there, tap the **Settings** button (gear icon) on the Navigation Bar any time to open the SUI Settings Window and configure the plugin further
-
-> **Tip:** If you skip or close the Welcome Screen, tap the **Home Screen** tab in the Navigation Bar to open your new home screen.
-
-> **Tip:** "Start with Home Screen" is already on after the Welcome Screen finishes, so KOReader opens directly to your Home Screen every time you turn on your device. You can toggle it any time from the Settings button under **Home Screen → Behaviour → Start with Home Screen**.
-
----
-
-## 🌍 Translations
+## Translations
 
 SimpleUI has full translation support. The UI language is detected automatically from your KOReader language setting — no configuration needed.
 
@@ -196,11 +233,11 @@ The plugin first tries an exact match for the locale code (e.g. `pt_PT.po`), the
 
 ---
 
-### Icon Packs
+## Icon Packs
 
 An icon pack lets you replace multiple SimpleUI icons at once — titlebar buttons, pagination chevrons, navigation tab icons, touch-menu tab bar icons, and quick-action icons — with a single tap.
 
-#### Where to place packs
+### Where to place packs
 
 ```
 <KOReader settings dir>/simpleui/sui_icons/packs/
@@ -214,13 +251,13 @@ You can place packs there manually, or use **Style → Icons → Icon Packs → 
 
 The `packs/` folder is created automatically on first run and is never touched by plugin updates.
 
-#### Applying a pack
+### Applying a pack
 
 Open Simple UI's Settings and go to **Style → Icons → Icon Packs**, then tap the pack you want. Icons are applied immediately to the live UI — no restart needed.
 
 Packs are **additive and partial**: only the slots covered by the pack are changed. Slots not included in a pack keep their current value (custom or default). To revert everything afterwards, use **Style → Icons → System Icons → Reset All System Icons**.
 
-#### File-name conventions
+### File-name conventions
 
 Every file in the pack root must be an `.svg` or `.png`. The filename (without extension) determines which icon slot it fills:
 
@@ -265,12 +302,13 @@ Every file in the pack root must be an `.svg` or `.png`. The filename (without e
 | `sui_action_homescreen.svg` | Home Screen |
 | `sui_action_collections.svg` | Collections |
 | `sui_action_history.svg` | History |
+| `sui_action_recent.svg` | Recent |
 | `sui_action_continue.svg` | Continue Reading |
 | `sui_action_random_document.svg` | Random |
 | `sui_action_favorites.svg` | Favourites |
 | `sui_action_bookmark_browser.svg` | Bookmark Browser |
-| `sui_action_wifi_toggle.svg` | Wi-Fi toggle (On) |
-| `sui_action_wifi_toggle_off.svg` | Wi-Fi toggle (Off) |
+| `sui_action_search_library.svg` | Search |
+| `sui_action_wifi_toggle.svg` | Wi-Fi toggle |
 | `sui_action_frontlight.svg` | Brightness |
 | `sui_action_night_mode.svg` | Night Mode |
 | `sui_action_stats_calendar.svg` | Reading Stats |
@@ -312,7 +350,7 @@ Every file in the pack root must be an `.svg` or `.png`. The filename (without e
 
 Files with names that do not match any of the above are silently ignored.
 
-#### Optional manifest (`pack.lua`)
+### Optional manifest (`pack.lua`)
 
 A pack can include a `pack.lua` file in its root to provide metadata and override the default filename conventions:
 
@@ -334,7 +372,7 @@ return {
 
 If `pack.lua` is absent, the pack name shown in the menu is the folder name (or the zip stem).
 
-#### Typical pack structure
+### Typical pack structure
 
 ```
 NightOwl/                       ← pack name (or NightOwl.zip)
@@ -364,13 +402,13 @@ NightOwl/                       ← pack name (or NightOwl.zip)
 
 All files are optional — a valid pack can contain as few as one icon.
 
-#### Notes for pack authors
+### Notes for pack authors
 
 - Use `.svg` for best results; KOReader renders SVGs at any resolution. `.png` files work but may look blurry on high-DPI screens.
 - Icon paths are stored as absolute paths in settings. If you move or rename the pack folder after applying it, the icons will break until you re-apply the pack. Zip-installed packs are extracted to `packs/` and are therefore stable.
 - To share a pack, zip the folder (`NightOwl/`) and distribute the `.zip`.
 
-#### Custom Icons Folder
+### Custom Icons Folder
 
 The lightweight, single-icon alternative to a full pack. Place `.svg` files in:
 
@@ -390,6 +428,6 @@ To report a bug, open an **Issue** and include your KOReader version and device 
 
 ---
 
-## 📄 License
+## License
 
 MIT — see [LICENSE](LICENSE) for details.

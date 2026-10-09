@@ -145,16 +145,13 @@ local function _getTopbarScale()
 end
 
 -- Lazy upvalue for sui_core — resolved on first use to avoid a circular
--- require at load time, but stored so that M.SIDE_M() never pays a
+-- require at load time, but stored so that layout lookups never pay a
 -- require() lookup after the first call.
 local _Core
 local function _getCore()
     _Core = _Core or require("infra/sui_core")
     return _Core
 end
-
-function M.SIDE_M()        return _getCore().SIDE_M()                                           end
-function M.TOPBAR_SIDE_M() return _cached("topbar_side_m", function() return M.SIDE_M() - 3 end) end
 
 function M.TOPBAR_H()
     return _cached("topbar_h", function()
@@ -381,7 +378,8 @@ end
 
 function M.buildTopbarWidget()
     local screen_w  = Screen:getWidth()
-    local side_m    = M.TOPBAR_SIDE_M()
+    local Core      = _getCore()
+    local side_m    = Core.SIDE_M()
     local pad_top   = M.TOPBAR_PAD_TOP()
     local pad_bot   = M.TOPBAR_PAD_BOT()
     local total_h   = M.TOPBAR_H() + pad_top + pad_bot
@@ -443,7 +441,7 @@ function M.buildTopbarWidget()
             -- max_width caps the rendered width to half the bar so it cannot
             -- collide with items on the opposite side. TextWidget will append
             -- an ellipsis automatically when the text exceeds this limit.
-            local max_w = math.floor((screen_w - side_m * 2) / 2)
+            local max_w = math.floor(Core.getUsableW(screen_w) / 2)
             return nil, t, false, max_w
         end,
     }
@@ -486,7 +484,7 @@ function M.buildTopbarWidget()
         return group
     end
 
-    local inner_w = screen_w - side_m * 2
+    local inner_w = Core.getUsableW(screen_w)
 
     local left_w = LeftContainer:new{
         dimen = Geom:new{ w = inner_w, h = total_h },

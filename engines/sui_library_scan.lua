@@ -24,9 +24,10 @@
 -- the other. Neither mutates cache entries: callers that need to sort get a
 -- shallow copy.
 
-local lfs    = require("libs/libkoreader-lfs")
-local logger = require("logger")
-local Device = require("device")
+local lfs      = require("libs/libkoreader-lfs")
+local logger   = require("logger")
+local Device   = require("device")
+local BimStamp = require("features/library/sui_bim_stamp")
 
 local LibraryScan = {}
 
@@ -212,13 +213,8 @@ local function getBookInfoMgr()
 end
 
 local function bimDbFingerprint()
-    local ok_ds, DataStorage = pcall(require, "datastorage")
-    if not ok_ds or not DataStorage then return nil end
-    local db_path = DataStorage:getSettingsDir() .. "/bookinfo_cache.sqlite3"
-    local size = lfs.attributes(db_path, "size")
-    if not size then return nil end
-    local mtime = lfs.attributes(db_path, "modification") or 0
-    return string.format("v%d:%d:%d", BATCH_META_SNAPSHOT_VERSION, size, mtime)
+    local stamp = BimStamp.get()
+    return stamp and string.format("v%d:%s", BATCH_META_SNAPSHOT_VERSION, stamp)
 end
 
 local function snapshotPersist()

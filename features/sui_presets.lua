@@ -57,7 +57,7 @@ local HS_EXACT = {
     ["simpleui_statusbar_backdrop"]           = true,
     ["simpleui_navbar_backdrop"]              = true,
     ["simpleui_pagination_backdrop"]          = true,
-    ["simpleui_titlebar_button_backdrop"]     = true,
+    ["simpleui_titlebar_backdrop"]            = true,
     ["simpleui_module_backdrop"]              = true,
     ["simpleui_wallpaper_show_in_fm"]         = true,  -- "show wallpaper in file manager" toggle
     ["simpleui_reading_goals_show_annual"]    = true,
@@ -70,6 +70,7 @@ local HS_EXACT = {
 }
 
 local function _hsMatchesKey(key)
+    if type(key) ~= "string" then return false end
     if HS_EXACT[key] then return true end
     for _i, pfx in ipairs(HS_PREFIXES) do
         if key:sub(1, #pfx) == pfx then
@@ -205,12 +206,12 @@ local BUILTIN_PRESETS = {
         layout = { pages = { { id = 1, modules = { "coverdeck", "reading_goals", "reading_stats" } } } },
         settings = {
             simpleui_hs_coverdeck_source = "recent",
-            simpleui_hs_coverdeck_title_pos = "above",
+            simpleui_hs_coverdeck_main_order = { "title", "author", "covers", "progress", "stats" },
             simpleui_hs_coverdeck_scale = 100,
             simpleui_hs_coverdeck_thumb_scale = 100,
             simpleui_hs_coverdeck_item_label_scale = 100,
             simpleui_hide_label_coverdeck = false,
-            -- Visibility/order (show_*, main_order, stats_order) deliberately
+            -- Element visibility (show_*) and stats_order are deliberately
             -- left unconfigured so nothing is hidden — coverdeck renders with
             -- whatever sui_config.lua's applyFirstRunDefaults() (or the
             -- user's own customization, if any) currently defines.
@@ -223,7 +224,6 @@ local BUILTIN_PRESETS = {
         layout = { pages = { { id = 1, modules = { "coverdeck", "recent" } } } },
         settings = {
             simpleui_hs_coverdeck_source = "tbr",
-            simpleui_hs_coverdeck_title_pos = "below",
             simpleui_hs_coverdeck_scale = 100,
             simpleui_hs_coverdeck_thumb_scale = 100,
             simpleui_hs_coverdeck_item_label_scale = 100,
@@ -329,7 +329,9 @@ function SUIPresets.apply(name)
         if _hsMatchesKey(k) then to_delete[#to_delete + 1] = k end
     end
     for _i, k in ipairs(to_delete) do SUISettings:del(k) end
-    for k, v in pairs(snapshot) do SUISettings:set(k, v) end
+    for k, v in pairs(snapshot) do
+        if _hsMatchesKey(k) then SUISettings:set(k, v) end
+    end
     logger.dbg("simpleui/presets: applied preset '", name, "'")
     return true
 end
@@ -483,23 +485,22 @@ end
 -- § 2  ICON PRESETS
 -- ============================================================================
 
-local ICON_PRESET_KEY  = "simpleui_icon_presets"
-local ICON_PREFIXES    = { "simpleui_sysicon_", "simpleui_action_" }
-local CQA_PREFIX       = "simpleui_qa_"
-local CQA_LIST_KEY     = "simpleui_qa_list"
+local ICON_PRESET_KEY    = "simpleui_icon_presets"
+local SYSICON_PREFIX     = "simpleui_sysicon_"
+local ACTION_PREFIX      = "simpleui_action_"
+local ACTION_ICON_SUFFIX = "_icon"
+local CQA_PREFIX         = "simpleui_qa_"
+local CQA_LIST_KEY       = "simpleui_qa_list"
 
-local function _isScalarIconKey(key)
-    if key == ICON_PRESET_KEY then return false end
-    for _i, pfx in ipairs(ICON_PREFIXES) do
-        if key:sub(1, #pfx) == pfx then return true end
-    end
-    return false
+local function _hasPrefix(key, pfx)
+    return key:sub(1, #pfx) == pfx
 end
 
-local function _isCQAKey(key)
-    return key ~= ICON_PRESET_KEY
-        and key ~= CQA_LIST_KEY
-        and key:sub(1, #CQA_PREFIX) == CQA_PREFIX
+-- System icon overrides and default-action icon overrides (labels excluded).
+local function _isScalarIconKey(key)
+    if type(key) ~= "string" then return false end
+    return _hasPrefix(key, SYSICON_PREFIX)
+        or (_hasPrefix(key, ACTION_PREFIX) and key:sub(-#ACTION_ICON_SUFFIX) == ACTION_ICON_SUFFIX)
 end
 
 local SUIIconPresets = {}
@@ -556,15 +557,19 @@ function SUIIconPresets.apply(name, QA)
     for _i, k in ipairs(to_delete) do SUISettings:del(k) end
 
     -- 2. Restore scalar keys.
-    for k, v in pairs(snapshot._scalar or {}) do SUISettings:set(k, v) end
+    local scalars = type(snapshot._scalar) == "table" and snapshot._scalar or {}
+    for k, v in pairs(scalars) do
+        if _isScalarIconKey(k) and type(v) == "string" then SUISettings:set(k, v) end
+    end
 
     -- 3. Apply .icon to each existing CQA; CQAs missing from snapshot → reset.
     local cqa_list = SUISettings:get(CQA_LIST_KEY) or {}
-    local cqa_icons = snapshot._cqa or {}
+    local cqa_icons = type(snapshot._cqa) == "table" and snapshot._cqa or {}
     for _i, qa_id in ipairs(cqa_list) do
         local cfg = SUISettings:get(CQA_PREFIX .. qa_id)
         if type(cfg) == "table" then
-            cfg.icon = cqa_icons[qa_id]  -- nil = reset to default
+            local icon = cqa_icons[qa_id]
+            cfg.icon = type(icon) == "string" and icon or nil  -- nil = reset to default
             SUISettings:set(CQA_PREFIX .. qa_id, cfg)
         end
     end
@@ -839,7 +844,7 @@ function SUIPresets.makeMenuItems(opts)
                                             end
                                         end
                                         
-                                        for _, name in ipairs(current_names) do
+                                        for _i, name in ipairs(current_names) do
                                             local _name = name
                                             rows[#rows + 1] = SUIWindow2.ListRow{
                                                 title   = _name,

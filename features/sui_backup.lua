@@ -48,6 +48,7 @@ local logger = require("logger")
 local _      = require("infra/sui_i18n").translate
 
 local SUISettings = require("infra/sui_store")
+local Config = require("infra/sui_config")
 
 local UI = require("infra/sui_core")
 
@@ -82,9 +83,10 @@ local EXCLUDED_EXACT = {
     ["simpleui_last_backup"]              = true,
     ["simpleui_backup_scope"]             = true,
     ["simpleui_last_restore"]             = true,
+    ["simpleui_library_defaults_applied"] = true,
 }
 
-for _i = 2, 8 do
+for _i = 2, 9 do
     EXCLUDED_EXACT["simpleui_settings_migrated_v" .. _i] = true
 end
 
@@ -158,7 +160,7 @@ local CLASSIFY_RULES = {
     { "goals",
       prefixes = {
           "simpleui_streak_", "simpleui_reading_goal", "simpleui_daily_reading_goal_secs",
-          "simpleui_monthly_reading_goal_secs", "simpleui_tbr_sort_mode",
+          "simpleui_monthly_reading_goal_secs", "simpleui_tbr_sort_state",
           "simpleui_tbr_auto_remove_finished",
       },
       exact    = { simpleui_preserve_deleted_books_in_stats = true, simpleui_deleted_books = true },
@@ -197,7 +199,7 @@ local CLASSIFY_RULES = {
       prefixes = {
           "simpleui_bar_", "simpleui_topbar_", "simpleui_tb_", "simpleui_qs_bar_",
           "simpleui_titlebar", "simpleui_statusbar_transparent", "simpleui_bars_transparent",
-          "simpleui_statusbar_backdrop", "simpleui_navbar_backdrop", "simpleui_pagination_backdrop", "simpleui_titlebar_button_backdrop", "simpleui_module_backdrop",
+          "simpleui_statusbar_backdrop", "simpleui_navbar_backdrop", "simpleui_pagination_backdrop", "simpleui_titlebar_backdrop", "simpleui_module_backdrop",
           "simpleui_menu_tap", "simpleui_menu_swipe",
           "navbar_",
       },
@@ -499,16 +501,11 @@ local function _buildSnapshot(scope)
         table.sort(assets, function(a, b) return a.p < b.p end)
     end
 
-    local start_with_hs = false
-    if G_reader_settings and G_reader_settings:readSetting("start_with") == "homescreen_simpleui" then
-        start_with_hs = true
-    end
-
     return {
         settings            = settings,
         assets              = assets,
         scope               = scope,
-        start_with_simpleui = start_with_hs,
+        start_with_simpleui = Config.isStartWithHomescreen(),
     }
 end
 
@@ -817,8 +814,8 @@ function Backup.restore(parsed, filter)
         -- Only ever SET it (when the backup had it); never clear the local
         -- device's startup preference — restoring a partial backup should
         -- not change how the device boots.
-        if parsed.start_with_simpleui and G_reader_settings then
-            G_reader_settings:saveSetting("start_with", "homescreen_simpleui")
+        if parsed.start_with_simpleui then
+            Config.setStartWithHomescreen(true)
         end
 
         -- 5. Assets: decode + write into the local simpleui/ tree.

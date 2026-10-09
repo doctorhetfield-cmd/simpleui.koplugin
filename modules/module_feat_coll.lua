@@ -65,20 +65,7 @@ local function makeInstance(inst_id)
         SUISettings:saveSetting(pfx .. COLL_KEY, name)
     end
 
-    -- Last sort mode applied via the "Sort" menu below. Unlike
-    -- module_library.lua/module_collections.lua, sorting a collection is a
-    -- one-shot action (it rewrites ReadCollection's order, which the user
-    -- can then hand-tweak via "Arrange" on top of), not a live filter — so
-    -- this key exists purely to remember what was last picked, for display
-    -- (mandatory_func) on the "Sort" row. It intentionally has no effect on
-    -- getFileList/GridRenderer.getCollectionFileList.
-    local SORT_KEY = inst_id .. "_sort_mode"
-    local function getLastSortMode(pfx)
-        return SUISettings:readSetting(pfx .. SORT_KEY)
-    end
-    local function saveLastSortMode(pfx, mode)
-        SUISettings:saveSetting(pfx .. SORT_KEY, mode)
-    end
+    local SORT_STATE_KEY = inst_id .. "_sort_state"
 
     -- Name to show when the target collection no longer exists (deleted outside
     -- SimpleUI) or hasn't been chosen yet.
@@ -151,53 +138,15 @@ local function makeInstance(inst_id)
             end,
         }
 
-        -- Sort (one-click action — rewrites the persisted order; manual
-        -- Arrange remains available on top of the result). The action
-        -- itself stays one-shot (picking "Title (A–Z)" again re-sorts even
-        -- if it was already selected — the list may have changed since),
-        -- but each option is a radio row so the last-applied mode is
-        -- remembered (getLastSortMode) and shown as a checkmark in the
-        -- sub-menu. The parent row's title never changes — the mode is
-        -- surfaced only via mandatory_func (native Menu's right-side value)
-        -- / SUIWindow's automatic right_value inference from the checked
-        -- radio child (see the "Row title vs. right-side value" note in
-        -- engines/sui_window.lua's SUIWindow.MenuTable doc block).
-        local SORT_LABELS = {
-            title_asc    = _lc("Title (A–Z)"),
-            title_desc   = _lc("Title (Z–A)"),
-            author_asc   = _lc("Author (A–Z)"),
-            percent_asc  = _lc("% Read (ascending)"),
-            percent_desc = _lc("% Read (descending)"),
-            shuffle      = _lc("Shuffle"),
-        }
-        local SORT_ORDER = { "title_asc", "title_desc", "author_asc", "percent_asc", "percent_desc", "shuffle" }
-        items[#items + 1] = {
-            text_func = function() return _lc("Sort") end,
-            mandatory_func = function() return SORT_LABELS[getLastSortMode(pfx)] or "" end,
-            enabled_func = function() return #getFileList(pfx) > 1 end,
-            sub_item_table_func = function()
-                local name = getCollName(pfx)
-                local sub = {}
-                for _, mode in ipairs(SORT_ORDER) do
-                    local _m = mode
-                    sub[#sub + 1] = {
-                        text           = SORT_LABELS[_m],
-                        radio          = true,
-                        separator      = (_m == "shuffle") or nil,
-                        checked_func   = function() return getLastSortMode(pfx) == _m end,
-                        keep_menu_open = true,
-                        callback       = function()
-                            if name then
-                                GridRenderer.sortCollection(name, _m)
-                                saveLastSortMode(pfx, _m)
-                                refresh()
-                            end
-                        end,
-                    }
-                end
-                return sub
-            end,
-        }
+        -- Sort (rewrites the persisted order; manual Arrange remains
+        -- available on top of the result).
+        items[#items + 1] = GridRenderer.makeSortMenuItem({
+            _lc         = _lc,
+            refresh     = refresh,
+            state_key   = pfx .. SORT_STATE_KEY,
+            getCollName = function() return getCollName(pfx) end,
+            getCount    = function() return #getFileList(pfx) end,
+        })
 
         -- Arrange (reorder the chosen collection).
         items[#items + 1] = {

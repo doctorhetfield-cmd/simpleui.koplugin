@@ -17,8 +17,7 @@
 --      TTL).
 --   2. A user-facing sort order, since "whatever order the filesystem walk
 --      happened to visit files in" is meaningless to a reader. There is no
---      ReadCollection to persist an order onto (unlike Featured
---      Collection's GridRenderer.sortCollection) — this module sorts its
+--      ReadCollection to persist an order onto — this module sorts its
 --      own getFileList() output on every call, driven by a persisted
 --      "flat_library_sort_mode" setting (see sortRaw below).
 
@@ -202,10 +201,8 @@ local function getFileList(ctx)
 end
 
 -- ---------------------------------------------------------------------------
--- "Sort" menu — same visual pattern as Featured Collection's Sort item
--- (radio sub_item_table_func), but persists a mode instead of firing a
--- one-shot reorder, since there's no collection to write the order back
--- onto.
+-- "Sort" menu — a persisted live mode (radio sub-items), since there is no
+-- collection to write the order back onto.
 -- ---------------------------------------------------------------------------
 local SORT_LABELS = {
     title_asc   = _("Title (A–Z)"),

@@ -58,7 +58,7 @@ local RS_N_COLS    = 7  -- max columns — not a dimension, no scaling needed
 -- single-column Homescreen at 100% scale showing the default 3 stat items.
 -- ---------------------------------------------------------------------------
 local _REF_RS_N        = 3  -- default item count (see _getItems' fallback below)
-local _REF_RS_AVAIL_W  = (Screen:getWidth() - UI.SIDE_PAD * 2) - PAD * 2
+local _REF_RS_AVAIL_W  = UI.getInnerW() - PAD * 2
 local _REF_RS_CARD_W   = math.floor((_REF_RS_AVAIL_W - _BASE_RS_GAP * (_REF_RS_N - 1)) / _REF_RS_N)
 local _RS_VAL_FS_PCT   = _BASE_RS_VAL_FS / _REF_RS_CARD_W
 local _RS_LBL_FS_PCT   = _BASE_RS_LBL_FS / _REF_RS_CARD_W
@@ -209,14 +209,14 @@ local function makeStreakValWidget(val_str, d, clr_blk)
     return HorizontalGroup:new{ align = "center",
         UI.makeColoredText{
             text    = _STREAK_ICON,
-            face    = d.face_val,
+            face    = d.face_icon,
             fgcolor = SUIStyle.COLOR.gray_strong,
         },
         HorizontalSpan:new{ width = _STREAK_ICON_GAP },
         UI.makeColoredText{
             text    = val_str,
             face    = d.face_val,
-            bold    = true,
+            bold    = d.bold_val,
             fgcolor = clr_blk or SUIStyle.COLOR.text_primary,
         },
     }
@@ -234,7 +234,7 @@ local function _buildCardInner(stat_id, stats, d, align, clr_blk, clr_sub, max_w
             or  UI.makeColoredText{ 
                     text = val_str, 
                     face = d.face_val, 
-                    bold = true, 
+                    bold = d.bold_val, 
                     fgcolor = clr_blk,
                     max_width = actual_max_w,
                     truncate_with_ellipsis = true
@@ -242,6 +242,7 @@ local function _buildCardInner(stat_id, stats, d, align, clr_blk, clr_sub, max_w
         UI.makeColoredText{
             text    = lbl_str,
             face    = d.face_lbl,
+            bold    = d.bold_lbl,
             fgcolor = clr_sub,
             max_width = actual_max_w,
             truncate_with_ellipsis = true,
@@ -406,6 +407,13 @@ M.id         = "reading_stats"
 M.name       = _("Reading Stats")
 M.label      = nil   -- no section label; uses own top-padding
 M.default_on = false
+
+-- Text elements with a user-selectable font family. Their size follows the
+-- card width and the module text size.
+M.text_elems = { "value", "label" }
+
+-- The values are bold until the user picks another variant.
+Config.declareTextVariants(M.id, { value = "bold" })
 M.MAX_ITEMS  = RS_N_COLS   -- public field instead of getMaxItems() function
 
 function M.isEnabled(pfx)
@@ -451,6 +459,7 @@ end
 
 function M.build(w, ctx)
     if not M.isEnabled(ctx.pfx) then return nil end
+    local styles = Config.resolveTextStyles(ctx, M.id, M.text_elems)
     local stat_ids = _getItems(ctx.pfx)
     local n = math.min(#stat_ids, RS_N_COLS)
 
@@ -464,7 +473,7 @@ function M.build(w, ctx)
     local lf        = (ctx and ctx.landscape_factor) or 1
     local scale     = Config.getModuleScale("reading_stats", ctx and ctx.pfx) * lf
     local raw_scale = Config.getModuleScaleRaw("reading_stats", ctx and ctx.pfx)
-    local text_pct  = Config.getRSTextScalePct() / 100  -- independent user "text size" slider
+    local text_pct  = 1
 
     local card_h = math.floor(_BASE_RS_CARD_H * scale)
     local gap    = math.max(2, math.floor(_BASE_RS_GAP * scale))
@@ -482,11 +491,15 @@ function M.build(w, ctx)
     -- to card_h so they never outgrow the card when few stats are selected.
     local val_fs_max = math.max(_RS_VAL_FS_MIN, math.floor(card_h * 0.40))
     local lbl_fs_max = math.max(_RS_LBL_FS_MIN, math.floor(card_h * 0.20))
-    local _val_fs = _clampFs(item_w * _RS_VAL_FS_PCT * raw_scale * text_pct, _RS_VAL_FS_MIN, val_fs_max)
-    local _lbl_fs = _clampFs(item_w * _RS_LBL_FS_PCT * raw_scale * text_pct, _RS_LBL_FS_MIN, lbl_fs_max)
+    local _val_fs = _clampFs(item_w * _RS_VAL_FS_PCT * raw_scale * text_pct * (styles.value.scale or 1),
+                             _RS_VAL_FS_MIN, val_fs_max)
+    local _lbl_fs = _clampFs(item_w * _RS_LBL_FS_PCT * raw_scale * text_pct * (styles.label.scale or 1),
+                             _RS_LBL_FS_MIN, lbl_fs_max)
     -- Placeholder ("no stats selected") isn't card text — it spans the full
     -- row, so it keeps the old fixed-pixel/lf-scaled sizing.
     local _ph_fs  = math.max(8, math.floor(_BASE_RS_PH_FS  * scale))
+    local face_val, bold_val = SUIStyle.getTextFace(styles.value, _val_fs)
+    local face_lbl, bold_lbl = SUIStyle.getTextFace(styles.label, _lbl_fs)
     local d = {
         card_h   = card_h,
         gap      = gap,
@@ -496,10 +509,12 @@ function M.build(w, ctx)
         sep_w    = math.max(1, math.floor(_BASE_RS_SEP_W    * scale)),
         ph_fs    = _ph_fs,
         -- Pre-resolved font faces — shared by all card builders, avoids
-        -- repeated Font:getFace calls inside the per-card build loop.
-        face_val = Font:getFace(SUIStyle.FACE_REGULAR, _val_fs),
-        face_lbl = Font:getFace(SUIStyle.FACE_REGULAR,         _lbl_fs),
-        face_ph  = Font:getFace(SUIStyle.FACE_REGULAR, _ph_fs),
+        -- repeated face lookups inside the per-card build loop.
+        face_val  = face_val,  bold_val = bold_val,
+        face_lbl  = face_lbl,  bold_lbl = bold_lbl,
+        -- The streak icon is a symbol glyph the chosen family may lack.
+        face_icon = Font:getFace(SUIStyle.FACE_REGULAR, _val_fs),
+        face_ph   = Font:getFace(SUIStyle.FACE_REGULAR, _ph_fs),
     }
 
     local _CLR_TEXT_BLK_EFF = SUIStyle.COLOR.text_primary
@@ -832,17 +847,14 @@ function M.getMenuItems(ctx_menu)
             end or nil,
         },
         _makeScaleItem(ctx_menu),
-        Config.makeScaleItem({
-            text_func     = function() return _lc("Text Size") end,
-            title         = _lc("Text Size"),
-            info          = _lc("Size of the text inside the stat cards.\nDoes not affect card size or padding.\n100% is the default size."),
-            get           = function() return Config.getRSTextScalePct() end,
-            set           = function(pct) Config.setRSTextScalePct(pct) end,
-            refresh       = refresh,
-            value_min     = Config.RS_TEXT_SCALE_MIN,
-            value_max     = Config.RS_TEXT_SCALE_MAX,
-            value_step    = Config.RS_TEXT_SCALE_STEP,
-            default_value = Config.RS_TEXT_SCALE_DEF,
+        
+        Config.makeTextSection({
+            mod_id      = M.id,
+            elems       = M.text_elems,
+            labels      = { value = _lc("Value"), label = _lc("Label") },
+            pfx         = pfx,
+            refresh     = refresh,
+            _lc         = _lc,
         }),
         {
             text           = _lc("Style"),
@@ -996,7 +1008,48 @@ function M.getMenuItems(ctx_menu)
         end,
     }
 
-    return items
+    local item_rows, size_rows, appearance_extra, content_rows, behaviour_rows = {}, {}, {}, {}, {}
+    local text_opts = {
+        mod_id  = M.id,
+        elems   = M.text_elems,
+        labels  = { value = _lc("Value"), label = _lc("Label") },
+        info    = _lc("Size of this text.\n100% is the default size."),
+        pfx     = pfx,
+        refresh = refresh,
+        _lc     = _lc,
+    }
+    for _, row in ipairs(items) do
+        local label = row.text
+        if type(label) ~= "string" and row.text_func then
+            local ok, v = pcall(row.text_func)
+            if ok and type(v) == "string" then label = v end
+        end
+        label = label or ""
+        if label == _lc("Scale") then
+            size_rows[#size_rows + 1] = row
+        elseif label == _lc("Text") or label == _lc("Fonts") then
+            -- provided via text_opts
+        elseif label == _lc("Style") or label == _lc("Alignment") or label == _lc("Card Opacity") then
+            appearance_extra[#appearance_extra + 1] = row
+        elseif label == _lc("Streak Mode") then
+            content_rows[#content_rows + 1] = row
+        elseif label == _lc("Update Stats Now") then
+            behaviour_rows[#behaviour_rows + 1] = row
+        else
+            item_rows[#item_rows + 1] = row
+        end
+    end
+    return Config.buildModuleMenu({
+        items   = item_rows,
+        content = #content_rows > 0 and content_rows or nil,
+        appearance = {
+            size  = #size_rows > 0 and size_rows or nil,
+            text  = text_opts,
+            extra = #appearance_extra > 0 and appearance_extra or nil,
+        },
+        behaviour = #behaviour_rows > 0 and behaviour_rows or nil,
+    }, ctx_menu)
 end
+
 
 return M

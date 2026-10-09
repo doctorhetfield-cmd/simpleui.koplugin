@@ -104,7 +104,7 @@ local function search(home_dir, query)
     local rows_by_path = {}
     local ok_bim, bim = pcall(require, "bookinfomanager")
     if ok_bim and bim then
-        local rows = MetadataSource.getMatchingFiles(bim, home_dir, nil, { recursive = true })
+        local rows = MetadataSource.getMatchingFiles(bim, home_dir)
         for _, row in ipairs(rows) do rows_by_path[row[1]] = row end
     end
 

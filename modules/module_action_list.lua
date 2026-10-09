@@ -123,10 +123,11 @@ local function buildListWidget(w, action_ids, show_icons, align, on_tap_fn, d, c
         }
     end
 
-    local inner_w = w - PAD * 2
-    local n       = #valid_ids
+    local n = #valid_ids
 
-    local vg = VerticalGroup:new{ align = "center" }
+    -- Rows keep their natural width and are aligned against each other inside
+    -- the group, whose width is that of its widest row.
+    local vg = VerticalGroup:new{ align = align }
 
     -- icon_opts covers this row layout's one remaining structural
     -- difference from the other QA consumers: the icon sits beside a label
@@ -140,14 +141,14 @@ local function buildListWidget(w, action_ids, show_icons, align, on_tap_fn, d, c
     for i = 1, n do
         local aid = valid_ids[i]
         local row_content = QARenderer.buildListRow(aid, {
-            inner_w        = inner_w,
+            inner_w        = w,
             row_h          = d.row_h,
             show_icon      = show_icons,
             icon_sz        = d.icon_sz,
             icon_gap       = d.icon_gap,
-            lbl_fs         = d.fs,
+            lbl_face       = d.lbl_face,
+            lbl_bold       = d.lbl_bold,
             fgcolor        = clr_blk,
-            align          = align,
             icon_opts      = icon_opts,
             on_tap_fn      = on_tap_fn,
             tap_event_name = "TapAL",
@@ -159,8 +160,11 @@ local function buildListWidget(w, action_ids, show_icons, align, on_tap_fn, d, c
         vg[#vg + 1] = row_content
     end
 
+    -- `fit_align` makes the module chrome hug the list and position it within
+    -- the column (see ModuleChrome.wrap). Horizontal insets come from the chrome.
     return FrameContainer:new{
-        bordersize = 0, padding = PAD, padding_top = 0, padding_bottom = 0,
+        bordersize = 0, padding = 0,
+        fit_align = align,
         vg,
     }
 end
@@ -219,6 +223,7 @@ M.id         = MOD_ID
 M.name       = _("Action List")
 M.label      = nil
 M.default_on = false
+M.text_elems = { "label" }
 
 function M.isEnabled(pfx)
     return SUISettings:readSetting(pfx .. MOD_SUFFIX .. "_enabled") == true
@@ -228,6 +233,23 @@ function M.setEnabled(pfx, on)
     SUISettings:saveSetting(pfx .. MOD_SUFFIX .. "_enabled", on)
 end
 
+local _label_scale_migrated = {}
+
+local function _migrateLabelScale(mod_id, pfx)
+    pfx = pfx or "simpleui_hs_"
+    local tag = pfx .. mod_id
+    if _label_scale_migrated[tag] then return end
+    _label_scale_migrated[tag] = true
+    local text_key = pfx .. mod_id .. "_text_scale_label"
+    if SUISettings:get(text_key) == nil then
+        local pct = Config.getItemLabelScalePct(mod_id, pfx)
+        if pct ~= Config.SCALE_DEF then
+            Config.setTextStyleScale(pct, mod_id, "label", pfx)
+        end
+    end
+    SUISettings:del(pfx .. mod_id .. "_item_label_scale")
+end
+
 function M.build(w, ctx)
     if not M.isEnabled(ctx.pfx) then return nil end
     local qa_ids    = SUISettings:readSetting(ctx.pfx .. ITEMS_KEY) or {}
@@ -235,8 +257,10 @@ function M.build(w, ctx)
     local align     = getAlignment(ctx.pfx, MOD_SUFFIX)
     local lf        = ctx.landscape_factor or 1
     local d         = _getDims(Config.getModuleScale(MOD_ID, ctx.pfx) * lf)
-    local lbl_scale = Config.getItemLabelScale(MOD_ID, ctx.pfx) * lf
-    d.fs = math.max(8, math.floor(d.fs * lbl_scale))
+    _migrateLabelScale(MOD_ID, ctx.pfx)
+    local styles = Config.resolveTextStyles(ctx, MOD_ID, M.text_elems)
+    d.fs = math.max(8, math.floor(d.fs * lf * (styles.label.scale or 1)))
+    d.lbl_face, d.lbl_bold = SUIStyle.getTextFace(styles.label, d.fs)
     return buildListWidget(w, qa_ids, show_icons, align, ctx.on_qa_tap, d)
 end
 
@@ -436,14 +460,6 @@ function M.getMenuItems(ctx_menu)
                 set          = function(v) Config.setModuleScale(v, MOD_ID, pfx) end,
                 refresh      = refresh,
             }),
-            Config.makeScaleItem({
-                text_func    = function() return _lc("Text Size") end,
-                title        = _lc("Text Size"),
-                info         = _lc("Scale for the label text.\n100% is the default size."),
-                get          = function() return Config.getItemLabelScalePct(MOD_ID, pfx) end,
-                set          = function(v) Config.setItemLabelScale(v, MOD_ID, pfx) end,
-                refresh      = refresh,
-            }),
         },
     }
 
@@ -481,7 +497,40 @@ function M.getMenuItems(ctx_menu)
         },
     }
 
-    return items
+    -- Partition into canonical sections (Items already first in `items`).
+    local item_rows, size_rows, extra_rows = {}, {}, {}
+    for _, row in ipairs(items) do
+        local label = row.text or (row.text_func and row.text_func()) or ""
+        if label == _lc("Size") or (row.text_func and row.text_func() == _lc("Size")) then
+            if row.sub_item_table then
+                for _, s in ipairs(row.sub_item_table) do size_rows[#size_rows+1] = s end
+            else
+                size_rows[#size_rows+1] = row
+            end
+        elseif label == _lc("Label") then
+            -- Typography lives in appearance.text (not duplicated here).
+        elseif label == _lc("Show Icon") or label == _lc("Alignment") or (row.text_func and row.text_func() == _lc("Alignment")) then
+            extra_rows[#extra_rows+1] = row
+        else
+            item_rows[#item_rows+1] = row
+        end
+    end
+    return Config.buildModuleMenu({
+        items = item_rows,
+        appearance = {
+            size  = #size_rows > 0 and size_rows or nil,
+            text  = {
+                mod_id  = MOD_ID,
+                elems   = M.text_elems,
+                labels  = { label = _lc("Label") },
+                info    = _lc("Size of this text.\n100% is the default size."),
+                pfx     = pfx,
+                refresh = refresh,
+                _lc     = _lc,
+            },
+            extra = extra_rows,
+        },
+    }, ctx_menu)
 end
 
 M.invalidateCustomQACache = QA.invalidateCustomQACache

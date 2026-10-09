@@ -7,12 +7,13 @@
 -- Consumers read ctx.stats.* — they contain no DB or cache logic of their own.
 --
 -- DB source: page_stat_data (base table) instead of the page_stat VIEW, so
--- SQLite can use the idx_simpleui_pagestat_time index on start_time.
+-- SQLite can use the start_time index to bound each scan to its window.
 --
--- DB roundtrips per cold-cache call: 2
---   Query 1 — one pass over page_stat_data: today/week/rolling-7-day/month/
---     year/total, seconds and pages, grouped by day.
---   Query 2 — streak (distinct active dates + freeze-aware walk).
+-- DB roundtrips per cold-cache call: 3
+--   Query 1a — per-day buckets over the last ~month: today/week/rolling-7-day/
+--     month, seconds and pages.
+--   Query 1b — duration sums for the year and all-time windows.
+--   Query 2  — streak (recent distinct active dates + freeze-aware walk).
 -- Sidecar roundtrip: one pass over ReadHistory.hist producing books_year and
 --   books_total together (single scan instead of two).
 
@@ -116,13 +117,23 @@ local function rownum(v)
 end
 
 -- ---------------------------------------------------------------------------
--- Query 1: all time-series stats in a single pass over page_stat_data.
+-- Query 1: time-series stats, split by how far back each window reaches.
 --
--- day_buckets groups rows into one row per calendar day; the outer SELECT
--- uses CASE WHEN on the ISO-8601 date column to partition sums across
--- windows in one scan instead of five. Dates are pre-computed by SP.get()
--- from a single os.date("*t") call, so this function makes no os.date calls
--- of its own.
+-- Short windows (today / week / rolling 7 days / month) need per-day buckets
+-- so pages are counted as DISTINCT per day. day_buckets groups the rows since
+-- `window_since` into one row per calendar day; the outer SELECT uses CASE
+-- WHEN on the ISO-8601 date column to partition sums across windows in one
+-- scan. `window_since` is the earliest start of those windows minus a day of
+-- slack, so the scan only touches roughly the last month of rows.
+--
+-- Long windows (year / all time) only need a duration sum, so a second query
+-- skips the per-row date formatting and bucketing. The year bound is applied
+-- to start_time (the indexed column) rather than to a formatted date.
+--
+-- page_stat_data is read directly (not the page_stat view) and duration > 0
+-- excludes zero-duration rows, matching the page_stat VIEW's semantics.
+-- Dates are pre-computed by SP.get() from a single os.date("*t") call, so
+-- this function makes no os.date calls of its own.
 --
 -- Two distinct windows feed two different cards:
 --   week_date     — Monday of the current calendar week ("This week" card).
@@ -130,8 +141,8 @@ end
 --     true trailing window, independent of week_date, to match the Reading
 --     Stats window's own rolling average.
 -- ---------------------------------------------------------------------------
-local function fetchTimeSeries(conn, start_today, week_start, month_start, year_start,
-                               today_str, week_date, month_date, year_date, rolling7_date)
+local function fetchTimeSeries(conn, window_since, year_start,
+                               today_str, week_date, month_date, rolling7_date)
     local r = {
         today_secs     = 0,
         today_pages    = 0,
@@ -148,13 +159,7 @@ local function fetchTimeSeries(conn, start_today, week_start, month_start, year_
     }
 
     local ok, err = pcall(function()
-        -- The CTE always scans the full table (no lower bound): each window
-        -- column is already bounded by its own CASE WHEN, and total_secs
-        -- needs the unconditional sum. page_stat_data is grouped by
-        -- id_book,page to avoid double-counting a page read twice in the
-        -- same session, matching the page_stat VIEW's semantics.
-        local window_start = 0
-        local sql = string.format([[
+        local rw = conn:exec(string.format([[
             WITH day_buckets AS (
                 SELECT
                     strftime('%%Y-%%m-%%d', start_time, 'unixepoch', 'localtime') AS d,
@@ -172,18 +177,13 @@ local function fetchTimeSeries(conn, start_today, week_start, month_start, year_
                 COALESCE(sum(CASE WHEN d >= '%s' THEN sd ELSE 0 END), 0),
                 COALESCE(sum(CASE WHEN d >= '%s' THEN pg ELSE 0 END), 0),
                 COALESCE(sum(CASE WHEN d >= '%s' THEN sd ELSE 0 END), 0),
-                COALESCE(sum(CASE WHEN d >= '%s' THEN pg ELSE 0 END), 0),
-                COALESCE(sum(CASE WHEN d >= '%s' THEN sd ELSE 0 END), 0),
-                COALESCE(sum(sd), 0)
+                COALESCE(sum(CASE WHEN d >= '%s' THEN pg ELSE 0 END), 0)
             FROM day_buckets;
-        ]], window_start,
+        ]], window_since,
             today_str,    today_str,
             week_date,    week_date,
             rolling7_date, rolling7_date,
-            month_date,   month_date,
-            year_date)
-
-        local rw = conn:exec(sql)
+            month_date,   month_date))
         if rw and rw[1] and rw[1][1] then
             r.today_secs     = rownum(rw[1][1])
             r.today_pages    = rownum(rw[2] and rw[2][1])
@@ -191,12 +191,22 @@ local function fetchTimeSeries(conn, start_today, week_start, month_start, year_
             r.week_pages     = rownum(rw[4] and rw[4][1])
             r.rolling7_secs  = rownum(rw[5] and rw[5][1])
             r.rolling7_pages = rownum(rw[6] and rw[6][1])
-            r.avg_secs    = math.floor(r.rolling7_secs  / 7)
-            r.avg_pages   = math.floor(r.rolling7_pages / 7)
-            r.month_secs  = rownum(rw[7] and rw[7][1])
-            r.month_pages = rownum(rw[8] and rw[8][1])
-            r.year_secs   = rownum(rw[9] and rw[9][1])
-            r.total_secs  = rownum(rw[10] and rw[10][1])
+            r.avg_secs       = math.floor(r.rolling7_secs  / 7)
+            r.avg_pages      = math.floor(r.rolling7_pages / 7)
+            r.month_secs     = rownum(rw[7] and rw[7][1])
+            r.month_pages    = rownum(rw[8] and rw[8][1])
+        end
+
+        local rl = conn:exec(string.format([[
+            SELECT
+                COALESCE(sum(CASE WHEN start_time >= %d THEN duration ELSE 0 END), 0),
+                COALESCE(sum(duration), 0)
+            FROM page_stat_data
+            WHERE duration > 0;
+        ]], year_start))
+        if rl and rl[1] and rl[1][1] then
+            r.year_secs  = rownum(rl[1][1])
+            r.total_secs = rownum(rl[2] and rl[2][1])
         end
     end)
     if not ok then
@@ -209,42 +219,49 @@ end
 -- ---------------------------------------------------------------------------
 -- Query 2: reading streak.
 --
--- Fetches the distinct active dates and merges in any Streak Manager frozen
--- dates before handing off to sui_streak's shared walk (also used by
--- sui_stats_windows' Reading Insights window) — frozen days are never
--- written into page_stat_data itself.
+-- Only the trailing run of consecutive active days matters, so the distinct
+-- active dates are fetched for a bounded recent window and merged with any
+-- Streak Manager frozen dates before handing off to sui_streak's shared walk
+-- (also used by sui_stats_windows' Reading Insights window) — frozen days
+-- are never written into page_stat_data itself.
 --
--- Queried against page_stat_data directly for the same index reasons as
--- fetchTimeSeries; duration > 0 excludes zero-duration rows (e.g. a
--- crash/force-close). today_str/yesterday_str are passed in, so this makes
--- no os.date calls of its own.
+-- The window starts at STREAK_FIRST_WINDOW_DAYS and grows by
+-- STREAK_WINDOW_GROWTH while the run reaches the window's oldest day (the
+-- run may extend further back), until it ends inside the window or the whole
+-- table is covered.
+--
+-- Queried against page_stat_data directly, bounded on the indexed start_time
+-- column; duration > 0 excludes zero-duration rows (e.g. a crash/force-close).
+-- today_str/yesterday_str are passed in, so this makes no os.date calls of
+-- its own.
 -- ---------------------------------------------------------------------------
-local function fetchStreak(conn, today_str, yesterday_str)
+local STREAK_FIRST_WINDOW_DAYS = 90
+local STREAK_WINDOW_GROWTH     = 4
+
+local function fetchStreak(conn, today_str, yesterday_str, start_today)
     local streak = 0
     local ok, err = pcall(function()
-        local dated = {}
-        local rw = conn:exec([[
-            SELECT DISTINCT date(start_time,'unixepoch','localtime')
-            FROM page_stat_data
-            WHERE duration > 0
-            ORDER BY 1 DESC;
-        ]])
-        if rw and rw[1] then
-            for _, d in ipairs(rw[1]) do dated[#dated + 1] = d end
-        end
-
-        local frozen = {}
         local SF = _getStreakFreeze()
-        if SF and SF.getFrozenDatesInRange then
-            frozen = SF.getFrozenDatesInRange(nil, nil)
-        end
+        if not (SF and SF.computeCurrentDayStreak) then return end
+        local frozen = SF.getFrozenDatesInRange and SF.getFrozenDatesInRange(nil, nil) or {}
 
-        if SF and SF.computeCurrentDayStreak then
-            streak = SF.computeCurrentDayStreak(dated, {
+        local window_days = STREAK_FIRST_WINDOW_DAYS
+        while true do
+            local since = math.max(0, start_today - window_days * 86400)
+            local rw = conn:exec(string.format([[
+                SELECT DISTINCT date(start_time, 'unixepoch', 'localtime')
+                FROM page_stat_data
+                WHERE start_time >= %d AND duration > 0;
+            ]], since))
+            streak = SF.computeCurrentDayStreak(rw and rw[1] or {}, {
                 frozen_dates = frozen,
                 today        = today_str,
                 yesterday    = yesterday_str,
             })
+            -- Complete once the run ends at least a day inside the window
+            -- (the slack absorbs day-length drift) or nothing older exists.
+            if since == 0 or streak < window_days - 1 then break end
+            window_days = window_days * STREAK_WINDOW_GROWTH
         end
     end)
     if not ok then
@@ -416,16 +433,21 @@ local _status_cache = nil  -- { unread=, reading=, complete=, abandoned= } | nil
 
 -- Classifies one book from its sidecar percent/status pair, using the same
 -- vocabulary as sui_book_grid.lua's badge logic.
-local function _classifyStatusEntry(counts, percent, status)
+-- Maps a book's sidecar percent/status to its status bucket name.
+local function _statusBucket(percent, status)
     if status == "complete" then
-        counts.complete = counts.complete + 1
+        return "complete"
     elseif status == "abandoned" then
-        counts.abandoned = counts.abandoned + 1
+        return "abandoned"
     elseif (percent or 0) > 0 then
-        counts.reading = counts.reading + 1
-    else
-        counts.unread = counts.unread + 1
+        return "reading"
     end
+    return "unread"
+end
+
+local function _classifyStatusEntry(counts, percent, status)
+    local bucket = _statusBucket(percent, status)
+    counts[bucket] = counts[bucket] + 1
 end
 
 --- Whole-library book counts by reading status. Cached until
@@ -466,6 +488,32 @@ function SP.getStatusCounts()
 
     _status_cache = counts
     return counts
+end
+
+--- Moves one library book between status buckets in the cached counts, so a
+--- single status change does not require recounting the whole library. No-op
+--- when counts were never computed or the book is not part of the library.
+--- The cached table is replaced rather than mutated: callers may still hold
+--- the previous one.
+function SP.applyStatusChange(fp, pre_percent, pre_status, post_percent, post_status)
+    local from = _statusBucket(pre_percent, pre_status)
+    local to   = _statusBucket(post_percent, post_status)
+    if not _status_cache or from == to then return end
+
+    local ok_scan, LibraryScan = pcall(require, "engines/sui_library_scan")
+    local home = ok_scan and LibraryScan and LibraryScan.resolveHomeDir()
+    if not home then return end
+
+    for _, lib_fp in ipairs(LibraryScan.getFileList(home)) do
+        if lib_fp == fp then
+            local counts = {}
+            for bucket, n in pairs(_status_cache) do counts[bucket] = n end
+            counts[from] = math.max(0, counts[from] - 1)
+            counts[to]   = counts[to] + 1
+            _status_cache = counts
+            return
+        end
+    end
 end
 
 --- Forces the next SP.getStatusCounts() call to recompute. Called from
@@ -549,11 +597,11 @@ function SP.get(db_conn, year_str, needs_books)
     local t_week     = os.date("*t", week_start)
     local t_rolling7 = os.date("*t", rolling7_start)
     local t_month    = os.date("*t", month_start)
-    local t_year     = os.date("*t", year_start)
     local week_date     = string.format("%04d-%02d-%02d", t_week.year,     t_week.month,     t_week.day)
     local rolling7_date = string.format("%04d-%02d-%02d", t_rolling7.year, t_rolling7.month, t_rolling7.day)
     local month_date    = string.format("%04d-%02d-%02d", t_month.year,    t_month.month,    t_month.day)
-    local year_date     = string.format("%04d-%02d-%02d", t_year.year,     t_year.month,     t_year.day)
+    -- Earliest start among the bucketed windows, minus a day of slack.
+    local window_since  = math.min(week_start, rolling7_start, month_start) - 86400
 
     -- _changed tells consumers which categories were re-fetched this call, so
     -- updateStats() can skip rebuilding cards whose data is unchanged.
@@ -580,8 +628,8 @@ function SP.get(db_conn, year_str, needs_books)
 
     -- ── DB queries ────────────────────────────────────────────────────────
     if db_conn then
-        local ts, ts_err = fetchTimeSeries(db_conn, start_today, week_start, month_start, year_start,
-                                           today_str, week_date, month_date, year_date, rolling7_date)
+        local ts, ts_err = fetchTimeSeries(db_conn, window_since, year_start,
+                                           today_str, week_date, month_date, rolling7_date)
         result.today_secs  = ts.today_secs
         result.today_pages = ts.today_pages
         result.week_secs   = ts.week_secs
@@ -611,7 +659,7 @@ function SP.get(db_conn, year_str, needs_books)
                 _streak_cache_valid = false
             else
                 local yesterday_str = os.date("%Y-%m-%d", start_today - 86400)
-                result.streak = fetchStreak(db_conn, today_str, yesterday_str)
+                result.streak = fetchStreak(db_conn, today_str, yesterday_str, start_today)
 
                 -- Streak Manager freeze mechanic (day-based earning hook):
                 -- only reached when the streak was actually just
@@ -650,15 +698,16 @@ end
 -- SP.invalidate() — force a full re-fetch on the next SP.get() call.
 -- Preserves _cache (SP.getStale() needs it for the stale first-paint) but
 -- clears _cache_day so the next call re-runs every DB query and the sidecar
--- scan unconditionally.
+-- scan unconditionally. Status counts are dropped too, unless the caller has
+-- already adjusted them through SP.applyStatusChange (keep_status_counts).
 -- Call from: main.lua:onCloseDocument, sui_homescreen:onShow (when
 -- _stats_need_refresh is set), module_reading_goals dialogs.
 -- ---------------------------------------------------------------------------
-function SP.invalidate()
+function SP.invalidate(keep_status_counts)
     _cache_day          = nil
     _books_cache_valid  = false
     _streak_cache_valid = false
-    SP.invalidateStatusCounts()
+    if not keep_status_counts then SP.invalidateStatusCounts() end
 end
 
 -- ---------------------------------------------------------------------------
@@ -687,6 +736,19 @@ function SP.invalidateTimeSeries()
         _books_cache_valid  = true
         _cache_day          = nil
     end
+end
+
+-- ---------------------------------------------------------------------------
+-- SP.invalidateStreak() — forces the next SP.get() to recount the streak.
+-- For changes to the streak's inputs that do not come from reading activity
+-- (freeze state), where the same-day carry-over of invalidateTimeSeries()
+-- would keep serving the old value. books_year/books_total are preserved.
+-- ---------------------------------------------------------------------------
+function SP.invalidateStreak()
+    if not _cache then return end
+    _streak_cache_valid = false
+    _books_cache_valid  = true
+    _cache_day          = nil
 end
 
 -- Reserved for countMarkedReadBoth's shared-cache access via SH — not part

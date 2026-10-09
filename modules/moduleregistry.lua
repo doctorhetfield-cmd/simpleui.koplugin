@@ -14,15 +14,17 @@
 --
 --   M.id             string   stable unique id, e.g. "clock", "collections"
 --   M.name           string   readable name for menus / Arrange
---   M.label          string?  section label text shown above the module (nil = no label);
---                             also acts as the "has a label" flag even when M.label_func is set
---   M.label_func     fun(ctx):string?  optional; when present, overrides M.label's text at
---                             build time (e.g. to append a setting-dependent suffix). Only
---                             called if M.label is truthy.
+--   M.label          string?  section label text shown above the module (nil = no label)
 --   M.label_right_func fun(ctx):string?  optional; text shown right-aligned on the same
 --                             row as the label (e.g. a setting-dependent mode indicator),
 --                             in the same style as the page indicator it takes priority
---                             over. Only called if M.label is truthy.
+--                             over. Ignored when the module defines M.getLabel.
+--   M.getLabel       fun(ctx):table?  optional; full control over the label: returns a
+--                             descriptor built with SectionLabel.makeDescriptor (text may
+--                             depend on the instance), or nil for no label. Without it the
+--                             descriptor is derived from M.label / M.label_right_func.
+--                             Visibility (the "Show section label" toggle) is applied by
+--                             the descriptor, never by mutating M.label.
 --   M.enabled_key    string?  settings suffix: pfx .. enabled_key → bool
 --   M.default_on     bool?    value when the key doesn't exist (default true)
 --
@@ -31,6 +33,14 @@
 --                             (equivalent to belonging to _COVER_MOD_IDS)
 --   M.is_book_mod    bool?    true → suppresses the "No books opened yet" empty-state
 --                             (equivalent to "currently"/"recent"/"coverdeck")
+--   M.text_elems     string[]?  ids of the text elements with a user-selectable
+--                             font family, size scale and variant (regular, bold,
+--                             italic, bold italic; see Config.makeTextStyleMenu).
+--                             Each style is { family, scale, variant }. The screen engine
+--                             reads them into ctx.cfg[M.id].text; render multiplies scale
+--                             into the element font size and draws the face with
+--                             SUIStyle.getTextFace. Elements that are not regular by
+--                             default are declared with Config.declareTextVariants.
 --
 --   M.isEnabled(pfx)         → bool         (optional; replaces enabled_key)
 --   M.build(w, ctx)          → widget | nil
@@ -418,7 +428,7 @@ function Registry.purgeInstanceSettings(inst_id, pfx)
     local suffixes = { "_enabled", "_shape", "_bg", "_items", "_labels",
                        "_scale", "_gap_pct", "_item_label_scale",
                        -- used by Featured Collection / sui_book_grid.lua:
-                       "_coll_name", "_thumb_scale",
+                       "_coll_name", "_sort_state", "_thumb_scale",
                        "_show_progress", "_show_text", "_show_overlay",
                        "_show_frame", "_solid_bg", "_backdrop",
                        "_grid_rows", "_grid_cols" }
@@ -426,6 +436,10 @@ function Registry.purgeInstanceSettings(inst_id, pfx)
         SUISettings:set(pfx    .. inst_id .. s, nil)
         SUISettings:set(qa_pfx .. inst_id .. s, nil)
     end
+    -- Per-element text styles (font, size, variant) of the instance.
+    local Config = require("infra/sui_config")
+    Config.resetTextStyles(inst_id, { "label" }, pfx)
+    Config.resetTextStyles(inst_id, { "label" }, qa_pfx)
     -- Also the bare keys used by build/getHeight.
     SUISettings:set(qa_pfx .. inst_id .. "_items",  nil)
     SUISettings:set(qa_pfx .. inst_id .. "_labels", nil)

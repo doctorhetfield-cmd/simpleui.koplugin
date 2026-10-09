@@ -13,13 +13,18 @@
 --   3. getBookInfo fills incomplete CBZ rows from ComicInfo.xml in-place and
 --      keeps a small text snapshot so the UI can still show title/author while
 --      a row is temporarily missing (in-progress extraction)
+--   4. extractInBackground never interrupts a running job: requests made while
+--      one is running are merged into a single queued batch that starts once
+--      the running job has finished
 --
 -- ComicInfo.xml is read from the ZIP in pure Lua (store and deflate), so
 -- metadata does not depend on an external binary.
 --
 -- Public API: Providers.install()  -- idempotent
 
-local logger = require("logger")
+local FFIUtil   = require("ffi/util")
+local logger    = require("logger")
+local UIManager = require("ui/uimanager")
 
 local Providers = {}
 
@@ -104,6 +109,18 @@ local function u32(data, i)
         + (data:byte(i + 3) or 0) * 16777216
 end
 
+-- Returns the library handle produced by `open()` when it exports the inflate
+-- symbols, or nil. Symbol lookup raises on a missing function, so the check
+-- runs inside the pcall.
+local function openZlib(open)
+    local ok, lib = pcall(function()
+        local l = open()
+        assert(l.inflateInit2_ and l.inflate and l.inflateEnd)
+        return l
+    end)
+    return ok and lib or nil
+end
+
 -- Raw DEFLATE (ZIP method 8). windowBits = -15 = no zlib/gzip wrapper.
 local _inflate_fn -- false = unavailable, nil = not tried, function = ready
 
@@ -141,11 +158,16 @@ local function rawInflate(compressed, uncompressed_size)
                 int inflateEnd(z_stream *strm);
             ]]
         end)
-        local libz
-        pcall(function()
-            libz = ffi.loadlib and ffi.loadlib("z", 1) or ffi.load("z")
+        local libz = openZlib(function()
+            return ffi.loadlib and ffi.loadlib("z", 1) or ffi.load("z")
         end)
-        if not (libz and libz.inflateInit2_) then
+        if not libz and is_android then
+            -- Fall back to the platform's own zlib.
+            local system_lib = ffi.abi("64bit") and "/system/lib64/libz.so" or "/system/lib/libz.so"
+            libz = openZlib(function() return ffi.load("libz.so") end)
+                or openZlib(function() return ffi.load(system_lib) end)
+        end
+        if not libz then
             _inflate_fn = false
             return nil
         end
@@ -624,6 +646,124 @@ local function syntheticFromSnapshot(snap)
     }
 end
 
+-- ---------------------------------------------------------------------------
+-- Background extraction queue
+-- ---------------------------------------------------------------------------
+-- Launching a background extraction terminates the one already running, and
+-- every interrupted file counts as a failed attempt in the cache. The queue
+-- serializes launches: while a job runs, new requests are merged (one entry
+-- per file) and started together as a single batch once it has finished.
+
+local DRAIN_INTERVAL = 1  -- seconds between checks for a finished job
+
+local function mergeCoverSpecs(a, b)
+    if not (a and b) then return a or b end
+    return {
+        max_cover_w = math.max(a.max_cover_w or 0, b.max_cover_w or 0),
+        max_cover_h = math.max(a.max_cover_h or 0, b.max_cover_h or 0),
+    }
+end
+
+local function toEntry(item)
+    if type(item) == "table" then
+        return { filepath = item.filepath, cover_specs = item.cover_specs }
+    end
+    return { filepath = item }
+end
+
+-- True while any spawned extraction subprocess is still alive. Finished
+-- subprocesses stay listed until the manager reaps them, so each pid is
+-- probed directly.
+local function isJobRunning(bim)
+    for _, pid in ipairs(bim.subprocesses_pids or {}) do
+        if not FFIUtil.isSubProcessDone(pid) then return true end
+    end
+    return false
+end
+
+-- Replaces extractInBackground / terminateBackgroundJobs /
+-- isExtractingInBackground with queue-aware versions. `canSkip(bim, fp, specs)`
+-- tells whether a file already has a usable cached row.
+local function installExtractQueue(BookInfoManager, canSkip)
+    local orig_extract    = BookInfoManager.extractInBackground
+    local orig_terminate  = BookInfoManager.terminateBackgroundJobs
+    local orig_extracting = BookInfoManager.isExtractingInBackground
+    if type(orig_extract) ~= "function" then return end
+
+    local queue = { list = {}, by_path = {} }
+    local drain_scheduled = false
+    local drain
+
+    local function enqueue(item)
+        local entry = toEntry(item)
+        local queued = queue.by_path[entry.filepath]
+        if queued then
+            queued.cover_specs = mergeCoverSpecs(queued.cover_specs, entry.cover_specs)
+            return
+        end
+        queue.by_path[entry.filepath] = entry
+        queue.list[#queue.list + 1] = entry
+    end
+
+    local function takeQueue()
+        local list = queue.list
+        queue = { list = {}, by_path = {} }
+        return list
+    end
+
+    local function scheduleDrain(bim)
+        if drain_scheduled then return end
+        drain_scheduled = true
+        UIManager:scheduleIn(DRAIN_INTERVAL, function() drain(bim) end)
+    end
+
+    -- Starts a job for the files that still need extraction.
+    local function launch(bim, files)
+        local pending = {}
+        for _, item in ipairs(files) do
+            local entry = toEntry(item)
+            if not canSkip(bim, entry.filepath, entry.cover_specs) then
+                pending[#pending + 1] = entry
+            end
+        end
+        if #pending == 0 then return true end
+        return orig_extract(bim, pending)
+    end
+
+    drain = function(bim)
+        drain_scheduled = false
+        if #queue.list == 0 then return end
+        if isJobRunning(bim) then
+            scheduleDrain(bim)
+            return
+        end
+        launch(bim, takeQueue())
+    end
+
+    function BookInfoManager:extractInBackground(files)
+        if type(files) ~= "table" or #files == 0 then
+            return orig_extract(self, files)
+        end
+        if #queue.list == 0 and not isJobRunning(self) then
+            return launch(self, files)
+        end
+        for _, item in ipairs(files) do enqueue(item) end
+        scheduleDrain(self)
+        return true
+    end
+
+    -- An explicit cancellation also discards the queued batch.
+    function BookInfoManager:terminateBackgroundJobs()
+        queue = { list = {}, by_path = {} }
+        return orig_terminate(self)
+    end
+
+    -- Queued work counts as running so callers keep waiting for it.
+    function BookInfoManager:isExtractingInBackground()
+        return #queue.list > 0 or orig_extracting(self)
+    end
+end
+
 function Providers.install()
     local ok_bim, BookInfoManager = pcall(require, "bookinfomanager")
     local ok_registry, DocumentRegistry = pcall(require, "document/documentregistry")
@@ -640,7 +780,6 @@ function Providers.install()
 
     local orig_getBookInfo = BookInfoManager.getBookInfo
     local orig_extractBookInfo = BookInfoManager.extractBookInfo
-    local orig_extractInBackground = BookInfoManager.extractInBackground
 
     -- True when the cached row is good enough that a full extract would only
     -- wipe and rewrite the same data (the mass-reset problem on folder refresh).
@@ -696,25 +835,7 @@ function Providers.install()
         return result
     end
 
-    -- Drop already-complete files before launching a background batch so a
-    -- single new chapter does not re-queue (and wipe) the rest of the folder.
-    if type(orig_extractInBackground) == "function" then
-        function BookInfoManager:extractInBackground(files)
-            if type(files) ~= "table" or #files == 0 then
-                return orig_extractInBackground(self, files)
-            end
-            local filtered = {}
-            for _, entry in ipairs(files) do
-                local fp = type(entry) == "table" and entry.filepath or entry
-                local specs = type(entry) == "table" and entry.cover_specs or nil
-                if not canSkipExtract(self, fp, specs) then
-                    filtered[#filtered + 1] = entry
-                end
-            end
-            if #filtered == 0 then return true end
-            return orig_extractInBackground(self, filtered)
-        end
-    end
+    installExtractQueue(BookInfoManager, canSkipExtract)
 
     if type(orig_getBookInfo) == "function" then
         local healed = newCache()

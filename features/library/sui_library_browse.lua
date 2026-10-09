@@ -6,8 +6,8 @@
 --   • Browse by Series
 --   • Browse by Tags
 --
--- All metadata access goes through sui_metadata_source (SQL + Calibre
--- enrichment, cached per filter trail) and all path encode/decode goes
+-- All metadata access goes through sui_metadata_source (bookinfo + Calibre
+-- rows, cached per filter trail) and all path encode/decode goes
 -- through sui_virtual_path (plain-text segments — see that file's header
 -- for the encoding). Cover-picker, create-collection, and cover-override
 -- storage go through sui_group_actions / sui_cover_overrides, shared with
@@ -18,7 +18,7 @@
 -- filters (e.g. author → then narrow by tag within that author). Nothing
 -- in this file's UI currently exposes a "narrow further" action from a
 -- file_list, so today's behaviour is unchanged — but the path grammar,
--- the SQL layer, and the facet-count computation are all trail-aware, so
+-- the row filtering, and the facet-count computation are all trail-aware, so
 -- adding that affordance later is a UI-only change, not a data-layer one.
 --
 -- Settings key: "simpleui_browsemeta_mode"
@@ -30,8 +30,12 @@
 --   M.install()               — apply FileChooser + ffiUtil patches
 --   M.uninstall()             — remove all patches
 --   M.getCurrentMode(fc)      — "normal"|"author"|"series"|"tags" from fc.path
+--   M.getPathMode(path)       — same, from an explicit path
 --   M.navigateTo(fm, mode)    — navigate FM to the requested mode
 --   M.navigateToRoot(fc, fm, mode)
+--   M.activateMode(fm, mode, already_active) — single entry point for mode switchers
+--   M.MODES / M.getModeLabel(mode)           — ordered mode ids and their display labels
+--   M.getPathLabel(path)                     — display name of the innermost virtual level
 --   M.isAtVirtualRoot(fc, mode)
 --   M.getSavedMode() / M.setSavedMode(mode)
 --   M.openVirtualCoverPicker(vpath, fc)
@@ -49,23 +53,31 @@ local VirtualPath      = require("features/library/sui_virtual_path")
 local MetadataSource   = require("features/library/sui_metadata_source")
 local CoverOverrides   = require("features/library/sui_cover_overrides")
 local GroupActions     = require("features/library/sui_group_actions")
+local CoverFinder      = require("features/library/sui_cover_finder")
 
 local M = {}
 
 -- Display labels — a presentation concern, deliberately not part of
--- FilterState.DIMENSIONS (which only knows about SQL columns).
+-- FilterState.DIMENSIONS (which only knows about row fields).
 local DIM_LABELS = {
     author = _("Authors"),
     series = _("Series"),
     tags   = _("Tags"),
 }
 
+-- Ordered browse modes: the filesystem view followed by every metadata dimension.
+M.MODES = { "normal", "author", "series", "tags" }
+
+function M.getModeLabel(mode)
+    if mode == "normal" then return _("Library") end
+    return DIM_LABELS[mode]
+end
+
 -- ---------------------------------------------------------------------------
 -- Module state
 -- ---------------------------------------------------------------------------
 
-local _author_count_cache = {}  -- { [base_dir] = { [author_name] = count } }
-local _last_base_dir      = nil -- bounds cache memory: see _ensureCacheBaseDir()
+local _last_base_dir = nil -- bounds cache memory: see _ensureCacheBaseDir()
 
 -- Lazy module references — cached on first use, cleared on uninstall.
 local _FM_cache  = nil
@@ -87,7 +99,6 @@ local _is_windows = nil
 local function _ensureCacheBaseDir(base_dir)
     if _last_base_dir ~= base_dir then
         MetadataSource.clearCache()
-        _author_count_cache = {}
         _last_base_dir = base_dir
     end
 end
@@ -134,11 +145,14 @@ function M.getPathLevel(path)
     return level
 end
 
-function M.getCurrentMode(fc)
-    local path = fc and fc.path
+function M.getPathMode(path)
     if not VirtualPath.isVirtual(path) then return "normal" end
     local _base, _state, active_dimension = VirtualPath.parse(path)
     return active_dimension or "normal"
+end
+
+function M.getCurrentMode(fc)
+    return M.getPathMode(fc and fc.path)
 end
 
 -- ---------------------------------------------------------------------------
@@ -235,6 +249,30 @@ function M.navigateToRoot(fc, fm, mode)
     end
 end
 
+-- activateMode(fm, mode, already_active)
+-- Single entry point for every control that switches browse mode (quick
+-- actions, title-bar tabs). Selecting the active mode returns to its root:
+-- page 1 for the filesystem view, the top-level list for a metadata mode.
+-- `already_active` defaults to "the file chooser is currently in this mode".
+function M.activateMode(fm, mode, already_active)
+    local fc = fm and fm.file_chooser
+    if not (fc and mode) then return end
+    if already_active == nil then
+        already_active = M.getCurrentMode(fc) == mode
+    end
+    if mode == "normal" then
+        if already_active then
+            pcall(fc.onGotoPage, fc, 1)
+        else
+            M.exitToNormal(fc, fm)
+        end
+    elseif already_active then
+        M.navigateToRoot(fc, fm, mode)
+    else
+        M.navigateTo(fm, mode)
+    end
+end
+
 -- isAtVirtualRoot(fc, mode)
 -- Returns true when the file chooser is currently showing the dim_list root
 -- for the given mode. Used by the bottom bar to decide whether a re-tap
@@ -250,34 +288,35 @@ end
 -- Author-dialog helpers
 -- ---------------------------------------------------------------------------
 
+-- A virtual folder lists a book only when its file still exists and the
+-- chooser would show it. Returns the predicate and a `variant` naming the
+-- chooser state it depends on, so MetadataSource can cache the outcome.
+local function _listingFilter(fc)
+    local variant = table.concat({
+        tostring(fc.name),
+        CoverFinder.statusFilterSignature(fc),
+        tostring(fc.show_unsupported or false),
+    }, "\0")
+    local function accept(row)
+        return lfs.attributes(row[1], "mode") == "file" and fc:show_file(row[2], row[1])
+    end
+    return variant, accept
+end
+
 -- Returns the number of books by *author_name* under the current FM base_dir.
--- Result is cached for the lifetime of the session / until base_dir changes.
 function M.getAuthorBookCount(fc, author_name)
     if not fc or not author_name or author_name == "" then return 0 end
     local base = VirtualPath.getBaseDir(fc.path)
     if not base then return 0 end
     _ensureCacheBaseDir(base)
 
-    _author_count_cache[base] = _author_count_cache[base] or {}
-    local cached = _author_count_cache[base][author_name]
-    if cached ~= nil then return cached end
-
     local ok_bim, bim = pcall(require, "bookinfomanager")
     if not ok_bim or not bim then return 0 end
 
     local fs = FilterState.new(base)
     FilterState.addFilter(fs, "author", author_name)
-    local rows  = MetadataSource.getMatchingFiles(bim, base, fs, { recursive = true })
-    local count = 0
-    for _, row in ipairs(rows) do
-        local fullpath, fname = row[1], row[2]
-        local attr = lfs.attributes(fullpath)
-        if attr and attr.mode == "file" and fc:show_file(fname, fullpath) then
-            count = count + 1
-        end
-    end
-    _author_count_cache[base][author_name] = count
-    return count
+    local variant, accept = _listingFilter(fc)
+    return #MetadataSource.getValidRows(bim, base, fs, variant, accept)
 end
 
 -- Navigates the FM directly to the virtual leaf for *author_name*, bypassing
@@ -334,14 +373,10 @@ end
 local function _resolveLeafBooks(fc, base_dir, filter_state)
     local ok_bim, bim = pcall(require, "bookinfomanager")
     if not ok_bim or not bim then return {} end
-    local rows = MetadataSource.getMatchingFiles(bim, base_dir, filter_state, { recursive = true })
-    local out  = {}
-    for _, row in ipairs(rows) do
-        local fullpath, fname = row[1], row[2]
-        local attr = lfs.attributes(fullpath)
-        if attr and attr.mode == "file" and fc:show_file(fname, fullpath) then
-            out[#out + 1] = { path = fullpath, title = row.title }
-        end
+    local variant, accept = _listingFilter(fc)
+    local out = {}
+    for _, row in ipairs(MetadataSource.getValidRows(bim, base_dir, filter_state, variant, accept)) do
+        out[#out + 1] = { path = row[1], title = row.title }
     end
     return out
 end
@@ -440,59 +475,22 @@ local function _getVirtualList(fc, path, collate)
     if not ok_bim or not bim then return dirs, files end
 
     if level == "dim_list" then
-        local values = MetadataSource.getFacetValues(bim, base_dir, active_dimension, filter_state, { recursive = true })
+        local values = MetadataSource.getFacetValues(bim, base_dir, active_dimension, filter_state)
         local overrides = SUISettings:readSetting("simpleui_fc_covers") or {}
 
-        -- Real (validated) per-value counts + representative file, built in
-        -- ONE pass below instead of once per dimension value.
+        -- Real (validated) per-group counts and a representative file. A row
+        -- only counts when its file exists on disk and passes fc:show_file:
+        -- the facet counts may include stale bookinfo entries or files the
+        -- chooser hides. Groups are matched by entry.key.
         --
-        -- The previous approach re-derived this per entry: a fresh
-        -- MetadataSource.getMatchingFiles() call scoped to that single value
-        -- (a brand new SQL query — cache miss, since the value is part of
-        -- the cache key) followed by an lfs.attributes() stat() on every row
-        -- it returned. With N distinct authors/series/tags that's N extra
-        -- SQL queries plus roughly one stat() per (book, value) pair — for a
-        -- library of a few thousand books split across a few hundred
-        -- authors, that's enough synchronous disk I/O to freeze the UI for
-        -- a very long time.
-        --
-        -- The existence-on-disk + fc:show_file check itself is still
-        -- necessary (the SQL count in entry[2] may be higher when the
-        -- bookinfo DB has stale entries for deleted files, or fc's
-        -- extension/hidden-file filter hides something) — it's just moved
-        -- to run once over the SAME row set getFacetValues already fetched
-        -- with a single query (this call is a guaranteed cache hit, see
-        -- MetadataSource.getMatchingFiles), instead of once per value.
-        --
-        -- Only built when collate is truthy — matches the original code's
-        -- own gating (see the `if collate then` below): a falsy collate
-        -- means the caller only wants a cheap item COUNT (mirrors
-        -- FileChooser:getList's own "collate == nil count only" path in
-        -- KOReader core), so this whole pass, expensive or not, must still
-        -- be skipped entirely in that case, same as before.
+        -- Only built when collate is truthy: a falsy collate means the caller
+        -- only wants a cheap item COUNT (mirrors FileChooser:getList's own
+        -- "collate == nil count only" path in KOReader core).
         local real_counts, real_reprs = {}, {}
         if collate then
-            local definition = FilterState.DIMENSIONS[active_dimension]
-            local all_rows   = MetadataSource.getMatchingFiles(bim, base_dir, filter_state, { recursive = true })
-            for _, row in ipairs(all_rows) do
-                local fullpath, fname = row[1], row[2]
-                local attr = lfs.attributes(fullpath)
-                if attr and attr.mode == "file" and fc:show_file(fname, fullpath) then
-                    local raw = row[definition.column]
-                    if definition.multi_value and raw and raw:find("\n", 1, true) then
-                        for token in raw:gmatch("[^\n]+") do
-                            if token ~= "" then
-                                real_counts[token] = (real_counts[token] or 0) + 1
-                                if not real_reprs[token] then real_reprs[token] = fullpath end
-                            end
-                        end
-                    else
-                        local key = raw or false
-                        real_counts[key] = (real_counts[key] or 0) + 1
-                        if not real_reprs[key] then real_reprs[key] = fullpath end
-                    end
-                end
-            end
+            local variant, accept = _listingFilter(fc)
+            real_counts, real_reprs = MetadataSource.getValidFacetCounts(
+                bim, base_dir, active_dimension, filter_state, variant, accept)
         end
 
         for i, entry in ipairs(values) do
@@ -501,8 +499,8 @@ local function _getVirtualList(fc, path, collate)
             local vpath = VirtualPath.buildLeaf(base_dir, filter_state, active_dimension, val)
 
             if collate then
-                local real_count = real_counts[val] or 0
-                local real_repr  = real_reprs[val]
+                local real_count = real_counts[entry.key] or 0
+                local real_repr  = real_reprs[entry.key]
 
                 -- Skip virtual folders whose every book has been deleted from
                 -- disk — showing an empty virtual folder would confuse the
@@ -540,7 +538,7 @@ local function _getVirtualList(fc, path, collate)
     end
 
     if level == "file_list" then
-        local rows = MetadataSource.getMatchingFiles(bim, base_dir, filter_state, { recursive = true })
+        local rows = MetadataSource.getMatchingFiles(bim, base_dir, filter_state)
         -- active_dimension is nil here (see the comment above) — the
         -- dimension actually being browsed is the last one resolved into
         -- the trail, e.g. browsing Author > "Terry Pratchett" leaves
@@ -557,7 +555,7 @@ local function _getVirtualList(fc, path, collate)
             local attr = lfs.attributes(fullpath)
             if attr and attr.mode == "file" and fc:show_file(fname, fullpath) then
                 local item = fc:getListItem(path, fname, fullpath, attr, collate)
-                -- Forward metadata from the SQL row so CoverBrowser and
+                -- Forward metadata from the resolved row so CoverBrowser and
                 -- list-view renderers can display title/author/series
                 -- without re-reading the sidecar.
                 if row.title or row.authors or row.series then
@@ -686,7 +684,10 @@ local function _installPatches()
         _orig_refreshPath = FileChooser.refreshPath
         local orig = _orig_refreshPath
         FileChooser.refreshPath = function(fc)
-            if VirtualPath.isVirtual(fc.path) then MetadataSource.clearCache() end
+            -- Listing the path already shown picks up library changes, so the
+            -- cached metadata is dropped; moving to another path keeps it.
+            if fc._sui_listed_path == fc.path then MetadataSource.clearCache() end
+            fc._sui_listed_path = fc.path
             return orig(fc)
         end
     end
@@ -933,6 +934,11 @@ local function _getVirtualSubtitle(path)
     return nil
 end
 
+-- Display name of the innermost level of a virtual path; nil for real paths.
+function M.getPathLabel(path)
+    return _getVirtualSubtitle(path)
+end
+
 local function _installTitleBarPathPatch()
     if _patched_tb_path then return end
     local FM = _getFileManager()
@@ -989,8 +995,7 @@ function M.uninstall()
     pcall(_removeFMSafetyPatches)
     pcall(_removeTitleBarPathPatch)
     MetadataSource.clearCache()
-    _last_base_dir      = nil
-    _author_count_cache = {}
+    _last_base_dir = nil
     _FM_cache   = nil
     _SP_cache   = nil
     _SP_tried   = false

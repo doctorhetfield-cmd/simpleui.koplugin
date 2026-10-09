@@ -668,6 +668,25 @@ local function _registerBuiltins()
         return rui and rui.simpleui
     end
 
+    -- Builds the descriptor of a browse-mode action. Selecting the mode that is
+    -- already active returns to its root (see BrowseMeta.activateMode).
+    local function _browseModeDescriptor(id, label, icon, mode)
+        return {
+            id    = id,
+            label = label,
+            icon  = icon,
+            browsemeta_mode = mode,
+            is_in_place = false,
+            execute = function(ctx)
+                local su = ctx.show_unavailable or _unavailToast
+                local ok_bm, BM = pcall(_BM)
+                if not (ok_bm and BM) then su(_("Browse by Authors/Series/Tags not available.")); return end
+                if not BM.isEnabled() then su(_("Enable 'Browse by Author / Series / Tags' in the library menu first.")); return end
+                BM.activateMode(_resolveFM(ctx, "file_chooser"), mode, ctx.already_active == true)
+            end,
+        }
+    end
+
     local builtins = {
         -- ── Navigation actions ──────────────────────────────────────────────
         {
@@ -999,60 +1018,9 @@ local function _registerBuiltins()
             end,
         },
         -- ── Browse meta actions ─────────────────────────────────────────────
-        {
-            id    = "browse_authors",
-            label = _("Authors"),
-            icon  = Config.ICON.author,
-            browsemeta_mode = "author",
-            is_in_place = false,
-            execute = function(ctx)
-                local su = ctx.show_unavailable or _unavailToast
-                local ok_bm, BM = pcall(_BM)
-                if not (ok_bm and BM) then su(_("Browse by Authors/Series/Tags not available.")); return end
-                if not BM.isEnabled() then su(_("Enable 'Browse by Author / Series / Tags' in the library menu first.")); return end
-                local fm = ctx.fm or _liveFM()
-                local fc = fm and fm.file_chooser
-                if not fc then return end
-                if ctx.already_active then BM.navigateToRoot(fc, fm, "author")
-                else BM.navigateTo(fm, "author") end
-            end,
-        },
-        {
-            id    = "browse_series",
-            label = _("Series"),
-            icon  = Config.ICON.series,
-            browsemeta_mode = "series",
-            is_in_place = false,
-            execute = function(ctx)
-                local su = ctx.show_unavailable or _unavailToast
-                local ok_bm, BM = pcall(_BM)
-                if not (ok_bm and BM) then su(_("Browse by Authors/Series/Tags not available.")); return end
-                if not BM.isEnabled() then su(_("Enable 'Browse by Author / Series / Tags' in the library menu first.")); return end
-                local fm = ctx.fm or _liveFM()
-                local fc = fm and fm.file_chooser
-                if not fc then return end
-                if ctx.already_active then BM.navigateToRoot(fc, fm, "series")
-                else BM.navigateTo(fm, "series") end
-            end,
-        },
-        {
-            id    = "browse_tags",
-            label = _("Tags"),
-            icon  = Config.ICON.tags,
-            browsemeta_mode = "tags",
-            is_in_place = false,
-            execute = function(ctx)
-                local su = ctx.show_unavailable or _unavailToast
-                local ok_bm, BM = pcall(_BM)
-                if not (ok_bm and BM) then su(_("Browse by Authors/Series/Tags not available.")); return end
-                if not BM.isEnabled() then su(_("Enable 'Browse by Author / Series / Tags' in the library menu first.")); return end
-                local fm = ctx.fm or _liveFM()
-                local fc = fm and fm.file_chooser
-                if not fc then return end
-                if ctx.already_active then BM.navigateToRoot(fc, fm, "tags")
-                else BM.navigateTo(fm, "tags") end
-            end,
-        },
+        _browseModeDescriptor("browse_authors", _("Authors"), Config.ICON.author, "author"),
+        _browseModeDescriptor("browse_series",  _("Series"),  Config.ICON.series, "series"),
+        _browseModeDescriptor("browse_tags",    _("Tags"),    Config.ICON.tags,   "tags"),
     }
 
     for _, desc in ipairs(builtins) do
@@ -1525,7 +1493,6 @@ function QA.performResetAllQAIcons(plugin)
     for _k, a in ipairs(Config.ALL_ACTIONS) do
         SUISettings:del("simpleui_action_" .. a.id .. "_icon")
     end
-    SUISettings:del("simpleui_action_wifi_toggle_off_icon")
     for _i, qa_id in ipairs(QA.getCustomQAList()) do
         local cfg = SUISettings:get("simpleui_qa_" .. qa_id)
         if type(cfg) == "table" then
@@ -2833,7 +2800,6 @@ function QA.makeIconsMenuItems(plugin)
             for _k, a in ipairs(Config.ALL_ACTIONS) do
                 SUISettings:del("simpleui_action_" .. a.id .. "_icon")
             end
-            SUISettings:del("simpleui_action_wifi_toggle_off_icon")
             for _i, qa_id in ipairs(QA.getCustomQAList()) do
                 local cfg = SUISettings:get("simpleui_qa_" .. qa_id)
                 if type(cfg) == "table" then

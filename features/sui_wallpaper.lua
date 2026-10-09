@@ -4,7 +4,7 @@
 -- background ImageWidget (plus its associated pre-scaled Blitbuffer used for
 -- stretch mode), every simpleui_style_wallpaper_* / simpleui_wallpaper_*
 -- setting getter/setter, the on-disk wallpaper directory scan, the
--- backdrop strength settings for bars, title bar buttons, pagination and
+-- backdrop strength settings for bars, title bar, pagination and
 -- modules (they only ever have a visible effect while a wallpaper is
 -- active, so they live here next to the settings that gate them, as part of
 -- the same sub-page), the shared backdrop / frame painters, and the
@@ -87,7 +87,18 @@ end
 local function _wpStretch()     return SUISettings:isTrue("simpleui_style_wallpaper_stretch")        end
 local function _wpAutoRotate()  return SUISettings:nilOrTrue("simpleui_style_wallpaper_autorotate")  end
 local function _wpInvertNight() return SUISettings:isTrue("simpleui_style_wallpaper_invert_night")   end
-local function _wpOpacity()     return SUISettings:readSetting("simpleui_style_wallpaper_opacity", 85) end
+
+-- Wallpaper tint strength (0–99): lighten fades towards white, darken towards
+-- black. The lighten key keeps its original name so stored settings stay valid.
+local KEY_LIGHTEN  = "simpleui_style_wallpaper_opacity"
+local KEY_DARKEN   = "simpleui_style_wallpaper_darken"
+local _TINT_MIN, _TINT_MAX = 0, 99
+M.TINT_MAX = _TINT_MAX
+
+local function _readTint(key) return SUISettings:readSetting(key, _TINT_MIN) end
+local function _saveTint(key, val)
+    SUISettings:saveSetting(key, math.max(_TINT_MIN, math.min(_TINT_MAX, val or _TINT_MIN)))
+end
 
 -- Returns DataStorage/simpleui/sui_wallpapers/, creating it if needed.
 local function _styleWallpapersDir()
@@ -237,19 +248,22 @@ local function _styleGetBgWidget()
         _style_bg_cache_w  = sw
         _style_bg_cache_h  = sh
         _style_bg_cache_nm = nm
-        -- Keep a screen-sized blitbuffer for partial erasers. Stretch mode
-        -- already stores one; fit mode rasterizes the widget once here.
-        if not _style_bg_cache_bb then
-            local ok_bb, canvas = pcall(function()
-                local Blitbuffer = require("ffi/blitbuffer")
-                local c = Blitbuffer.new(sw, sh)
-                c:fill(Blitbuffer.COLOR_WHITE)
-                w:paintTo(c, 0, 0)
-                return c
-            end)
-            if ok_bb and canvas then
-                _style_bg_cache_bb = canvas
-            end
+        -- Eraser cache: always rasterize through ImageWidget:paintTo so the
+        -- pixels match a full-frame wallpaper paint (night mode, letterbox,
+        -- rotation). Stretch mode may already hold the scaled source bitmap
+        -- shared with the widget — that source is not freed here.
+        local source_bb = _style_bg_cache_bb
+        local ok_bb, canvas = pcall(function()
+            local Blitbuffer = require("ffi/blitbuffer")
+            local c = Blitbuffer.new(sw, sh)
+            c:fill(Blitbuffer.COLOR_WHITE)
+            w:paintTo(c, 0, 0)
+            return c
+        end)
+        if ok_bb and canvas then
+            _style_bg_cache_bb = canvas
+        elseif not source_bb then
+            _style_bg_cache_bb = nil
         end
         return w
     end
@@ -347,12 +361,6 @@ function M.styleGetBgWidget()
     return _styleGetBgWidget()
 end
 
---- Returns the stored wallpaper opacity (0 = fully opaque, 1-99 = fade toward white).
---- Consumed by sui_patches.lua paint helpers.
-function M.styleGetWallpaperOpacityValue()
-    return _wpOpacity()
-end
-
 --- Consumed by sui_patches.lua to decide whether to paint the wallpaper into
 --- fullscreen overlays (Collections, History, etc.) and the FM.
 function M.styleGetWallpaperShowInFM()
@@ -401,13 +409,20 @@ function M.styleSetWallpaperInvertNight(on)
     _notifyLayoutChanged()
 end
 
-function M.styleGetWallpaperOpacity()
-    return _wpOpacity()
+-- Tint strengths are applied at paint time (not baked into the ImageWidget
+-- cache); the caller refreshes the layout with the cache kept.
+function M.styleGetWallpaperLighten()
+    return _readTint(KEY_LIGHTEN)
 end
-function M.styleSetWallpaperOpacity(val)
-    -- Opacity is applied at paint-time (not baked into the ImageWidget
-    -- cache); the caller refreshes the layout with the cache kept.
-    SUISettings:saveSetting("simpleui_style_wallpaper_opacity", math.max(0, math.min(99, val or 0)))
+function M.styleSetWallpaperLighten(val)
+    _saveTint(KEY_LIGHTEN, val)
+end
+
+function M.styleGetWallpaperDarken()
+    return _readTint(KEY_DARKEN)
+end
+function M.styleSetWallpaperDarken(val)
+    _saveTint(KEY_DARKEN, val)
 end
 
 --- Frees the internal wallpaper widget cache.
@@ -463,7 +478,7 @@ M.BACKDROP_DEFAULT = {
     statusbar       = 100,
     navbar          = 100,
     pagination      = 0,
-    titlebar_button = 0,
+    titlebar        = 0,
     module          = 0,
     card            = 100,
     button          = 100,
@@ -472,7 +487,7 @@ M.BACKDROP_DEFAULT = {
 local KEY_STATUSBAR       = "simpleui_statusbar_backdrop"
 local KEY_NAVBAR          = "simpleui_navbar_backdrop"
 local KEY_PAGINATION      = "simpleui_pagination_backdrop"
-local KEY_TITLEBAR_BUTTON = "simpleui_titlebar_button_backdrop"
+local KEY_TITLEBAR        = "simpleui_titlebar_backdrop"
 local KEY_MODULE          = "simpleui_module_backdrop"
 
 -- Rounds and clamps n to 0–100; nil when n is not a number.
@@ -556,14 +571,14 @@ function M.setPaginationBackdropStrength(n)
     M.saveBackdropStrength(KEY_PAGINATION, n)
 end
 
--- Without a wallpaper there is no button chrome to paint.
-function M.getTitlebarButtonBackdropStrength()
+-- Without a wallpaper there is no backdrop to paint.
+function M.getTitlebarBackdropStrength()
     if not M.isWallpaperActive() then return _BACKDROP_MIN end
-    return M.readBackdropStrength(KEY_TITLEBAR_BUTTON, M.BACKDROP_DEFAULT.titlebar_button)
+    return M.readBackdropStrength(KEY_TITLEBAR, M.BACKDROP_DEFAULT.titlebar)
 end
 
-function M.setTitlebarButtonBackdropStrength(n)
-    M.saveBackdropStrength(KEY_TITLEBAR_BUTTON, n)
+function M.setTitlebarBackdropStrength(n)
+    M.saveBackdropStrength(KEY_TITLEBAR, n)
 end
 
 -- Module backdrop strength.
@@ -686,35 +701,73 @@ function M.paintFrame(bb, x, y, w, h, thickness, radius, color)
     end
 end
 
--- Clear a dirty rect before a partial redraw: restore wallpaper pixels when
--- a wallpaper is active, otherwise paint the solid surface colour.
-function M.paintEraser(bb, x, y, w, h)
+-- Applies the lighten / darken tint over a region that already holds the
+-- wallpaper. Both are cheap in-place blitbuffer operations.
+--
+-- Night mode inverts the frame after painting, so a tint written towards white
+-- reaches the screen as a darkening (and vice versa). The strengths are swapped
+-- in night mode so each setting keeps its on-screen meaning.
+function M.paintTint(bb, x, y, w, h)
+    local lighten, darken = _readTint(KEY_LIGHTEN), _readTint(KEY_DARKEN)
+    if Screen.night_mode then lighten, darken = darken, lighten end
+    if lighten > 0 then bb:lightenRect(x, y, w, h, lighten / 100) end
+    if darken  > 0 then bb:darkenRect(x, y, w, h, darken / 100) end
+end
+
+-- Restore a dirty rect to the same appearance module chrome leaves behind:
+-- wallpaper (or solid surface) plus an optional backdrop scrim.
+--
+-- strength / radius are optional. Omit them (or pass 0) for a plain base
+-- restore — the historical paintEraser behaviour. Pass the module's chrome
+-- strength so gaps inside a card keep the configured opacity after a
+-- partial redraw (pagination, swipe).
+--
+-- The eraser cache is a screen-sized raster produced by ImageWidget:paintTo
+-- (see _styleGetBgWidget), so it already matches full-frame wallpaper paint
+-- including night-mode handling. No extra invert is applied here.
+function M.paintEraser(bb, x, y, w, h, strength, radius)
     if w <= 0 or h <= 0 then return end
-    -- Ensure the screen-sized cache exists (fit mode builds it on first get).
+    strength = _clampBackdrop(strength) or 0
+
+    -- Opaque chrome: surface fill alone is the final pixel state.
+    if strength >= 100 then
+        M.paintBackdrop(bb, x, y, w, h, 100, radius or 0)
+        return
+    end
+
+    -- Base layer: wallpaper sub-rect, or solid surface when none is set.
     if not _style_bg_cache_bb then
         _styleGetBgWidget()
     end
     local src = _style_bg_cache_bb
+    local restored = false
     if src then
         local sw = src:getWidth()
         local sh = src:getHeight()
-        if x < 0 then w = w + x; x = 0 end
-        if y < 0 then h = h + y; y = 0 end
-        if x >= sw or y >= sh then return end
-        if x + w > sw then w = sw - x end
-        if y + h > sh then h = sh - y end
-        if w <= 0 or h <= 0 then return end
-        local ok = pcall(function()
-            bb:blitFrom(src, x, y, x, y, w, h)
-            local opacity = _wpOpacity()
-            if opacity and opacity > 0 then
-                bb:lightenRect(x, y, w, h, opacity / 100)
+        local rx, ry, rw, rh = x, y, w, h
+        if rx < 0 then rw = rw + rx; rx = 0 end
+        if ry < 0 then rh = rh + ry; ry = 0 end
+        if rx < sw and ry < sh then
+            if rx + rw > sw then rw = sw - rx end
+            if ry + rh > sh then rh = sh - ry end
+            if rw > 0 and rh > 0 then
+                restored = pcall(function()
+                    bb:blitFrom(src, rx, ry, rx, ry, rw, rh)
+                    M.paintTint(bb, rx, ry, rw, rh)
+                end)
             end
-        end)
-        if ok then return end
+        end
     end
-    local SUIStyle = require("features/sui_style")
-    bb:paintRect(x, y, w, h, SUIStyle.COLOR.surface)
+    if not restored then
+        local SUIStyle = require("features/sui_style")
+        M.withInverseGuard(bb, function()
+            bb:paintRect(x, y, w, h, SUIStyle.COLOR.surface)
+        end)
+    end
+
+    if strength > 0 then
+        M.paintBackdrop(bb, x, y, w, h, strength, radius or 0)
+    end
 end
 
 -- ---------------------------------------------------------------------------

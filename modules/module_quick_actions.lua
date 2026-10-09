@@ -203,6 +203,8 @@ local function buildQAWidget(w, action_ids, show_labels, on_tap_fn, d, shape, bg
             lbl_sp         = lbl_sp,
             lbl_h          = lbl_h,
             lbl_fs         = d.lbl_fs,
+            lbl_face       = d.lbl_face,
+            lbl_bold       = d.lbl_bold,
             lbl_max_width  = d.frame_sz,
             lbl_truncate   = true,
             on_tap_fn      = on_tap_fn,
@@ -225,6 +227,23 @@ end
 -- ---------------------------------------------------------------------------
 -- Slot factory — creates one module descriptor per slot
 -- ---------------------------------------------------------------------------
+local _label_scale_migrated = {}
+
+local function _migrateLabelScale(mod_id, pfx)
+    pfx = pfx or "simpleui_hs_"
+    local tag = pfx .. mod_id
+    if _label_scale_migrated[tag] then return end
+    _label_scale_migrated[tag] = true
+    local text_key = pfx .. mod_id .. "_text_scale_label"
+    if SUISettings:get(text_key) == nil then
+        local pct = Config.getItemLabelScalePct(mod_id, pfx)
+        if pct ~= Config.SCALE_DEF then
+            Config.setTextStyleScale(pct, mod_id, "label", pfx)
+        end
+    end
+    SUISettings:del(pfx .. mod_id .. "_item_label_scale")
+end
+
 local function makeInstance(inst_id)
     -- Keys built at call-time using ctx.pfx — works for any page prefix.
     local slot_suffix = inst_id
@@ -272,6 +291,7 @@ local function makeInstance(inst_id)
     S.name       = _("Quick Actions Row")
     S.label      = nil
     S.default_on = false
+    S.text_elems = { "label" }
 
     function S.isEnabled(pfx)
         return SUISettings:readSetting(pfx .. slot_suffix .. "_enabled") == true
@@ -525,8 +545,10 @@ local function makeInstance(inst_id)
         -- the same reason).
         -- `w` is already chrome contentWidth (label-aligned).
         local d           = _getQADims(Config.getModuleScaleRaw(S.id, ctx.pfx), w)
-        local lbl_scale = Config.getItemLabelScale(S.id, ctx.pfx) * lf
-        d.lbl_fs = math.max(6, math.floor(d.lbl_fs * lbl_scale))
+        _migrateLabelScale(S.id, ctx.pfx)
+        local styles = Config.resolveTextStyles(ctx, S.id, S.text_elems)
+        d.lbl_fs = math.max(6, math.floor(d.lbl_fs * lf * (styles.label.scale or 1)))
+        d.lbl_face, d.lbl_bold = SUIStyle.getTextFace(styles.label, d.lbl_fs)
         return buildQAWidget(w, qa_ids, show_labels, ctx.on_qa_tap, d, getShape(ctx.pfx), getBg(ctx.pfx), nil, getAlign(ctx.pfx), getBtnStrength(ctx.pfx))
     end
 
@@ -536,7 +558,7 @@ local function makeInstance(inst_id)
         local show_labels = SUISettings:nilOrTrue(labels_key)
         -- Estimate content width the same way chrome contentWidth does for a
         -- full column (outer margin = PAD each side).
-        local col_w = ctx.col_w or ctx.inner_w or (Screen:getWidth() - UI.SIDE_PAD * 2)
+        local col_w = ctx.col_w or ctx.inner_w or UI.getInnerW()
         local content_w = math.max(1, col_w - PAD * 2)
         local d = _getQADims(Config.getModuleScaleRaw(S.id, ctx.pfx), content_w)
         return (show_labels and (d.frame_sz + d.lbl_sp + d.lbl_h) or d.frame_sz)
@@ -546,156 +568,160 @@ local function makeInstance(inst_id)
         local pfx     = ctx_menu.pfx
         local refresh = ctx_menu.refresh
         local _lc     = ctx_menu._
-        local items = {}
         local fn = (type(ctx_menu.makeQAMenu) == "function") and ctx_menu.makeQAMenu or makeQAMenuFallback
         local qa = fn(ctx_menu, inst_id) or {}
 
-        local items_node = nil
-        local hide_text_node = nil
+        local items_node, hide_text_node = nil, nil
         for _, v in ipairs(qa) do
             if v.text == _lc("Quick Actions") then items_node = v end
             if v.text == _lc("Hide Label") then hide_text_node = v end
         end
-        if items_node then items[#items + 1] = items_node end
 
-        items[#items + 1] = Config.makeScaleItem({
-            text_func    = function() return _lc("Scale") end,
-            enabled_func = function() return not Config.isScaleLinked() end,
-            title        = _lc("Scale"),
-            info         = _lc("Scale for this module.\n100% is the default size."),
-            get          = function() return Config.getModuleScalePct(S.id, pfx) end,
-            set          = function(v) Config.setModuleScale(v, S.id, pfx) end,
-            refresh      = refresh,
-        })
+        local item_rows = {}
+        if items_node then item_rows[#item_rows + 1] = items_node end
 
-        if hide_text_node then hide_text_node.separator = nil end
-
-        items[#items + 1] = {
-            text = _lc("Label"),
-            sub_item_table = {
-                Config.makeScaleItem({
-                    text_func    = function() return _lc("Size") end,
-                    title        = _lc("Size"),
-                    info         = _lc("Scale for the button label text.\n100% is the default size."),
-                    get          = function() return Config.getItemLabelScalePct(S.id, pfx) end,
-                    set          = function(v) Config.setItemLabelScale(v, S.id, pfx) end,
-                    refresh      = refresh,
-                }),
-                hide_text_node
-            }
+        local size_rows = {
+            Config.makeScaleItem({
+                text_func    = function() return _lc("Scale") end,
+                enabled_func = function() return not Config.isScaleLinked() end,
+                title        = _lc("Scale"),
+                info         = _lc("Scale for this module.\n100% is the default size."),
+                get          = function() return Config.getModuleScalePct(S.id, pfx) end,
+                set          = function(v) Config.setModuleScale(v, S.id, pfx) end,
+                refresh      = refresh,
+            }),
         }
 
-        items[#items + 1] = {
-            text_func      = function() return _lc("Appearance") end,
+        local text_opts = {
+            mod_id  = S.id,
+            elems   = S.text_elems,
+            labels  = { label = _lc("Label") },
+            info    = _lc("Size of this text.\n100% is the default size."),
+            pfx     = pfx,
+            refresh = refresh,
+            _lc     = _lc,
+        }
+
+        local appearance_extra = {}
+        if hide_text_node then
+            hide_text_node.separator = nil
+            appearance_extra[#appearance_extra + 1] = hide_text_node
+        end
+
+        appearance_extra[#appearance_extra + 1] = {
+            text = _lc("Button Type"),
             sub_item_table = {
                 {
-                    text = _lc("Button Type"),
-                    sub_item_table = {
-                        {
-                            text           = _lc("Round"),
-                            radio          = true,
-                            checked_func   = function() return getShape(pfx) == "round" end,
-                            keep_menu_open = true,
-                            callback       = function()
-                                SUISettings:saveSetting(pfx .. SHAPE_KEY, "round")
-                                refresh()
-                            end,
-                        },
-                        {
-                            text           = _lc("Rounded Square"),
-                            radio          = true,
-                            checked_func   = function() return getShape(pfx) == "rounded_square" end,
-                            keep_menu_open = true,
-                            callback       = function()
-                                SUISettings:saveSetting(pfx .. SHAPE_KEY, "rounded_square")
-                                refresh()
-                            end,
-                        },
-                        {
-                            text           = _lc("Bare"),
-                            radio          = true,
-                            checked_func   = function() return getShape(pfx) == "bare" end,
-                            keep_menu_open = true,
-                            callback       = function()
-                                SUISettings:saveSetting(pfx .. SHAPE_KEY, "bare")
-                                refresh()
-                            end,
-                        },
-                    },
+                    text           = _lc("Round"),
+                    radio          = true,
+                    checked_func   = function() return getShape(pfx) == "round" end,
+                    keep_menu_open = true,
+                    callback       = function()
+                        SUISettings:saveSetting(pfx .. SHAPE_KEY, "round")
+                        refresh()
+                    end,
                 },
                 {
-                    text = _lc("Button Style"),
-                    enabled_func = function() return getShape(pfx) ~= "bare" end,
-                    sub_item_table = {
-                        {
-                            text           = _lc("Solid"),
-                            radio          = true,
-                            checked_func   = function() return getBg(pfx) == "solid" end,
-                            keep_menu_open = true,
-                            callback       = function()
-                                SUISettings:saveSetting(pfx .. BG_KEY, "solid")
-                                refresh()
-                            end,
-                        },
-                        {
-                            text           = _lc("Flat"),
-                            radio          = true,
-                            checked_func   = function() return getBg(pfx) == "flat" end,
-                            keep_menu_open = true,
-                            callback       = function()
-                                SUISettings:saveSetting(pfx .. BG_KEY, "flat")
-                                refresh()
-                            end,
-                        },
-                    },
+                    text           = _lc("Rounded Square"),
+                    radio          = true,
+                    checked_func   = function() return getShape(pfx) == "rounded_square" end,
+                    keep_menu_open = true,
+                    callback       = function()
+                        SUISettings:saveSetting(pfx .. SHAPE_KEY, "rounded_square")
+                        refresh()
+                    end,
                 },
-                Config.makeBackdropStrengthItem({
-                    title         = _lc("Button Opacity"),
-                    enabled_func  = function() return getShape(pfx) ~= "bare" end,
-                    get           = function() return getBtnStrength(pfx) end,
-                    set           = function(v) setBtnStrength(pfx, v) end,
-                    refresh       = refresh,
-                    default_value = 100,
-                    _lc           = _lc,
-                }),
                 {
-                    text = _lc("Alignment"),
-                    sub_item_table = {
-                        {
-                            text           = _lc("Justified"),
-                            radio          = true,
-                            checked_func   = function() return getAlign(pfx) == "current" end,
-                            keep_menu_open = true,
-                            callback       = function()
-                                SUISettings:saveSetting(pfx .. ALIGN_KEY, "current")
-                                refresh()
-                            end,
-                        },
-                        {
-                            text           = _lc("Left"),
-                            radio          = true,
-                            checked_func   = function() return getAlign(pfx) == "left" end,
-                            keep_menu_open = true,
-                            callback       = function()
-                                SUISettings:saveSetting(pfx .. ALIGN_KEY, "left")
-                                refresh()
-                            end,
-                        },
-                        {
-                            text           = _lc("Right"),
-                            radio          = true,
-                            checked_func   = function() return getAlign(pfx) == "right" end,
-                            keep_menu_open = true,
-                            callback       = function()
-                                SUISettings:saveSetting(pfx .. ALIGN_KEY, "right")
-                                refresh()
-                            end,
-                        },
-                    },
+                    text           = _lc("Bare"),
+                    radio          = true,
+                    checked_func   = function() return getShape(pfx) == "bare" end,
+                    keep_menu_open = true,
+                    callback       = function()
+                        SUISettings:saveSetting(pfx .. SHAPE_KEY, "bare")
+                        refresh()
+                    end,
                 },
             },
         }
-        return items
+        appearance_extra[#appearance_extra + 1] = {
+            text = _lc("Button Style"),
+            enabled_func = function() return getShape(pfx) ~= "bare" end,
+            sub_item_table = {
+                {
+                    text           = _lc("Solid"),
+                    radio          = true,
+                    checked_func   = function() return getBg(pfx) == "solid" end,
+                    keep_menu_open = true,
+                    callback       = function()
+                        SUISettings:saveSetting(pfx .. BG_KEY, "solid")
+                        refresh()
+                    end,
+                },
+                {
+                    text           = _lc("Flat"),
+                    radio          = true,
+                    checked_func   = function() return getBg(pfx) == "flat" end,
+                    keep_menu_open = true,
+                    callback       = function()
+                        SUISettings:saveSetting(pfx .. BG_KEY, "flat")
+                        refresh()
+                    end,
+                },
+            },
+        }
+        appearance_extra[#appearance_extra + 1] = Config.makeBackdropStrengthItem({
+            title         = _lc("Button Opacity"),
+            enabled_func  = function() return getShape(pfx) ~= "bare" end,
+            get           = function() return getBtnStrength(pfx) end,
+            set           = function(v) setBtnStrength(pfx, v) end,
+            refresh       = refresh,
+            default_value = 100,
+            _lc           = _lc,
+        })
+        appearance_extra[#appearance_extra + 1] = {
+            text = _lc("Alignment"),
+            sub_item_table = {
+                {
+                    text           = _lc("Justified"),
+                    radio          = true,
+                    checked_func   = function() return getAlign(pfx) == "current" end,
+                    keep_menu_open = true,
+                    callback       = function()
+                        SUISettings:saveSetting(pfx .. ALIGN_KEY, "current")
+                        refresh()
+                    end,
+                },
+                {
+                    text           = _lc("Left"),
+                    radio          = true,
+                    checked_func   = function() return getAlign(pfx) == "left" end,
+                    keep_menu_open = true,
+                    callback       = function()
+                        SUISettings:saveSetting(pfx .. ALIGN_KEY, "left")
+                        refresh()
+                    end,
+                },
+                {
+                    text           = _lc("Right"),
+                    radio          = true,
+                    checked_func   = function() return getAlign(pfx) == "right" end,
+                    keep_menu_open = true,
+                    callback       = function()
+                        SUISettings:saveSetting(pfx .. ALIGN_KEY, "right")
+                        refresh()
+                    end,
+                },
+            },
+        }
+
+        return Config.buildModuleMenu({
+            items = item_rows,
+            appearance = {
+                size  = size_rows,
+                text  = text_opts,
+                extra = appearance_extra,
+            },
+        }, ctx_menu)
     end
 
     return S

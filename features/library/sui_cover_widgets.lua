@@ -1,22 +1,21 @@
 -- sui_cover_widgets.lua — Simple UI
 -- Pure rendering code for folder/book cover decoration: the progress
 -- pentagon, the "New" corner ribbon, rounded-rectangle badges (pages,
--- series index, "New"), the book spine, the folder-name label overlay,
+-- series index, "New"), the book pile, the folder-name label overlay,
 -- the book-count circle badge, and 2×2 quad-cover assembly.
 --
--- Nothing here reads settings or touches FileChooser/MosaicMenuItem —
--- every function takes the values it needs as parameters. sui_foldercovers.lua
--- reads settings once per update()/paintTo() cycle and passes them in. This
--- means every function below can be exercised and reasoned about in
--- isolation from the settings system and the monkeypatch machinery.
+-- Nothing here touches FileChooser/MosaicMenuItem, and the only setting read
+-- are the cover-shadow flags (through SUIStyle.coverShadowOffset) — every other
+-- value arrives as a parameter. sui_foldercovers.lua reads its settings once
+-- per update()/paintTo() cycle and passes them in. This means every function
+-- below can be exercised and reasoned about in isolation from the settings
+-- system and the monkeypatch machinery.
 --
--- Cached state kept here: the font-size cache used by buildFolderNameWidget
--- (binary-searching the largest font that fits a folder name is not cheap),
--- the rendered-ribbon Blitbuffer cache (rotating text pixel-by-pixel is
--- expensive, keyed by dimensions+label+colors), and a reusable 8-bit mask
--- for progress-pentagon AA paints. All are cleared via the public
--- clear*Cache() functions, which sui_foldercovers.lua calls from
--- M.invalidateCache().
+-- Cached state kept here: the rendered-ribbon Blitbuffer cache (rotating
+-- text pixel-by-pixel is expensive, keyed by dimensions+label+colors), the
+-- label line-height memo, and a reusable 8-bit mask for progress-pentagon AA
+-- paints. All are cleared via the public clear*Cache() functions, which
+-- sui_foldercovers.lua calls from M.invalidateCache().
 --
 -- Public API
 -- ----------
@@ -33,22 +32,33 @@
 --       -- same reason buildProgressBadgeWidget exists — see
 --       -- engines/sui_book_grid.lua's "New" badge, mode = "ribbon".
 --   CoverWidgets.buildRectBadgeWidget(text, bold, cell_min, dark, new_badge, badge_scale)
---   CoverWidgets.buildSpine(img_h)
---   CoverWidgets.buildFolderNameWidget(item, available_w, max_font_size, fgcolor, bgcolor)
---   CoverWidgets.buildLabel(item, available_w, size, border, cv_scale, display, spine_w)
+--   CoverWidgets.pileInset(scale)
+--       -- Total px a cover gives up on the right and bottom for its pile
+--       -- (layer steps plus the front cover's shadow).
+--   CoverWidgets.buildPile(cover_w, cover_h, inset)
+--       -- Three shaded layers peeking out behind a cover of cover_w × cover_h.
+--   CoverWidgets.paintShadow(bb, x, y, w, h, offset)
+--       -- Drop shadow around a w × h card at (x, y), cast down and to the right.
+--   CoverWidgets.backingInset(scope, hide_pile, scale)
+--       -- Px a cover gives up on the right and bottom for whatever is drawn
+--       -- behind it: the pile, or just the shadow when the pile is hidden.
+--   CoverWidgets.buildBacking(cover_w, cover_h, inset, hide_pile)
+--       -- The widget for that backing (nil when there is nothing to draw).
+--   CoverWidgets.buildFolderNameWidget(item, available_w, font_size, fgcolor, bgcolor)
+--   CoverWidgets.buildLabel(item, size, border, display)
 --       -- display: { label_mode, show_name, label_style, label_pos, label_color, label_scale }
 --   CoverWidgets.buildBadge(mandatory, cover_dimen, cv_scale, cell_dimen, opts)
 --       -- opts: { hidden, scale, dark, position }  ("bottom" | anything else = top)
---   CoverWidgets.computeCellGeometry(item, hide_spine)
---   CoverWidgets.assembleCoverWidget(item, content_widget, size, border, spine_w, display)
+--   CoverWidgets.computeCellGeometry(item, hide_pile)
+--   CoverWidgets.assembleCoverWidget(item, content_widget, size, border, pile, display)
 --   CoverWidgets.buildQuadGrid(img_list, w, h, border)
---       -- Pure 2×2 cover collage, no spine/label/badge/assembly — reusable
+--       -- Pure 2×2 cover collage, no pile/label/badge/assembly — reusable
 --       -- outside the library's mosaic context (e.g. module_collections.lua).
---   CoverWidgets.buildQuadCover(item, img_list, border, spine_w, max_img_w, max_img_h, display)
---       -- Wraps buildQuadGrid with assembleCoverWidget (mosaic's spine/label/badge).
+--   CoverWidgets.buildQuadCover(item, img_list, border, pile, max_img_w, max_img_h, display)
+--       -- Wraps buildQuadGrid with assembleCoverWidget (mosaic's pile/label/badge).
 --   CoverWidgets.installWidget(item, widget)
 --   CoverWidgets.clearRibbonCache()
---   CoverWidgets.clearFontSizeCache()
+--   CoverWidgets.clearLabelMetricsCache()
 --   CoverWidgets.clearPentagonMaskCache()
 
 local _  = require("infra/sui_i18n").translate
@@ -60,7 +70,6 @@ local Font            = require("ui/font")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
-local HorizontalSpan  = require("ui/widget/horizontalspan")
 local ImageWidget     = require("ui/widget/imagewidget")
 local LineWidget      = require("ui/widget/linewidget")
 local OverlapGroup    = require("ui/widget/overlapgroup")
@@ -88,18 +97,19 @@ local _pentagon_mask_bb
 -- ---------------------------------------------------------------------------
 
 local _BASE_COVER_H = math.floor(Screen:scaleBySize(96))
-local _BASE_DIR_FS  = SUIStyle.FS_SUBTITLE -- 20: directory name label ceiling for binary-search
+local _BASE_DIR_FS  = SUIStyle.FS_DETAIL -- 15: folder-name label font size at 100% label scale
 
-local _EDGE_THICK  = math.max(1, Screen:scaleBySize(3))
-local _EDGE_MARGIN = math.max(1, Screen:scaleBySize(1))
-local _SPINE_W     = _EDGE_THICK * 2 + _EDGE_MARGIN * 2
-
-local _LATERAL_PAD         = Screen:scaleBySize(10)
+local _LATERAL_PAD        = Screen:scaleBySize(10)
 local _VERTICAL_PAD        = Screen:scaleBySize(4)
 local _BADGE_MARGIN_BASE   = Screen:scaleBySize(8)
 local _BADGE_MARGIN_R_BASE = Screen:scaleBySize(4)
 
-local _LABEL_ALPHA = 0.75
+-- Folder-name label band: at most two lines, never thinner than this
+-- fraction of the cover, and (at the bottom) lifted off the cover edge.
+local _LABEL_ALPHA      = 0.75
+local _LABEL_MAX_LINES  = 2
+local _LABEL_MIN_H_FRAC = 0.18
+local _LABEL_GAP_FRAC   = 0.07
 
 -- ── Progress pentagon badge ──────────────────────────────────────────────────
 -- Shape: downward-pointing pentagon (rectangle body + triangular tip).
@@ -511,197 +521,333 @@ function CoverWidgets.buildRectBadgeWidget(text, bold, cell_min, dark, new_badge
     }
 end
 
--- ── Book spine decoration ─────────────────────────────────────────────────────
+-- ── Book pile ─────────────────────────────────────────────────────────────────
 
-function CoverWidgets.buildSpine(img_h)
-    local h1 = math.floor(img_h * 0.97)
-    local h2 = math.floor(img_h * 0.94)
-    local y1 = math.floor((img_h - h1) / 2)
-    local y2 = math.floor((img_h - h2) / 2)
+-- The pile is a staircase of cards behind the front cover, each one offset
+-- down-right by `step` and casting its own drop shadow in the same direction.
+-- The shadow is `step` minus the outline, so outline and shadow strips tile
+-- the staircase without gaps. Shadow and outline fade with depth, so the pile
+-- recedes.
 
-    local function spineLine(h, y_off)
-        local line = LineWidget:new{
-            dimen      = Geom:new{ w = _EDGE_THICK, h = h },
-            background = SUIStyle.COLOR.gray,
-        }
-        line.overlap_offset = { 0, y_off }
-        return OverlapGroup:new{ dimen = Geom:new{ w = _EDGE_THICK, h = img_h }, line }
+-- Fade factors by depth. Depth 0 is the front cover's own shadow; depth 1 is
+-- the layer touching it. A factor of 1 gives the full colour, 0 gives none.
+-- The outline table sets the layer count.
+local _PILE_SHADOW_FADE = { [0] = 1.0, 0.58, 0.34, 0.20 }
+local _PILE_BORDER_FADE = { 0.80, 0.60, 0.44 }
+
+local _PILE_LAYERS = #_PILE_BORDER_FADE
+local _PILE_STEP   = Screen:scaleBySize(5)
+
+-- Shadow blackness before fading. Night mode inverts the frame after painting,
+-- so the night base is lower to keep the shadow dark on screen.
+local _PILE_SHADOW_BASE       = 0.5
+local _PILE_SHADOW_BASE_NIGHT = 0.15
+
+-- Interpolates two colours in painted space: t = 1 gives `a`, t = 0 gives `b`.
+local function blend8(a, b, t)
+    local av, bv = a:getColor8().a, b:getColor8().a
+    return Blitbuffer.Color8(math.floor(bv + (av - bv) * t + 0.5))
+end
+
+local function pileShadowColor(depth)
+    local base = Screen.night_mode and _PILE_SHADOW_BASE_NIGHT or _PILE_SHADOW_BASE
+    return Blitbuffer.gray(base * _PILE_SHADOW_FADE[depth])
+end
+
+-- The cover's own outline colour, faded towards the page colour.
+local function pileBorderColor(depth)
+    return blend8(SUIStyle.COLOR.text_primary, SUIStyle.COLOR.surface, _PILE_BORDER_FADE[depth])
+end
+
+-- Offset between consecutive cards. Always wider than the outline, so the
+-- shadow strip has at least one pixel.
+local function pileStep(scale)
+    return math.max(SUIStyle.BADGE_BORDER_SZ + 1, math.floor(_PILE_STEP * (scale or 1)))
+end
+
+local PileWidget = {}
+PileWidget.__index = PileWidget
+
+function PileWidget:getSize()
+    return Geom:new{ w = self.w, h = self.h }
+end
+
+-- Cards are painted farthest first so nearer ones cover them, ending with the
+-- front cover's shadow (depth 0); the front cover itself is added on top by
+-- the caller. Each card is a shadow offset down-right, then its body, then its
+-- outline. The body takes the shadow colour of the card in front, so it blends
+-- into the strip that covers it.
+function PileWidget:paintTo(bb, x, y)
+    local step, shadow = self.step, self.shadow
+    local stroke = SUIStyle.BADGE_BORDER_SZ
+    for depth = _PILE_LAYERS, 0, -1 do
+        local lx, ly = x + depth * step, y + depth * step
+        bb:paintRect(lx + shadow, ly + shadow, self.card_w, self.card_h, pileShadowColor(depth))
+        if depth > 0 then
+            bb:paintRect(lx, ly, self.card_w, self.card_h, pileShadowColor(depth - 1))
+            bb:paintBorder(lx, ly, self.card_w, self.card_h, stroke, pileBorderColor(depth))
+        end
     end
+end
 
-    return HorizontalGroup:new{
-        align = "center",
-        spineLine(h2, y2),
-        HorizontalSpan:new{ width = _EDGE_MARGIN },
-        spineLine(h1, y1),
-        HorizontalSpan:new{ width = _EDGE_MARGIN },
-    }
+-- See ProgressBadgeWidget:handleEvent() above for why this is required —
+-- same crash, same fix, same reasoning.
+function PileWidget:handleEvent()
+    return false
+end
+
+-- Total pixels a cover gives up on its right and bottom edges for the pile:
+-- one step per layer plus the front cover's shadow.
+-- `scale` follows the cover's own scale (1 when omitted).
+function CoverWidgets.pileInset(scale)
+    return (_PILE_LAYERS + 1) * pileStep(scale) - SUIStyle.BADGE_BORDER_SZ
+end
+
+-- Cards behind a cover of cover_w × cover_h. `inset` comes from pileInset();
+-- the widget is (cover_w + inset) × (cover_h + inset) and the caller draws
+-- the cover at its top-left corner.
+function CoverWidgets.buildPile(cover_w, cover_h, inset)
+    local stroke = SUIStyle.BADGE_BORDER_SZ
+    local step   = math.floor((inset + stroke) / (_PILE_LAYERS + 1))
+    if step <= stroke then return nil end
+    return setmetatable({
+        w = cover_w + inset, h = cover_h + inset,
+        card_w = cover_w,    card_h = cover_h,
+        step = step,         shadow = step - stroke,
+    }, PileWidget)
+end
+
+-- ── Cover shadow ──────────────────────────────────────────────────────────────
+
+-- How strongly the shadow shades what lies under it: the third lightest grey
+-- of the pile's shadow layers (the lightest is the deepest layer).
+local _SHADOW_STRENGTH = _PILE_SHADOW_BASE * _PILE_SHADOW_FADE[_PILE_LAYERS - 2]
+
+-- Paints the part of a drop shadow that shows around a w × h card at (x, y):
+-- the card's rectangle shifted down-right by `offset`, minus the card itself.
+-- The two strips never overlap. The shadow shades what is already painted
+-- instead of laying a fixed grey, so it reads on any background. Night frames
+-- are inverted after painting, so lightening is what darkens the shadow on
+-- screen.
+function CoverWidgets.paintShadow(bb, x, y, w, h, offset)
+    if offset <= 0 then return end
+    local shade = Screen.night_mode and bb.lightenRect or bb.darkenRect
+    shade(bb, x + w,      y + offset, offset,     h,      _SHADOW_STRENGTH)
+    shade(bb, x + offset, y + h,      w - offset, offset, _SHADOW_STRENGTH)
+end
+
+-- Parts of rect `r` that lie outside rect `c`, as a list of rects.
+local function subtractRect(r, c)
+    local rx2, ry2, cx2, cy2 = r.x + r.w, r.y + r.h, c.x + c.w, c.y + c.h
+    if c.x >= rx2 or cx2 <= r.x or c.y >= ry2 or cy2 <= r.y then return { r } end
+    local pieces = {}
+    local mid_y1, mid_y2 = math.max(r.y, c.y), math.min(ry2, cy2)
+    if c.y > r.y then pieces[#pieces + 1] = { x = r.x, y = r.y, w = r.w, h = c.y - r.y } end
+    if cy2 < ry2 then pieces[#pieces + 1] = { x = r.x, y = cy2, w = r.w, h = ry2 - cy2 } end
+    if c.x > r.x then pieces[#pieces + 1] = { x = r.x, y = mid_y1, w = c.x - r.x, h = mid_y2 - mid_y1 } end
+    if cx2 < rx2 then pieces[#pieces + 1] = { x = cx2, y = mid_y1, w = rx2 - cx2, h = mid_y2 - mid_y1 } end
+    return pieces
+end
+
+-- Paints the drop shadows of several cards (rects relative to (x, y)) as one
+-- shape: shading accumulates, so a pixel under two shadows is shaded once.
+function CoverWidgets.paintShadows(bb, x, y, cards, offset)
+    if offset <= 0 then return end
+    local shade = Screen.night_mode and bb.lightenRect or bb.darkenRect
+    local painted = {}
+    for _, c in ipairs(cards) do
+        local strips = {
+            { x = c.x + c.w,      y = c.y + offset, w = offset,       h = c.h },
+            { x = c.x + offset,   y = c.y + c.h,    w = c.w - offset, h = offset },
+        }
+        for _, strip in ipairs(strips) do
+            local pieces = { strip }
+            for _, done in ipairs(painted) do
+                local rest = {}
+                for _, piece in ipairs(pieces) do
+                    for _, part in ipairs(subtractRect(piece, done)) do rest[#rest + 1] = part end
+                end
+                pieces = rest
+            end
+            for _, p in ipairs(pieces) do
+                if p.w > 0 and p.h > 0 then
+                    shade(bb, x + p.x, y + p.y, p.w, p.h, _SHADOW_STRENGTH)
+                end
+            end
+            painted[#painted + 1] = strip
+        end
+    end
+end
+
+local ShadowWidget = {}
+ShadowWidget.__index = ShadowWidget
+
+function ShadowWidget:getSize()
+    return Geom:new{ w = self.w, h = self.h }
+end
+
+function ShadowWidget:paintTo(bb, x, y)
+    CoverWidgets.paintShadow(bb, x, y, self.card_w, self.card_h, self.offset)
+end
+
+-- See ProgressBadgeWidget:handleEvent() above for why this is required —
+-- same crash, same fix, same reasoning.
+function ShadowWidget:handleEvent()
+    return false
+end
+
+local ShadowLayerWidget = {}
+ShadowLayerWidget.__index = ShadowLayerWidget
+
+function ShadowLayerWidget:getSize()
+    return Geom:new{ w = self.w, h = self.h }
+end
+
+function ShadowLayerWidget:paintTo(bb, x, y)
+    CoverWidgets.paintShadows(bb, x, y, self.cards, self.offset)
+end
+
+-- See ProgressBadgeWidget:handleEvent() above for why this is required —
+-- same crash, same fix, same reasoning.
+function ShadowLayerWidget:handleEvent()
+    return false
+end
+
+-- Widget of w × h casting the shadows of `cards` (rects relative to its
+-- top-left corner) as one shape; nil when `offset` is 0.
+function CoverWidgets.buildShadowLayer(w, h, cards, offset)
+    if offset <= 0 then return nil end
+    return setmetatable({ w = w, h = h, cards = cards, offset = offset }, ShadowLayerWidget)
+end
+
+-- Px a cover gives up on its right and bottom edges for what sits behind it:
+-- the pile, or only the shadow of `scope` when the pile is hidden. `scale`
+-- follows the cover's own scale (1 when omitted).
+function CoverWidgets.backingInset(scope, hide_pile, scale)
+    if hide_pile then return SUIStyle.coverShadowOffset(scope, scale) end
+    return CoverWidgets.pileInset(scale)
+end
+
+-- Widget drawn behind a cover of cover_w × cover_h; `inset` comes from
+-- backingInset(). The widget is (cover_w + inset) × (cover_h + inset) and the
+-- caller draws the cover at its top-left corner.
+function CoverWidgets.buildBacking(cover_w, cover_h, inset, hide_pile)
+    if not hide_pile then return CoverWidgets.buildPile(cover_w, cover_h, inset) end
+    if inset <= 0 then return nil end
+    return setmetatable({
+        w = cover_w + inset, h = cover_h + inset,
+        card_w = cover_w,    card_h = cover_h,
+        offset = inset,
+    }, ShadowWidget)
 end
 
 -- ── Folder-name label overlay ─────────────────────────────────────────────────
 
--- Binary-search the largest font size where the folder name fits in two
--- lines within available_w. Result cached by text+width+max_fs.
--- Capitalises the first letter of each word.
---
--- Two-generation LRU cache pattern (generation A active, B previous; on
--- overflow B=A, A={} — effective capacity 2×MAX).
-local _FS_CACHE_MAX   = 200
-local _fs_cache_a     = {}
-local _fs_cache_b     = {}
-local _fs_cache_a_cnt = 0
+-- Rendered line height per font size, memoised: measuring costs a full text
+-- layout pass.
+local _line_h_memo = {}
 
-local function fsCacheGet(key) return _fs_cache_a[key] or _fs_cache_b[key] end
-local function fsCacheSet(key, value)
-    if _fs_cache_a_cnt >= _FS_CACHE_MAX then
-        _fs_cache_b     = _fs_cache_a
-        _fs_cache_a     = {}
-        _fs_cache_a_cnt = 0
+function CoverWidgets.clearLabelMetricsCache()
+    _line_h_memo = {}
+end
+
+local function labelLineHeight(face, font_size)
+    local h = _line_h_memo[font_size]
+    if not h then
+        local probe = TextBoxWidget:new{
+            text  = "Mg",
+            face  = face,
+            width = Screen:getWidth(),
+            bold  = true,
+        }
+        h = probe:getLineHeight()
+        probe:free(true)
+        _line_h_memo[font_size] = h
     end
-    _fs_cache_a[key] = value
-    _fs_cache_a_cnt  = _fs_cache_a_cnt + 1
+    return h
 end
 
-function CoverWidgets.clearFontSizeCache()
-    _fs_cache_a, _fs_cache_b, _fs_cache_a_cnt = {}, {}, 0
-end
-
+-- Folder name as centred bold text at a fixed `font_size`, capitalised per
+-- word. Names longer than _LABEL_MAX_LINES lines are cut with an ellipsis.
 -- `item` needs only `.text` and a writable `._fc_display_text` cache slot
 -- (any table works — sui_foldercovers.lua passes the MosaicMenuItem instance
 -- so the capitalised/bidi-wrapped text is computed once per item, not once
 -- per render).
-function CoverWidgets.buildFolderNameWidget(item, available_w, dir_max_font_size, fgcolor, bgcolor)
+function CoverWidgets.buildFolderNameWidget(item, available_w, font_size, fgcolor, bgcolor)
     if not item._fc_display_text then
         local text = item.text
         if text:match("/$") then text = text:sub(1, -2) end
         text = text:gsub("(%S+)", function(w) return w:sub(1,1):upper() .. w:sub(2) end)
         item._fc_display_text = BD.directory(text)
     end
-    local text      = item._fc_display_text
-    local max_fs    = dir_max_font_size or _BASE_DIR_FS
-    local cache_key = text .. "\0" .. available_w .. "\0" .. max_fs
-    local fg        = fgcolor or SUIStyle.COLOR.text_primary
-    local bg        = bgcolor or SUIStyle.COLOR.surface
-
-    local cached_fs = fsCacheGet(cache_key)
-    if cached_fs then
-        return TextBoxWidget:new{
-            text      = text,
-            face      = Font:getFace(SUIStyle.FACE_REGULAR, cached_fs),
-            width     = available_w,
-            alignment = "center",
-            bold      = true,
-            fgcolor   = fg,
-            bgcolor   = bg,
-        }
-    end
-
-    -- Pass 1: binary-search largest font where the longest word fits.
-    local longest_word = ""
-    for word in text:gmatch("%S+") do
-        if #word > #longest_word then longest_word = word end
-    end
-
-    local dir_font_size = max_fs
-
-    if longest_word ~= "" then
-        local lo, hi = 10, dir_font_size
-        while lo < hi do
-            local mid = math.floor((lo + hi + 1) / 2)
-            local tw = TextWidget:new{
-                text = longest_word,
-                face = Font:getFace(SUIStyle.FACE_REGULAR, mid),
-                bold = true,
-            }
-            local word_w = tw:getWidth()
-            tw:free()
-            if word_w <= available_w then lo = mid else hi = mid - 1 end
-        end
-        dir_font_size = lo
-    end
-
-    -- Pass 2: binary-search largest font where the full text fits in two lines.
-    -- Pass 1 narrows the range, minimising TextBoxWidget allocations.
-    local lo, hi = 10, dir_font_size
-    while lo < hi do
-        local mid  = math.floor((lo + hi + 1) / 2)
-        local fits = false
-        local ok, tbw = pcall(function()
-            return TextBoxWidget:new{
-                text      = text,
-                face      = Font:getFace(SUIStyle.FACE_REGULAR, mid),
-                width     = available_w,
-                alignment = "center",
-                bold      = true,
-            }
-        end)
-        if ok and tbw then
-            fits = tbw:getSize().h <= tbw:getLineHeight() * 2.2
-            tbw:free(true)
-        end
-        if fits then lo = mid else hi = mid - 1 end
-    end
-    dir_font_size = lo
-
-    fsCacheSet(cache_key, dir_font_size)
-
-    return TextBoxWidget:new{
-        text      = text,
-        face      = Font:getFace(SUIStyle.FACE_REGULAR, dir_font_size),
+    local face   = Font:getFace(SUIStyle.FACE_REGULAR, font_size)
+    local opts   = {
+        text      = item._fc_display_text,
+        face      = face,
         width     = available_w,
         alignment = "center",
         bold      = true,
-        fgcolor   = fg,
-        bgcolor   = bg,
+        fgcolor   = fgcolor or SUIStyle.COLOR.text_primary,
+        bgcolor   = bgcolor or SUIStyle.COLOR.surface,
     }
+    local max_h = _LABEL_MAX_LINES * labelLineHeight(face, font_size)
+    local name  = TextBoxWidget:new(opts)
+    if name:getSize().h <= max_h then return name end
+
+    name:free(true)
+    opts.height                        = max_h
+    opts.height_adjust                 = true
+    opts.height_overflow_show_ellipsis = true
+    return TextBoxWidget:new(opts)
 end
 
--- Returns the overlay label widget, or nil when disabled.
+-- Returns the label band laid over the cover (offset to its position), or nil
+-- when disabled. The band spans the cover's width, centres the name in it and
+-- is never thinner than _LABEL_MIN_H_FRAC of the cover; at the bottom it is
+-- lifted off the edge so it reads as a strap around the book.
 -- `display` is the pre-read settings table:
 --   { label_mode, show_name, label_style, label_pos, label_color, label_scale }
-function CoverWidgets.buildLabel(item, available_w, size, border, cv_scale, display, spine_w)
+function CoverWidgets.buildLabel(item, size, border, display)
     if display.label_mode ~= "overlay" then return nil end
     if not display.show_name            then return nil end
-    local label_style = display.label_style
-    local label_pos   = display.label_pos
-    local dark        = display.label_color == "dark"
-    local bg_color    = dark and SUIStyle.COLOR.text_primary or SUIStyle.COLOR.surface
-    local fg_color    = dark and SUIStyle.COLOR.surface or SUIStyle.COLOR.text_primary
+    local dark     = display.label_color == "dark"
+    local bg_color = dark and SUIStyle.COLOR.text_primary or SUIStyle.COLOR.surface
+    local fg_color = dark and SUIStyle.COLOR.surface or SUIStyle.COLOR.text_primary
 
-    local dir_max_fs = math.max(8, math.floor(_BASE_DIR_FS * (display.label_scale or 1.0)))
-    local directory  = CoverWidgets.buildFolderNameWidget(item, available_w, dir_max_fs, fg_color, bg_color)
-    local img_only   = Geom:new{ w = size.w, h = size.h }
-    local img_dimen  = Geom:new{ w = size.w + border * 2, h = size.h + border * 2 }
+    local font_size = math.max(8, math.floor(_BASE_DIR_FS * (display.label_scale or 1.0)))
+    local name      = CoverWidgets.buildFolderNameWidget(item, size.w - _LATERAL_PAD * 2,
+        font_size, fg_color, bg_color)
 
-    local frame = FrameContainer:new{
-        padding        = 0,
-        padding_top    = _VERTICAL_PAD,
-        padding_bottom = _VERTICAL_PAD,
-        padding_left   = _LATERAL_PAD,
-        padding_right  = _LATERAL_PAD,
-        bordersize     = border,
-        background     = bg_color,
-        directory,
+    local cover_w = size.w + border * 2
+    local cover_h = size.h + border * 2
+    local band_h  = math.max(name:getSize().h + (_VERTICAL_PAD + border) * 2,
+                             math.floor(cover_h * _LABEL_MIN_H_FRAC))
+    local band = FrameContainer:new{
+        width      = cover_w,
+        height     = band_h,
+        padding    = 0,
+        bordersize = border,
+        background = bg_color,
+        CenterContainer:new{
+            dimen = Geom:new{ w = cover_w - border * 2, h = band_h - border * 2 },
+            name,
+        },
     }
-
-    local label_inner
-    if label_style == "alpha" then
-        label_inner = AlphaContainer:new{ alpha = _LABEL_ALPHA, frame }
-    else
-        label_inner = frame
+    if display.label_style == "alpha" then
+        band = AlphaContainer:new{ alpha = _LABEL_ALPHA, band }
     end
 
-    local name_og = OverlapGroup:new{ dimen = img_dimen }
-
-    if label_pos == "center" then
-        name_og[1] = CenterContainer:new{ dimen = img_only, label_inner, overlap_align = "center" }
-    elseif label_pos == "top" then
-        name_og[1] = TopContainer:new{ dimen = img_dimen, label_inner, overlap_align = "center" }
+    local y
+    if display.label_pos == "top" then
+        y = 0
+    elseif display.label_pos == "center" then
+        y = math.floor((cover_h - band_h) / 2)
     else
-        name_og[1] = BottomContainer:new{ dimen = img_dimen, label_inner, overlap_align = "center" }
+        local gap = math.max(Screen:scaleBySize(3), math.floor(cover_h * _LABEL_GAP_FRAC))
+        y = cover_h - band_h - gap
     end
-
-    name_og.overlap_offset = { spine_w or _SPINE_W, 0 }
-    return name_og
+    band.overlap_offset = { 0, math.max(0, y) }
+    return band
 end
 
 -- ── Folder book-count badge (circle) ─────────────────────────────────────────
@@ -709,6 +855,8 @@ end
 -- `cell_dimen` is the full mosaic cell (used for sizing); when absent,
 -- cover_dimen is used instead (produces a smaller badge).
 -- `opts`: { hidden, scale, dark, position }  (position: "bottom" | top-default)
+-- The badge is anchored to the top-left of its parent group, where the cover
+-- sits, so a pile extending right and below the cover does not move it.
 function CoverWidgets.buildBadge(mandatory, cover_dimen, cv_scale, cell_dimen, opts)
     opts = opts or {}
     if opts.hidden then return nil end
@@ -768,61 +916,58 @@ function CoverWidgets.buildBadge(mandatory, cover_dimen, cv_scale, cell_dimen, o
             dimen          = cover_dimen,
             padding_bottom = badge_margin,
             inner,
-            overlap_align  = "center",
         }
     else
         return TopContainer:new{
             dimen         = cover_dimen,
             padding_top   = badge_margin,
             inner,
-            overlap_align = "center",
         }
     end
 end
 
 -- ── Shared geometry helper ────────────────────────────────────────────────────
 
--- Computes the five values every cover-building function needs.
--- self.height is already reduced by _STRIP_H in sui_foldercovers.lua's
--- update() wrapper before this is called, so it must NOT be subtracted again.
-function CoverWidgets.computeCellGeometry(item, hide_spine)
-    local border  = SUIStyle.BADGE_BORDER_SZ
-    local spine_w = not hide_spine and _SPINE_W or 0
-    local max_img_w = item.width  - spine_w - border * 2
-    local max_img_h = item.height - border * 2
-    return border, spine_w, max_img_w, max_img_h
+-- Computes the four values every cover-building function needs: the cover's
+-- border, the backing inset (the pile, or just the shadow when the pile is
+-- hidden; 0 when there is neither) and the largest cover that still leaves
+-- room for both. self.height is already reduced by _STRIP_H in
+-- sui_foldercovers.lua's update() wrapper before this is called, so it must
+-- NOT be subtracted again.
+function CoverWidgets.computeCellGeometry(item, hide_pile)
+    local border = SUIStyle.BADGE_BORDER_SZ
+    local pile   = CoverWidgets.backingInset(SUIStyle.SHADOW_LIBRARY, hide_pile)
+    return border, pile,
+        item.width  - pile - border * 2,
+        item.height - pile - border * 2
 end
 
 -- ── Cover assembly helper ─────────────────────────────────────────────────────
 
--- Wraps any pre-built content_widget with the spine, centres it in the mosaic
--- cell, and overlays the folder-name label and item-count badge.
+-- Wraps any pre-built content_widget with the backing (pile or shadow), overlays the folder-name
+-- label and item-count badge, and centres the whole in the mosaic cell.
 -- cv_scale is derived from cover_h here so callers don't have to compute it.
 -- Must be defined before buildQuadCover, which calls it.
-function CoverWidgets.assembleCoverWidget(item, content_widget, size, border, spine_w, display)
-    local spine       = spine_w > 0 and CoverWidgets.buildSpine(size.h) or nil
-    local cover_group = spine
-        and HorizontalGroup:new{ align = "center", spine, content_widget }
-        or  HorizontalGroup:new{ align = "center", content_widget }
-
-    local cover_w     = spine_w + size.w + border * 2
-    local cover_h     = size.h  + border * 2
-    local cover_dimen = Geom:new{ w = cover_w, h = cover_h }
+function CoverWidgets.assembleCoverWidget(item, content_widget, size, border, pile, display)
+    local cover_dimen = Geom:new{ w = size.w + border * 2, h = size.h + border * 2 }
+    local group_dimen = Geom:new{ w = cover_dimen.w + pile, h = cover_dimen.h + pile }
     local cell_dimen  = Geom:new{ w = item.width, h = item.height }
-    local cv_scale    = math.max(0.1, math.floor((cover_h / _BASE_COVER_H) * 10) / 10)
+    local cv_scale    = math.max(0.1, math.floor((cover_dimen.h / _BASE_COVER_H) * 10) / 10)
 
-    local folder_name_widget = CoverWidgets.buildLabel(item, size.w - _LATERAL_PAD * 2,
-        size, border, cv_scale, display, spine_w)
-    local nbitems_widget = CoverWidgets.buildBadge(item.mandatory, cover_dimen, cv_scale, cell_dimen, display.badge)
+    local overlap = OverlapGroup:new{ dimen = group_dimen }
+    local backing = CoverWidgets.buildBacking(cover_dimen.w, cover_dimen.h, pile, display.hide_pile)
+    if backing then overlap[#overlap + 1] = backing end
+    overlap[#overlap + 1] = content_widget
 
-    local overlap = OverlapGroup:new{ dimen = cover_dimen, cover_group }
-    if folder_name_widget then overlap[#overlap + 1] = folder_name_widget end
-    if nbitems_widget     then overlap[#overlap + 1] = nbitems_widget     end
+    local label = CoverWidgets.buildLabel(item, size, border, display)
+    if label then overlap[#overlap + 1] = label end
+    local badge = CoverWidgets.buildBadge(item.mandatory, cover_dimen, cv_scale, cell_dimen, display.badge)
+    if badge then overlap[#overlap + 1] = badge end
 
-    local x_center = math.floor((item.width  - cover_w) / 2)
-    local y_center = math.floor((item.height - cover_h) / 2)
-    overlap.overlap_offset = { x_center - math.floor(spine_w / 2), y_center }
-
+    overlap.overlap_offset = {
+        math.floor((item.width  - group_dimen.w) / 2),
+        math.floor((item.height - group_dimen.h) / 2),
+    }
     return OverlapGroup:new{ dimen = cell_dimen, overlap }
 end
 
@@ -850,10 +995,11 @@ function CoverWidgets.computeQuadCellSizes(w, h)
 end
 
 -- Pure 2×2 cover collage: 4 images (or empty-fill placeholders) separated by
--- thin lines, wrapped in a bordered FrameContainer of exactly w×h. No spine,
--- no label, no badge, no dependency on a mosaic `item`/`display` — safe to
--- call from any context that just wants a quad-cover thumbnail of a given
--- size (e.g. module_collections.lua's "Cover Style: Quad").
+-- thin lines, wrapped in a bordered FrameContainer of w×h plus `border` on
+-- every side. No pile, no label, no badge, no dependency on a mosaic
+-- `item`/`display` — safe to call from any context that just wants a
+-- quad-cover thumbnail of a given size (e.g. module_collections.lua's
+-- "Cover Style: Quad").
 --
 -- img_list: up to 4 entries, each { file = <path> } or { data = <blitbuffer> }.
 --           Missing/nil entries render as an empty (white) slot so the
@@ -919,9 +1065,9 @@ function CoverWidgets.buildQuadGrid(img_list, w, h, border)
 end
 
 -- Returns the OverlapGroup widget for the 2×2 grid assembled into a mosaic
--- cell (spine + folder-name label + item-count badge), or nil when no covers
+-- cell (pile + folder-name label + item-count badge), or nil when no covers
 -- are available. Defined after assembleCoverWidget (which it calls).
-function CoverWidgets.buildQuadCover(item, img_list, border, spine_w, max_img_w, max_img_h, display)
+function CoverWidgets.buildQuadCover(item, img_list, border, pile, max_img_w, max_img_h, display)
     local ratio = 2 / 3
     local img_w, img_h
     if max_img_w / max_img_h > ratio then
@@ -933,7 +1079,7 @@ function CoverWidgets.buildQuadCover(item, img_list, border, spine_w, max_img_w,
     local grid = CoverWidgets.buildQuadGrid(img_list, img_w, img_h, border)
 
     local size = Geom:new{ w = img_w, h = img_h }
-    return CoverWidgets.assembleCoverWidget(item, grid, size, border, spine_w, display)
+    return CoverWidgets.assembleCoverWidget(item, grid, size, border, pile, display)
 end
 
 return CoverWidgets

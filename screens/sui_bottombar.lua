@@ -7,7 +7,7 @@
 -- are a single nil-check + table field read, with zero I/O.
 local _FrameContainer, _CenterContainer, _HorizontalGroup, _VerticalGroup
 local _VerticalSpan, _LineWidget, _OverlapGroup, _TextWidget, _ImageWidget
-local _Geom, _Font
+local _Geom
 local function FrameContainer()  _FrameContainer  = _FrameContainer  or require("ui/widget/container/framecontainer");  return _FrameContainer  end
 local function CenterContainer() _CenterContainer = _CenterContainer or require("ui/widget/container/centercontainer"); return _CenterContainer end
 local function HorizontalGroup() _HorizontalGroup = _HorizontalGroup or require("ui/widget/horizontalgroup");           return _HorizontalGroup end
@@ -18,7 +18,6 @@ local function OverlapGroup()    _OverlapGroup    = _OverlapGroup    or require(
 local function TextWidget()      _TextWidget      = _TextWidget      or require("ui/widget/textwidget");                return _TextWidget      end
 local function ImageWidget()     _ImageWidget     = _ImageWidget     or require("ui/widget/imagewidget");               return _ImageWidget     end
 local function Geom()            _Geom            = _Geom            or require("ui/geometry");                         return _Geom            end
-local function Font()            _Font            = _Font            or require("ui/font");                             return _Font            end
 local Blitbuffer      = require("ffi/blitbuffer")
 local UIManager       = require("ui/uimanager")
 local Device          = require("device")
@@ -298,12 +297,21 @@ function M.LABEL_FS()    return _cached("lbl_fs",  function()
     local base = (ok and ss and ss.FS_DETAIL) or 15  -- FS_DETAIL (15)
     return math.floor(base * _getNavbarScale() * (_getLabelScalePct() / 100))
 end) end
+-- Label font: the chosen family and variant at the label size, resolved once
+-- per cache cycle. The active tab adds bold to the chosen variant.
+-- Returns face, bold (whether the text widget must still embolden the face).
+function M.LABEL_FONT(active)
+    local font = _cached(active and "lbl_font_active" or "lbl_font", function()
+        local face, bold = _SUIStyle().getTextFace(Config.getChromeLabelStyle("navbar"), M.LABEL_FS(), active)
+        return { face = face, bold = bold }
+    end)
+    return font.face, font.bold
+end
 function M.INDIC_H()     return _cached("indic_h", function() return math.floor(Screen:scaleBySize(3)  * _getNavbarScale()) end) end
 
 -- Structural dimensions — not affected by the size setting.
 function M.TOP_SP()      return _cached("top_sp",  function() return Screen:scaleBySize(2)  end) end
 function M.BOT_SP()      return _cached("bot_sp",  function() return math.floor(Screen:scaleBySize(12) * _getBottomMarginPct() / 100) end) end
-function M.SIDE_M()      return _cached("side_m",  function() return Screen:scaleBySize(24) end) end
 function M.SEP_H()
     return _cached("sep_h", function()
         local style = M.getBarStyle()
@@ -424,7 +432,7 @@ end
 --
 -- Same technique infra/sui_patches.lua applies globally, for the whole
 -- lifetime of the FileManager wallpaper; this scoped variant gives any
--- other caller (e.g. GridRenderer.buildPageNavButtons) the same guarantee
+-- other caller (e.g. the section label in engines/sui_section_label.lua) the same guarantee
 -- for a handful of buttons without a global patch.
 -- ---------------------------------------------------------------------------
 function M.withWallpaperAlphaIcons(fn)
@@ -455,8 +463,8 @@ end
 -- Buttons transparent over its wallpaper (nil the frame background while
 -- painting), applied here per-instance for callers that only need it on a
 -- specific button rather than every Button in the app — e.g.
--- GridRenderer.buildPageNavButtons for the book-grid header's pagination
--- chevrons.
+-- the section label (engines/sui_section_label.lua) for the book-grid header's
+-- pagination chevrons.
 -- ---------------------------------------------------------------------------
 function M.patchWallpaperIcon(btn)
     if not btn or btn._sui_wallpaper_patched then return end
@@ -520,11 +528,9 @@ function M.getTabWidths(num_tabs, usable_w)
     return _tab_widths_cache
 end
 
--- Color-tinted, alpha-mask painted icon (nerd glyph or raster file). Used by
--- both buildTabCell ("framed" bar style) and buildNavpagerArrowCell. The
--- actual construction now lives in engines/sui_quickactions_render.lua
--- (QARenderer.buildFramedIcon) so it isn't duplicated here; kept as a local
--- alias so existing call sites in this file don't need to change.
+-- Color-tinted, alpha-mask painted icon (nerd glyph or raster file) used by
+-- buildNavpagerArrowCell. Construction lives in
+-- engines/sui_quickactions_render.lua (QARenderer.buildFramedIcon).
 local function _makeColoredIcon(file, size, fgcolor)
     return _QARenderer().buildFramedIcon(file, size, fgcolor)
 end
@@ -545,11 +551,13 @@ function M.buildTabCell(action_id, active, tab_w, mode)
         inactive_indicator_color = _getBarBg() or _SUIStyle().COLOR.surface
     end
 
+    local lbl_face, lbl_bold = M.LABEL_FONT(active)
     local og = _QARenderer().buildTabCell(action_id, active, {
         tab_w                    = tab_w,
         bar_h                    = M.BAR_H(),
         icon_sz                  = M.ICON_SZ(),
-        label_fs                 = M.LABEL_FS(),
+        lbl_face                 = lbl_face,
+        lbl_bold                 = lbl_bold,
         icon_txt_sp              = M.ICON_TXT_SP(),
         indic_h                  = M.INDIC_H(),
         mode                     = mode,
@@ -601,9 +609,11 @@ function M.buildNavpagerArrowCell(is_prev, enabled, tab_w, mode)
             if not _vspan_icon_txt then _vspan_icon_txt = VerticalSpan():new{ width = M.ICON_TXT_SP() } end
             vg[#vg + 1] = _vspan_icon_txt
         end
+        local lbl_face, lbl_bold = M.LABEL_FONT(false)
         tw = TextWidget():new{
             text    = label,
-            face    = Font():getFace(SUIStyle.FACE_REGULAR, M.LABEL_FS()),
+            face    = lbl_face,
+            bold    = lbl_bold,
             fgcolor = color,
         }
         vg[#vg + 1] = tw
@@ -685,6 +695,7 @@ end
 
 -- Shared helper to assemble the final FrameContainer for all bottom bar variants.
 local function _buildBarContainer(hg_args, is_navpager)
+    local side_m = _UI().SIDE_M()
     local style = M.getBarStyle()
     if style == "framed" then
         local radius = math.floor(Screen:scaleBySize(12) * _getNavbarScale())
@@ -734,8 +745,8 @@ local function _buildBarContainer(hg_args, is_navpager)
 
         local wrapper = FrameContainer():new{
             bordersize     = 0, padding = 0, margin = 0,
-            padding_left   = M.SIDE_M(),
-            padding_right  = M.SIDE_M(),
+            padding_left   = side_m,
+            padding_right  = side_m,
             padding_top    = M.TOP_SP(),
             padding_bottom = M.BOT_SP(),
             background     = nil,
@@ -753,8 +764,8 @@ local function _buildBarContainer(hg_args, is_navpager)
     local fc = FrameContainer():new{
         bordersize      = 0,
         padding         = 0,
-        padding_left    = M.SIDE_M(),
-        padding_right   = M.SIDE_M(),
+        padding_left    = side_m,
+        padding_right   = side_m,
         padding_bottom  = M.BOT_SP(),
         margin          = 0,
         background      = _getBarBg(),
@@ -771,7 +782,7 @@ local function _buildBarContainer(hg_args, is_navpager)
             top_vg[#top_vg + 1] = VerticalSpan():new{ width = pad_above }
         end
         top_vg[#top_vg + 1] = LineWidget():new{
-            dimen      = Geom():new{ w = Screen:getWidth() - M.SIDE_M() * 2, h = sep_h },
+            dimen      = Geom():new{ w = _UI().getUsableW(), h = sep_h },
             background = sep_bg,
         }
     else
@@ -780,8 +791,8 @@ local function _buildBarContainer(hg_args, is_navpager)
 
     local top_fc = FrameContainer():new{
         bordersize = 0, padding = 0, margin = 0,
-        padding_left  = M.SIDE_M(),
-        padding_right = M.SIDE_M(),
+        padding_left  = side_m,
+        padding_right = side_m,
         background = nil,
         top_vg,
     }
@@ -806,8 +817,8 @@ function M.buildBarWidget(active_action_id, tab_config, num_tabs, mode)
     num_tabs    = num_tabs or Config.getNumTabs()
     mode        = mode     or Config.getNavbarMode()
     local screen_w = Screen:getWidth()
-    local side_m   = M.SIDE_M()
-    local usable_w = screen_w - side_m * 2
+    local side_m   = _UI().SIDE_M()
+    local usable_w = _UI().getUsableW(screen_w)
     local hg_args  = { align = "top" }
 
     if Config.isNavpagerEnabled() then
@@ -833,8 +844,8 @@ function M.buildBarWidgetWithArrows(active_action_id, tab_config, mode, has_prev
     local HorizontalSpan = require("ui/widget/horizontalspan")
     mode = mode or Config.getNavbarMode()
     local screen_w  = Screen:getWidth()
-    local side_m    = M.SIDE_M()
-    local usable_w  = screen_w - side_m * 2
+    local side_m    = _UI().SIDE_M()
+    local usable_w  = _UI().getUsableW(screen_w)
     local center_n  = #tab_config
     local hg_args   = { align = "top" }
 
@@ -873,8 +884,8 @@ function M.buildBarWidgetWithKeyFocus(active_action_id, tab_config, kbfocus_idx,
     num_tabs = num_tabs or Config.getNumTabs()
     mode     = mode     or Config.getNavbarMode()
     local screen_w = Screen:getWidth()
-    local side_m   = M.SIDE_M()
-    local usable_w = screen_w - side_m * 2
+    local side_m   = _UI().SIDE_M()
+    local usable_w = _UI().getUsableW(screen_w)
     local widths   = M.getTabWidths(num_tabs, usable_w)
     local hg_args  = { align = "top" }
     local bw       = Screen:scaleBySize(3)
@@ -987,8 +998,8 @@ function M.registerTouchZones(plugin, fm_self)
     -- Using BAR_H() alone leaves the top separator and bottom safe-area bands
     -- where underlying scroll/content can still win hit-testing.
     local nav_h     = navbar_on and M.TOTAL_H() or 0
-    local side_m    = M.SIDE_M()
-    local usable_w  = screen_w - side_m * 2
+    local side_m    = _UI().SIDE_M()
+    local usable_w  = _UI().getUsableW(screen_w)
     local bar_y     = navbar_on and (screen_h - nav_h) or screen_h
     local navpager  = Config.isNavpagerEnabled()
 

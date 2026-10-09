@@ -58,6 +58,7 @@ local _               = require("infra/sui_i18n").translate
 local Blitbuffer      = require("ffi/blitbuffer")
 local Device          = require("device")
 local FrameContainer   = require("ui/widget/container/framecontainer")
+local RenderText       = require("ui/rendertext")
 local HorizontalGroup  = require("ui/widget/horizontalgroup")
 local HorizontalSpan   = require("ui/widget/horizontalspan")
 local Screen          = Device.screen
@@ -70,6 +71,7 @@ local Screen          = Device.screen
 --   label       display name shown in the picker menu
 --   group       "sui_titlebar" | "bm_icons"
 --   default_ko  KOReader built-in name (used only as documentation / preview)
+--   default_icon  optional icon reference (e.g. "nerd:EA48") used while no override is stored
 -- ---------------------------------------------------------------------------
 
 local M = {}
@@ -80,19 +82,20 @@ M.SLOTS = {
         id        = "sui_menu",
         label     = function() return _("Menu Button") end,
         group     = "sui_titlebar",
-        default_ko = "appbar.menu",
+        default_ko = "icons/more-options.svg",
     },
     {
         id        = "sui_search",
         label     = function() return _("Search Button") end,
         group     = "sui_titlebar",
         default_ko = "appbar.search",
+        default_icon = "nerd:EA48",
     },
     {
         id        = "sui_back",
         label     = function() return _("Back Button") end,
         group     = "sui_titlebar",
-        default_ko = "chevron.left",   -- matches the ICON_UP used at runtime
+        default_ko = "icons/back.svg",   -- matches the default back icon used at runtime
     },
     -- ── Browse Meta titlebar icons ───────────────────────────────────────
     -- These override the four icons used by the Browse button in the FM
@@ -248,7 +251,7 @@ M.SLOTS = {
         id         = "sui_tab_navigation",
         label      = function() return _("Tab: Reader Navigation") end,
         group      = "sui_tabbar_icons",
-        tab_id     = "navigation",
+        tab_id     = "navi",
         default_ko = "appbar.navigation",
     },
     {
@@ -262,7 +265,7 @@ M.SLOTS = {
         id         = "sui_tab_filebrowser",
         label      = function() return _("Tab: Back to File Browser") end,
         group      = "sui_tabbar_icons",
-        tab_id     = "filebrowser",
+        tab_id     = "filemanager",
         default_ko = "appbar.filebrowser",
     },
     {
@@ -290,6 +293,13 @@ function M.getIcon(id)
     return (type(v) == "string" and v ~= "") and v or nil
 end
 
+--- Returns the icon in effect for `id`: the stored override, else the slot's
+--- `default_icon`, else nil (the button keeps its built-in icon).
+function M.getEffectiveIcon(id)
+    local slot = _SLOT_BY_ID[id]
+    return M.getIcon(id) or (slot and slot.default_icon)
+end
+
 --- Saves `path` as the icon for `id`.  Pass nil to reset to default.
 function M.setIcon(id, path)
     if type(path) == "string" and path ~= "" then
@@ -297,6 +307,52 @@ function M.setIcon(id, path)
     else
         SUISettings:del(_key(id))
     end
+end
+
+-- ---------------------------------------------------------------------------
+-- Icon colours in night mode
+-- ---------------------------------------------------------------------------
+-- When enabled, coloured icons keep their original colours in night mode
+-- instead of being inverted with the rest of the frame (see
+-- sui_patches.patchIconNightColors). Monochrome icons are unaffected.
+
+local _ICON_NIGHT_COLORS_KEY = "simpleui_style_icons_night_colors"
+
+function M.keepIconColorsInNight()
+    return SUISettings:isTrue(_ICON_NIGHT_COLORS_KEY)
+end
+
+function M.setKeepIconColorsInNight(on)
+    SUISettings:set(_ICON_NIGHT_COLORS_KEY, on and true or false)
+end
+
+-- ---------------------------------------------------------------------------
+-- Cover shadow
+-- ---------------------------------------------------------------------------
+-- Book covers can cast a drop shadow down and to the right, switched on
+-- separately for each surface (scope). The shadow lives inside the cover's
+-- own slot: the cover is drawn coverShadowOffset() px smaller on each axis,
+-- so layouts keep their size.
+
+M.SHADOW_LIBRARY = "library"   -- the Library grid
+M.SHADOW_MODULES = "modules"   -- the Home Screen modules
+
+local _COVER_SHADOW_KEY_PREFIX = "simpleui_style_cover_shadow_"
+local _COVER_SHADOW_BASE       = math.max(2, Screen:scaleBySize(4))
+
+function M.coverShadowEnabled(scope)
+    return SUISettings:isTrue(_COVER_SHADOW_KEY_PREFIX .. scope)
+end
+
+function M.setCoverShadowEnabled(scope, on)
+    SUISettings:set(_COVER_SHADOW_KEY_PREFIX .. scope, on and true or false)
+end
+
+-- Shadow depth in px for a cover of `scope` drawn at `scale` (1 when
+-- omitted); 0 while the shadow is disabled for that scope.
+function M.coverShadowOffset(scope, scale)
+    if not M.coverShadowEnabled(scope) then return 0 end
+    return math.max(2, math.floor(_COVER_SHADOW_BASE * (scale or 1)))
 end
 
 -- ---------------------------------------------------------------------------
@@ -450,11 +506,11 @@ local function _syncButtonRenderSlot(btn, w_key, new_w)
     end
 end
 
---- Replaces image.file on a live button widget with the stored override for
---- `id`.  Does nothing when no override is set or the button has no image.
---- Returns true when an override was applied.
+--- Replaces image.file on a live button widget with the icon in effect for
+--- `id` (stored override or slot default).  Does nothing when neither is set
+--- or the button has no image.  Returns true when an icon was applied.
 function M.applyIconToBtn(id, btn)
-    local raw = M.getIcon(id)
+    local raw = M.getEffectiveIcon(id)
     if not raw then return false end
     if not btn then return false end
     local path = M.safeIconPath(raw, nil, id)
@@ -1215,7 +1271,7 @@ function M.sui_build_system_icons(plugin, ctx_menu, ctx)
                     local path = M.getIcon(slot.id)
                     local label = type(slot.label) == "function" and slot.label() or slot.label
                     
-                    local effective_path = path
+                    local effective_path = path or slot.default_icon
                     local ko_native = nil
                     if not effective_path then
                         if slot.default_ko and slot.default_ko:match("%.svg$") then
@@ -1601,8 +1657,11 @@ local _FONT_DEFAULT     = "Noto Sans"
 
 -- Module-level lazy caches — populated once by _initFonts().
 local _font_list     = nil   -- ordered list of font family names (strings)
-local _fonts         = nil   -- map: family name → { regular=path, bold=path }
+local _fonts         = nil   -- map: family name → { regular=path }
 local _replaced      = nil   -- map: Font.fontmap slot → "regular"|"bold"
+local _by_stem       = {}    -- lowercase file stem → font file path
+local _by_family     = {}    -- family name .. "\0" .. variant → font file path
+local _variant_cache = {}    -- file .. "\0" .. variant → variant file, or false
 
 -- ── Lazy module accessors ────────────────────────────────────────────────
 
@@ -1626,21 +1685,83 @@ local function _reqCRE()
     return (ok and m) or _req("libs/libkoreader-cre")
 end
 
--- ── Path helpers ─────────────────────────────────────────────────────────
+-- ── Font variants ────────────────────────────────────────────────────────
 
--- Heuristic: try "Font-Regular.ext" → "Font-Bold.ext",
--- then "Font.ext" → "Font-Bold.ext".
-local function _boldPath(path_regular)
-    if not path_regular then return nil end
-    local p, n = path_regular:gsub("%-Regular%.", "-Bold.", 1)
-    if n > 0 then return p end
-    p, n = path_regular:gsub("(%.)([^.]+)$", "-Bold.%2", 1)
-    return n > 0 and p or nil
+-- Text variants a font can be drawn in, and the weight/slant each one asks for.
+M.VARIANTS = { "regular", "bold", "italic", "bolditalic" }
+local _VARIANT_FLAGS = {
+    regular    = { bold = false, italic = false },
+    bold       = { bold = true,  italic = false },
+    italic     = { bold = false, italic = true  },
+    bolditalic = { bold = true,  italic = true  },
+}
+
+local function _variantName(bold, italic)
+    if bold then return italic and "bolditalic" or "bold" end
+    return italic and "italic" or "regular"
+end
+
+--- True when `variant` is one of M.VARIANTS.
+function M.isVariant(variant)
+    return _VARIANT_FLAGS[variant] ~= nil
+end
+
+--- `variant` with bold added: regular → bold, italic → bolditalic.
+function M.emphasize(variant)
+    local flags = _VARIANT_FLAGS[variant] or _VARIANT_FLAGS.regular
+    return _variantName(true, flags.italic)
+end
+
+local function _fileStem(path)
+    return ((path:match("([^/]+)$") or path):gsub("%.[^.]+$", ""))
+end
+
+-- Lowercase stems a font packager may have used for the `variant` sibling of
+-- `stem` ("Foo-Regular" → "foo-bold", "foo bold", "foobold", …).
+local _VARIANT_WORDS = {
+    bold       = { "Bold" },
+    italic     = { "Italic" },
+    bolditalic = { "BoldItalic", "Bold Italic", "Bold-Italic" },
+}
+local function _siblingStems(stem, variant)
+    local out = {}
+    for _i, word in ipairs(_VARIANT_WORDS[variant]) do
+        if stem:match("[Rr]egular") then
+            out[#out + 1] = stem:gsub("[Rr]egular", word):lower()
+        end
+        out[#out + 1] = (stem .. "-" .. word):lower()
+        out[#out + 1] = (stem .. " " .. word):lower()
+        out[#out + 1] = (stem .. word):lower()
+    end
+    return out
 end
 
 -- ── Font list initialisation ──────────────────────────────────────────────
 
--- Builds _font_list, _fonts, _replaced.
+-- Collects the font files that still exist and indexes them for variant
+-- lookup, by file stem and by family name plus variant (font metadata).
+-- Returns the set of existing paths.
+local function _scanFontFiles(FontList, lfs)
+    local path_set = {}
+    local info_of  = FontList.fontinfo or {}
+    _by_stem, _by_family, _variant_cache = {}, {}, {}
+    for _i, p in ipairs(FontList.fontlist) do
+        -- Verify the file still exists on disk, as FontList caches paths across restarts.
+        if not lfs or lfs.attributes(p, "mode") == "file" then
+            path_set[p] = true
+            local stem = _fileStem(p):lower()
+            if not _by_stem[stem] then _by_stem[stem] = p end
+            local info = info_of[p] and info_of[p][1]
+            if info and info.name then
+                local key = info.name .. "\0" .. _variantName(info.bold == true, info.italic == true)
+                if not _by_family[key] then _by_family[key] = p end
+            end
+        end
+    end
+    return path_set
+end
+
+-- Builds _font_list, _fonts, _replaced and the variant index.
 local function _initFonts()
     local Font     = _reqFont()
     local FontList = _reqFontList()
@@ -1656,27 +1777,14 @@ local function _initFonts()
     _fonts     = {}
     _replaced  = {}
 
-    -- Build the set of paths that will be accepted as valid font sources.
-    local path_set = {}
-    for _, p in ipairs(FontList.fontlist) do 
-        -- Verify the file still exists on disk, as FontList caches paths across restarts.
-        if not lfs or lfs.attributes(p, "mode") == "file" then
-            path_set[p] = true 
-        end
-    end
+    local path_set = _scanFontFiles(FontList, lfs)
 
     -- Walk CRE's font face list and keep only those whose file is in path_set.
     for _, name in ipairs(cre.getFontFaces()) do
         local path_regular = cre.getFontFaceFilenameAndFaceIndex(name)
         if path_regular and path_set[path_regular] then
-            local path_bold  = _boldPath(path_regular)
-            local bold_ok    = path_set[path_bold]
             table.insert(_font_list, name)
-            if bold_ok then
-                _fonts[name] = { regular = path_regular, bold = path_bold }
-            else
-                _fonts[name] = { regular = path_regular, bold = path_regular }
-            end
+            _fonts[name] = { regular = path_regular }
         end
     end
 
@@ -1706,6 +1814,45 @@ local function _ensureFonts()
         _fonts        = _fonts        or {}
         _replaced     = _replaced     or {}
     end
+end
+
+-- Face of the font file `file` at `size`, or nil when it cannot be loaded.
+local function fileFace(file, size)
+    local Font = _reqFont()
+    if not (file and Font) then return nil end
+    local ok, face = pcall(Font.getFace, Font, file, size)
+    return ok and face or nil
+end
+
+-- Regular-weight face of the installed family `name` at `size`, or nil when
+-- the family is unknown or cannot be loaded. Requires _ensureFonts().
+local function familyFace(name, size)
+    local entry = _fonts and _fonts[name]
+    return entry and fileFace(entry.regular, size) or nil
+end
+
+-- Font file of the bold/italic variant of `file`, or nil when its family does
+-- not ship one. Matches by file-name convention first, then by the family
+-- name and style flags in the font metadata. Requires _ensureFonts().
+local function variantFile(file, bold, italic)
+    local variant = _variantName(bold, italic)
+    local key     = file .. "\0" .. variant
+    local hit     = _variant_cache[key]
+    if hit ~= nil then return hit or nil end
+
+    local found
+    for _i, stem in ipairs(_siblingStems(_fileStem(file), variant)) do
+        found = _by_stem[stem]
+        if found then break end
+    end
+    if not found then
+        local FontList = _reqFontList()
+        local info     = FontList and FontList.fontinfo and FontList.fontinfo[file]
+        local family   = info and info[1] and info[1].name
+        found = family and _by_family[family .. "\0" .. variant]
+    end
+    _variant_cache[key] = found or false
+    return found
 end
 
 -- ── Apply ────────────────────────────────────────────────────────────────
@@ -1750,8 +1897,10 @@ local function _applyFont(name)
     _ensureFonts()
     if not SUISettings:isTrue(_FONT_KEY_ENABLED) then return end
     if not (_fonts and _fonts[name]) then return end
+    local regular = _fonts[name].regular
+    local bold    = variantFile(regular, true, false) or regular
     for slot, typ in pairs(_replaced) do
-        Font.fontmap[slot] = _fonts[name][typ]
+        Font.fontmap[slot] = typ == "bold" and bold or regular
     end
     logger.dbg("simpleui/style: UI font applied →", name)
     -- Refresh TitleBar class defaults so new instances use the updated font.
@@ -1785,7 +1934,6 @@ function M.makeFontMenuItems()
         _fonts     = _fonts     or {}
         _replaced  = _replaced  or {}
     end
-    local Font      = _reqFont()
     local UIManager = _reqUIManager()
 
     local function _isEnabled()
@@ -1824,7 +1972,7 @@ function M.makeFontMenuItems()
             items[#items + 1] = {
                 text_func = function()
                     local label = _name
-                    if _fonts[_name] and _fonts[_name].regular == _fonts[_name].bold then
+                    if _fonts[_name] and not variantFile(_fonts[_name].regular, true, false) then
                         label = label .. "  (no bold)"
                     end
                     if _isEnabled() and _name == _currentName() then
@@ -1835,11 +1983,7 @@ function M.makeFontMenuItems()
                 -- Hide this entry in SUIWindow until the custom-font toggle is on.
                 sui_hidden = function() return not _isEnabled() end,
                 -- Render the menu entry in that font face when supported.
-                font_func = Font and function(size)
-                    local fd = _fonts[_name]
-                    if not fd then return nil end
-                    return Font:getFace(fd.regular, size)
-                end or nil,
+                font_func = function(size) return familyFace(_name, size) end,
                 -- Grey-out the currently selected entry.
                 enabled_func = function()
                     return not (_isEnabled() and _name == _currentName())
@@ -1860,6 +2004,172 @@ function M.makeFontMenuItems()
     return items
 end
 
+-- ── Per-element font families ────────────────────────────────────────────
+
+-- Font files tried for each variant, best first: { bold, italic, synthetic
+-- bold }. Slant cannot be synthesised, so without an italic file the text
+-- renders upright; a missing bold file is emboldened by the text widget.
+local _FALLBACKS = {
+    bold       = { { true,  false, false } },
+    italic     = { { false, true,  false } },
+    bolditalic = { { true,  true,  false }, { false, true,  true }, { true, false, false } },
+}
+
+--- Face of `family` drawn in `variant` ("regular" | "bold" | "italic" |
+--- "bolditalic") at `size`, plus whether the text widget must still embolden
+--- it (no bold file exists). A nil/empty family, or one that is no longer
+--- installed, resolves against the default UI font.
+function M.getStyledFace(family, size, variant)
+    local Font = _reqFont()
+    local flags = _VARIANT_FLAGS[variant] or _VARIANT_FLAGS.regular
+    local has_family = family and family ~= ""
+    if has_family or flags.bold or flags.italic then _ensureFonts() end
+
+    local base = has_family and _fonts[family] and _fonts[family].regular or nil
+    local from = base or Font.fontmap[M.FACE_REGULAR]
+    for _i, step in ipairs(_FALLBACKS[_variantName(flags.bold, flags.italic)] or {}) do
+        local file = from and variantFile(from, step[1], step[2])
+        local face = fileFace(file, size)
+        if face then return face, step[3] end
+    end
+    return fileFace(base, size) or Font:getFace(M.FACE_REGULAR, size), flags.bold
+end
+
+--- Face and emboldening flag of a text element drawn in `style` (the
+--- { family, variant } table of Config.getTextStyle) at `size`. `add_bold`
+--- adds bold to the chosen variant, for text that is emphasised by design.
+function M.getTextFace(style, size, add_bold)
+    local variant = add_bold and M.emphasize(style.variant) or style.variant
+    return M.getStyledFace(style.family, size, variant)
+end
+
+--- True when `family` (nil = default UI font) can draw `variant` faithfully.
+--- Bold is always available (emboldened when the family has no bold file);
+--- slant needs an italic file.
+function M.supportsVariant(family, variant)
+    local flags = _VARIANT_FLAGS[variant]
+    if not (flags and flags.italic) then return true end
+    _ensureFonts()
+    local entry = family and _fonts[family]
+    local from  = entry and entry.regular or _reqFont().fontmap[M.FACE_REGULAR]
+    return from ~= nil and (variantFile(from, flags.bold, true) or variantFile(from, false, true)) ~= nil
+end
+
+--- Real line height of `face` in pixels (ascender + descender), as a
+--- TextWidget would measure it. Falls back to an estimate from the point
+--- size when the font engine cannot answer.
+function M.faceHeight(face)
+    if face.ftsize then
+        local ok, h = pcall(function() return face.ftsize:getHeightAndAscender() end)
+        if ok and h then return math.ceil(h) end
+    end
+    return math.ceil(face.size * 1.8)
+end
+
+--- Line height to reserve for text of `size` drawn in `style`: the measured
+--- face height, or `nominal` for the default regular face.
+function M.lineReserve(style, size, nominal)
+    if not style.family and style.variant == "regular" then return nominal end
+    return M.faceHeight((M.getTextFace(style, size)))
+end
+
+--- Vertical shift in pixels (positive = down) that moves the drawn glyphs of
+--- `text` to the centre of their line box. Faces differ in how they place
+--- glyphs inside the line box, so centring the box alone can leave the text
+--- visibly off-centre. Returns 0 when the font engine cannot answer.
+function M.inkCentreShift(face, text, bold)
+    local ok, shift = pcall(function()
+        local line_h, ascender = face.ftsize:getHeightAndAscender()
+        local ink = RenderText:sizeUtf8Text(0, nil, face, text, false, bold)
+        local ink_centre = ascender + (ink.y_bottom - ink.y_top) / 2
+        return math.floor(line_h / 2 - ink_centre + 0.5)
+    end)
+    return ok and shift or 0
+end
+
+--- Radio items to pick a font family: "Default" (clears the choice) followed
+--- by every installed family, each drawn in its own face.
+---   get()      → chosen family name, or nil for the default
+---   set(name)  → persists the choice (nil clears it)
+---   refresh()  → repaints whatever displays the choice
+function M.makeFamilyMenuItems(get, set, refresh)
+    _ensureFonts()
+    local function isDefault()
+        local chosen = get()
+        return chosen == nil or _fonts[chosen] == nil
+    end
+    local function pick(name)
+        return function()
+            set(name)
+            refresh()
+        end
+    end
+
+    local items = {
+        {
+            text           = _("Default"),
+            radio          = true,
+            keep_menu_open = true,
+            checked_func   = isDefault,
+            callback       = pick(nil),
+        },
+    }
+    for _i, name in ipairs(_font_list) do
+        local family = name   -- upvalue capture
+        items[#items + 1] = {
+            text           = family,
+            radio          = true,
+            keep_menu_open = true,
+            checked_func   = function() return get() == family end,
+            font_func      = function(size) return familyFace(family, size) end,
+            callback       = pick(family),
+        }
+    end
+    return items
+end
+
+local _VARIANT_LABELS = {
+    regular    = function() return _("Regular")     end,
+    bold       = function() return _("Bold")        end,
+    italic     = function() return _("Italic")      end,
+    bolditalic = function() return _("Bold italic") end,
+}
+
+--- Translated name of `variant`.
+function M.variantLabel(variant)
+    return (_VARIANT_LABELS[variant] or _VARIANT_LABELS.regular)()
+end
+
+--- Radio items to pick a text variant, one per M.VARIANTS entry. Variants the
+--- family cannot draw are greyed out.
+---   opts.get()      → chosen variant
+---   opts.set(v)     → persists the choice
+---   opts.refresh()  → repaints whatever displays the choice
+---   opts.family()   → family the variant applies to (nil = default UI font)
+---   opts.default    → variant marked as the default
+function M.makeVariantMenuItems(opts)
+    local items = {}
+    for _i, variant in ipairs(M.VARIANTS) do
+        local v = variant   -- upvalue capture
+        items[#items + 1] = {
+            text_func      = function()
+                local label = M.variantLabel(v)
+                if v == opts.default then label = label .. "  (" .. _("Default") .. ")" end
+                return label
+            end,
+            radio          = true,
+            keep_menu_open = true,
+            checked_func   = function() return opts.get() == v end,
+            enabled_func   = function() return M.supportsVariant(opts.family(), v) end,
+            callback       = function()
+                opts.set(v)
+                opts.refresh()
+            end,
+        }
+    end
+    return items
+end
+
 -- ---------------------------------------------------------------------------
 -- Icon Packs
 -- ---------------------------------------------------------------------------
@@ -1868,14 +2178,6 @@ local function _isIconFile(fname)
     return fname:match("%.[Ss][Vv][Gg]$") ~= nil
         or fname:match("%.[Pp][Nn][Gg]$") ~= nil
 end
-
-local _ACTION_SET = {
-    library=true, homescreen=true, collections=true, history=true, continue=true,
-    favorites=true, bookmark_browser=true, wifi_toggle=true, frontlight=true,
-    night_mode=true,
-    stats_calendar=true, power=true, browse_authors=true, browse_series=true, browse_tags=true,
-    settings=true,
-}
 
 -- Maps icon-pack filename identifiers to internal action ids when they differ.
 -- "sui_action_library.svg" is the public icon name for the "home" (Library) action.
@@ -1887,9 +2189,11 @@ local function _filenameToKey(fname)
         if s.id == stem then return "simpleui_sysicon_" .. stem, "sysicon" end
     end
     local action_id = stem:match("^sui_action_(.+)$")
-    if action_id and _ACTION_SET[action_id] then
+    if action_id then
         local internal_id = _ICON_ID_ALIAS[action_id] or action_id
-        return "simpleui_action_" .. internal_id .. "_icon", "action"
+        if require("infra/sui_config").ACTION_BY_ID[internal_id] then
+            return "simpleui_action_" .. internal_id .. "_icon", "action"
+        end
     end
     return nil, nil
 end

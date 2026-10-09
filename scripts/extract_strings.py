@@ -62,7 +62,8 @@ def extract_strings():
     regular_pattern = re.compile(r'(?<!\w)(?:_|_lc)\s*\(\s*"((?:[^"\\]|\\.)*)"')
     plural_pattern = re.compile(r'(?<!\w)(?:N_|N_lc)\s*\(\s*"((?:[^"\\]|\\.)*)"\s*,\s*"((?:[^"\\]|\\.)*)"')
 
-    for lua_file in PLUGIN_ROOT.rglob('*.lua'):
+    # Sorted so the order of #: references does not depend on the filesystem.
+    for lua_file in sorted(PLUGIN_ROOT.rglob('*.lua')):
         if lua_file.name.startswith('.'):  # Skip hidden files
             continue
 
@@ -115,7 +116,7 @@ def generate_pot(regular_strings, plural_strings):
     lines.append('msgid ""')
     lines.append('msgstr ""')
     lines.append('"Project-Id-Version: simpleui\\n"')
-    lines.append(f'"POT-Creation-Date: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M%z")}\\n"')
+    lines.append(f'"POT-Creation-Date: {datetime.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M%z")}\\n"')
     lines.append('"MIME-Version: 1.0\\n"')
     lines.append('"Content-Type: text/plain; charset=UTF-8\\n"')
     lines.append('"Content-Transfer-Encoding: 8bit\\n"')

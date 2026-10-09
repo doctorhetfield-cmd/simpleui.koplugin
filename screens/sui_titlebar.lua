@@ -3,6 +3,8 @@
 -- widgets (Collections, History, …).
 --
 -- FM context:   apply(fm_self)  /  restore(fm_self)  /  reapply(fm_self)
+--               Two styles: "classic" (configurable buttons and title) and
+--               "tabs" (back, Library/Authors/Series/Tags tabs, menu).
 -- Sub-pages:    applyToSub(w)  /  restoreSub(w)
 -- Both:         reapplyAll(fm, stack)
 
@@ -20,8 +22,15 @@ local function SUIStyle()
     return _SUIStyle
 end
 
+-- Lazy reference to the shared layout constants (side margin).
+local function SideM()
+    return require("infra/sui_core").SIDE_M()
+end
+
 -- Lua 5.1 / LuaJIT compat: table.unpack was added in 5.2.
 local _unpack = table.unpack or unpack
+
+local Screen = require("device").screen
 
 -- Plugin directory resolved once at load time (used for browse-mode icon paths).
 local _PLUGIN_DIR = require("infra/sui_paths").getPluginDir()
@@ -68,6 +77,12 @@ local SETTING_KEY = "simpleui_tb_custom"
 local FM_CFG_KEY  = "simpleui_tb_fm_cfg"
 local SUB_CFG_KEY = "simpleui_tb_sub_cfg"
 local SIZE_KEY    = "simpleui_tb_size_pct"
+local STYLE_KEY   = "simpleui_tb_style"
+local TABS_ORDER_KEY = "simpleui_tb_tabs_order"
+local SEARCH_ID   = "fm_search"
+
+M.STYLE_CLASSIC = "classic"
+M.STYLE_TABS    = "tabs"
 
 local _SIZE_SCALE = { compact = 0.75, default = 1.0, large = 1.3 }
 
@@ -126,6 +141,12 @@ function M.isItemVisible(id)
     return v == true
 end
 function M.setItemVisible(id, v) SUISettings:saveSetting(_visKey(id), v) end
+
+function M.getStyle()
+    return SUISettings:readSetting(STYLE_KEY) == M.STYLE_TABS and M.STYLE_TABS or M.STYLE_CLASSIC
+end
+function M.setStyle(v)   SUISettings:saveSetting(STYLE_KEY, v) end
+function M.isTabsStyle() return M.isEnabled() and M.getStyle() == M.STYLE_TABS end
 
 function M.getSizeKey()   return SUISettings:readSetting(SIZE_KEY) or "default" end
 function M.setSizeKey(v)  SUISettings:saveSetting(SIZE_KEY, v) end
@@ -326,38 +347,29 @@ local function _reloadImage(img)
     pcall(img.init, img)
 end
 
--- Resizes btn to new_w x new_w and zeroes left/right/bottom paddings.
--- Pass keep_top_pad=true to preserve padding_top (needed for injected buttons).
--- Rounded scrim behind title-bar icon buttons (wallpaper chrome).
--- Strength is read at paint time so opacity changes need no re-hook.
-local function _installButtonScrim(btn)
-    if not btn or btn._sui_tb_btn_scrim then return end
-    btn._sui_tb_btn_scrim = true
-    local orig = btn.paintTo
-    if type(orig) ~= "function" then return end
-    function btn:paintTo(bb, x, y)
+-- Wallpaper backdrop painted behind a title bar across the full page width.
+-- Strength is read at paint time so opacity changes need no re-hook. The
+-- instance-level paintTo is dropped again to return to the class method.
+local function _installBarScrim(tb)
+    if rawget(tb, "paintTo") then return end
+    local orig = tb.paintTo
+    function tb:paintTo(bb, x, y)
         local ok, WP = pcall(require, "features/sui_wallpaper")
-        if ok and WP and WP.getTitlebarButtonBackdropStrength then
-            local strength = WP.getTitlebarButtonBackdropStrength()
-            if strength > 0 and WP.paintBackdrop then
-                local d = self.dimen
-                local bw = (d and d.w) or self.width or 0
-                local bh = (d and d.h) or self.height or 0
-                if bw <= 0 or bh <= 0 then
-                    local sz = self.getSize and self:getSize()
-                    if sz then bw, bh = sz.w, sz.h end
-                end
-                if bw > 0 and bh > 0 then
-                    local Device = require("device")
-                    local radius = math.floor(Device.screen:scaleBySize(12))
-                    WP.paintBackdrop(bb, x, y, bw, bh, strength, radius)
-                end
-            end
+        local strength = ok and WP.getTitlebarBackdropStrength() or 0
+        if strength > 0 then
+            local h = (self.dimen and self.dimen.h) or self:getHeight()
+            if h > 0 then WP.paintBackdrop(bb, 0, y, Screen:getWidth(), h, strength) end
         end
         return orig(self, bb, x, y)
     end
 end
 
+local function _removeBarScrim(tb)
+    tb.paintTo = nil
+end
+
+-- Resizes btn to new_w x new_w and zeroes left/right/bottom paddings.
+-- Pass keep_top_pad=true to preserve padding_top (needed for injected buttons).
 local function _resizeAndStrip(btn, new_w, keep_top_pad)
     btn.width  = new_w
     btn.height = new_w
@@ -406,7 +418,6 @@ local function _resizeAndStrip(btn, new_w, keep_top_pad)
     btn.padding_bottom = 0
     if not keep_top_pad then btn.padding_top = 0 end
     btn:update()
-    _installButtonScrim(btn)
 end
 
 -- Snapshots a button's current geometry and optional state into a plain table.
@@ -414,6 +425,7 @@ local function _snapBtn(btn, opts)
     local snap = {
         align   = btn.overlap_align,
         offset  = btn.overlap_offset,
+        pad_t   = btn.padding_top,
         pad_l   = btn.padding_left,
         pad_r   = btn.padding_right,
         pad_bot = btn.padding_bottom,
@@ -453,6 +465,7 @@ local function _restoreBtn(btn, snap)
     end
     btn.overlap_align  = snap.align
     btn.overlap_offset = snap.offset
+    btn.padding_top    = snap.pad_t
     btn.padding_left   = snap.pad_l
     btn.padding_right  = snap.pad_r
     btn.padding_bottom = snap.pad_bot
@@ -483,10 +496,41 @@ local function _layoutParams(tb)
     end)
     return {
         iw  = math.floor(base_iw * scale),
-        pad = Screen:scaleBySize(18),
+        pad = SideM(),
         gap = Screen:scaleBySize(18),
         sw  = Screen:getWidth(),
     }
+end
+
+-- Metrics of the compact tabs-style bar. The icon size equals the text height
+-- and is also the menu icon size of the classic style.
+local function _tabsMetrics()
+    local S    = SUIStyle()
+    local face = require("ui/font"):getFace(S.FACE_REGULAR, S.FS_BODY)
+    local probe = require("ui/widget/textwidget"):new{ text = "A", face = face, padding = 0 }
+    local text_h = probe:getSize().h
+    probe:free()
+    return {
+        face      = face,
+        iw        = text_h,                        -- icon size == text height
+        pad_v     = Screen:scaleBySize(7),         -- above and below the text row
+        margin    = SideM(),                       -- screen edge to icon
+        back_gap  = Screen:scaleBySize(14),        -- back icon to the content beside it
+        tap_pad_h = Screen:scaleBySize(8),         -- horizontal tap-area padding
+        sw        = Screen:getWidth(),
+    }
+end
+
+-- Sizes the menu button like the tabs-style menu icon and centres it inside a
+-- classic slot of width `slot_w` whose left edge is `x`.
+local function _placeMenuButton(btn, slot_w, x)
+    local icon_w = _tabsMetrics().iw
+    local inset  = math.floor((slot_w - icon_w) / 2)
+    _resizeAndStrip(btn, icon_w)
+    btn.padding_top = math.max(inset, 0)
+    btn:update()
+    btn.overlap_align  = nil
+    btn.overlap_offset = { x + inset, 0 }
 end
 
 -- ---------------------------------------------------------------------------
@@ -524,27 +568,330 @@ local function _hideOffset(sw)
 end
 
 -- ---------------------------------------------------------------------------
--- FM titlebar — apply
+-- Shared building blocks (FM styles and sub-pages)
 -- ---------------------------------------------------------------------------
 
-function M.apply(fm_self)
-    if not M.isEnabled() then return end
-    local tb = fm_self.title_bar
-    if not tb then return end
-    if fm_self._titlebar_patched then return end
-    fm_self._titlebar_patched = true
+-- Default back icon as { icon = <native name> } or { file = <path> }.
+-- LTR layouts use the plugin's left-aligned chevron; mirrored (RTL) layouts
+-- use the native right chevron.
+local function _backIcon()
+    local mirrored = false
+    pcall(function() mirrored = require("ui/bidi").mirroredUILayout() end)
+    if mirrored then return { icon = "chevron.right" } end
+    return { file = Config.ICON.back }
+end
 
+-- Shows the back icon: the SUIStyle override when set, `back_icon` (see
+-- _backIcon) otherwise. .icon and .file are mutually exclusive in
+-- ImageWidget:init (.icon wins), so the field that is not wanted is cleared.
+local function _applyBackIcon(btn, back_icon)
+    local _ss = SUIStyle()
+    if _ss and _ss.applyIconToBtn("sui_back", btn) then return end
+    if _ss and _ss.restoreDefaultIcon then
+        _ss.restoreDefaultIcon(btn, back_icon.icon, back_icon.file)
+    elseif btn.image then
+        btn.image.icon = back_icon.icon
+        btn.image.file = back_icon.file
+        _reloadImage(btn.image)
+    end
+end
+
+-- Shows the menu icon: the SUIStyle override when set, the plugin's default
+-- menu icon otherwise.
+local function _applyMenuIcon(btn)
+    local _ss = SUIStyle()
+    if _ss and _ss.applyIconToBtn("sui_menu", btn) then return end
+    if _ss and _ss.restoreDefaultIcon then
+        _ss.restoreDefaultIcon(btn, nil, Config.ICON.menu)
+    elseif btn.image then
+        btn.image.icon = nil
+        btn.image.file = Config.ICON.menu
+        _reloadImage(btn.image)
+    end
+end
+
+-- Creates the injected back button, sized and styled like the other title-bar
+-- buttons. Its callbacks are installed by the owning state controller.
+local function _newBackButton(tb, parent, iw, back_icon)
+    local IconButton = require("ui/widget/iconbutton")
+    -- IconButton only accepts a native icon name; a file-based icon is
+    -- swapped in by _applyBackIcon once the button exists.
+    local btn = IconButton:new{
+        icon        = back_icon.icon or "chevron.left",
+        width       = iw,
+        height      = iw,
+        padding     = tb.button_padding or Screen:scaleBySize(11),
+        show_parent = tb.show_parent or parent,
+        callback    = function() end,
+    }
+    _resizeAndStrip(btn, iw)
+    _applyBackIcon(btn, back_icon)
+    btn.overlap_align = nil
+    return btn
+end
+
+-- Builds the injected search button; it opens the file search of the library.
+local function _newSearchButton(tb, fm_self, iw)
+    local IconButton = require("ui/widget/iconbutton")
+    local btn = IconButton:new{
+        icon        = "appbar.search",
+        width       = iw,
+        height      = iw,
+        padding     = tb.button_padding or Screen:scaleBySize(11),
+        show_parent = tb.show_parent or fm_self,
+        callback    = function()
+            local fs = fm_self.filesearcher
+            if fs and fs.onShowFileSearch then fs:onShowFileSearch() end
+        end,
+    }
+    _resizeAndStrip(btn, iw)
+    local S = SUIStyle()
+    if S then S.applyIconToBtn("sui_search", btn) end
+    btn.overlap_align = nil
+    return btn
+end
+
+-- Turns the native right button into the menu button. `place(btn)` sizes and
+-- positions it when shown; otherwise it is moved off-screen with its callbacks
+-- disabled. setRightIcon is patched so the custom icon survives navigation.
+local function _setupMenuButton(fm_self, tb, show_menu, place)
+    local rb = tb.right_button
+    if not rb then return end
     local UIManager = require("ui/uimanager")
-    local lp        = _layoutParams(tb)
+    fm_self._titlebar_rb = _snapBtn(rb, { save_icon = true, save_callback = true })
+
+    local orig_setRightIcon = tb.setRightIcon
+    fm_self._titlebar_orig_setRightIcon = orig_setRightIcon
+    tb.setRightIcon = function(tb_self, icon, ...)
+        local result = orig_setRightIcon(tb_self, icon, ...)
+        if icon == "plus" and show_menu then
+            if tb_self.right_button then _applyMenuIcon(tb_self.right_button) end
+            UIManager:setDirty(tb_self.show_parent, "ui", tb_self.dimen)
+        end
+        return result
+    end
+
+    if show_menu then
+        place(rb)
+        _applyMenuIcon(rb)
+    else
+        rb.overlap_align  = nil
+        rb.overlap_offset = { _hideOffset(Screen:getWidth()), 0 }
+        rb.callback       = function() end
+        rb.hold_callback  = function() end
+    end
+end
+
+-- Permanently hides the native left button (snapshotted so restore() can undo);
+-- an injected back button replaces it.
+local function _hideNativeLeftButton(fm_self, tb)
+    local lb = tb.left_button
+    if not lb then return end
+    fm_self._titlebar_lb = _snapBtn(lb, { save_icon = true, save_callback = true })
+    lb.overlap_align  = nil
+    lb.overlap_offset = { _hideOffset(Screen:getWidth()), 0 }
+    lb.callback       = function() end
+    lb.hold_callback  = function() end
+end
+
+-- Applies the back-button state once, right after the first layout.
+local function _refreshBackState(fm_self)
+    local fc      = fm_self.file_chooser
+    local refresh = fm_self._simpleui_force_refresh_layout
+    if not (refresh and fc) then return end
+    refresh(fc, _resolveIsSub(fc), fc.page or 1)
+    fm_self._simpleui_force_refresh_layout = nil
+end
+
+-- ---------------------------------------------------------------------------
+-- FM back-button controller
+-- ---------------------------------------------------------------------------
+--
+-- Drives the injected back button from file-chooser navigation. With the tabs
+-- style the button only leaves folders:
+--   root          : hidden
+--   subfolder     : visible; tap = folder up
+-- With the classic style it also pages back:
+--   root + page 1 : hidden
+--   root + page>1 : visible; tap = previous page, hold = first page
+--   subfolder     : visible; tap = previous page past page 1, else folder up
+-- `on_state(fc, is_sub, page, path, visible)` lets each title-bar style react
+-- to the evaluated state (neighbour layout, tab strip content, …).
+-- State is re-evaluated on genItemTable, onFolderUp and onGotoPage.
+
+local function _installBackController(fm_self, back_icon, shown_x, on_state)
+    local fc = fm_self.file_chooser
+    if not fc then return end
+    local UIManager = require("ui/uimanager")
+    local sw        = Screen:getWidth()
+    local paginates = not M.isTabsStyle()
+
+    -- `page` is always passed explicitly to avoid stale cur_page reads.
+    local function applyState(fc_self, is_sub, page, path)
+        local btn = fm_self._titlebar_up_btn
+        if not btn then return end
+        local pages_back = paginates and page > 1
+        local visible    = is_sub or pages_back
+
+        if not visible then
+            btn.overlap_offset = { _hideOffset(sw), 0 }
+            btn.callback       = function() end
+            btn.hold_callback  = function() end
+        else
+            _applyBackIcon(btn, back_icon)
+            btn.overlap_offset = { shown_x, 0 }
+            if pages_back then
+                btn.callback      = function() fc_self:onGotoPage(page - 1) end
+                btn.hold_callback = function() fc_self:onGotoPage(1) end
+            else
+                btn.callback      = function() fc_self:onFolderUp() end
+                btn.hold_callback = function() end
+            end
+        end
+
+        if on_state then on_state(fc_self, is_sub, page, path or fc_self.path, visible) end
+
+        local tb = fm_self.title_bar
+        if tb then
+            UIManager:setDirty(tb.show_parent or fm_self, "ui", tb.dimen)
+        end
+    end
+
+    fm_self._simpleui_force_refresh_layout = applyState
+
+    fm_self._titlebar_orig_fc_genItemTable = fc.genItemTable
+    fc._simpleui_gen_listeners = {}
+
+    local orig_genItemTable = fc.genItemTable
+    fc.genItemTable = function(fc_self, dirs, files, path)
+        local item_table = orig_genItemTable(fc_self, dirs, files, path)
+        if not item_table then return item_table end
+
+        -- Strip the go-up row from the list (the injected back button owns it).
+        -- is_sub is determined by path, not by the presence of this item.
+        local filtered = {}
+        for _, item in ipairs(item_table) do
+            if not _isGoUpItem(item) then
+                filtered[#filtered + 1] = item
+            end
+        end
+
+        -- Cover-collection lookups (`_dummy`) list other folders without
+        -- navigating to them, so they must not touch the title-bar state.
+        if fc_self._dummy then return filtered end
+
+        -- The path argument is the destination of this call; fc_self.path may
+        -- still hold the previous one on the initial load.
+        local effective_path = path or fc_self.path
+        local is_sub = _isSubFolder(effective_path)
+        -- Series view keeps the parent's path, so the flag decides.
+        if fc_self.item_table and fc_self.item_table._sg_is_series_view then
+            is_sub = true
+        end
+        applyState(fc_self, is_sub, 1, effective_path)
+
+        -- Other registered listeners (e.g. browse icon refresh).
+        for _, listener in ipairs(fc_self._simpleui_gen_listeners or {}) do
+            pcall(listener, fc_self)
+        end
+
+        return filtered
+    end
+
+    -- The first FM open called genItemTable before the patch was installed:
+    -- strip the go-up entry retroactively so the initial render matches.
+    local it = fc.item_table
+    if it then
+        local cleaned, found_go_up = {}, false
+        for _, item in ipairs(it) do
+            if _isGoUpItem(item) then
+                found_go_up = true
+            else
+                cleaned[#cleaned + 1] = item
+            end
+        end
+        if found_go_up then
+            for i = #it, 1, -1 do it[i] = nil end
+            for i, v in ipairs(cleaned) do it[i] = v end
+            UIManager:nextTick(function()
+                if fc and fc.updateItems then
+                    pcall(fc.updateItems, fc, 1, true)
+                end
+            end)
+        end
+    end
+
+    -- onFolderUp re-evaluates the state after navigation. The class method is
+    -- resolved at call time because sui_foldercovers may swap it at runtime.
+    -- The previous instance value is saved so restore() can reinstate it.
+    local FileChooser_cls = require("ui/widget/filechooser")
+    fm_self._titlebar_orig_fc_onFolderUp = fc.onFolderUp  -- may be nil
+    fc.onFolderUp = function(fc_self, ...)
+        local BM = _BrowseMeta()
+        if BM then
+            -- Arrived from the book dialog ("More by X"): one back press returns
+            -- to the real folder, scrolled to the book, not to the Authors root.
+            local origin = fc_self._sui_author_dialog_origin
+            if origin and origin.path then
+                local ok_pl, level = pcall(BM.getPathLevel, fc_self.path or "")
+                if ok_pl and level == "file_list" then
+                    fc_self._sui_author_dialog_origin = nil
+                    BM.exitToNormal(fc_self, fm_self)
+                    fc_self:changeToPath(origin.path, origin.file)
+                    applyState(fc_self, _resolveIsSub(fc_self), 1)
+                    return true
+                end
+            end
+            -- At the dim_list level of a virtual tree, exit to the filesystem.
+            local path = fc_self.path or ""
+            if path:find("/", 1, true) then
+                local ok_pl, level = pcall(BM.getPathLevel, path)
+                if ok_pl and level == "dim_list" then
+                    BM.exitToNormal(fc_self, fm_self)
+                    applyState(fc_self, _resolveIsSub(fc_self), 1)
+                    return true
+                end
+            end
+        end
+        local ok, result = xpcall(FileChooser_cls.onFolderUp, debug.traceback, fc_self, ...)
+        applyState(fc_self, _resolveIsSub(fc_self), 1)
+        if not ok then error(result, 0) end
+        return result
+    end
+
+    -- onGotoPage updates the state on every CoverBrowser page turn. The
+    -- re-entrancy guard keeps KOReader's internal recursive calls from
+    -- overwriting the state set for the outer call.
+    local orig_onGotoPage = fc.onGotoPage
+    if orig_onGotoPage then
+        fm_self._titlebar_orig_fc_onGotoPage = orig_onGotoPage
+        fc.onGotoPage = function(fc_self, page, ...)
+            if fc_self._simpleui_in_goto then
+                return orig_onGotoPage(fc_self, page, ...)
+            end
+            fc_self._simpleui_in_goto = true
+            local ok, result = xpcall(orig_onGotoPage, debug.traceback, fc_self, page, ...)
+            -- Cleared before any error() so a failure never leaves it stuck.
+            fc_self._simpleui_in_goto = nil
+            applyState(fc_self, _resolveIsSub(fc_self), page)
+            if not ok then error(result, 0) end
+            return result
+        end
+    end
+end
+
+-- ---------------------------------------------------------------------------
+-- FM titlebar — classic style
+-- ---------------------------------------------------------------------------
+
+local function _applyClassic(fm_self, tb)
+    local lp = _layoutParams(tb)
     local iw, pad, gap, sw = lp.iw, lp.pad, lp.gap, lp.sw
 
-    -- Read all visibility settings once.
     local show_menu   = M.isItemVisible("fm_menu")
-    local show_home   = M.isItemVisible("fm_home")   
     local show_up     = M.isItemVisible("fm_back")
     local show_search = M.isItemVisible("fm_search")
     local show_browse = M.isItemVisible("fm_browse") and (function()
-        -- Improvement #4: use cached _BrowseMeta() instead of inline pcall.
         local BM = _BrowseMeta()
         return BM and BM.isEnabled()
     end)()
@@ -553,373 +900,66 @@ function M.apply(fm_self)
     local cfg     = M.getFMConfig()
     local visible = {}
     if show_menu   then visible["fm_menu"]   = true end
-    if show_home   then visible["fm_home"]   = true end
-    if show_up     then visible["fm_back"]     = true end
+    if show_up     then visible["fm_back"]   = true end
     if show_search then visible["fm_search"] = true end
     if show_browse then visible["fm_browse"] = true end
     local slot_map = _buildSlotMap(cfg.order_left, cfg.order_right, visible)
 
-    -- Resizes, strips paddings and positions a button according to its slot.
-    local function placeBtn(id, btn)
-        local s = slot_map[id]
+    local UIManager = require("ui/uimanager")
+
+    -- Menu button (native right button).
+    _setupMenuButton(fm_self, tb, show_menu, function(rb)
+        local s = slot_map["fm_menu"]
         if not s then return end
-        _resizeAndStrip(btn, iw)
-        btn.overlap_align  = nil
-        btn.overlap_offset = { _buttonX(s.side, s.slot, iw, pad, gap, sw), 0 }
-    end
+        _placeMenuButton(rb, iw, _buttonX(s.side, s.slot, iw, pad, gap, sw))
+    end)
 
-    -- Right button (menu) ----------------------------------------------------
+    -- Back button (injected; the native left button stays hidden).
+    _hideNativeLeftButton(fm_self, tb)
 
-    if tb.right_button then
-        local rb = tb.right_button
-        fm_self._titlebar_rb = _snapBtn(rb, { save_icon = true, save_callback = true })
+    local s_up = show_up and slot_map["fm_back"]
+    if s_up then
+        local back_icon = _backIcon()
+        local up_btn  = _newBackButton(tb, fm_self, iw, back_icon)
+        local up_x    = _buttonX(s_up.side, s_up.slot, iw, pad, gap, sw)
+        up_btn.overlap_offset = { up_x, 0 }
+        table.insert(tb, up_btn)
+        fm_self._titlebar_up_btn = up_btn
+        fm_self._simpleui_up_x   = up_x
 
-        -- Patch setRightIcon so our custom icon survives folder navigation.
-        local _icon_enabled     = show_menu
-        local orig_setRightIcon = tb.setRightIcon
-        fm_self._titlebar_orig_setRightIcon = orig_setRightIcon
-        tb.setRightIcon = function(tb_self, icon, ...)
-            local result = orig_setRightIcon(tb_self, icon, ...)
-            if icon == "plus" and _icon_enabled then
-                if tb_self.right_button then
-                    local _ss = SUIStyle()
-                    if not (_ss and _ss.applyIconToBtn("sui_menu", tb_self.right_button)) then
-                        if _ss and _ss.restoreDefaultIcon then
-                            _ss.restoreDefaultIcon(tb_self.right_button, nil, Config.ICON.ko_menu)
-                        elseif tb_self.right_button.image then
-                            tb_self.right_button.image.file = Config.ICON.ko_menu
-                            _reloadImage(tb_self.right_button.image)
-                        end
-                    end
-                end
-                UIManager:setDirty(tb_self.show_parent, "ui", tb_self.dimen)
-            end
-            return result
+        -- Hidden on the very first apply when already at the root.
+        if _isAtRoot(fm_self.file_chooser) then
+            up_btn.overlap_offset = { _hideOffset(sw), 0 }
         end
 
-        if show_menu then
-            placeBtn("fm_menu", rb)
-            local _ss = SUIStyle()
-            if not (_ss and _ss.applyIconToBtn("sui_menu", rb)) then
-                if _ss and _ss.restoreDefaultIcon then
-                    _ss.restoreDefaultIcon(rb, nil, Config.ICON.ko_menu)
-                elseif rb.image then
-                    rb.image.file = Config.ICON.ko_menu
-                    _reloadImage(rb.image)
+        -- Left-side neighbours of the back button, with their slot index.
+        local function leftSideBtns()
+            local list = {}
+            for _, id in ipairs(cfg.order_left) do
+                local sl = slot_map[id]
+                if id ~= "fm_back" and sl and sl.side == "left" then
+                    local widget
+                    if id == "fm_search" then
+                        widget = fm_self._titlebar_search_btn
+                    elseif id == "fm_browse" then
+                        widget = fm_self._titlebar_browse_btn
+                    end
+                    if widget then list[#list + 1] = { btn = widget, slot = sl.slot } end
                 end
             end
-        else
-            rb.overlap_align  = nil
-            -- Improvement #6: use defensive 2× width offset.
-            rb.overlap_offset = { _hideOffset(sw), 0 }
-            rb.callback       = function() end
-            rb.hold_callback  = function() end
+            return list
         end
+
+        -- While the back button is hidden, left neighbours close the gap.
+        local up_slot = s_up.slot
+        _installBackController(fm_self, back_icon, up_x, function(_, _, _, _, visible_now)
+            for _, entry in ipairs(leftSideBtns()) do
+                local dslot = (not visible_now and entry.slot > up_slot)
+                              and entry.slot - 1 or entry.slot
+                entry.btn.overlap_offset = { _buttonX("left", dslot, iw, pad, gap, sw), 0 }
+            end
+        end)
     end
-
-    -- Left button (back/up) --------------------------------------------------
-    -- The native tb.left_button is permanently hidden; a fresh IconButton is
-    -- injected into the TitleBar OverlapGroup, mirroring the search_button
-    -- approach.  All back/up logic drives the injected widget exclusively.
-
-    -- Always hide the native left_button (snap first so restore() can undo).
-    if tb.left_button then
-        local lb = tb.left_button
-        fm_self._titlebar_lb = _snapBtn(lb, { save_icon = true, save_callback = true })
-        lb.overlap_align  = nil
-        lb.overlap_offset = { _hideOffset(sw), 0 }
-        lb.callback       = function() end
-        lb.hold_callback  = function() end
-    end
-
-    if show_up then
-        local ok_ib, IconButton = pcall(require, "ui/widget/iconbutton")
-        if ok_ib and IconButton then
-            local s = slot_map["fm_back"]
-            if s then
-                local btn_padding = tb.button_padding
-                    or require("device").screen:scaleBySize(11)
-
-                -- Resolve bidi chevron direction once.
-                local ICON_UP = "chevron.left"
-                pcall(function()
-                    local BD = require("ui/bidi")
-                    ICON_UP = BD.mirroredUILayout() and "chevron.right" or "chevron.left"
-                end)
-
-                local up_btn
-                up_btn = IconButton:new{
-                    icon        = ICON_UP,
-                    width       = iw,
-                    height      = iw,
-                    padding     = btn_padding,
-                    show_parent = tb.show_parent or fm_self,
-                    callback    = function() end,   -- set by _applyBackButtonState
-                }
-                _resizeAndStrip(up_btn, iw)
-
-                -- Apply sui_back icon override (same logic as before).
-                do
-                    local _ss = SUIStyle()
-                    if _ss then _ss.applyIconToBtn("sui_back", up_btn) end
-                end
-
-                up_btn.overlap_align  = nil
-                up_btn.overlap_offset = { _buttonX(s.side, s.slot, iw, pad, gap, sw), 0 }
-                table.insert(tb, up_btn)
-                fm_self._titlebar_up_btn = up_btn
-                fm_self._simpleui_up_x   = _buttonX(s.side, s.slot, iw, pad, gap, sw)
-
-                -- Hide immediately if already at root on first apply.
-                if _isAtRoot(fm_self.file_chooser) then
-                    up_btn.overlap_offset = { _hideOffset(sw), 0 }
-                    up_btn.callback       = function() end
-                    up_btn.hold_callback  = function() end
-                end
-
-                local fc = fm_self.file_chooser
-                if fc then
-                    local function _leftSideBtns()
-                        local list = {}
-                        for _, id in ipairs(cfg.order_left) do
-                            if id ~= "fm_back" and slot_map[id]
-                               and slot_map[id].side == "left" then
-                                local widget
-                                if id == "fm_search" then
-                                    widget = fm_self._titlebar_search_btn
-                                elseif id == "fm_browse" then
-                                    widget = fm_self._titlebar_browse_btn
-                                elseif id == "fm_home" then
-                                    widget = fm_self._titlebar_home_btn
-                                end
-                                if widget then
-                                    list[#list + 1] = {
-                                        btn  = widget,
-                                        slot = slot_map[id].slot,
-                                    }
-                                end
-                            end
-                        end
-                        return list
-                    end
-
-                    local up_slot = s.slot
-
-                    -- Single authoritative function for back-button visibility and action.
-                    -- root+page1: hide; root+page>1: paginate; subfolder: folder-up.
-                    -- `page` is always passed explicitly to avoid stale cur_page reads.
-                    -- Drives the injected up_btn, not tb.left_button.
-                    local function _applyBackButtonState(fc_self, is_sub, page)
-                        local btn = fm_self._titlebar_up_btn
-                        if not btn then return end
-                        local tb2       = fm_self.title_bar
-                        local neighbors = _leftSideBtns()
-
-                        if not is_sub and page <= 1 then
-                            -- Hide back button and compact neighbors left.
-                            btn.overlap_offset = { _hideOffset(sw), 0 }
-                            btn.callback       = function() end
-                            btn.hold_callback  = function() end
-                            for _, entry in ipairs(neighbors) do
-                                local dslot = entry.slot > up_slot
-                                              and entry.slot - 1 or entry.slot
-                                entry.btn.overlap_offset = {
-                                    _buttonX("left", dslot, iw, pad, gap, sw), 0
-                                }
-                            end
-                        else
-                            -- Show: refresh icon (respects SUIStyle override).
-                            -- IMPORTANT: .icon and .file must be kept mutually exclusive.
-                            -- KOReader's ImageWidget:init() gives precedence to .icon over
-                            -- .file, so whichever field we do NOT want must be nil-ed.
-                            local _ss        = SUIStyle()
-                            if not (_ss and _ss.applyIconToBtn("sui_back", btn)) then
-                                if _ss and _ss.restoreDefaultIcon then
-                                    _ss.restoreDefaultIcon(btn, ICON_UP, nil)
-                                elseif btn.image then
-                                    btn.image.file = nil
-                                    btn.image.icon = ICON_UP
-                                    pcall(btn.image.free, btn.image)
-                                    pcall(btn.image.init, btn.image)
-                                end
-                            end
-                            btn.overlap_offset = {
-                                _buttonX("left", up_slot, iw, pad, gap, sw), 0
-                            }
-                            for _, entry in ipairs(neighbors) do
-                                entry.btn.overlap_offset = {
-                                    _buttonX("left", entry.slot, iw, pad, gap, sw), 0
-                                }
-                            end
-                            if page > 1 then
-                                -- Paginated list: tap goes back one page, hold goes to page 1.
-                                btn.callback      = function()
-                                    fc_self:onGotoPage(page - 1)
-                                end
-                                btn.hold_callback = function()
-                                    fc_self:onGotoPage(1)
-                                end
-                            else
-                                -- Subfolder page 1: tap goes to parent, hold is no-op.
-                                btn.callback      = function()
-                                    fc_self:onFolderUp()
-                                end
-                                btn.hold_callback = function() end
-                            end
-                        end
-                        if tb2 then
-                            UIManager:setDirty(
-                                tb2.show_parent or fm_self, "ui", tb2.dimen
-                            )
-                        end
-                    end
-
-                    fm_self._simpleui_force_refresh_layout = _applyBackButtonState
-
-                    fm_self._titlebar_orig_fc_genItemTable = fc.genItemTable
-                    fc._simpleui_gen_listeners = {}
-
-                    local orig_genItemTable = fc.genItemTable
-                    fc.genItemTable = function(fc_self, dirs, files, path)
-                        local item_table = orig_genItemTable(fc_self, dirs, files, path)
-                        if not item_table then return item_table end
-
-                        -- Strip the go-up row from the list (we own the back button now).
-                        -- is_sub is determined by path, not by the presence of this item.
-                        local filtered = {}
-                        for _, item in ipairs(item_table) do
-                            if not _isGoUpItem(item) then
-                                filtered[#filtered + 1] = item
-                            end
-                        end
-
-                        -- Path-based is_sub: use the path argument when available (it
-                        -- reflects the destination of the current genItemTable call),
-                        -- falling back to fc_self.path for the initial load.
-                        local effective_path = path or fc_self.path
-                        local is_sub = _isSubFolder(effective_path)
-                        -- Series view overrides path-based result (path unchanged from parent).
-                        if fc_self.item_table
-                           and fc_self.item_table._sg_is_series_view then
-                            is_sub = true
-                        end
-                        _applyBackButtonState(fc_self, is_sub, 1)
-
-                        -- Notify all other registered listeners (e.g. browse icon refresh).
-                        for _, listener in ipairs(
-                            fc_self._simpleui_gen_listeners or {}
-                        ) do
-                            pcall(listener, fc_self)
-                        end
-
-                        return filtered
-                    end
-
-                    -- KOReader called genItemTable before our patch was installed on the
-                    -- first FM open. Strip the go-up entry retroactively so the initial
-                    -- render matches subsequent navigations.
-                    local it = fc.item_table
-                    if it then
-                        local cleaned     = {}
-                        local found_go_up = false
-                        for _, item in ipairs(it) do
-                            if _isGoUpItem(item) then
-                                found_go_up = true
-                            else
-                                cleaned[#cleaned + 1] = item
-                            end
-                        end
-                        if found_go_up then
-                            for i = #it, 1, -1 do it[i] = nil end
-                            for i, v in ipairs(cleaned) do it[i] = v end
-                            UIManager:nextTick(function()
-                                if fc and fc.updateItems then
-                                    pcall(fc.updateItems, fc, 1, true)
-                                end
-                            end)
-                        end
-                    end
-
-                    -- onFolderUp re-evaluates back-button state after navigation.
-                    -- FileChooser.onFolderUp is resolved at call time (not captured as an
-                    -- upvalue) because sui_foldercovers may swap the class method at runtime.
-                    --
-                    -- Save the previous instance value so restore() can reinstate it
-                    -- exactly, rather than blindly nil-ing the slot.
-                    local FileChooser_cls = require("ui/widget/filechooser")
-                    fm_self._titlebar_orig_fc_onFolderUp = fc.onFolderUp  -- may be nil
-                    fc.onFolderUp = function(fc_self, ...)
-                        -- When the user navigated here from the book dialog ("More by X"),
-                        -- a single back press should return to the real folder they came
-                        -- from, scrolled to the book — not to the Authors root.
-                        local BM = _BrowseMeta()
-                        if BM then
-                            local origin = fc_self._sui_author_dialog_origin
-                            if origin and origin.path then
-                                local path = fc_self.path or ""
-                                local ok_pl, level = pcall(BM.getPathLevel, path)
-                                if ok_pl and level == "file_list" then
-                                    -- Clear origin so subsequent back presses behave normally.
-                                    fc_self._sui_author_dialog_origin = nil
-                                    BM.exitToNormal(fc_self, fm_self)
-                                    -- Navigate to the saved real folder with the book focused
-                                    -- so the list scrolls to the right page automatically.
-                                    fc_self:changeToPath(origin.path, origin.file)
-                                    local is_sub_after = _resolveIsSub(fc_self)
-                                    _applyBackButtonState(fc_self, is_sub_after, 1)
-                                    return true
-                                end
-                            end
-                        end
-                        -- At the dim_list level of a virtual browse tree, exit to normal FS.
-                        if BM and BM.exitToNormal then
-                            local path = fc_self.path or ""
-                            if path:find("/", 1, true) then
-                                local ok_pl, level =
-                                    pcall(BM.getPathLevel, path)
-                                if ok_pl and level == "dim_list" then
-                                    BM.exitToNormal(fc_self, fm_self)
-                                    local is_sub_after = _resolveIsSub(fc_self)
-                                    _applyBackButtonState(fc_self, is_sub_after, 1)
-                                    return true
-                                end
-                            end
-                        end
-                        -- Delegate to the current class method (resolved at call time).
-                        local current = FileChooser_cls.onFolderUp
-                        local ok, result = xpcall(current, debug.traceback, fc_self, ...)
-                        local is_sub = _resolveIsSub(fc_self)
-                        _applyBackButtonState(fc_self, is_sub, 1)
-                        if not ok then error(result, 0) end
-                        return result
-                    end
-
-                    -- onGotoPage updates back-button state on every CoverBrowser page turn.
-                    -- Re-entrancy guard prevents KOReader's internal recursive calls from
-                    -- overwriting the state set for the outer call.
-                    local orig_onGotoPage = fc.onGotoPage
-                    if orig_onGotoPage then
-                        fm_self._titlebar_orig_fc_onGotoPage = orig_onGotoPage
-                        fc.onGotoPage = function(fc_self, page, ...)
-                            if fc_self._simpleui_in_goto then
-                                return orig_onGotoPage(fc_self, page, ...)
-                            end
-                            fc_self._simpleui_in_goto = true
-                            local ok, result =
-                                xpcall(orig_onGotoPage, debug.traceback, fc_self, page, ...)
-                            -- Clear re-entrancy guard BEFORE any error() so a failure
-                            -- inside orig_onGotoPage never leaves the flag stuck at true.
-                            fc_self._simpleui_in_goto = nil
-                            local is_sub = _resolveIsSub(fc_self)
-                            _applyBackButtonState(fc_self, is_sub, page)
-                            if not ok then error(result, 0) end
-                            return result
-                        end
-                    end
-                end -- if fc
-            end -- if s
-        end -- if ok_ib
-    end -- if show_up
 
     -- Home button ------------------------------------------------------------
     if show_home then
@@ -967,53 +1007,24 @@ function M.apply(fm_self)
     -- Injected directly into the TitleBar OverlapGroup.
     -- All paddings (including top) are zeroed to align with the other buttons.
 
-    if show_search then
-        local ok_ib, IconButton = pcall(require, "ui/widget/iconbutton")
-        if ok_ib and IconButton then
-            local s = slot_map["fm_search"]
-            if s then
-                local btn_padding = tb.button_padding or require("device").screen:scaleBySize(11)
-                local search_btn = IconButton:new{
-                    icon        = "appbar.search",
-                    width       = iw,
-                    height      = iw,
-                    padding     = btn_padding,
-                    show_parent = tb.show_parent or fm_self,
-                    callback = function()
-                        local fs = fm_self.filesearcher
-                        if fs and fs.onShowFileSearch then fs:onShowFileSearch() end
-                    end,
-                }
-                _resizeAndStrip(search_btn, iw)
-                -- Apply sui_search icon override.
-                do
-                    local _ss = SUIStyle()
-                    if _ss then _ss.applyIconToBtn("sui_search", search_btn) end
-                end
-                search_btn.overlap_align  = nil
-                search_btn.overlap_offset = { _buttonX(s.side, s.slot, iw, pad, gap, sw), 0 }
-                table.insert(tb, search_btn)
-                fm_self._titlebar_search_btn = search_btn
-                fm_self._simpleui_search_x   = _buttonX(s.side, s.slot, iw, pad, gap, sw)
+    local s_search = show_search and slot_map["fm_search"]
+    if s_search then
+        local search_btn = _newSearchButton(tb, fm_self, iw)
+        local search_x   = _buttonX(s_search.side, s_search.slot, iw, pad, gap, sw)
+        search_btn.overlap_offset = { search_x, 0 }
+        table.insert(tb, search_btn)
+        fm_self._titlebar_search_btn = search_btn
+        fm_self._simpleui_search_x   = search_x
 
-
-                if s.side == "left" then
-                    local up_slot2  = slot_map["fm_back"] and slot_map["fm_back"].slot or 0
-                    local dslot     = s.slot > up_slot2 and s.slot - 1 or s.slot
-                    local compact_x = _buttonX("left", dslot, iw, pad, gap, sw)
-                    fm_self._simpleui_search_x_compact = compact_x
-                    -- Shift to the compact (flush left) position whenever the up/back
-                    -- button is not actually occupying its slot: either it is disabled
-                    -- entirely (not show_up), or it is enabled but hidden because we
-                    -- are already at root on first apply (show_up and _isAtRoot(...)).
-                    -- The old "show_up and _isAtRoot(...)" condition never applied the
-                    -- compact position when the up button was disabled entirely, so
-                    -- search sat one slot too far right, as if the missing button were
-                    -- still there.
-                    if (not show_up) or _isAtRoot(fm_self.file_chooser) then
-                        search_btn.overlap_offset = { compact_x, 0 }
-                    end
-                end
+        if s_search.side == "left" then
+            local up_slot   = slot_map["fm_back"] and slot_map["fm_back"].slot or 0
+            local dslot     = s_search.slot > up_slot and s_search.slot - 1 or s_search.slot
+            local compact_x = _buttonX("left", dslot, iw, pad, gap, sw)
+            fm_self._simpleui_search_x_compact = compact_x
+            -- Flush-left position whenever the back button does not occupy its
+            -- slot: it is disabled, or hidden because the view is at the root.
+            if (not show_up) or _isAtRoot(fm_self.file_chooser) then
+                search_btn.overlap_offset = { compact_x, 0 }
             end
         end
     end
@@ -1153,20 +1164,256 @@ function M.apply(fm_self)
 
     -- Title ------------------------------------------------------------------
 
-    if fm_self._simpleui_force_refresh_layout and fm_self.file_chooser then
-        local current_is_sub = _resolveIsSub(fm_self.file_chooser)
-        local current_page   = fm_self.file_chooser.page or 1
-        
-        
-        fm_self._simpleui_force_refresh_layout(fm_self.file_chooser, current_is_sub, current_page)
-        
-        
-        fm_self._simpleui_force_refresh_layout = nil 
-    end
+    _refreshBackState(fm_self)
     if tb.setTitle then
         fm_self._titlebar_orig_title_set = true
         tb:setTitle(show_title and _("Library") or "")
     end
+end
+
+-- ---------------------------------------------------------------------------
+-- FM titlebar — tabs style
+-- ---------------------------------------------------------------------------
+--
+-- Back button, tab strip (tabs and search button) and menu button on a single compact row. The bar is
+-- built with the metrics below (see M.runWithStyleMetrics) so its height is
+-- the text row plus a vertical padding; the buttons are as tall as the text.
+
+-- Grows an icon button's tap area to the full bar height without moving its icon.
+local function _padTapArea(btn, m)
+    btn.padding_left   = m.tap_pad_h
+    btn.padding_right  = m.tap_pad_h
+    btn.padding_top    = m.pad_v
+    btn.padding_bottom = m.pad_v
+    btn:update()
+end
+
+-- Browse modes the strip offers: the filesystem view plus every browse
+-- dimension; only the filesystem view when browsing by metadata is disabled.
+local function _availableModes()
+    local BM = _BrowseMeta()
+    return (BM and BM.isEnabled()) and BM.MODES or { "normal" }
+end
+
+-- Strip items in saved order: the browse tabs followed by the search button
+-- by default.
+function M.getTabsOrder()
+    local BM       = _BrowseMeta()
+    local defaults = { _unpack(BM and BM.MODES or { "normal" }) }
+    defaults[#defaults + 1] = SEARCH_ID
+    return Config.mergeOrder(SUISettings:readSetting(TABS_ORDER_KEY), defaults)
+end
+
+function M.setTabsOrder(order) SUISettings:saveSetting(TABS_ORDER_KEY, order) end
+
+-- Ordered { id, label, visible } entries for the tabs and search button that
+-- are available in the current configuration.
+function M.getTabsEntries()
+    local BM     = _BrowseMeta()
+    local labels = { [SEARCH_ID] = _("Search") }
+    for _i, mode in ipairs(_availableModes()) do
+        labels[mode] = BM and BM.getModeLabel(mode) or _("Library")
+    end
+    local entries = {}
+    for _i, id in ipairs(M.getTabsOrder()) do
+        if labels[id] then
+            entries[#entries + 1] = { id = id, label = labels[id], visible = M.isItemVisible(id) }
+        end
+    end
+    return entries
+end
+
+-- Tab strip items of the visible entries; the search button gets a blank
+-- cell of its width. Also returns whether the search button is shown.
+local function _stripItems(search_w)
+    local items, has_search = {}, false
+    for _i, e in ipairs(M.getTabsEntries()) do
+        if e.visible then
+            if e.id == SEARCH_ID then
+                has_search = true
+                items[#items + 1] = { id = e.id, spacer_w = search_w }
+            else
+                items[#items + 1] = { id = e.id, label = e.label }
+            end
+        end
+    end
+    return items, has_search
+end
+
+-- True when `path` is a top-level view of the library, where the tabs apply:
+-- the home folder, or the Authors/Series/Tags lists. Folders below it, the
+-- books of one author/series/tag and a series group are inner views.
+local function _isLibraryRoot(fc, path)
+    if fc.item_table and fc.item_table._sg_is_series_view then return false end
+    local BM = _BrowseMeta()
+    if BM then
+        local ok, level = pcall(BM.getPathLevel, path)
+        if ok and level then return level ~= "file_list" end
+    end
+    local home = _normHome()
+    return home == nil or _normPath(path) == home
+end
+
+-- True when the view is a folder of the filesystem. The Authors, Series and
+-- Tags views, their lists and the series groups are virtual.
+local function _isFilesystemView(fc, path)
+    if fc.item_table and fc.item_table._sg_is_series_view then return false end
+    local BM = _BrowseMeta()
+    return not BM or BM.getPathMode(path) == "normal"
+end
+
+-- Name shown in place of the tabs on an inner view.
+local function _innerViewLabel(fc, path)
+    local it = fc.item_table
+    if it and it._sg_is_series_view then return it._sg_series_name or "" end
+    local BM = _BrowseMeta()
+    local virtual = BM and BM.getPathLabel(path)
+    if virtual then return virtual end
+    return path:match("([^/]+)/*$") or path
+end
+
+local function _applyTabs(fm_self, tb)
+    local m = _tabsMetrics()
+    local iw, sw = m.iw, m.sw
+    local bar_h  = tb:getHeight()
+
+    -- Menu button (native right button).
+    local menu_x = sw - m.margin - iw - m.tap_pad_h
+    _setupMenuButton(fm_self, tb, true, function(rb)
+        _resizeAndStrip(rb, iw)
+        _padTapArea(rb, m)
+        rb.overlap_align  = nil
+        rb.overlap_offset = { menu_x, 0 }
+    end)
+
+    -- The menu actions only apply to the filesystem views: the button is moved
+    -- off-screen with its callbacks disabled elsewhere.
+    local function setMenuVisible(visible)
+        local rb, snap = tb.right_button, fm_self._titlebar_rb
+        if not (rb and snap) then return end
+        rb.overlap_offset = { visible and menu_x or _hideOffset(sw), 0 }
+        if visible then
+            rb.callback      = snap.callback
+            rb.hold_callback = snap.hold_cb
+        else
+            rb.callback      = function() end
+            rb.hold_callback = function() end
+        end
+    end
+
+    -- Back button; shown only when there is somewhere to go back to.
+    _hideNativeLeftButton(fm_self, tb)
+    local back_icon = _backIcon()
+    local up_btn  = _newBackButton(tb, fm_self, iw, back_icon)
+    _padTapArea(up_btn, m)
+    local up_x = m.margin - m.tap_pad_h
+    up_btn.overlap_offset = { up_x, 0 }
+    table.insert(tb, up_btn)
+    fm_self._titlebar_up_btn = up_btn
+
+    -- Search button: sits in its own cell of the tab strip and is shown only
+    -- with the tabs.
+    local items, has_search = _stripItems(iw)
+    local search_btn
+    if has_search then
+        search_btn = _newSearchButton(tb, fm_self, iw)
+        _padTapArea(search_btn, m)
+        search_btn.overlap_offset = { _hideOffset(sw), 0 }
+        table.insert(tb, search_btn)
+        fm_self._titlebar_search_btn = search_btn
+    end
+
+    -- Tab strip: flush left while the back button is hidden, shifted right
+    -- of it while shown. It always ends where the menu button begins.
+    local strip_x_flush = m.margin
+    local strip_x_back  = m.margin + iw + m.back_gap
+    local strip = require("engines/sui_tab_strip").new{
+        width     = menu_x - strip_x_flush,
+        height    = bar_h,
+        face      = m.face,
+        tabs      = items,
+        on_select = function(mode)
+            local BM = _BrowseMeta()
+            if BM then BM.activateMode(fm_self, mode) end
+        end,
+    }
+    strip.overlap_align = nil
+    strip:setSpan(strip_x_flush, menu_x - strip_x_flush)
+    table.insert(tb, strip)
+    fm_self._titlebar_tab_strip = strip
+
+    -- Library root: tabs with the current mode highlighted. Inner view: its name.
+    _installBackController(fm_self, back_icon, up_x, function(fc, _, _, path, back_visible)
+        local x = back_visible and strip_x_back or strip_x_flush
+        strip:setSpan(x, menu_x - x)
+        setMenuVisible(_isFilesystemView(fc, path))
+        if _isLibraryRoot(fc, path) then
+            local BM = _BrowseMeta()
+            strip:setActive(BM and BM.getPathMode(path) or "normal")
+        else
+            strip:setLabel(_innerViewLabel(fc, path))
+        end
+        -- The search button sits in its cell; hidden with a label.
+        if search_btn then
+            local cell_x = strip:getCellX(SEARCH_ID)
+            search_btn.overlap_offset = {
+                cell_x and (x + cell_x - m.tap_pad_h) or _hideOffset(sw), 0 }
+        end
+    end)
+
+    _refreshBackState(fm_self)
+end
+
+-- ---------------------------------------------------------------------------
+-- FM titlebar — apply
+-- ---------------------------------------------------------------------------
+
+function M.apply(fm_self)
+    if not M.isEnabled() then return end
+    local tb = fm_self.title_bar
+    if not tb then return end
+    if fm_self._titlebar_patched then return end
+    fm_self._titlebar_patched = true
+    _installBarScrim(tb)
+
+    -- The tabs layout needs the bar built with the tabs metrics; until the
+    -- next layout rebuild a bar built for the classic style keeps that style.
+    if M.isTabsStyle() and tb._sui_tabs_bar then
+        _applyTabs(fm_self, tb)
+    else
+        _applyClassic(fm_self, tb)
+    end
+end
+
+-- Runs `fn(...)` (the FM layout build) so that the title bar it creates gets
+-- the compact tabs metrics: no title or subtitle, and a height of one text row
+-- plus a vertical padding. A pass-through for the classic style. Returns nothing.
+function M.runWithStyleMetrics(fn, ...)
+    if not M.isTabsStyle() then
+        fn(...)
+        return
+    end
+    local TitleBar = require("ui/widget/titlebar")
+    local m        = _tabsMetrics()
+    local own_new  = rawget(TitleBar, "new")
+    local orig_new = TitleBar.new
+
+    TitleBar.new = function(class, attrs, ...)
+        TitleBar.new = own_new                 -- only the first bar is affected
+        attrs = attrs or {}
+        attrs.title             = ""
+        attrs.subtitle          = nil
+        attrs.title_face        = m.face
+        attrs.title_top_padding = m.pad_v
+        attrs.bottom_v_padding  = m.pad_v
+        local bar = orig_new(class, attrs, ...)
+        bar._sui_tabs_bar = true
+        return bar
+    end
+
+    local ok, err = pcall(fn, ...)
+    TitleBar.new = own_new
+    if not ok then error(err, 0) end
 end
 
 -- ---------------------------------------------------------------------------
@@ -1177,6 +1424,7 @@ function M.restore(fm_self)
     local tb = fm_self.title_bar
     if not tb then return end
     if not fm_self._titlebar_patched then return end
+    _removeBarScrim(tb)
 
     -- Restore the setRightIcon patch.
     if fm_self._titlebar_orig_setRightIcon then
@@ -1190,12 +1438,17 @@ function M.restore(fm_self)
     if tb.left_button  then _restoreBtn(tb.left_button,  fm_self._titlebar_lb) end
     fm_self._titlebar_lb = nil
 
-    -- Remove injected up, search and browse buttons from the TitleBar OverlapGroup.
-    for _, key in ipairs({ "_titlebar_home_btn", "_titlebar_up_btn", "_titlebar_search_btn", "_titlebar_browse_btn" }) do
+    -- Remove the injected widgets (back, search, browse buttons and tab strip)
+    -- from the TitleBar OverlapGroup.
+    for _, key in ipairs({ "_titlebar_home_btn", "_titlebar_up_btn", "_titlebar_search_btn", "_titlebar_browse_btn", "_titlebar_tab_strip" }) do
         local btn = fm_self[key]
         if btn then
             -- Free the C/FFI image memory
-            if btn.image then pcall(btn.image.free, btn.image) end
+            if btn.image then
+                pcall(btn.image.free, btn.image)
+            elseif btn.free then
+                pcall(btn.free, btn)
+            end
             
             -- Remove from the visual table (OverlapGroup)
             for i = #tb, 1, -1 do
@@ -1256,13 +1509,19 @@ function M.applyToSub(widget)
     if not tb then return end
     if widget._titlebar_sub_patched then return end
     widget._titlebar_sub_patched = true
+    _installBarScrim(tb)
 
     local lp                = _layoutParams(tb)
     local iw, pad, gap, sw  = lp.iw, lp.pad, lp.gap, lp.sw
-    local show_menu      = M.isItemVisible("sub_menu")
-    local show_close     = M.isItemVisible("sub_close")
 
-    local show_back      = M.isItemVisible("sub_back")
+    -- Tabs style: a bar built with the tabs metrics mirrors the library bar
+    -- (back button, bold title, menu button) with fixed button positions.
+    local tabs_m = M.isTabsStyle() and tb._sui_tabs_bar and _tabsMetrics() or nil
+    if tabs_m then iw = tabs_m.iw end
+
+    local show_menu      = tabs_m ~= nil or M.isItemVisible("sub_menu")
+    local show_close     = tabs_m == nil and M.isItemVisible("sub_close")
+    local show_back      = tabs_m ~= nil or M.isItemVisible("sub_back")
 
     local cfg     = M.getSubConfig()
     local visible = {}
@@ -1271,34 +1530,44 @@ function M.applyToSub(widget)
     if show_back  then visible["sub_back"]  = true end
     local slot_map = _buildSlotMap(cfg.order_left, cfg.order_right, visible)
 
-    local function placeBtn(id, btn)
+    local menu_x = tabs_m and (sw - tabs_m.margin - iw - tabs_m.tap_pad_h)
+    local back_x = tabs_m and (tabs_m.margin - tabs_m.tap_pad_h)
+
+    -- Horizontal position of a button; nil when it has no slot.
+    local function slotX(id)
+        if tabs_m then return id == "sub_back" and back_x or menu_x end
         local s = slot_map[id]
-        if not s then return end
+        return s and _buttonX(s.side, s.slot, iw, pad, gap, sw)
+    end
+
+    local function placeBtn(id, btn)
+        local x = slotX(id)
+        if not x then return end
+        if id == "sub_menu" and not tabs_m then
+            _placeMenuButton(btn, iw, x)
+            return
+        end
         _resizeAndStrip(btn, iw)
+        if tabs_m then _padTapArea(btn, tabs_m) end
         btn.overlap_align  = nil
-        btn.overlap_offset = { _buttonX(s.side, s.slot, iw, pad, gap, sw), 0 }
+        btn.overlap_offset = { x, 0 }
     end
 
    -- Left button (hamburger / sub_menu).
     if tb.left_button then
         local lb = tb.left_button
-        widget._titlebar_sub_lb = _snapBtn(lb)
+        widget._titlebar_sub_lb = _snapBtn(lb, { save_icon = true })
         if show_menu then
             placeBtn("sub_menu", lb)
-            -- Apply the custom menu icon only when the button is currently
-            -- showing the hamburger (not "check" or another select-mode icon).
+            -- Apply the menu icon only when the button is currently showing
+            -- the hamburger (not "check" or another select-mode icon).
             -- On a fresh applyToSub the button is always in menu state, but on
-            -- a reapply triggered while select-mode is active we must not
-            -- overwrite the "check" icon that KOReader just set.
-            -- We read lb.icon (the IconButton field, kept in sync by setIcon)
-            -- rather than lb.image.icon, because applyIconToBtn clears image.icon.
+            -- a reapply triggered while select-mode is active the "check" icon
+            -- set by the host must be kept.
+            -- lb.icon (the IconButton field, kept in sync by setIcon) is read
+            -- rather than lb.image.icon, because the icon helpers clear image.icon.
             local _is_menu_state = (lb.icon == nil or lb.icon == "appbar.menu")
-            if _is_menu_state then
-                local _ss = SUIStyle()
-                if _ss then
-                    _ss.applyIconToBtn("sui_menu", lb)
-                end
-            end
+            if _is_menu_state then _applyMenuIcon(lb) end
 
             -- Patch TitleBar:setLeftIcon so the custom menu icon survives
             -- icon changes made by the host widget (e.g. collections toggles
@@ -1318,18 +1587,10 @@ function M.applyToSub(widget)
             tb.setLeftIcon = function(tb_self, icon, ...)
                 local result = orig_setLeftIcon(tb_self, icon, ...)
                 if icon == "appbar.menu" then
-                    -- Host is restoring the hamburger — re-apply custom icon.
+                    -- Host is restoring the hamburger — re-apply the menu icon.
                     widget._titlebar_sub_lb_is_menu = true
                     if tb_self.left_button then
-                        local _ss2 = SUIStyle()
-                        if not (_ss2 and _ss2.applyIconToBtn("sui_menu", tb_self.left_button)) then
-                            if _ss2 and _ss2.restoreDefaultIcon then
-                                _ss2.restoreDefaultIcon(tb_self.left_button, nil, Config.ICON.ko_menu)
-                            elseif tb_self.left_button.image then
-                                tb_self.left_button.image.file = Config.ICON.ko_menu
-                                _reloadImage(tb_self.left_button.image)
-                            end
-                        end
+                        _applyMenuIcon(tb_self.left_button)
                         local UIManager = require("ui/uimanager")
                         UIManager:setDirty(tb_self.show_parent or widget, "ui", tb_self.dimen)
                     end
@@ -1364,53 +1625,67 @@ function M.applyToSub(widget)
             rb.hold_callback  = function() end
         end
     end
-    
+
+    -- Title strip (tabs style): the page title as a bold left-aligned label,
+    -- flush left while the back button is hidden and right of it while shown.
+    local strip, strip_x_flush, strip_x_back
+    if tabs_m then
+        strip_x_flush = tabs_m.margin
+        strip_x_back  = tabs_m.margin + iw + tabs_m.back_gap
+        strip = require("engines/sui_tab_strip").new{
+            width  = menu_x - strip_x_flush,
+            height = tb:getHeight(),
+            face   = tabs_m.face,
+        }
+        strip.overlap_align = nil
+        strip:setSpan(strip_x_flush, menu_x - strip_x_flush)
+        -- The host may already have set the title on the native title widget
+        -- after the bar was built; take it from there and blank the native one.
+        local native = tb.title_widget and tb.title_widget.text
+        widget._titlebar_sub_title = (native and native ~= "") and native or widget.title or ""
+        strip:setLabel(widget._titlebar_sub_title)
+        table.insert(tb, strip)
+        widget._titlebar_sub_strip = strip
+        if tb.setTitle then pcall(tb.setTitle, tb, "", true) end
+
+        -- The host updates the title through the title bar; route it to the strip.
+        widget._titlebar_sub_orig_setTitle = rawget(tb, "setTitle") or false
+        tb.setTitle = function(tb_self, text)
+            widget._titlebar_sub_title = text or ""
+            strip:setLabel(widget._titlebar_sub_title)
+            require("ui/uimanager"):setDirty(tb_self.show_parent or widget, "ui", tb_self.dimen)
+        end
+    end
+
     -- Left button (back / pagination)
     if show_back then
-        local ok_ib, IconButton = pcall(require, "ui/widget/iconbutton")
-        if ok_ib and IconButton then
-            local s = slot_map["sub_back"]
-            if s then
-                local btn_padding = tb.button_padding or require("device").screen:scaleBySize(11)
-                local ICON_UP = "chevron.left"
-                pcall(function()
-                    local BD = require("ui/bidi")
-                    ICON_UP = BD.mirroredUILayout() and "chevron.right" or "chevron.left"
-                end)
-                local sub_back_btn = IconButton:new{
-                    icon        = ICON_UP,
-                    width       = iw,
-                    height      = iw,
-                    padding     = btn_padding,
-                    show_parent = tb.show_parent or widget,
-                    callback    = function() end,
-                }
-                _resizeAndStrip(sub_back_btn, iw)
-                do
-                    local _ss = SUIStyle()
-                    if _ss then _ss.applyIconToBtn("sui_back", sub_back_btn) end
-                end
-                sub_back_btn.overlap_align  = nil
-                sub_back_btn.overlap_offset = { _buttonX(s.side, s.slot, iw, pad, gap, sw), 0 }
+        do
+            if slotX("sub_back") then
+                local BACK_ICON = _backIcon()
+                local sub_back_btn = _newBackButton(tb, widget, iw, BACK_ICON)
+                if tabs_m then _padTapArea(sub_back_btn, tabs_m) end
+                sub_back_btn.overlap_offset = { slotX("sub_back"), 0 }
                 table.insert(tb, sub_back_btn)
                 widget._titlebar_sub_back_btn = sub_back_btn
 
                 -- Applies the correct state to sub_back with unified logic across
-                -- all sub-widgets (collections, history, coll_list, …):
+                -- all sub-widgets (collections, history, coll_list, …). The tabs
+                -- style only leaves the view; the classic style also pages back:
                 --
-                --   page > 1              → show; tap = previous page, hold = page 1
-                --   page == 1, onReturn   → show; tap = onReturn (or onClose fallback)
-                --   page == 1, no onReturn → hide (nothing to go back to)
+                --   onReturn              → show; tap = onReturn (or onClose fallback)
+                --   no onReturn           → hide (nothing to go back to)
+                --   classic, page > 1     → show; tap = previous page, hold = page 1
                 --
                 -- This mirrors the native bar: page_return_arrow is enabled when
-                -- #self.paths > 0 (there is somewhere to go back to), and the
-                -- chevrons handle page navigation. sub_back unifies both functions.
+                -- #self.paths > 0 (there is somewhere to go back to).
+                local paginates = tabs_m == nil
                 local function _applySubBackButtonState(w_self, page)
                     local btn = w_self._titlebar_sub_back_btn
                     if not btn then return end
 
                     local has_return = (w_self.onReturn ~= nil)
-                    local visible    = (page > 1) or has_return
+                    local pages_back = paginates and page > 1
+                    local visible    = pages_back or has_return
 
                     if not visible then
                         -- Nothing to go back to: hide the button.
@@ -1419,31 +1694,17 @@ function M.applyToSub(widget)
                         btn.hold_callback  = function() end
                     else
                         -- Show the button with the current icon (respects SUIStyle override).
-                        -- .icon and .file are mutually exclusive in KOReader's ImageWidget:
-                        -- init() gives precedence to .icon, so whichever we do NOT want
-                        -- must be nilled explicitly.
-                        local _ss = SUIStyle()
-                        if not (_ss and _ss.applyIconToBtn("sui_back", btn)) then
-                            if btn.image then
-                                btn.image.file = nil
-                                btn.image.icon = ICON_UP
-                                pcall(btn.image.free, btn.image)
-                                pcall(btn.image.init, btn.image)
-                            end
-                        end
+                        _applyBackIcon(btn, BACK_ICON)
 
-                        local sl = slot_map["sub_back"]
-                        if sl then
-                            btn.overlap_offset = { _buttonX(sl.side, sl.slot, iw, pad, gap, sw), 0 }
-                        end
+                        btn.overlap_offset = { slotX("sub_back"), 0 }
 
-                        if page > 1 then
+                        if pages_back then
                             -- Paginated: tap goes back one page, hold goes to page 1.
                             btn.callback      = function() w_self:onGotoPage(page - 1) end
                             btn.hold_callback = function() w_self:onGotoPage(1) end
                         else
-                            -- Page 1 with a return destination (e.g. inside a collection,
-                            -- going back to the collection list via onReturn).
+                            -- A return destination (e.g. inside a collection, going
+                            -- back to the collection list via onReturn).
                             btn.callback = function()
                                 if w_self.onReturn then
                                     w_self:onReturn()
@@ -1455,6 +1716,11 @@ function M.applyToSub(widget)
                             end
                             btn.hold_callback = function() end
                         end
+                    end
+                    if strip then
+                        local x = visible and strip_x_back or strip_x_flush
+                        strip:setSpan(x, menu_x - x)
+                        strip:setLabel(w_self._titlebar_sub_title)
                     end
                     if w_self.title_bar then
                         require("ui/uimanager"):setDirty(w_self.title_bar.show_parent or w_self, "ui", w_self.title_bar.dimen)
@@ -1501,6 +1767,7 @@ function M.restoreSub(widget)
     local tb = widget.title_bar
     if not tb then return end
     if not widget._titlebar_sub_patched then return end
+    _removeBarScrim(tb)
     if tb.left_button  then _restoreBtn(tb.left_button,  widget._titlebar_sub_lb) end
     if tb.right_button then _restoreBtn(tb.right_button, widget._titlebar_sub_rb) end
 
@@ -1508,6 +1775,20 @@ function M.restoreSub(widget)
     if widget._titlebar_sub_orig_setLeftIcon ~= nil then
         tb.setLeftIcon = widget._titlebar_sub_orig_setLeftIcon
         widget._titlebar_sub_orig_setLeftIcon = nil
+    end
+
+    if widget._titlebar_sub_orig_setTitle ~= nil then
+        tb.setTitle = widget._titlebar_sub_orig_setTitle or nil
+        widget._titlebar_sub_orig_setTitle = nil
+    end
+    if widget._titlebar_sub_strip then
+        local strip = widget._titlebar_sub_strip
+        for i = #tb, 1, -1 do
+            if tb[i] == strip then table.remove(tb, i); break end
+        end
+        pcall(strip.free, strip)
+        widget._titlebar_sub_strip = nil
+        widget._titlebar_sub_title = nil
     end
 
     widget._titlebar_sub_lb      = nil

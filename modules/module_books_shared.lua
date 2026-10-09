@@ -194,6 +194,60 @@ function SH.pctStr(pct)
     return string.format("%.0f%%", (pct or 0) * 100)
 end
 
+local _CoverWidgets = nil
+local function getCoverWidgets()
+    if not _CoverWidgets then
+        local ok, m = pcall(require, "features/library/sui_cover_widgets")
+        if ok and m then _CoverWidgets = m end
+    end
+    return _CoverWidgets
+end
+
+-- ---------------------------------------------------------------------------
+-- Cover shadow
+--
+-- Every cover builder below draws its card in a w × h slot. With the cover
+-- shadow enabled the card shrinks by the shadow's depth and the shadow takes
+-- the room that frees up on the right and bottom, so the slot — and every
+-- layout computed from it — keeps its size.
+--
+-- Builders take a trailing `layered` flag. When set, the card is built without
+-- its shadow and the caller paints SH.buildCoverShadowLayer() on a layer behind
+-- every neighbouring cover.
+-- ---------------------------------------------------------------------------
+
+-- buildShadow(w, h) → shadow widget for a single cover slot of w × h, or nil
+-- while the cover shadow is disabled. Place it at the slot's top-left corner.
+local function buildShadow(w, h)
+    local inset = SUIStyle.coverShadowOffset(SUIStyle.SHADOW_MODULES)
+    return getCoverWidgets().buildBacking(w - inset, h - inset, inset, true)
+end
+
+-- buildCoverShadowLayer(w, h, slots) → one widget of w × h casting the shadows of
+-- every cover slot ({x, y, w, h} rects relative to its top-left corner) as a
+-- single shape, or nil while the cover shadow is disabled.
+function SH.buildCoverShadowLayer(w, h, slots)
+    local inset = SUIStyle.coverShadowOffset(SUIStyle.SHADOW_MODULES)
+    local cards = {}
+    for i, s in ipairs(slots) do
+        cards[i] = { x = s.x, y = s.y, w = s.w - inset, h = s.h - inset }
+    end
+    return getCoverWidgets().buildShadowLayer(w, h, cards, inset)
+end
+
+-- withShadow(w, h, layered, build, ...) → widget of size w × h, or nil when
+-- build() fails. build(card_w, card_h, ...) returns the card widget.
+local function withShadow(w, h, layered, build, ...)
+    local inset = SUIStyle.coverShadowOffset(SUIStyle.SHADOW_MODULES)
+    if inset == 0 then return build(w, h, ...) end
+    local card = build(w - inset, h - inset, ...)
+    if not card then return nil end
+    local slot = OverlapGroup:new{ dimen = Geom:new{ w = w, h = h } }
+    if not layered then slot[#slot + 1] = buildShadow(w, h) end
+    slot[#slot + 1] = card
+    return slot
+end
+
 -- ---------------------------------------------------------------------------
 -- coverPlaceholder
 -- ---------------------------------------------------------------------------
@@ -205,15 +259,7 @@ end
 -- title   : book title string (or nil — filename used as fallback by callers)
 -- authors : book authors string (or nil)
 -- w, h    : exact pixel dimensions of the cell (should be ~2:3 ratio)
-function SH.coverPlaceholder(title, authors, w, h)
-    -- Backwards-compat: old call sites used (title, w, h) with 3 args.
-    -- Detect by checking whether `authors` is a number (the old w slot).
-    if type(authors) == "number" then
-        h = w; w = authors; authors = nil
-    end
-    w = tonumber(w) or 100
-    h = tonumber(h) or 150
-
+local function buildPlaceholder(w, h, title, authors)
     local border = SUIStyle.BADGE_BORDER_SZ
     -- Inner dimensions (FakeCover uses width/height = outer - 2*bordersize,
     -- since margin=0 and padding=0)
@@ -350,10 +396,19 @@ function SH.coverPlaceholder(title, authors, w, h)
     }
 end
 
+function SH.coverPlaceholder(title, authors, w, h, layered)
+    -- Backwards-compat: old call sites used (title, w, h) with 3 args.
+    -- Detect by checking whether `authors` is a number (the old w slot).
+    if type(authors) == "number" then
+        h = w; w = authors; authors = nil
+    end
+    return withShadow(tonumber(w) or 100, tonumber(h) or 150, layered, buildPlaceholder, title, authors)
+end
+
 -- ---------------------------------------------------------------------------
 -- getBookCover
 -- ---------------------------------------------------------------------------
-function SH.getBookCover(filepath, w, h)
+local function buildBookCover(w, h, filepath)
     -- Reserve 1px on each side for the border: request a bb that is 2px smaller.
     local inner_w = math_max(1, w - 2)
     local inner_h = math_max(1, h - 2)
@@ -386,6 +441,10 @@ function SH.getBookCover(filepath, w, h)
     }
 end
 
+function SH.getBookCover(filepath, w, h, layered)
+    return withShadow(w, h, layered, buildBookCover, filepath)
+end
+
 -- ---------------------------------------------------------------------------
 -- getCroppedBookCover — for callers whose target box is NOT the plugin's
 -- fixed 3:2 shape and needs to be filled edge-to-edge with no distortion
@@ -396,7 +455,7 @@ end
 -- use SH.getBookCover for that (shared, session-max-sized cache — see its
 -- comment above for why that's both cheaper and correct there).
 -- ---------------------------------------------------------------------------
-function SH.getCroppedBookCover(filepath, w, h, align)
+local function buildCroppedBookCover(w, h, filepath, align)
     local inner_w = math_max(1, w - 2)
     local inner_h = math_max(1, h - 2)
     local bb = Config.getCroppedCoverBB(filepath, inner_w, inner_h, align)
@@ -423,6 +482,10 @@ function SH.getCroppedBookCover(filepath, w, h, align)
     }
 end
 
+function SH.getCroppedBookCover(filepath, w, h, align, layered)
+    return withShadow(w, h, layered, buildCroppedBookCover, filepath, align)
+end
+
 -- ---------------------------------------------------------------------------
 -- Progress badge helpers — single drawing path for the progress pentagon.
 -- Used by single-cover modules (Currently Reading, Coverdeck) and by the
@@ -432,20 +495,12 @@ end
 --   Pure builder. color is "dark"|"light"|nil (nil follows Library).
 --   Book-grid callers place the widget into their multi-badge OverlapGroup.
 --
--- applyProgressBadge(cover_widget, bd, cw, ch, color, ref_w, ref_h)
+-- applyProgressBadge(cover_widget, bd, cw, ch, color, ref_w, ref_h, scale_pct)
 --   Convenience for single-cover modules: computes size/margin, builds
 --   the badge, wraps in OverlapGroup. ref_w/ref_h keep size consistent
---   on narrower peeks.
+--   on narrower peeks. scale_pct (default 100) scales the badge only; its
+--   edge margin stays fixed.
 -- ---------------------------------------------------------------------------
-local _CoverWidgets = nil
-local function getCoverWidgets()
-    if not _CoverWidgets then
-        local ok, m = pcall(require, "features/library/sui_cover_widgets")
-        if ok and m then _CoverWidgets = m end
-    end
-    return _CoverWidgets
-end
-
 local _FC = nil
 local function getFC()
     if not _FC then
@@ -477,24 +532,20 @@ function SH.buildProgressBadgeWidget(bd, eff_size, color)
     return CW.buildProgressBadgeWidget(desc)
 end
 
-function SH.applyProgressBadge(cover_widget, bd, cw, ch, color, ref_w, ref_h)
-    local edge_margin, eff_size
+function SH.applyProgressBadge(cover_widget, bd, cw, ch, color, ref_w, ref_h, scale_pct)
+    local base_min, fit = math_min(cw, ch), 1
     if ref_h and ref_h > 0 and ref_w and ref_w > 0 then
-        local scale   = ch / ref_h
-        local ref_min = math_min(ref_w, ref_h)
-        edge_margin   = math_max(1, math_floor(ref_min * 0.08 * scale))
-        eff_size      = math_max(8, math_floor(ref_min * 0.14 * scale))
-    else
-        local cell_min = math_min(cw, ch)
-        edge_margin    = math_max(1, math_floor(cell_min * 0.08))
-        eff_size       = math_max(8, math_floor(cell_min * 0.14))
+        base_min, fit = math_min(ref_w, ref_h), ch / ref_h
     end
+    local edge_margin = math_max(1, math_floor(base_min * 0.08 * fit))
+    local eff_size    = math_max(8, math_floor(base_min * 0.14 * fit * ((scale_pct or 100) / 100)))
 
     local wg = SH.buildProgressBadgeWidget(bd, eff_size, color)
     if not wg then return cover_widget end
 
     local sz = wg:getSize()
-    wg.overlap_offset = { cw - sz.w - edge_margin, 0 }
+    -- The badge sits on the card, not on the room its shadow takes.
+    wg.overlap_offset = { cw - SUIStyle.coverShadowOffset(SUIStyle.SHADOW_MODULES) - sz.w - edge_margin, 0 }
 
     local overlap = OverlapGroup:new{ dimen = Geom:new{ w = cw, h = ch }, cover_widget }
     overlap[#overlap + 1] = wg

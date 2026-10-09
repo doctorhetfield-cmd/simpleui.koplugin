@@ -77,12 +77,10 @@ local SimpleUIPlugin = WidgetContainer:new{
     _orig_uimanager_close     = nil,
     _orig_booklist_new        = nil,
     _orig_menu_new            = nil,
-    _orig_menu_init           = nil,
     _orig_fmcoll_show         = nil,
     _orig_rc_remove           = nil,
     _orig_rc_rename           = nil,
     _orig_fc_init             = nil,
-    _orig_fm_setup            = nil,
 
     _makeNavbarMenu           = nil,
     _makeTopbarMenu           = nil,
@@ -876,6 +874,21 @@ function SimpleUIPlugin:init()
         end
         -- -------------------------------------------------------------------
 
+        -- Settings migration v9:
+        -- Selects the tabs title bar style when no style was ever chosen.
+        -- An explicit choice, including classic, is kept.
+        if not SUISettings:isTrue("simpleui_settings_migrated_v9") then
+            pcall(function()
+                if SUISettings:get("simpleui_tb_style") == nil then
+                    SUISettings:set("simpleui_tb_style", "tabs")
+                    logger.info("simpleui: migration v9 — title bar style set to tabs")
+                end
+            end)
+            SUISettings:set("simpleui_settings_migrated_v9", true)
+            SUISettings:flush()
+        end
+        -- -------------------------------------------------------------------
+
         Config.applyFirstRunDefaults()
         Config.migrateOldCustomSlots()
         -- Always run sanitizeQASlots: it cleans both custom QA slot references
@@ -937,25 +950,24 @@ function SimpleUIPlugin:init()
 
 
         -- -------------------------------------------------------------------
-        -- First-run bootstrap: ensure "Start with Homescreen" is active.
+        -- First-run bootstrap: both the launch screen and the book-close
+        -- destination default to the Homescreen.
         --
-        -- On a fresh install simpleui_onboarding_done is nil and start_with
-        -- has never been set to "homescreen_simpleui", so isStartWithHS()
-        -- would return false and the FM would open directly, bypassing the
-        -- homescreen entirely — meaning the onboarding window (which is
-        -- triggered inside ScreenEngine.show()) would never appear either.
-        --
-        -- Fix: write start_with HERE, before Patches.installAll, so that
-        -- isStartWithHS() (lazily cached on first read in sui_patches.lua)
-        -- already sees the correct value when the setupLayout patch runs and
-        -- sets _hs_autoopen_pending = true.  From that point on, the normal
-        -- onShow → ScreenEngine.show() → Onboarding.show() chain handles
-        -- everything — no additional scheduling needed here.
+        -- The launch screen is written here, before Patches.installAll, so the
+        -- setupLayout patch sees it and sets _hs_autoopen_pending = true. The
+        -- normal onShow → ScreenEngine.show() → Onboarding.show() chain then
+        -- handles everything.
         -- -------------------------------------------------------------------
         local _sui_first_run = not SUISettings:get("simpleui_onboarding_done")
         if _sui_first_run then
-            G_reader_settings:saveSetting("start_with", "homescreen_simpleui")
+            Config.setStartWithHomescreen(true)
+            Config.setBookCloseTarget(Config.BOOK_CLOSE_TARGET.HOMESCREEN)
+            Config.applyFirstRunLibraryDefaults()
         end
+        logger.info("simpleui[diag]: init first_run=", _sui_first_run,
+            "onboarding_done=", SUISettings:get("simpleui_onboarding_done"),
+            "start_with=", G_reader_settings:readSetting("start_with"),
+            "has_document=", self.ui and self.ui.document ~= nil)
 
         if SUISettings:nilOrTrue("simpleui_enabled") then
             Patches.installAll(self)
@@ -1291,8 +1303,8 @@ end
 
 -- Called when the user triggers the "Go to Library" gesture.
 -- When inside the Reader: closes the reader and returns to the Library
--- (home_dir) without showing the Homescreen, as if "return to book folder"
--- were disabled — the FM file browser becomes the top widget.
+-- (home_dir) without showing the Homescreen — the FM file browser becomes
+-- the top widget.
 -- When outside the Reader: equivalent to tapping the Library tab.
 function SimpleUIPlugin:onSimpleUIGoLibrary()
     local RUI = package.loaded["apps/reader/readerui"]
@@ -1745,35 +1757,26 @@ function SimpleUIPlugin:onResume()
 end
 
 function SimpleUIPlugin:onReaderReady()
-    -- Warm the sidecar cache for the opened book as soon as it is opened,
-    -- so that onCloseDocument has access to its pre-session summary state
-    -- even if the file browser didn't scan it recently (e.g. direct boot to book).
+    -- Warm the sidecar cache for the opened book from the reader's own
+    -- in-memory settings, so that onCloseDocument has access to its
+    -- pre-session summary state even if the file browser didn't scan it
+    -- recently (e.g. direct boot to book). No sidecar re-read is needed.
     local RUI = package.loaded["apps/reader/readerui"]
-    local fp = RUI and RUI.instance and RUI.instance.document and RUI.instance.document.file
-    if fp then
-        local SH = package.loaded["modules/module_books_shared"]
-        if SH and SH._cachePut then
-            local ok_ds, DocSettings = pcall(require, "docsettings")
-            if ok_ds and DocSettings then
-                local ok_open, ds = pcall(function() return DocSettings:open(fp) end)
-                if ok_open and ds then
-                    local summary = ds:readSetting("summary")
-                    local doc_props = ds:readSetting("doc_props")
-                    local title = doc_props and doc_props.title
-                    local authors = doc_props and doc_props.authors
-                    SH._cachePut(fp, ds.source_candidate, {
-                        percent              = ds:readSetting("percent_finished") or 0,
-                        title                = title,
-                        authors              = authors,
-                        doc_pages            = ds:readSetting("doc_pages"),
-                        partial_md5_checksum = ds:readSetting("partial_md5_checksum"),
-                        summary              = summary,
-                    })
-                    pcall(function() ds:close() end)
-                end
-            end
-        end
-    end
+    local ui  = RUI and RUI.instance
+    local fp  = ui and ui.document and ui.document.file
+    local ds  = ui and ui.doc_settings
+    local SH  = package.loaded["modules/module_books_shared"]
+    if not (fp and ds and SH and SH._cachePut) then return end
+
+    local doc_props = ds:readSetting("doc_props")
+    SH._cachePut(fp, ds.source_candidate, {
+        percent              = ds:readSetting("percent_finished") or 0,
+        title                = doc_props and doc_props.title,
+        authors              = doc_props and doc_props.authors,
+        doc_pages            = ds:readSetting("doc_pages"),
+        partial_md5_checksum = ds:readSetting("partial_md5_checksum"),
+        summary              = ds:readSetting("summary"),
+    })
 end
 
 function SimpleUIPlugin:onCloseDocument()
@@ -1798,31 +1801,6 @@ function SimpleUIPlugin:onCloseDocument()
     if self._simpleui_suspended then return end
     local ScreenEngine = package.loaded["engines/sui_screen_engine"]
     if not ScreenEngine then return end
-
-    -- BUGFIX: sui_screen_engine.lua's sectionLabel() memoizes the header
-    -- widget for any book-grid-engine row that shows pagination chevrons
-    -- (TBR, Featured Collection, ...) under a cache key of
-    -- "mod_id|page|npages" — it does NOT (and structurally cannot cheaply)
-    -- include the identity of the turnPageFn closure passed in for THIS
-    -- render. Every homescreen rebuild after a document closes creates a
-    -- fresh ctx and therefore a fresh turnPageFn closure bound to that new
-    -- ctx/repaint machinery — but if the row happens to land back on the
-    -- same page/npages it had before the book was opened (the common case:
-    -- pagination state rarely changes just from reading a book), the cache
-    -- key matches and sectionLabel() hands back the OLD cached widget,
-    -- chevrons included, whose Button.callback is still wired to the OLD,
-    -- now-dead turnPageFn/ctx from before this document was opened. Tapping
-    -- those chevrons then silently invokes a closure over a ctx that no
-    -- longer corresponds to anything on screen — no error, no visible
-    -- effect, since it's a live Lua closure (nothing to raise on), just
-    -- discovered as "the chevrons do nothing" after returning from a book.
-    -- Invalidate unconditionally here (cheap: just clears a table) rather
-    -- than trying to enumerate which screens/modules use page_nav, mirroring
-    -- how invalidateLabelCache() is already called elsewhere in this file on
-    -- rotation for the same reason (stale widget identity across a rebuild).
-    if ScreenEngine.invalidateLabelCache then
-        ScreenEngine.invalidateLabelCache()
-    end
 
     -- Filepath of the book that just closed. readhistory.hist[1] is still the
     -- closing book at this point (the reader has not yet handed control back
@@ -1926,9 +1904,6 @@ function SimpleUIPlugin:onCloseDocument()
     -- pcalls. Only taken when NO screen at all is currently live, since a
     -- live screen always needs its own fresh check below.
     if #live_ids == 0 and #screen_ids == 1 and ScreenEngine.needsRefresh("hs") then
-        if SUISettings:nilOrTrue("simpleui_topbar_enabled") then
-            Topbar.scheduleRefresh(self, 0)
-        end
         return
     end
 
@@ -2024,6 +1999,9 @@ function SimpleUIPlugin:onCloseDocument()
         end
         if SP then
             local status_changed = true  -- default: full invalidation (safe)
+            -- True when the cached library status counts were adjusted for the
+            -- closed book and need no recount.
+            local status_counts_patched = false
             if closed_fp and SP.invalidateTimeSeries then
                 local SH = package.loaded["modules/module_books_shared"]
                 -- Pre-session status: read from sidecar cache (no I/O).
@@ -2035,27 +2013,31 @@ function SimpleUIPlugin:onCloseDocument()
                 -- determine the pre-session status from the cache, so we must
                 -- not assume the book just became complete — it may have been
                 -- complete for years.
-                local pre_status
+                local pre_status, pre_percent
                 local cache_hit = false
                 if SH and (SH._cacheGetRaw or SH._cacheGet) then
                     local cached = (SH._cacheGetRaw or SH._cacheGet)(closed_fp)
                     if cached then
                         cache_hit = true
                         local s = cached.summary
-                        pre_status = type(s) == "table" and s.status or nil
+                        pre_status  = type(s) == "table" and s.status or nil
+                        pre_percent = cached.percent
                     end
                 end
-                -- Post-session status: read from the in-memory doc_settings.
-                -- ReaderUI:onClose() calls saveSettings() (flush) before firing
-                -- CloseDocument, so doc_settings reflects the final on-disk state.
-                -- doc_settings is not destroyed until UIManager:close() → onCloseWidget,
-                -- which runs after this handler — so RUI.instance.doc_settings is
-                -- valid here. This avoids a DS.open (file-open + WAL header read).
-                local post_status
+                -- Post-session status and progress: read from the live reader.
+                -- The status comes from the in-memory doc_settings; the progress
+                -- from the footer, which tracks the current page (doc_settings
+                -- only receives it when the settings are saved). Both stay valid
+                -- until UIManager:close() → onCloseWidget, which runs after this
+                -- handler, so no DS.open is needed.
+                local post_status, post_percent
                 local RUI = package.loaded["apps/reader/readerui"]
                 if RUI and RUI.instance and type(RUI.instance.doc_settings) == "table" then
                     local s = RUI.instance.doc_settings:readSetting("summary")
-                    post_status = type(s) == "table" and s.status or nil
+                    post_status  = type(s) == "table" and s.status or nil
+                    local footer = RUI.instance.view and RUI.instance.view.footer
+                    post_percent = footer and footer.percent_finished
+                        or RUI.instance.doc_settings:readSetting("percent_finished")
                 end
                 local pre_complete  = pre_status  == "complete"
                 local post_complete = post_status == "complete"
@@ -2066,6 +2048,13 @@ function SimpleUIPlugin:onCloseDocument()
                 -- (status_changed = true) without writing date_finished.
                 if cache_hit then
                     status_changed = pre_complete ~= post_complete
+                    -- Keep the library-wide status counts current by moving
+                    -- this one book between buckets instead of recounting.
+                    if SP.applyStatusChange then
+                        SP.applyStatusChange(closed_fp, pre_percent, pre_status,
+                                             post_percent, post_status)
+                        status_counts_patched = true
+                    end
                 else
                     -- Cache miss: assume counts may have changed (safe default).
                     -- pre_complete is unknown, so treat it as equal to post_complete
@@ -2148,7 +2137,7 @@ function SimpleUIPlugin:onCloseDocument()
             end
 
             if status_changed then
-                SP.invalidate()
+                SP.invalidate(status_counts_patched)
             elseif SP.invalidateTimeSeries then
                 -- Counts unchanged: only discard DB-derived fields (time, pages,
                 -- streak). books_year/books_total survive in the cache intact.
@@ -2370,15 +2359,6 @@ function SimpleUIPlugin:onCloseDocument()
         end
     end
 
-    -- Restart the topbar clock chain. While the reader was open, shouldRunTimer()
-    -- returned false (RUI.instance present) so the chain stopped naturally.
-    -- Without this, the topbar is frozen until the next hardware event (frontlight,
-    -- charge) — wifi state changes that happened during reading would not be
-    -- reflected for up to 60 s. scheduleRefresh guards against suspend internally
-    -- via shouldRunTimer, so this is safe to call unconditionally here.
-    if SUISettings:nilOrTrue("simpleui_topbar_enabled") then
-        Topbar.scheduleRefresh(self, 0)
-    end
 end
 
 -- ---------------------------------------------------------------------------

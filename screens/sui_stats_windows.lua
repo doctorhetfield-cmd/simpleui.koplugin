@@ -3061,8 +3061,11 @@ function StatsWindows.showStreakManagerWindow()
         local gap_eligible   = freeze_mode_on and (not yest_active) and (not yest_already_frozen) and day_before_active
 
         local function useFreeze()
-            local spent = SUIStreak.spendFreezeForYesterday()
-            if spent then refreshStreaks() end
+            if SUIStreak.spendFreezeForYesterday() then
+                refreshStreaks()
+                local ScreenEngine = package.loaded["engines/sui_screen_engine"]
+                if ScreenEngine then ScreenEngine.refreshAllLiveStats() end
+            end
             ctx.repaint()
         end
 

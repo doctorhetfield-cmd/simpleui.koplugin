@@ -149,6 +149,14 @@ local FREEZE_DAY_INTERVAL        = 5     -- +1 freeze every 5 consecutive days
 M.FREEZE_TIME_THRESHOLD_SECS = FREEZE_TIME_THRESHOLD_SECS
 M.FREEZE_DAY_INTERVAL        = FREEZE_DAY_INTERVAL
 
+-- Discards the cached streak so the next stats fetch recounts it with the
+-- current freeze state. Called by every mutator that changes which days
+-- count toward the streak.
+local function _invalidateStreakCache()
+    local SP = package.loaded["modules/module_stats_provider"]
+    if SP and SP.invalidateStreak then SP.invalidateStreak() end
+end
+
 -- ---------------------------------------------------------------------------
 -- Mode
 -- ---------------------------------------------------------------------------
@@ -163,6 +171,7 @@ end
 function M.setStreakMode(mode)
     if mode ~= "real" and mode ~= "freezes" then return end
     SUISettings:set(KEY_MODE, mode)
+    _invalidateStreakCache()
 end
 
 function M.isFreezeModeEnabled()
@@ -213,6 +222,7 @@ function M.spendFreezeForYesterday()
     dates[#dates + 1] = yesterday
     SUISettings:set(KEY_FROZEN_DATES, dates)
     SUISettings:set(KEY_FREEZES, avail - 1)
+    _invalidateStreakCache()
     return true
 end
 

@@ -127,6 +127,37 @@ local AUTO_DISABLE_PATCHES = {
     "2-statusbar-cycle-presets.lua",
 }
 
+-- Master switch for renaming the patches above to "<name>.disabled".
+-- Off: user patches are left untouched. The list and the logic below are
+-- kept so the behaviour can be turned back on by setting this to true.
+local DISABLE_CONFLICTING_PATCHES = false
+
+-- Renames every installed patch from AUTO_DISABLE_PATCHES that is active (or
+-- has already run this session). Returns the list of renamed file names.
+local function disable_conflicting_patches()
+    local renamed = {}
+    local ok_userpatch, userpatch = pcall(require, "userpatch")
+    local execution_status = ok_userpatch and userpatch and userpatch.execution_status
+    local patches_enabled = type(userpatch) ~= "table"
+        or type(userpatch.arePatchesDisabled) ~= "function"
+        or not userpatch.arePatchesDisabled()
+    local ok_ds, DataStorage = pcall(require, "datastorage")
+    local patch_dir = ok_ds and (DataStorage:getDataDir() .. "/patches") or "patches"
+    local ok_lfs, lfs = pcall(require, "libs/libkoreader-lfs")
+    if not ok_lfs then return renamed end
+
+    for _i, filename in ipairs(AUTO_DISABLE_PATCHES) do
+        local source = patch_dir .. "/" .. filename
+        local installed = lfs.attributes(source, "mode") == "file"
+        local was_run = type(execution_status) == "table" and execution_status[filename] ~= nil
+        if installed and (was_run or patches_enabled)
+                and os.rename(source, source .. ".disabled") then
+            renamed[#renamed + 1] = filename
+        end
+    end
+    return renamed
+end
+
 local function schedule_coverbrowser_check()
     local UIManager = require("ui/uimanager")
     UIManager:scheduleIn(1.0, function()
@@ -251,25 +282,10 @@ local function apply_compat_check()
         end
     end
 
-    local ok_userpatch, userpatch = pcall(require, "userpatch")
-    local execution_status = ok_userpatch and userpatch and userpatch.execution_status
-    local patches_enabled = type(userpatch) ~= "table"
-        or type(userpatch.arePatchesDisabled) ~= "function"
-        or not userpatch.arePatchesDisabled()
-    local ok_ds, DataStorage = pcall(require, "datastorage")
-    local patch_dir = ok_ds and (DataStorage:getDataDir() .. "/patches") or "patches"
-    local ok_lfs, lfs = pcall(require, "libs/libkoreader-lfs")
-    if ok_lfs then
-        for _i, filename in ipairs(AUTO_DISABLE_PATCHES) do
-            local source = patch_dir .. "/" .. filename
-            local installed = lfs.attributes(source, "mode") == "file"
-            local was_run = type(execution_status) == "table" and execution_status[filename] ~= nil
-            if installed and (was_run or patches_enabled) then
-                if os.rename(source, source .. ".disabled") then
-                    disabled_labels[#disabled_labels + 1] = filename
-                    needs_restart = true
-                end
-            end
+    if DISABLE_CONFLICTING_PATCHES then
+        for _i, filename in ipairs(disable_conflicting_patches()) do
+            disabled_labels[#disabled_labels + 1] = filename
+            needs_restart = true
         end
     end
 
@@ -281,7 +297,7 @@ local function apply_compat_check()
             local ConfirmBox = require("ui/widget/confirmbox")
             local Event = require("ui/event")
             UIManager:show(ConfirmBox:new{
-                text = _("Incompatible plugins and patches have been disabled:")
+                text = _("Incompatible items have been disabled:")
                     .. "\n" .. table.concat(disabled_labels, "\n"),
                 dismissable = false,
                 no_ok_button = true,

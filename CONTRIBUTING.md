@@ -149,6 +149,46 @@ msgmerge --update locale/<lang>.po locale/simpleui.pot
 - If a string is shown to the user, it must be wrapped in `_()`
 - Add a short comment when the reason for a decision is not obvious from the code
 - All settings keys written to `G_reader_settings` must use either the `simpleui_` or `navbar_` prefix — never bare unprefixed keys
+- Settings rows keep a static label; the current choice is shown only as the right-side value (`value_func`, plus `mandatory_func` for the native menu) — never concatenated into the label (`"Sort: Title"`). Use `Config.makeRadioSubmenuItem` for N-way choices; the convention is described in `engines/sui_window.lua`
+
+### Patching KOReader classes
+
+KOReader creates a plugin instance for each host UI (file manager and reader)
+and recreates them whenever a book is opened or closed. Each instance runs
+`Patches.installAll` and later `Patches.teardownAll`, in an order the plugin
+does not control. Patches must be safe against repeated installs and
+out-of-order teardowns, otherwise wrappers stack up and their effect grows
+with every book opened (for example, layout insets applied once per wrapper).
+
+Use the shared hook helpers in `infra/sui_patches.lua`:
+
+| Helper | Purpose |
+|---|---|
+| `_acquireHooks(target, key, owner)` | Registers the plugin as a user. Returns a state to fill when hooks must be installed, `nil` when they already exist. |
+| `_addHook(state, target, key, wrapped)` | Replaces `target[key]` and records the original. Returns the original. |
+| `_trackHooks(state, entries)` | Records functions already assigned in place, as `{ target, key, orig }`. |
+| `_releaseHooks(target, key, owner)` | Unregisters the plugin and restores the originals once no user is left. |
+
+Rules:
+
+1. Never assign to a class function without `_acquireHooks`. A plain
+   `Class.fn = function ... end` runs once per instance.
+2. Store hook state on the patched class, not on the plugin instance or in a
+   module local; instances and modules are recreated, classes are not.
+3. Release in `teardownAll` in the reverse order of installation. A wrapper is
+   restored only while it is still the outermost one.
+4. Inside wrappers, resolve the plugin through `_live_plugin`; the instance
+   captured at install time may be stale.
+5. Wrappers that change a temporary field must restore it, including on error
+   (`pcall`, then restore, then re-raise).
+6. Do not clear a shared guard flag from an instance that did not set it.
+
+Checklist before merging a patch:
+
+- Open and close a book several times: layout, margins and widgets must stay
+  identical between cycles.
+- Disable and re-enable the plugin: no wrapper may remain after disabling.
+- Rotate the screen with the file manager and with the homescreen on top.
 
 ### User data directories
 

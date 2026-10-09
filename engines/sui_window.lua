@@ -324,13 +324,9 @@ function SUIWindow:show()
 
     local mf = self._modal_frame
 
-    -- Compute the usable vertical area between the topbar and the navbar so
+    -- Compute the usable vertical area between the top inset and the navbar so
     -- the modal is centred in that region and never overlaps either bar.
-    local top_h = 0
-    local ok_tb, Topbar = pcall(require, "screens/sui_topbar")
-    if ok_tb and Topbar and Topbar.TOTAL_TOP_H then
-        top_h = Topbar.TOTAL_TOP_H()
-    end
+    local top_h = UI.getTopInset()
 
     local bot_h = 0
     local ok_bb_early, Bottombar_early = pcall(require, "screens/sui_bottombar")
@@ -532,8 +528,8 @@ function SUIWindow:show()
                 local screen_h = self._screen_h
                 local nav_h    = Bottombar.TOTAL_H()
                 local bar_y    = screen_h - nav_h
-                local side_m   = Bottombar.SIDE_M()
-                local usable_w = screen_w - side_m * 2
+                local side_m   = UI.SIDE_M()
+                local usable_w = UI.getUsableW(screen_w)
                 -- navpager mode always has 4 centre tabs + 2 arrow slots = 6
                 local ok_cfg, Config = pcall(require, "infra/sui_config")
                 local n_center = (ok_cfg and Config and Config.NAVPAGER_CENTER_TABS) or 4
