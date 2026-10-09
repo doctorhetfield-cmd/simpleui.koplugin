@@ -888,6 +888,7 @@ local function _applyClassic(fm_self, tb)
     local lp = _layoutParams(tb)
     local iw, pad, gap, sw = lp.iw, lp.pad, lp.gap, lp.sw
 
+    local show_home   = M.isItemVisible("fm_home")
     local show_menu   = M.isItemVisible("fm_menu")
     local show_up     = M.isItemVisible("fm_back")
     local show_search = M.isItemVisible("fm_search")
@@ -899,6 +900,7 @@ local function _applyClassic(fm_self, tb)
 
     local cfg     = M.getFMConfig()
     local visible = {}
+    if show_home   then visible["fm_home"]   = true end
     if show_menu   then visible["fm_menu"]   = true end
     if show_up     then visible["fm_back"]   = true end
     if show_search then visible["fm_search"] = true end
