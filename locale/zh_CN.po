@@ -3,17 +3,15 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: simpleui 2.7.1\n"
+"Project-Id-Version: simpleui\n"
 "POT-Creation-Date: 2026-10-09 11:09+0000\n"
-"PO-Revision-Date: 2026-10-02 22:08+0800\n"
-"Last-Translator: gsWang <gs.wang@outlook.com>\n"
+"PO-Revision-Date: 2026-10-09 19:58+0800\n"
 "Language-Team: Chinese (Simplified)\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.9\n"
 
 #: modules/module_reading_goals.lua:1355
 msgid "  Set Goal  (%d hr/month)"
@@ -113,7 +111,7 @@ msgstr "（未找到收藏夹）"
 #: screens/sui_menu.lua:282
 msgid ""
 "0% transparent, 100% solid. Applies across the full width of the title bar."
-msgstr ""
+msgstr "0% 为透明，100% 为完全不透明。应用于标题栏的整个宽度。"
 
 #: screens/sui_menu.lua:291
 msgid ""
@@ -136,7 +134,7 @@ msgstr "四封面网格（仅限封面墙视图）"
 
 #: screens/sui_onboarding.lua:193
 msgid "A folder named \"Books\" will be created and set as the library home."
-msgstr ""
+msgstr "将创建一个名为“Books”的文件夹，并将其设置为书库主目录。"
 
 #: screens/sui_stats_windows.lua:3097
 msgid ""
@@ -265,7 +263,7 @@ msgstr "添加到待读"
 
 #: screens/sui_menu.lua:2715
 msgid "After closing a book"
-msgstr ""
+msgstr "关闭书籍后"
 
 #: infra/sui_config.lua:1858 modules/module_action_list.lua:483
 #: modules/module_quick_actions.lua:642 modules/module_quote.lua:1509
@@ -400,7 +398,7 @@ msgstr "概览"
 
 #: screens/sui_menu.lua:1971
 msgid "At least one item must stay visible."
-msgstr ""
+msgstr "至少保留一个可见项。"
 
 #: engines/sui_heatmap_widgets.lua:88
 msgid "Aug"
@@ -586,9 +584,8 @@ msgid "Book Cover Transition"
 msgstr "书籍封面过渡"
 
 #: screens/sui_menu.lua:2720
-#, fuzzy
 msgid "Book Folder"
-msgstr "文件夹"
+msgstr "书籍文件夹"
 
 #: features/sui_quickactions.lua:2249
 msgid "Book Info"
@@ -809,7 +806,7 @@ msgstr "检查更新中…"
 
 #: screens/sui_onboarding.lua:197
 msgid "Choose a different folder"
-msgstr ""
+msgstr "请选择其他文件夹。"
 
 #: features/sui_backup.lua:962
 msgid "Choose backup file"
@@ -836,6 +833,8 @@ msgid ""
 "Choose the folder where you will place all your books. Simple UI uses it to "
 "show your books in the Library."
 msgstr ""
+"请选择用于存放所有书籍的文件夹。SimpleUI 将使用该文件夹在“书库”中显示您的书"
+"籍。"
 
 #: screens/sui_menu.lua:2597
 msgid "Choose wallpaper"
@@ -847,7 +846,7 @@ msgstr "选择初始布局"
 
 #: screens/sui_menu.lua:2136 screens/sui_menu.lua:3845
 msgid "Classic"
-msgstr ""
+msgstr "经典"
 
 #: features/sui_presets.lua:155 features/sui_presets.lua:219
 #: infra/sui_config.lua:192 modules/module_clock.lua:212
@@ -886,7 +885,7 @@ msgstr "收藏夹菜单"
 
 #: features/library/sui_group_actions.lua:146
 msgid "Collection \"%1\" created with %2 books."
-msgstr "已创建收藏集「%1」，包含 %2 本书。"
+msgstr "已创建收藏集“%1”，包含 %2 本书。"
 
 #: features/library/sui_group_actions.lua:119
 msgid "Collection already exists: %1"
@@ -998,7 +997,7 @@ msgstr "封面设置"
 
 #: screens/sui_menu.lua:4632
 msgid "Cover Shadow"
-msgstr ""
+msgstr "封面阴影"
 
 #: engines/sui_book_grid.lua:1791 engines/sui_book_grid.lua:1793
 #: modules/module_coverdeck.lua:1317 modules/module_coverdeck.lua:1318
@@ -1042,7 +1041,7 @@ msgstr "创建屏幕"
 
 #: screens/sui_onboarding.lua:192
 msgid "Create a \"Books\" folder"
-msgstr ""
+msgstr "创建“书籍”文件夹"
 
 #: features/library/sui_foldercovers.lua:671
 #: features/library/sui_foldercovers.lua:686
@@ -1158,9 +1157,8 @@ msgid "Dark"
 msgstr "深色"
 
 #: screens/sui_menu.lua:2669
-#, fuzzy
 msgid "Darken"
-msgstr "深色"
+msgstr "变暗"
 
 #: features/sui_presets.lua:218
 msgid "Dashboard"
@@ -1264,16 +1262,16 @@ msgstr "删除设置"
 
 #: screens/sui_settings_window.lua:542
 msgid "Delete \"%s\"? This removes its layout, modules and Quick Action."
-msgstr "删除「%s」？这将移除其布局、模块和快捷操作。"
+msgstr "删除“%s”？这将移除其布局、模块和快捷操作。"
 
 #: features/sui_presets.lua:962 features/sui_presets.lua:1002
 #: screens/sui_menu.lua:4432 screens/sui_menu.lua:4473
 msgid "Delete preset \"%s\"?"
-msgstr "删除预设「%s」？"
+msgstr "删除预设“%s”？"
 
 #: features/sui_quickactions.lua:1611 features/sui_quickactions.lua:3048
 msgid "Delete quick action \"%s\"?"
-msgstr "删除快捷操作「%s」？"
+msgstr "删除快捷操作“%s”？"
 
 #: modules/module_currently.lua:328 modules/module_currently.lua:1979
 msgid "Description"
@@ -1281,7 +1279,7 @@ msgstr "描述"
 
 #: modules/module_currently.lua:2088
 msgid "Description Alignment"
-msgstr ""
+msgstr "描述对齐"
 
 #: modules/module_reading_goals.lua:1296
 msgid "Detail"
@@ -1297,7 +1295,7 @@ msgstr "详情置于环内"
 
 #: modules/module_currently.lua:2036
 msgid "Detailed"
-msgstr ""
+msgstr "详细"
 
 #: features/sui_quickactions.lua:2254
 msgid "Dictionary Lookup"
@@ -1439,7 +1437,7 @@ msgid ""
 "Leave blank and press OK to remove a Nerd Font icon."
 msgstr ""
 "输入 Nerd Fonts 符号的 Unicode 码点（十六进制）。\n"
-"您可以使用 wakamaifondue.com 查看代码，使用文件：\n"
+"你可以使用 wakamaifondue.com 查看代码，使用文件：\n"
 "  /koreader/fonts/nerdfonts/symbols.ttf\n"
 "留空并按确定可移除 Nerd Font 图标。"
 
@@ -1537,10 +1535,9 @@ msgstr ""
 
 #: screens/sui_menu.lua:2670
 msgid "Fades the wallpaper towards black."
-msgstr ""
+msgstr "​将壁纸渐变为黑色。"
 
 #: screens/sui_menu.lua:2664
-#, fuzzy
 msgid "Fades the wallpaper towards white to improve text readability."
 msgstr ""
 "将壁纸向白色渐变以提高文本可读性。\n"
@@ -1638,7 +1635,7 @@ msgstr "文件夹"
 
 #: screens/sui_menu.lua:3810
 msgid "Folder Book Stack"
-msgstr ""
+msgstr "文件夹堆叠"
 
 #: screens/sui_menu.lua:3160
 msgid "Folder Cover Type"
@@ -1787,7 +1784,7 @@ msgstr ""
 
 #: screens/sui_onboarding.lua:331
 msgid "Go to Settings > Home Screen to edit your layout whenever you want."
-msgstr "随时前往「主屏幕」编辑您的布局。"
+msgstr "随时前往「主屏幕」编辑你的布局。"
 
 #: modules/module_reading_goals.lua:1319 modules/module_reading_goals.lua:1384
 #: modules/module_reading_goals.lua:1398
@@ -1868,11 +1865,11 @@ msgstr "隐藏"
 
 #: screens/sui_menu.lua:3831
 msgid "Hide"
-msgstr ""
+msgstr "隐藏"
 
 #: modules/module_collections.lua:1246
 msgid "Hide Book Stack"
-msgstr ""
+msgstr "隐藏书堆"
 
 #: modules/module_recent.lua:70
 msgid "Hide Currently Reading book"
@@ -1992,7 +1989,6 @@ msgid "Icon Size"
 msgstr "图标大小"
 
 #: features/sui_backup.lua:149
-#, fuzzy
 msgid "Icon files and installed packs from sui_icons/"
 msgstr "来自 sui_icons 文件夹中的图标文件与已安装包"
 
@@ -2028,7 +2024,7 @@ msgid ""
 "If you selected the Momentum Preset, long press the Reading Goal module to "
 "choose and set your reading goals."
 msgstr ""
-"如果您选择了「动量」预设，请长按「阅读目标」模块以选择和设置您的阅读目标。"
+"如果你选择了「动量」预设，请长按「阅读目标」模块以选择和设置你的阅读目标。"
 
 #: features/sui_backup.lua:1133
 msgid "Import Backup…"
@@ -2162,7 +2158,7 @@ msgstr "标签"
 
 #: screens/sui_menu.lua:3945
 msgid "Landscape mosaic mode"
-msgstr ""
+msgstr "横向网格模式"
 
 #: screens/sui_menu.lua:2169
 msgid "Large"
@@ -2242,7 +2238,7 @@ msgstr "浅色"
 
 #: screens/sui_menu.lua:2663
 msgid "Lighten"
-msgstr "增亮"
+msgstr "变亮"
 
 #: modules/module_reading_stats.lua:856
 msgid "List"
@@ -2272,7 +2268,7 @@ msgstr "LuaSettings 模块不可用"
 
 #: screens/sui_onboarding.lua:292
 msgid "Make it yours"
-msgstr "打造成您的专属样式"
+msgstr "打造成你的专属样式"
 
 #: screens/sui_menu.lua:3000
 msgid ""
@@ -2959,18 +2955,18 @@ msgstr "覆盖"
 
 #: features/sui_presets.lua:917 features/sui_presets.lua:1049
 msgid "Overwrite preset \"%s\" with the current homescreen settings?"
-msgstr "用当前主屏幕设置覆盖预设「%s」？"
+msgstr "用当前主屏幕设置覆盖预设“%s”？"
 
 #: screens/sui_menu.lua:4389 screens/sui_menu.lua:4518
 msgid "Overwrite preset \"%s\" with the current icon settings?"
-msgstr "用当前图标设置覆盖预设「%s」？"
+msgstr "用当前图标设置覆盖预设“%s”？"
 
 #: screens/sui_menu.lua:4194
 msgid ""
 "Pack \"%s\" applied.\n"
 "%d icons replaced."
 msgstr ""
-"图标包「%s」已应用。\n"
+"图标包“%s”已应用。\n"
 "替换了 %d 个图标。"
 
 #: screens/sui_menu.lua:4112
@@ -2978,8 +2974,8 @@ msgid ""
 "Pack \"%s\" installed.\n"
 "You can now apply it from the list."
 msgstr ""
-"图标包「%s」已安装。\n"
-"您现在可以从列表中选择应用。"
+"图标包“%s”已安装。\n"
+"你现在可以从列表中选择应用。"
 
 #: features/sui_style.lua:2386
 msgid "Pack folder not accessible: "
@@ -3101,7 +3097,7 @@ msgstr "今年阅读的实体书："
 
 #: screens/sui_onboarding.lua:198
 msgid "Pick any existing folder to use as the library home."
-msgstr ""
+msgstr "请选择任意现有文件夹作为书库主目录。"
 
 #: modules/module_quote.lua:1432
 msgid "Place .lua files in the plugin's sui_quotes/ folder"
@@ -3161,11 +3157,11 @@ msgstr "插件不可用：%s"
 
 #: screens/sui_menu.lua:3949
 msgid "Portrait list mode"
-msgstr ""
+msgstr "纵向列表模式"
 
 #: screens/sui_menu.lua:3941
 msgid "Portrait mosaic mode"
-msgstr ""
+msgstr "纵向网格模式"
 
 #: screens/sui_menu.lua:3227 screens/sui_menu.lua:3631
 msgid "Position"
@@ -3185,21 +3181,21 @@ msgstr "删除书籍后仍保留统计"
 
 #: features/sui_presets.lua:1102 screens/sui_menu.lua:4570
 msgid "Preset \"%s\" imported."
-msgstr "已导入预设「%s」。"
+msgstr "已导入预设“%s”。"
 
 #: features/sui_presets.lua:753 features/sui_presets.lua:831
 #: screens/sui_menu.lua:4308
 msgid "Preset \"%s\" not found."
-msgstr "未找到预设「%s」。"
+msgstr "未找到预设“%s”。"
 
 #: features/sui_presets.lua:881 screens/sui_menu.lua:4352
 msgid "Preset \"%s\" saved."
-msgstr "已保存预设「%s」。"
+msgstr "已保存预设“%s”。"
 
 #: features/sui_presets.lua:924 features/sui_presets.lua:1056
 #: screens/sui_menu.lua:4396 screens/sui_menu.lua:4525
 msgid "Preset \"%s\" updated."
-msgstr "已更新预设「%s」。"
+msgstr "已更新预设“%s”。"
 
 #: features/sui_presets.lua:1129 screens/sui_menu.lua:4600
 msgid ""
@@ -3520,14 +3516,14 @@ msgstr "恢复失败。"
 
 #: features/sui_backup.lua:855
 msgid "Restore failed. Your previous configuration was kept unchanged."
-msgstr "恢复失败。您之前的配置保持不变。"
+msgstr "恢复失败。你之前的配置保持不变。"
 
 #: features/sui_backup.lua:991
 msgid ""
 "Restore this backup? Existing settings for these categories will be "
 "replaced. Saved presets are merged — yours are kept."
 msgstr ""
-"是否恢复此备份？这些分类的现有设置将被替换。已保存的预设将合并，您原有的预设"
+"是否恢复此备份？这些分类的现有设置将被替换。已保存的预设将合并，你原有的预设"
 "会予以保留。"
 
 #: screens/sui_menu.lua:2733
@@ -3678,7 +3674,7 @@ msgstr ""
 
 #: modules/module_coverdeck.lua:1674 modules/module_currently.lua:2011
 msgid "Scale for the progress badge."
-msgstr ""
+msgstr "进度徽标的缩放比例。"
 
 #: engines/sui_book_grid.lua:1961
 msgid ""
@@ -3741,6 +3737,8 @@ msgid ""
 "Screen shown after closing a book. Gestures and quick actions that name a "
 "destination always open that destination."
 msgstr ""
+"关闭书籍后显示的屏幕。手势和快速操作中若指定了目标位置，将始终直接打开该目标"
+"位置。"
 
 #: features/library/sui_library_search.lua:208
 #: features/sui_quickactions.lua:906 infra/sui_config.lua:127
@@ -3827,7 +3825,7 @@ msgstr "设置文件夹封面"
 
 #: screens/sui_onboarding.lua:209 screens/sui_onboarding.lua:403
 msgid "Set the Home Folder"
-msgstr ""
+msgstr "设置主文件夹"
 
 #: screens/sui_onboarding.lua:334
 msgid "Set your reading goal"
@@ -3979,7 +3977,7 @@ msgid ""
 "You have %s."
 msgstr ""
 "SimpleUI %s 可用！\n"
-"您当前版本为 %s。"
+"你当前版本为 %s。"
 
 #: screens/sui_settings_window.lua:1113
 msgid "Simple UI Settings"
@@ -4344,7 +4342,7 @@ msgstr "标签（%d/%d — 已达限制）"
 
 #: screens/sui_menu.lua:1958
 msgid "Tabs and Search"
-msgstr ""
+msgstr "标签页与搜索"
 
 #: features/library/sui_library_browse.lua:65
 #: features/sui_quickactions.lua:1023 infra/sui_config.lua:138
@@ -4408,6 +4406,9 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
+"标题栏样式将在重启后更改。\n"
+"\n"
+"立即重启？"
 
 #: infra/sui_patches.lua:1342
 msgid "The «To Be Read» collection cannot be renamed."
@@ -4514,7 +4515,7 @@ msgstr "标题栏"
 
 #: screens/sui_menu.lua:2675
 msgid "Title Bar Opacity"
-msgstr ""
+msgstr "标题栏不透明度"
 
 #: screens/sui_menu.lua:2126
 msgid ""
@@ -4669,11 +4670,11 @@ msgstr "统一封面比例（2:3）"
 
 #: engines/sui_cover_placeholder.lua:145
 msgid "Unknown"
-msgstr ""
+msgstr "未知"
 
 #: engines/sui_cover_placeholder.lua:146
 msgid "Unknown Author"
-msgstr ""
+msgstr "未知作者"
 
 #: screens/sui_stats_windows.lua:859
 msgid "Unknown error."
@@ -4918,19 +4919,19 @@ msgstr "昨天的内容你已经读过了 — 无需冻结。"
 
 #: screens/sui_stats_windows.lua:3087
 msgid "You don't have any freezes available yet."
-msgstr "您当前没有可用的冻结次数。"
+msgstr "你当前没有可用的冻结次数。"
 
 #: screens/sui_stats_windows.lua:3104
 msgid ""
 "You have %d freeze(s) available.\n"
 "Use one to cover %s?"
 msgstr ""
-"您还有 %d 次冻结可用。\n"
+"你还有 %d 次冻结可用。\n"
 "是否使用一次来覆盖 %s？"
 
 #: modules/module_quote.lua:1043
 msgid "Your highlights"
-msgstr "您的高亮标注"
+msgstr "你的高亮标注"
 
 #: modules/module_reading_stats.lua:142
 msgid "abandoned"
@@ -5304,18 +5305,6 @@ msgid_plural "pages read"
 msgstr[0] "已读页数"
 msgstr[1] "已读页数"
 
-#~ msgid "Collection: "
-#~ msgstr "收藏夹："
-
-#~ msgid "Collection: (none)"
-#~ msgstr "收藏夹：（无）"
-
-#~ msgid "Hide Book Spine"
-#~ msgstr "隐藏书脊"
-
-#~ msgid "Hide Folder Book Spine"
-#~ msgstr "隐藏文件夹书脊"
-
 #~ msgid "Return to Book Folder"
 #~ msgstr "返回书籍所在文件夹"
 
@@ -5329,3 +5318,26 @@ msgstr[1] "已读页数"
 
 #~ msgid "Lighten Wallpaper"
 #~ msgstr "壁纸增亮"
+
+#~ msgid ""
+#~ "0% transparent, 100% solid. Rounded background behind title bar buttons "
+#~ "(back, search, menu, …)."
+#~ msgstr "0% 透明，100% 纯色。标题栏按钮（返回、搜索、菜单等）背后的圆角背景"
+
+#~ msgid "Hide Book Spine"
+#~ msgstr "隐藏书脊"
+
+#~ msgid "Hide Folder Book Spine"
+#~ msgstr "隐藏文件夹书脊"
+
+#~ msgid "Title Bar Button Opacity"
+#~ msgstr "标题栏按钮不透明度"
+
+#~ msgid "Collection: "
+#~ msgstr "收藏夹："
+
+#~ msgid "Collection: (none)"
+#~ msgstr "收藏夹：（无）"
+
+#~ msgid "Hide Folder Book Stack"
+#~ msgstr "隐藏文件夹书堆"
