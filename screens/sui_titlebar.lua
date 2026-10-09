@@ -749,7 +749,7 @@ local function _installBackController(fm_self, back_icon, shown_x, on_state)
             end
         end
 
-        if on_state then on_state(fc_self, is_sub, page, path or fc_self.path, visible) end
+        if on_state then on_state(fc_self, is_sub, page, fc_self.path, visible) end
 
         local tb = fm_self.title_bar
         if tb then
