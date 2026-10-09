@@ -1335,6 +1335,7 @@ local function _applyTabs(fm_self, tb)
         face      = m.face,
         tabs      = items,
         on_select = function(mode)
+            if mode == "__path__" then return end
             local BM = _BrowseMeta()
             if not BM then return end
 
@@ -1361,54 +1362,27 @@ local function _applyTabs(fm_self, tb)
     strip:setSpan(strip_x_flush, menu_x - strip_x_flush)
     table.insert(tb, strip)
     fm_self._titlebar_tab_strip = strip
-    
-    -- 目录名：用第二个 TabStrip（tabs 为空）走原始 _buildLabel 渲染，
-    local dir_strip = require("engines/sui_tab_strip").new{
-        width  = menu_x - strip_x_flush,   -- 初始给可用宽，setLabel 时不被裁
-        height = bar_h,
-        face   = m.face,
-        tabs   = {},
-    }
-    dir_strip.overlap_align = nil
-    dir_strip:setSpan(strip_x_flush, menu_x - strip_x_flush)
-    table.insert(tb, dir_strip)
-    fm_self._titlebar_tabs_dir_label = dir_strip
 
-    -- 非根目录：左侧目录名（第二个 strip），右侧 tab 条。
+    -- 路径名现在是主 strip 的前置 tab：由 strip 自己渲染、下划线、间距。
     _installBackController(fm_self, back_icon, up_x, function(fc, _, _, path, back_visible)
         local x = back_visible and strip_x_back or strip_x_flush
+        strip:setSpan(x, menu_x - x)
 
-        local is_root   = _isLibraryRoot(fc, path)
-        local label_txt = is_root and "" or _innerViewLabel(fc, path)
-        local avail     = math.max(Screen:scaleBySize(1), menu_x - x)
-        local label_w   = 0
-        if label_txt ~= "" then
-            dir_strip:setSpan(x, avail)          -- 给足宽度，量出真实文字宽
-            dir_strip:setLabel(label_txt)
-            -- dir_strip[1] 是 LeftContainer，里面 [1] 才是真正画文字的 TextWidget
-            local text_w = dir_strip[1] and dir_strip[1][1]
-            label_w = (text_w and text_w:getSize().w or 0) + m.back_gap * 2
-            dir_strip:setSpan(x, math.max(Screen:scaleBySize(1), label_w))
-            dir_strip:setLabel(label_txt)        -- 按最终宽度重建
+        local is_root = _isLibraryRoot(fc, path)
+        if is_root then
+            strip:setPathLabel(nil)
+            local BM = _BrowseMeta()
+            strip:setActive(BM and BM.getPathMode(path) or "normal")
         else
-            dir_strip:setLabel(nil)
-            dir_strip:setSpan(x, 0)
+            -- 真实子目录：路径项显示并高亮，不落在任何 browse tab。
+            strip:setPathLabel(_innerViewLabel(fc, path))
+            strip:setActive("__path__")
         end
-
-        local strip_x = x + label_w
-        local strip_w = math.max(Screen:scaleBySize(1), menu_x - strip_x)
-        strip:setSpan(strip_x, strip_w)
-        local BM = _BrowseMeta()
-        local mode = BM and BM.getPathMode(path)
-        if mode == "normal" and not is_root then
-            mode = nil          -- 真实子目录：不高亮任何 tab
-        end
-        strip:setActive(mode)
 
         if search_btn then
             local cell_x = strip:getCellX(SEARCH_ID)
             search_btn.overlap_offset = {
-                cell_x and (strip_x + cell_x - m.tap_pad_h) or _hideOffset(sw), 0 }
+                cell_x and (x + cell_x - m.tap_pad_h) or _hideOffset(sw), 0 }
         end
     end)
 
@@ -1491,7 +1465,7 @@ function M.restore(fm_self)
 
     -- Remove the injected widgets (back, search, browse buttons and tab strip)
     -- from the TitleBar OverlapGroup.
-    for _, key in ipairs({ "_titlebar_home_btn", "_titlebar_up_btn", "_titlebar_search_btn", "_titlebar_browse_btn", "_titlebar_tab_strip", "_titlebar_tabs_dir_label"}) do
+    for _, key in ipairs({ "_titlebar_home_btn", "_titlebar_up_btn", "_titlebar_search_btn", "_titlebar_browse_btn", "_titlebar_tab_strip"}) do
         local btn = fm_self[key]
         if btn then
             -- Free the C/FFI image memory
