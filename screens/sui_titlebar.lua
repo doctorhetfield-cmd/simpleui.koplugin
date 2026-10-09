@@ -1545,7 +1545,7 @@ function M.applyToSub(widget)
     if tabs_m then iw = tabs_m.iw end
 
     local show_menu      = tabs_m ~= nil or M.isItemVisible("sub_menu")
-    local show_close     = tabs_m == nil and M.isItemVisible("sub_close")
+    local show_close     = M.isItemVisible("sub_close")
     local show_back      = tabs_m ~= nil or M.isItemVisible("sub_back")
 
     local cfg     = M.getSubConfig()
@@ -1555,12 +1555,19 @@ function M.applyToSub(widget)
     if show_back  then visible["sub_back"]  = true end
     local slot_map = _buildSlotMap(cfg.order_left, cfg.order_right, visible)
 
-    local menu_x = tabs_m and (sw - tabs_m.margin - iw - tabs_m.tap_pad_h)
-    local back_x = tabs_m and (tabs_m.margin - tabs_m.tap_pad_h)
+    -- tabs 风格右侧：最右是 close，close 左边是 menu。
+    -- 没有 close 时 menu 占最右；没有 menu 时 close 占最右。
+    local close_x = tabs_m and (sw - tabs_m.margin - iw - tabs_m.tap_pad_h)
+    local menu_x  = tabs_m and (close_x - ((show_close and (iw + tabs_m.back_gap)) or 0))
+    local back_x  = tabs_m and (tabs_m.margin - tabs_m.tap_pad_h)
 
     -- Horizontal position of a button; nil when it has no slot.
     local function slotX(id)
-        if tabs_m then return id == "sub_back" and back_x or menu_x end
+        if tabs_m then
+            if id == "sub_back"  then return back_x end
+            if id == "sub_close" then return close_x end
+            return menu_x   -- sub_menu 及默认
+        end
         local s = slot_map[id]
         return s and _buttonX(s.side, s.slot, iw, pad, gap, sw)
     end
