@@ -274,7 +274,8 @@ function SUIWindow:new(opts)
     -- "center"  — centred vertically in the usable area (default)
     -- "top"     — flush to the top of the usable area
     -- "bottom"  — flush to the bottom of the usable area (just above navbar)
-    o._position      = opts.position or "center"
+    --o._position      = opts.position or "center"
+    o._position      =  "center"
     o._has_settings_btn = opts.has_settings_btn == true
     o._name          = opts.name or "sui_win_unnamed"
     -- When true, _buildTitleBar/_rebuildFrame skip the TitleBar entirely (no

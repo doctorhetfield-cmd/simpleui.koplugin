@@ -3244,7 +3244,7 @@ function M.patchMenuForNavpager(plugin)
         -- Call the original first when in a subfolder so it writes the path text,
         -- then read it back so _setSubtitleUnified can combine path + page in one write.
         if at_home then
-            _fm_path_base = ""
+            _fm_path_base = "☆ HOME"
         else
             orig_updateTitleBarPath(fm_self, path)
             local tb2     = fm_self.title_bar

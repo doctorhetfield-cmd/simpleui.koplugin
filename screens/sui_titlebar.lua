@@ -88,19 +88,20 @@ local _SIZE_SCALE = { compact = 0.75, default = 1.0, large = 1.3 }
 
 local _VIS_DEFAULTS = {
     fm_menu       = true,
+    fm_home       = true, 
     fm_back       = true,
     fm_title      = true,
     fm_search     = true,
     fm_browse     = false,
     sub_menu      = true,
-    sub_close     = false,
+    sub_close     = true,
     sub_back      = true,
 }
 
 -- Default side/order configs for FM and injected widgets.
 local _FM_DEFAULTS = {
-    side        = { fm_menu = "right", fm_back = "left", fm_search = "left", fm_browse = "right" },
-    order_left  = { "fm_back", "fm_search" },
+    side        = { fm_menu = "right", fm_back = "left", fm_home = "left", fm_search = "left", fm_browse = "right" },
+    order_left  = { "fm_back", "fm_home", "fm_search" },
     order_right = { "fm_browse", "fm_menu" },
 }
 local _SUB_DEFAULTS = {
@@ -115,6 +116,7 @@ local _SUB_DEFAULTS = {
 
 M.ITEMS = {
     { id = "fm_menu",       label = function() return _("Menu")              end, ctx = "fm"  },
+    { id = "fm_home",       label = function() return _("Home")              end, ctx = "fm"  },
     { id = "fm_back",       label = function() return _("Back")              end, ctx = "fm"  },
     { id = "fm_search",     label = function() return _("Search")            end, ctx = "fm"  },
     { id = "fm_browse",     label = function() return _("Browse")            end, ctx = "fm"  },
@@ -959,6 +961,48 @@ local function _applyClassic(fm_self, tb)
         end)
     end
 
+    -- Home button ------------------------------------------------------------
+    if show_home then
+        local ok_ib, IconButton = pcall(require, "ui/widget/iconbutton")
+        if ok_ib and IconButton then
+            local s = slot_map["fm_home"]
+            if s then
+                local btn_padding = tb.button_padding or require("device").screen:scaleBySize(11)
+                local home_btn = IconButton:new{
+                    icon        = "home",
+                    width       = iw,
+                    height      = iw,
+                    padding     = btn_padding,
+                    show_parent = tb.show_parent or fm_self,
+                    callback = function()
+                        local home = G_reader_settings:readSetting("home_dir")
+                        if home and fm_self.file_chooser then
+                            fm_self._navbar_suppress_path_change = true
+                            fm_self.file_chooser:changeToPath(home)
+                            fm_self._navbar_suppress_path_change = nil
+                            if fm_self.updateTitleBarPath then
+                                pcall(function() fm_self:updateTitleBarPath(home, true) end)
+                            end
+                        end
+                    end,
+                }
+                _resizeAndStrip(home_btn, iw)
+                home_btn.overlap_align  = nil
+                home_btn.overlap_offset = { _buttonX(s.side, s.slot, iw, pad, gap, sw), 0 }
+                table.insert(tb, home_btn)
+                fm_self._titlebar_home_btn = home_btn
+                if s.side == "left" then
+                    local up_slot_h  = slot_map["fm_back"] and slot_map["fm_back"].slot or 0
+                    local dslot_h    = s.slot > up_slot_h and s.slot - 1 or s.slot
+                    local compact_x_h = _buttonX("left", dslot_h, iw, pad, gap, sw)
+                    if (not show_up) or _isAtRoot(fm_self.file_chooser) then
+                        home_btn.overlap_offset = { compact_x_h, 0 }
+                    end
+                end
+            end
+        end
+    end
+    
     -- Search button ----------------------------------------------------------
     -- Injected directly into the TitleBar OverlapGroup.
     -- All paddings (including top) are zeroed to align with the other buttons.
@@ -1396,7 +1440,7 @@ function M.restore(fm_self)
 
     -- Remove the injected widgets (back, search, browse buttons and tab strip)
     -- from the TitleBar OverlapGroup.
-    for _, key in ipairs({ "_titlebar_up_btn", "_titlebar_search_btn", "_titlebar_browse_btn", "_titlebar_tab_strip" }) do
+    for _, key in ipairs({ "_titlebar_home_btn", "_titlebar_up_btn", "_titlebar_search_btn", "_titlebar_browse_btn", "_titlebar_tab_strip" }) do
         local btn = fm_self[key]
         if btn then
             -- Free the C/FFI image memory

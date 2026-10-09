@@ -77,12 +77,6 @@ local AUTO_DISABLE = {
         folder_key = "burrow",
     },
     {
-        sentinel = "qui_utils",
-        label = "QuickUI",
-        fallback_key = "quickui",
-        folder_key = "quickui",
-    },
-    {
         sentinel = "readermenuredesign_installer",
         label = "Reader Menu Redesign",
         fallback_key = "zzz-readermenuredesign",

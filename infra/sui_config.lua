@@ -124,7 +124,6 @@ M.ALL_ACTIONS = {
     { id = "random_document",  label = _("Random"),           icon = M.ICON.random      },
     { id = "favorites",        label = _("Favorites"),        icon = M.ICON.ko_star     },
     { id = "bookmark_browser", label = _("Bookmarks"),        icon = M.ICON.ko_bookmark },
-    { id = "search_library",   label = _("Search"),           icon = M.ICON.ko_search   },
     { id = "wifi_toggle",      label = _("Wi-Fi"),            icon = M.ICON.ko_wifi     },
     { id = "frontlight",       label = _("Brightness"),       icon = M.ICON.frontlight  },
     { id = "night_mode",       label = _("Night Mode"),       icon = M.ICON.night       },
@@ -2574,10 +2573,6 @@ function M.migrateOldCustomSlots()
         end
     end
     SUISettings:set("simpleui_qa_migrated_v1", true)
-    local legacy_enabled = SUISettings:get("simpleui_bar_enabled")
-    if legacy_enabled ~= nil and SUISettings:get("simpleui_enabled") == nil then
-        SUISettings:set("simpleui_enabled", legacy_enabled)
-    end
 end
 
 -- First-run defaults. Idempotent: each setting is only written when absent,
@@ -2600,9 +2595,12 @@ function M.applyFirstRunDefaults()
         end
         SUISettings:set(KEY_CLOSE_TARGET, target)
     end
-
+    
+    -- wallpaper
+    def("simpleui_style_wallpaper_opacity", 85)
+    
     -- Navbar
-    def("simpleui_bar_enabled",  true)
+    def("simpleui_bar_enabled", false)
     def("simpleui_topbar_enabled", true)
     def("simpleui_bar_mode",     "both")
     def("simpleui_bar_tabs",     { "home", "sui_settings", "homescreen", "history", "power" })
@@ -2668,7 +2666,10 @@ function M.applyFirstRunDefaults()
     def(PFX .. "recent_show_finished",          true)
 
     -- Updater
-    def("simpleui_updater_auto_check",          true)
+    def("simpleui_updater_auto_check",          false)
+
+    -- Closing book notice
+    def("simpleui_hs_closing_notice_mode",      "never")
 
     -- Quick Actions Row instances (three stable ids that won't clash with
     -- runtime-generated ones, which use os.time() as suffix).
@@ -2686,7 +2687,7 @@ function M.applyFirstRunDefaults()
     def("simpleui_reading_goals_show_daily",   false)
 
     -- Folder covers / browse meta
-    def("simpleui_fc_enabled",          true)
+    def("simpleui_fc_enabled",          false)
     def("simpleui_fc_folder_style",     "auto")
     def("simpleui_fc_cover_mode",       "2_3")
     def("simpleui_fc_subfolder_cover",  true)
@@ -2694,17 +2695,18 @@ function M.applyFirstRunDefaults()
 
     -- Titlebar: search visible, browse visible left of menu
     def("simpleui_tb_item_fm_search", true)
+    def("simpleui_tb_item_fm_home", true)
     def("simpleui_tb_item_fm_browse", true)
     if SUISettings:get("simpleui_tb_fm_cfg") == nil then
         SUISettings:set("simpleui_tb_fm_cfg", {
-            side        = { fm_menu = "right", fm_back = "left", fm_search = "left", fm_browse = "right" },
-            order_left  = { "fm_back", "fm_search" },
+            side        = { fm_menu = "right",fm_home = "left", fm_back = "left", fm_search = "left", fm_browse = "right" },
+            order_left  = { "fm_back", "fm_home", "fm_search" },
             order_right = { "fm_browse", "fm_menu" },
         })
     end
 
     -- Quick Settings bar
-    def("simpleui_qs_bar_enabled",          true)
+    def("simpleui_qs_bar_enabled",          false)
     def("simpleui_qs_bar_frontlight",       false)
     def("simpleui_qs_bar_warmth",           false)
     def("simpleui_qs_bar_shape",            "round")

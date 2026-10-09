@@ -62,6 +62,11 @@ local function _localDate()
     end
     local weekday = _weekdays[t.wday] or os.date("%A", now)
     local month   = _months[t.month]  or os.date("%B", now)
+    -- 中文环境用年月日格式，其他语言保持原样
+    local lang = G_reader_settings and G_reader_settings:readSetting("language") or ""
+    if lang:match("^zh") then
+        return string.format("%d年%d月%d日 %s", t.year, t.month, t.day, weekday)
+    end
     return string.format("%s, %d %s", weekday, t.day, month)
 end
 

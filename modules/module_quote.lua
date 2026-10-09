@@ -22,6 +22,8 @@ local Device         = require("device")
 local CenterContainer = require("ui/widget/container/centercontainer")
 
 local GestureRange   = require("ui/gesturerange")
+local util = require("util")
+local TextWidget = require("ui/widget/textwidget")
 
 -- ConfirmBox is only needed when the user taps a highlight to open its book.
 -- Lazy-loaded at that point to avoid the cost at module-load time.
@@ -875,8 +877,6 @@ end
 
 -- ---------------------------------------------------------------------------
 
-
-
 -- ---------------------------------------------------------------------------
 -- Line-break control
 -- ---------------------------------------------------------------------------
@@ -933,7 +933,10 @@ end
 
 local function buildWidget(inner_w, text_str, attr_str, fonts, vspan_gap, has_wallpaper, clr_quote, clr_attr, alignment)
 
- local function makeTBW(text, face, fgcolor, bold)
+    local q_line_h = lineHeight(face_quote)
+    local a_line_h = lineHeight(face_attr)
+
+    local function makeLimitedTBW(text, face, fgcolor, bold, max_lines, line_h)
         local args = {
             text      = controlLineBreaks(text, face, inner_w),
             face      = face,
@@ -941,19 +944,21 @@ local function buildWidget(inner_w, text_str, attr_str, fonts, vspan_gap, has_wa
             width     = inner_w,
             alignment = alignment or "center",
             fgcolor   = fgcolor,
+            -- ★ 高度 = 真实行高 × 行数
+            height     = line_h * max_lines,
+            height_overflow_show_ellipsis = true,
         }
-
         if has_wallpaper then
-                local ok_tbx, tbx = pcall(UI.makeAlphaTextBox, args)
-                if ok_tbx then
-                    return tbx
-                else
-                    logger.warn("simpleui: module_quote: makeAlphaTextBox failed, falling back: " .. tostring(tbx))
-                    return TextBoxWidget:new(args)
-                end
+            local ok_tbx, tbx = pcall(UI.makeAlphaTextBox, args)
+            if ok_tbx then
+                return tbx
             else
+                logger.warn("simpleui: module_quote: makeAlphaTextBox failed: " .. tostring(tbx))
                 return TextBoxWidget:new(args)
             end
+        else
+            return TextBoxWidget:new(args)
+        end
     end
 
     local vg = VerticalGroup:new{ align = "center" }
@@ -962,8 +967,8 @@ local function buildWidget(inner_w, text_str, attr_str, fonts, vspan_gap, has_wa
         vg[#vg+1] = vspan_gap
         vg[#vg+1] = makeTBW(attr_str, fonts.attr_face, clr_attr or CLR_TEXT_SUB, fonts.attr_bold)
     end
-    return vg
 
+    return vg
 end
 
 

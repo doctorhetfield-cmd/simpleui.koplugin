@@ -1405,6 +1405,9 @@ function ScreenWidget:_initLayout()
     -- skipped or runs late for some reason, content still stops above the
     -- bar instead of silently extending underneath it.
     local content_h = self._navbar_content_h or UI.getContentHeight()
+    if _G.__QUICKUI_BAR_HEIGHT and _G.__QUICKUI_BAR_HEIGHT > 0 then
+        content_h = content_h - _G.__QUICKUI_BAR_HEIGHT
+    end
     local side_off  = UI.SIDE_PAD()
     local inner_w   = UI.getInnerW(sw)
 
