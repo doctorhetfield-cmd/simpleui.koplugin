@@ -945,6 +945,8 @@ local function _applyClassic(fm_self, tb)
                         widget = fm_self._titlebar_search_btn
                     elseif id == "fm_browse" then
                         widget = fm_self._titlebar_browse_btn
+                    elseif id == "fm_home" then
+                        widget = fm_self._titlebar_home_btn
                     end
                     if widget then list[#list + 1] = { btn = widget, slot = sl.slot } end
                 end
