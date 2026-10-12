@@ -199,8 +199,7 @@ local function computeLayout(w, ctx)
 end
 
 local function openPopup()
-    local ok, Popup = pcall(require, "screens/sui_heatmap_popup")
-    if ok and Popup then Popup.show() end
+    require("screens/sui_stats_launcher").open("heatmap")
 end
 
 local M = {}

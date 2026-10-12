@@ -3415,114 +3415,46 @@ function M.patchBookInfoNavigation(plugin)
 end
 
 -- ---------------------------------------------------------------------------
--- Fix: wrap filemanagerutil.genStatusButtonsRow (and genMultipleStatusButtonsRow)
--- so that marking a book as finished/reading/abandoned from the library
--- immediately invalidates the StatsProvider cache and the sidecar cache entry.
+-- Status changes: wrap filemanagerutil.genStatusButtonsRow (and
+-- genMultipleStatusButtonsRow) so that marking a book as finished/reading/
+-- abandoned from the library goes through the same reaction as every other
+-- status change (see _onStatusChanged).
 --
--- Without this patch, SP.invalidate() is only called from onCloseDocument
--- (when a book is actually opened and then closed). Setting the status from
--- the library writes the sidecar directly via filemanagerutil.saveSummary but
--- no event is broadcast, so books_year/books_total stay stale until the next
--- reading session.
+-- Setting the status from the library writes the sidecar directly via
+-- filemanagerutil.saveSummary and no event is broadcast, so without this the
+-- finished-books ledger and the stats would only catch up on the next reading
+-- session.
 --
--- Strategy: wrap both genStatusButtonsRow and genMultipleStatusButtonsRow so
--- that each status-button callback, after doing its own work and calling the
--- original caller_callback, also:
---   1. Invalidates the sidecar cache entry for the affected file (so the next
---      prefetchBooks() re-reads the updated summary instead of using the
---      stale cached value).
---   2. Calls SP.invalidate() to discard the books_year/books_total counts so
---      the next homescreen render re-runs the sidecar scan.
---   3. Sets HS._stats_need_refresh = true so the homescreen rebuilds when it
---      next becomes visible (mirrors what onCloseDocument does).
+-- Strategy: wrap both generators so that each status-button callback, after
+-- doing its own work, runs _onStatusChanged before the original
+-- caller_callback.
 -- ---------------------------------------------------------------------------
 
--- Reads the sidecar's summary.status once, for the steps below that all
--- need it. Returns nil if the sidecar/summary can't be read.
-local function _readCurrentStatus(file)
-    local ok_DS, DocSettings = pcall(require, "docsettings")
-    if not ok_DS or not DocSettings then return nil end
-    local ok_open, ds = pcall(DocSettings.open, DocSettings, file)
-    if not ok_open or not ds then return nil end
-    local summary = ds:readSetting("summary")
-    local status  = type(summary) == "table" and summary.status or nil
-    pcall(function() ds:close() end)
-    return status
+local function _getStatsProvider()
+    local ok, SP = pcall(require, "modules/module_stats_provider")
+    return ok and SP or nil
 end
 
-local function _onStatusChanged(file)
-    -- saveSummary has already flushed the new status to disk by the time
-    -- this runs (before caller_callback() in the FM paths; after flush() in
-    -- the reader paths — see patchReaderMarkBook / patchBookStatusWidget
-    -- below), so a single fresh read here is current for every step.
-    local new_status = _readCurrentStatus(file)
+-- Single reaction to a book's status or summary having changed, shared by
+-- every flow below. The stats provider updates the finished-books ledger,
+-- drops the cached sidecar data and flags the screens for a refresh;
+-- `doc_settings` is the settings object of a document open in the reader.
+-- A book that just became finished leaves the To Be Read list.
+local function _onStatusChanged(file, doc_settings)
+    local SP = _getStatsProvider()
+    if not SP then return end
 
-    -- 0. If the book is no longer "complete", remove it from the deleted-books
-    --    store (in case it was previously deleted then re-added by the user and
-    --    its status is now being changed back to reading/abandoned).
-    pcall(function()
-        local DB = SUISettings.DeletedBooks
-        if not (DB and DB.isEnabled()) then return end
-        if new_status == "complete" then return end
-        local ok_DS, DocSettings = pcall(require, "docsettings")
-        if not ok_DS or not DocSettings then return end
-        local ds  = DocSettings:open(file)
-        local md5 = ds:readSetting("partial_md5_checksum")
-        pcall(function() ds:close() end)
-        if md5 then DB.removeByMd5(md5) end
-    end)
+    local ok, finished = pcall(SP.bookChanged, file,
+        { doc_settings = doc_settings, status_changed = true })
+    if not (ok and finished) then return end
 
-    -- 0b. If the book just became "complete", drop it from the To Be Read
-    --     list — TBR is meant to hold unstarted books, so a finished book
-    --     no longer belongs there. Opt-out toggle in the TBR module's menu,
-    --     on by default.
+    -- TBR is meant to hold unstarted books, so a finished book no longer
+    -- belongs there. Opt-out toggle in the TBR module's menu, on by default.
     pcall(function()
-        if new_status ~= "complete" then return end
         local TBR = package.loaded["modules/module_tbr"]
         if not (TBR and TBR.isAutoRemoveFinishedEnabled and TBR.removeTBR) then return end
         if TBR.isAutoRemoveFinishedEnabled() then TBR.removeTBR(file) end
     end)
-
-    -- 1. Invalidate the sidecar cache for this file so the stale summary is
-    --    not reused when the homescreen re-renders.
-    local SH = package.loaded["modules/module_books_shared"]
-    if SH and SH.invalidateSidecarCache then
-        pcall(SH.invalidateSidecarCache, file)
-    end
-
-    -- 2. Invalidate the StatsProvider cache so books_year/books_total are
-    --    re-counted from sidecars on the next render.
-    local SP = package.loaded["modules/module_stats_provider"]
-    if SP and SP.invalidate then
-        pcall(SP.invalidate)
-    end
-
-    -- 3. Invalidate the homescreen context cache and flag for stats refresh.
-    --    _stats_need_refresh alone is not enough: onShow() reads it but then
-    --    calls _updatePage(keep_cache=true), which reuses _ctx_cache — so the
-    --    stale ctx.stats survives. We must also clear _ctx_cache so that the
-    --    next _updatePage() call re-runs _buildCtx() and fetches fresh stats
-    --    from the now-invalidated StatsProvider.
-    --
-    --    Also drop _cached_books_state: that table holds prefetched
-    --    percent/summary from the last prefetchBooks(). Clearing only
-    --    _ctx_cache still lets _buildCtx() reuse the stale prefetched_data,
-    --    so progress badges/bars on Cover Deck and book-grid modules keep
-    --    showing the pre-status values after a hold-dialog status change.
-    local ok_hs, HS = pcall(require, "screens/sui_homescreen")
-    if ok_hs and HS then
-        -- Flag for the class-level check in onShow.
-        HS._stats_need_refresh = true
-        -- Also clear the cache on the live instance (if the HS is currently
-        -- open behind the FM/library dialog).
-        local inst = HS._instance
-        if inst then
-            inst._ctx_cache           = nil
-            inst._cached_books_state  = nil
-            inst._stats_need_refresh  = true
-        end
-    end
-
 end
 
 function M.patchStatusButtons(plugin)
@@ -3539,9 +3471,9 @@ function M.patchStatusButtons(plugin)
     -- Order matters here: caller_callback is what closes the dialog and
     -- triggers the caller's own refresh (e.g. the homescreen repainting the
     -- row the book was tapped from). _onStatusChanged must run first, so
-    -- that refresh already sees the post-change state (TBR removal, cache
-    -- invalidation) instead of painting once with stale data and only
-    -- picking up the change on the next unrelated repaint.
+    -- that refresh already sees the post-change state instead of painting
+    -- once with stale data and only picking up the change on the next
+    -- unrelated repaint.
     local orig_gen_row = fmutil.genStatusButtonsRow
     plugin._orig_fmutil_gen_status_row = orig_gen_row
 
@@ -3600,7 +3532,7 @@ end
 
 -- ---------------------------------------------------------------------------
 -- Reuse _onStatusChanged for the two status-change paths that live inside
--- the reader itself, so cache invalidation and TBR auto-removal apply there
+-- the reader itself, so the ledger update and TBR auto-removal apply there
 -- too, not just from the file manager (see patchStatusButtons above):
 --
 --   • ReaderStatus:markBook()      — "Mark as finished"/"Mark as reading" on
@@ -3624,10 +3556,11 @@ function M.patchReaderMarkBook(plugin)
 
     ReaderStatus.markBook = function(rs_self, ...)
         orig_mark_book(rs_self, ...)
-        -- markBook() already flushed doc_settings before returning, so the
-        -- sidecar is current by the time _onStatusChanged reads it back.
+        -- The reader's settings object is handed over so the completion date
+        -- is stamped on it: the reader flushes that same object when it
+        -- closes.
         local file = rs_self.document and rs_self.document.file
-        if file then _onStatusChanged(file) end
+        if file then _onStatusChanged(file, rs_self.ui.doc_settings) end
     end
 end
 
@@ -3655,8 +3588,9 @@ function M.patchBookStatusWidget(plugin)
         -- Capture before orig_on_close runs: it only flushes doc_settings
         -- when self.updated is true, and readonly instances (e.g. the
         -- screensaver's "bookstatus" mode) never set it.
-        local was_updated = bsw_self.updated
-        local file = bsw_self.ui and bsw_self.ui.document and bsw_self.ui.document.file
+        local was_updated  = bsw_self.updated
+        local file         = bsw_self.ui and bsw_self.ui.document and bsw_self.ui.document.file
+        local doc_settings = bsw_self.ui and bsw_self.ui.doc_settings
 
         -- orig_on_close flushes doc_settings, then calls self.close_callback
         -- (which reveals/repaints whatever is behind this widget, e.g. the
@@ -3667,7 +3601,7 @@ function M.patchBookStatusWidget(plugin)
         if was_updated and file then
             local orig_close_callback = bsw_self.close_callback
             bsw_self.close_callback = function(...)
-                _onStatusChanged(file)
+                _onStatusChanged(file, doc_settings)
                 if orig_close_callback then return orig_close_callback(...) end
             end
         end
@@ -3687,29 +3621,15 @@ function M.unpatchBookStatusWidget(plugin)
 end
 
 -- ---------------------------------------------------------------------------
--- Fix: wrap filemanagerutil.genResetSettingsButton (and
+-- Reset: wrap filemanagerutil.genResetSettingsButton (and
 -- genMultipleResetSettingsButton) so that resetting a document's settings
 -- from an FM dialog ("Reset" button — file long-press, Collections, History,
--- file searcher) also invalidates the StatsProvider cache and the sidecar
--- cache entry, exactly like the status-change buttons above.
+-- file searcher) goes through _onStatusChanged like a status change.
 --
--- Resetting a document purges its whole sidecar file, including
--- summary.status. A book previously marked "complete" silently drops out of
--- books_year/books_total, but nothing tells the homescreen to re-count, so
--- the stale (too high) figure lingers until the next unrelated SP.invalidate()
--- trigger (opening/closing a book, a status-button press elsewhere, etc.).
---
--- Reuses _onStatusChanged(file): after the purge, the sidecar is gone, so
+-- Resetting purges the whole sidecar, including summary.status, so a book
+-- previously marked "complete" stops being finished. After the purge,
 -- DocSettings:open(file) opens a fresh empty sidecar and reads back no
--- summary — new_status is nil, which is treated as "not complete", so the
--- helper clears the sidecar cache entry, invalidates SP, flags the
--- homescreen for a refresh, and (best-effort) drops any stale DeletedBooks
--- entry for the file. Note this is *not* about the separate
--- "simpleui_preserve_deleted_books_in_stats" DeletedBooks feature, which
--- only fires on actual file deletion (see patchDeleteFile above) — this
--- patch is purely about keeping the homescreen's books_year/books_total
--- counters in sync when a "complete" book's sidecar is reset without being
--- deleted.
+-- summary, which counts as "not finished".
 -- ---------------------------------------------------------------------------
 function M.patchResetSettingsButton(plugin)
     local ok_util, fmutil = pcall(require, "apps/filemanager/filemanagerutil")
@@ -3725,7 +3645,7 @@ function M.patchResetSettingsButton(plugin)
     --
     -- _onStatusChanged runs before caller_callback for the same reason as in
     -- patchStatusButtons above: caller_callback triggers the caller's own
-    -- refresh, which must see the already-invalidated caches.
+    -- refresh, which must see the already-updated state.
     local orig_gen_reset = fmutil.genResetSettingsButton
     plugin._orig_fmutil_gen_reset = orig_gen_reset
 
@@ -5151,42 +5071,38 @@ function M.patchPurgeDir(plugin)
     end
 end
 
--- Preserve finished books in statistics before sidecars are purged.
--- Applies to single-file deletes and to folder deletes (recursive walk
--- before purgeDir). DocSettings lives in the .sdr; once that is gone the
--- status is unrecoverable, so the snapshot must happen first.
+-- Finished books outlive their file. Before a deletion the sidecar state of
+-- the affected books is recorded in the ledger (the sidecar is unrecoverable
+-- once purged), and afterwards the books are flagged as gone. Covers the
+-- single-file and folder deletes of FileManager:deleteFile and the
+-- multi-selection delete of FileManager:deleteSelectedFiles, which removes
+-- files without going through deleteFile.
+
+-- Records the finished books at `path` — a file, or every book file under a
+-- folder — in the ledger.
+local function _recordFinishedBooks(SP, path, is_file)
+    if is_file then
+        pcall(SP.syncBook, path)
+        return
+    end
+    local util = require("util")
+    local ok_dr, DocumentRegistry = pcall(require, "document/documentregistry")
+    util.findFiles(path, function(fpath)
+        if ok_dr and DocumentRegistry and DocumentRegistry:hasProvider(fpath) then
+            pcall(SP.syncBook, fpath)
+        end
+    end, true)
+end
+
 function M.patchDeleteFile(FileManager, plugin)
     if FileManager._simpleui_deleteFile_patched then return end
     FileManager._simpleui_deleteFile_patched = true
 
-    local orig_deleteFile = FileManager.deleteFile
-    if plugin then plugin._orig_fm_deleteFile = orig_deleteFile end
-
-    --- Snapshot one finished book into DeletedBooks (no-op if not complete).
-    local function preserveFinishedBook(filepath)
-        local DB = SUISettings.DeletedBooks
-        if not DB or not DB.isEnabled() then return end
-        local ok_DS, DocSettings = pcall(require, "docsettings")
-        if not ok_DS or not DocSettings then return end
-        local ds = DocSettings:open(filepath)
-        local summary = ds:readSetting("summary")
-        if type(summary) ~= "table" or summary.status ~= "complete" then
-            pcall(function() ds:close() end)
-            return
-        end
-        local md5 = ds:readSetting("partial_md5_checksum")
-        if not md5 then
-            pcall(function() ds:close() end)
-            return
-        end
-        local doc_props = ds:readSetting("doc_props")
-        local title   = doc_props and doc_props.title   or ""
-        local authors = doc_props and doc_props.authors or ""
-        local year = require("modules/module_stats_provider").finishedYear(summary) or 0
-        pcall(function() ds:close() end)
-        DB.add(md5, title, authors, year)
-        logger.dbg("simpleui: preserved deleted finished book in stats:",
-            title, "(md5:", md5, "year:", year, ")")
+    local orig_deleteFile          = FileManager.deleteFile
+    local orig_deleteSelectedFiles = FileManager.deleteSelectedFiles
+    if plugin then
+        plugin._orig_fm_deleteFile          = orig_deleteFile
+        plugin._orig_fm_deleteSelectedFiles = orig_deleteSelectedFiles
     end
 
     FileManager.deleteFile = function(fm_self, file, is_file)
@@ -5201,25 +5117,34 @@ function M.patchDeleteFile(FileManager, plugin)
                 -- Return true so post_delete_callback fires and FM refreshes.
                 return true
             end
-            -- Folder delete: KOReader uses purgeDir once and never calls
-            -- deleteFile per book. Walk the tree first so finished books
-            -- still land in DeletedBooks.
-            pcall(function()
-                local DB = SUISettings.DeletedBooks
-                if not DB or not DB.isEnabled() then return end
-                local util = require("util")
-                local ok_dr, DocumentRegistry = pcall(require, "document/documentregistry")
-                util.findFiles(file, function(fpath)
-                    if ok_dr and DocumentRegistry and DocumentRegistry:hasProvider(fpath) then
-                        pcall(preserveFinishedBook, fpath)
-                    end
-                end, true)
-            end)
-        else
-            pcall(preserveFinishedBook, file)
         end
 
-        return orig_deleteFile(fm_self, file, is_file)
+        local SP = _getStatsProvider()
+        if not SP then return orig_deleteFile(fm_self, file, is_file) end
+
+        pcall(_recordFinishedBooks, SP, file, is_file)
+        local deleted = orig_deleteFile(fm_self, file, is_file)
+        if deleted then pcall(SP.markBooksGone, { file }) end
+        return deleted
+    end
+
+    FileManager.deleteSelectedFiles = function(fm_self)
+        local SP = _getStatsProvider()
+        if not SP then return orig_deleteSelectedFiles(fm_self) end
+
+        local selected = {}
+        for file in pairs(fm_self.selected_files) do
+            selected[#selected + 1] = file
+            pcall(_recordFinishedBooks, SP, file, true)
+        end
+        orig_deleteSelectedFiles(fm_self)
+
+        local lfs2    = require("libs/libkoreader-lfs")
+        local removed = {}
+        for _, file in ipairs(selected) do
+            if not lfs2.attributes(file, "mode") then removed[#removed + 1] = file end
+        end
+        if #removed > 0 then pcall(SP.markBooksGone, removed) end
     end
 end
 
@@ -5411,12 +5336,14 @@ function M.teardownAll(plugin)
         plugin._orig_ffi_purgeDir         = nil
     end
 
-    -- Restore FileManager.deleteFile patch.
+    -- Restore FileManager.deleteFile / deleteSelectedFiles patch.
     local FM = package.loaded["apps/filemanager/filemanager"]
     if FM and FM._simpleui_deleteFile_patched and plugin._orig_fm_deleteFile then
         FM.deleteFile                    = plugin._orig_fm_deleteFile
+        FM.deleteSelectedFiles           = plugin._orig_fm_deleteSelectedFiles
         FM._simpleui_deleteFile_patched  = nil
-        plugin._orig_fm_deleteFile       = nil
+        plugin._orig_fm_deleteFile          = nil
+        plugin._orig_fm_deleteSelectedFiles = nil
     end
 
     -- Restore UIManager patches first (highest call frequency).

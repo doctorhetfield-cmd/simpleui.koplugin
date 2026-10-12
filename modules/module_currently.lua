@@ -2063,7 +2063,7 @@ function M.getMenuItems(ctx_menu)
             keep_menu_open = true,
             callback       = function()
                 local SP = package.loaded["modules/module_stats_provider"]
-                if SP and SP.invalidate then SP.invalidate() end
+                if SP and SP.rescanBooks then SP.rescanBooks() end
                 local SH = package.loaded["modules/module_books_shared"]
                 if SH and SH.invalidateSidecarCache then SH.invalidateSidecarCache() end
                 local MC = package.loaded["modules/module_currently"]

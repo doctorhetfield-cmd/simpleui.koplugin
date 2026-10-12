@@ -10,9 +10,6 @@ local CenterContainer = require("ui/widget/container/centercontainer")
 local Device          = require("device")
 local Font            = require("ui/font")
 local Geom            = require("ui/geometry")
-local GestureRange    = require("ui/gesturerange")
-local InputContainer  = require("ui/widget/container/inputcontainer")
-local OverlapGroup    = require("ui/widget/overlapgroup")
 local TextWidget      = require("ui/widget/textwidget")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
@@ -36,82 +33,12 @@ local function fmtRange(start_t, end_t)
     return os.date("%d %b", start_t) .. " – " .. os.date("%d %b %Y", end_t)
 end
 
--- Period selector — same construction as the reading-stats window's
--- month/year headers (StatsWindows' _smMonthHeader / _riYearHeader): a
--- bold label centred in an OverlapGroup, flanked by FACE_ICONS chevrons at
--- fixed offsets either side of the label's own width, so the whole thing
--- stays visually centred regardless of label length. Sized a step smaller
--- than those headers (FS_BODY instead of FS_SUBTITLE, a smaller chevron
--- multiplier) since this selector sits above two full grids rather than
--- being the main content of its own row. Disabled direction dims to the
--- same gray used there.
-local function buildPeriodSelector(inner_w, range_text, can_go_older, can_go_newer, on_prev, on_next, SZ)
-    local face      = Font:getFace(SUIStyle.FACE_REGULAR, SZ(SUIStyle.FS_BODY))
-    local face_chev = Font:getFace(SUIStyle.FACE_ICONS, math.floor(SZ(SUIStyle.FS_TITLE * 1.3)))
-    local CLR_BLACK = SUIStyle.COLOR.text_primary
-
-    local gap   = SZ(Screen:scaleBySize(12))
-    local btn_w = SZ(Screen:scaleBySize(44))
-
-    local label = TextWidget:new{
-        text    = range_text,
-        face    = face,
-        fgcolor = CLR_BLACK,
-        bold    = true,
-        padding = 0,
-    }
-
-    local lbl_w = label:getSize().w
-    local lbl_h = label:getSize().h
-
-    local function navBtn(glyph, enabled, cb)
-        local tw = TextWidget:new{
-            text    = glyph,
-            face    = face_chev,
-            fgcolor = enabled and CLR_BLACK or SUIStyle.COLOR.disabled,
-            padding = 0,
-        }
-        local ic = InputContainer:new{
-            dimen = Geom:new{ w = btn_w, h = lbl_h },
-            CenterContainer:new{
-                dimen = Geom:new{ w = btn_w, h = lbl_h },
-                tw,
-            }
-        }
-        if enabled then
-            ic.ges_events = {
-                Tap = { GestureRange:new{ ges = "tap",
-                    range = function() return ic.dimen end } },
-            }
-            function ic:onTap() cb(); return true end
-        end
-        return ic
-    end
-
-    -- Same codepoints as the streak calendar's month header, so the two
-    -- chevron pairs in the app render identically.
-    local prev_btn = navBtn("\u{E840}", can_go_older, on_prev)
-    local next_btn = navBtn("\u{E841}", can_go_newer, on_next)
-
-    local center_x = math.floor(inner_w / 2)
-    local half_lbl = math.floor(lbl_w / 2)
-
-    prev_btn.overlap_offset = { center_x - half_lbl - gap - btn_w, 0 }
-    label.overlap_offset    = { center_x - half_lbl, 0 }
-    next_btn.overlap_offset = { center_x + half_lbl + gap, 0 }
-
-    return OverlapGroup:new{
-        dimen = Geom:new{ w = inner_w, h = lbl_h },
-        prev_btn,
-        label,
-        next_btn,
-    }
-end
-
 --- Opens the heatmap popup. Reads fresh data on open and on every period
 --- change — no ties to any homescreen ctx, so it always opens its own
 --- short-lived DB connection (see sui_heatmap_data.lua).
-function M.show()
+--- opts: { on_back = function }
+function M.show(opts)
+    opts = opts or {}
     local SUIWindow = require("engines/sui_window")
 
     local blocks_back = 0
@@ -143,20 +70,21 @@ function M.show()
             bold    = true,
         }
 
-        local header = buildPeriodSelector(
-            inner_w, fmtRange(start_t, end_t), can_go_older, can_go_newer,
-            function()
-                if not can_go_older then return end
+        local header = SUIWindow.PeriodHeader{
+            inner_w      = inner_w,
+            label        = fmtRange(start_t, end_t),
+            prev_enabled = can_go_older,
+            next_enabled = can_go_newer,
+            compact      = true,
+            on_prev      = function()
                 blocks_back = blocks_back + 1
                 ctx.repaint()
             end,
-            function()
-                if not can_go_newer then return end
+            on_next      = function()
                 blocks_back = blocks_back - 1
                 ctx.repaint()
             end,
-            ctx.SZ
-        )
+        }
 
         local range_widget = HW.buildRangeHeatmap(daily_map, start_t, end_t, fonts, inner_w)
 
@@ -190,6 +118,7 @@ function M.show()
 
     local win = SUIWindow:new{
         name          = "sui_win_heatmap",
+        on_back       = opts.on_back,
         title         = _("Reading Heatmap"),
         height        = math.floor((select(2, UI.getPortraitDims())) * 23 / 30),
         position      = "bottom",

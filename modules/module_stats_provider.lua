@@ -14,8 +14,8 @@
 --     month, seconds and pages.
 --   Query 1b — duration sums for the year and all-time windows.
 --   Query 2  — streak (recent distinct active dates + freeze-aware walk).
--- Sidecar roundtrip: one pass over ReadHistory.hist producing books_year and
---   books_total together (single scan instead of two).
+-- Finished books: books_year and books_total are counted from the persistent
+--   FinishedBooks ledger, with no DB or sidecar access (see "Finished books").
 
 local logger = require("logger")
 local lfs    = require("libs/libkoreader-lfs")
@@ -273,133 +273,518 @@ end
 -- ---------------------------------------------------------------------------
 -- Finished books
 --
--- Single source of truth for every "books finished" figure and list. One pass
--- over ReadHistory yields one entry per book whose sidecar summary.status is
--- "complete"; books preserved after deletion (sui_store's DeletedBooks, keyed
--- by partial md5) are merged in when that option is enabled.
+-- Every "books finished" figure and list comes from the FinishedBooks ledger
+-- (infra/sui_store), keyed by partial md5. The ledger is kept current by
+-- SP.bookChanged() and SP.syncBook(), called from every flow that changes a
+-- book's state, and is reconciled against the sidecars of the books in the
+-- reading history once a day, so that changes made outside the plugin are
+-- picked up as well. Books outside the history are only recorded through
+-- those flows.
 --
--- Entry fields:
---   key                 unique id: the file path, or "md5:<md5>" if preserved
---   filepath            nil for preserved books
+-- Entry fields returned by SP.getFinishedBooks():
+--   key                 unique id: the file path, or "md5:<md5>" when gone
+--   filepath            nil when the file is gone
 --   title, authors, md5
 --   year                completion year (integer) or nil when unknown
 --   date_started, date_finished   "YYYY-MM-DD" strings or nil
 --   exclude_from_goals  true for books left out of the counts
---   preserved           true for books no longer on the device
+--   preserved           true for books whose file is gone
+--   manual              true for books entered by hand (no file)
+--   count               number of books a manual entry stands for when it was
+--                       entered as a plain number; nil for any other entry
 -- ---------------------------------------------------------------------------
-local _MAX_HIST = 200   -- hard cap: avoids an unbounded scan on huge histories
+local _HISTORY_SCAN_LIMIT = 200   -- books reconciled per routine pass
 
---- Completion year of a sidecar summary. Taken from summary.date_finished or,
---- as a fallback, a STRING summary.modified (written on a manual status
---- change). A NUMERIC summary.modified is a session-close timestamp refreshed
---- on every close, so it never counts as a completion date.
-function SP.finishedYear(summary)
-    local stamp = summary.date_finished
-    if stamp == nil and type(summary.modified) == "string" then
-        stamp = summary.modified
-    end
-    if type(stamp) ~= "string" or #stamp < 4 then return nil end
-    return tonumber(stamp:sub(1, 4))
-end
+local _reconciled_day = nil   -- "YYYY-MM-DD" of the last reconcile, nil when due
+local _books_dirty    = false -- finished-book counts changed since _cache was built
 
 local function _stringOrNil(value)
     return type(value) == "string" and value or nil
 end
 
-local function _liveEntry(fp, history_entry, data)
-    local summary = data.summary
+local function _finishedBooksStore()
+    local SUIStore = _getSUIStore()
+    return SUIStore and SUIStore.FinishedBooks
+end
+
+local function _booksModule()
+    return package.loaded["modules/module_books_shared"]
+end
+
+--- Completion stamp of a sidecar summary. Taken from summary.date_finished or,
+--- as a fallback, a STRING summary.modified (written on a manual status
+--- change). A NUMERIC summary.modified is a session-close timestamp refreshed
+--- on every close, so it never counts as a completion date.
+local function _finishedStamp(summary)
+    local stamp = _stringOrNil(summary.date_finished) or _stringOrNil(summary.modified)
+    return stamp and #stamp >= 4 and stamp or nil
+end
+
+local function _yearOf(stamp)
+    return stamp and tonumber(stamp:sub(1, 4)) or nil
+end
+
+--- Year a ledger entry belongs to: its completion year or, for a manual book
+--- with no completion stamp, its start year.
+local function _storedYear(stored)
+    return _yearOf(stored.finished or stored.started)
+end
+
+--- Parses a stamp, "YYYY" or "YYYY-MM-DD". Returns the year, month and day as
+--- numbers (month and day are nil for a year-only stamp), or nil when `stamp`
+--- is not a valid stamp.
+function SP.parseStamp(stamp)
+    if type(stamp) ~= "string" then return nil end
+    if stamp:match("^%d%d%d%d$") then return tonumber(stamp) end
+
+    local y, m, d = stamp:match("^(%d%d%d%d)-(%d%d)-(%d%d)$")
+    y, m, d = tonumber(y), tonumber(m), tonumber(d)
+    if y and m >= 1 and m <= 12 and d >= 1 and d <= 31 then return y, m, d end
+    return nil
+end
+
+local function _isFullDate(stamp)
+    return stamp ~= nil and stamp:match("^%d%d%d%d%-%d%d%-%d%d$") ~= nil
+end
+
+local function _findByPath(books, fp)
+    for md5, entry in pairs(books) do
+        if entry.path == fp and not entry.gone then return md5, entry end
+    end
+end
+
+-- The ledger entry of a book: by md5 when known, else by its file path.
+local function _findEntry(books, fp, md5)
+    if md5 and books[md5] then return md5, books[md5] end
+    return _findByPath(books, fp)
+end
+
+--- Sidecar fields of a document that is open in the reader. Its settings
+--- object is newer than the sidecar on disk, so status and md5 come from it;
+--- title and authors come from the shared sidecar cache, which applies the
+--- user's custom metadata.
+local function _liveView(fp, doc_settings)
+    local SH     = _booksModule()
+    local cached = SH and SH.sidecarData and SH.sidecarData(fp, true) or {}
+    local props  = doc_settings:readSetting("doc_props") or {}
     return {
-        key                = fp,
-        filepath           = fp,
-        title              = data.title or history_entry.text or fp,
-        authors            = data.authors or "",
-        md5                = data.partial_md5_checksum,
-        year               = SP.finishedYear(summary),
-        date_started       = _stringOrNil(summary.date_started),
-        date_finished      = _stringOrNil(summary.date_finished) or _stringOrNil(summary.modified),
-        exclude_from_goals = summary.exclude_from_goals,
+        title                = cached.title or props.title,
+        authors              = cached.authors or props.authors,
+        partial_md5_checksum = doc_settings:readSetting("partial_md5_checksum")
+                               or cached.partial_md5_checksum,
+        summary              = doc_settings:readSetting("summary"),
     }
 end
 
-local function _preservedEntry(md5, stored)
+--- Ledger entry of a finished book, or nil when the sidecar is not "complete".
+local function _finishedEntry(fp, view)
+    local summary = view.summary
+    if type(summary) ~= "table" or summary.status ~= "complete" then return nil end
     return {
-        key       = "md5:" .. md5,
-        title     = stored.title,
-        authors   = stored.authors,
-        md5       = md5,
-        year      = (stored.year or 0) > 0 and stored.year or nil,
-        preserved = true,
+        title    = view.title or fp:match("[^/]+$") or fp,
+        authors  = view.authors or "",
+        finished = _finishedStamp(summary),
+        excluded = summary.exclude_from_goals and true or nil,
+        path     = fp,
     }
 end
 
-local function _scanFinishedBooks()
-    local books = {}
+local function _sameEntry(a, b)
+    return a ~= nil
+        and a.title == b.title and a.authors == b.authors
+        and a.finished == b.finished and a.excluded == b.excluded
+        and a.path == b.path and a.gone == b.gone
+end
 
+--- Applies the sidecar state of `fp` to the ledger: a finished book is
+--- recorded, anything else is dropped. Returns true when the ledger changed.
+local function _applyBook(ledger, fp, view)
+    local books = ledger.books
+    local entry = _finishedEntry(fp, view)
+    if entry then
+        local md5 = view.partial_md5_checksum or _findByPath(books, fp)
+                    or require("util").partialMD5(fp)
+        if not md5 or _sameEntry(books[md5], entry) then return false end
+        books[md5] = entry
+        return true
+    end
+
+    local changed = false
+    local md5 = view.partial_md5_checksum
+    if md5 and books[md5] then
+        books[md5] = nil
+        changed   = true
+    end
+    local path_md5 = _findByPath(books, fp)
+    if path_md5 then
+        books[path_md5] = nil
+        changed         = true
+    end
+    return changed
+end
+
+--- Brings the ledger in line with the sidecars of the books in the reading
+--- history (the most recent ones, up to _HISTORY_SCAN_LIMIT) and flags the
+--- books whose file has disappeared. Returns whether it ran, and whether the
+--- ledger changed.
+local function _reconcile(ledger)
     local ReadHistory = package.loaded["readhistory"]
-    local SH          = package.loaded["modules/module_books_shared"]
+    local SH          = _booksModule()
     if not (ReadHistory and ReadHistory.hist and SH and SH.sidecarData) then
         logger.warn("simpleui: stats_provider: history or sidecar cache unavailable")
-        return books
+        return false, false
     end
 
-    local ok_store, SUIStore = pcall(require, "infra/sui_store")
-    local DeletedBooks  = ok_store and SUIStore and SUIStore.DeletedBooks
-    local merge_deleted = DeletedBooks and DeletedBooks.isEnabled()
-    local seen_md5      = {}
-
-    for i = 1, math.min(#ReadHistory.hist, _MAX_HIST) do
-        local history_entry = ReadHistory.hist[i]
-        local fp = history_entry and history_entry.file
-        local data = fp and lfs.attributes(fp, "mode") == "file" and SH.sidecarData(fp)
-        if data then
-            -- Any book still on the device supersedes its preserved entry,
-            -- whatever its current status.
-            if data.partial_md5_checksum then seen_md5[data.partial_md5_checksum] = true end
-            if type(data.summary) == "table" and data.summary.status == "complete" then
-                books[#books + 1] = _liveEntry(fp, history_entry, data)
-            end
+    local changed = not ledger.initialised
+    for i = 1, math.min(#ReadHistory.hist, _HISTORY_SCAN_LIMIT) do
+        local fp   = ReadHistory.hist[i] and ReadHistory.hist[i].file
+        local view = fp and SH.sidecarData(fp, true)
+        if view then changed = _applyBook(ledger, fp, view) or changed end
+    end
+    for _, entry in pairs(ledger.books) do
+        if not entry.gone and entry.path and lfs.attributes(entry.path, "mode") ~= "file" then
+            entry.gone = true
+            changed    = true
         end
     end
 
-    if merge_deleted then
-        for md5, stored in pairs(DeletedBooks.getAll()) do
-            if not seen_md5[md5] then
-                books[#books + 1] = _preservedEntry(md5, stored)
-            end
-        end
-    end
-
-    return books
+    ledger.initialised = true
+    _reconciled_day    = os.date("%Y-%m-%d")
+    return true, changed
 end
 
-local function _filterByYear(books, year)
-    local matching = {}
-    for _, book in ipairs(books) do
-        if book.year == year then matching[#matching + 1] = book end
+--- The ledger, reconciled on first use.
+local function _loadLedger()
+    local store  = _finishedBooksStore()
+    local ledger = store.load()
+    if not ledger.initialised then
+        local _, changed = _reconcile(ledger)
+        if changed then store.save(ledger) end
     end
-    return matching
+    return ledger
+end
+
+--- The ledger for counts and lists: additionally reconciled once per calendar
+--- day.
+local function _reconciledLedger()
+    local ledger = _loadLedger()
+    if _reconciled_day ~= os.date("%Y-%m-%d") then
+        local _, changed = _reconcile(ledger)
+        if changed then _finishedBooksStore().save(ledger) end
+    end
+    return ledger
+end
+
+-- A book is listed and counted unless its file is gone and gone books are
+-- not being preserved; excluded books are listed but not counted.
+local function _isListed(entry, preserve)
+    return preserve or not entry.gone
+end
+
+local function _manualEntry(id, stored)
+    return {
+        key           = id,
+        title         = stored.title,
+        authors       = stored.authors,
+        year          = _storedYear(stored),
+        date_started  = stored.started,
+        date_finished = stored.finished,
+        manual        = true,
+        count         = stored.count,
+    }
+end
+
+-- `id` is the ledger key: a partial md5, or "manual:..." for a manual entry.
+local function _bookEntry(id, stored)
+    if stored.manual then return _manualEntry(id, stored) end
+
+    local entry = {
+        key                = "md5:" .. id,
+        title              = stored.title,
+        authors            = stored.authors,
+        md5                = id,
+        year               = _storedYear(stored),
+        exclude_from_goals = stored.excluded,
+        preserved          = stored.gone,
+    }
+    if stored.gone then return entry end
+
+    local SH      = _booksModule()
+    local data    = SH and SH.sidecarData and SH.sidecarData(stored.path, true)
+    local summary = data and type(data.summary) == "table" and data.summary or {}
+    entry.key           = stored.path
+    entry.filepath      = stored.path
+    entry.title         = data and data.title or stored.title
+    entry.date_started  = _stringOrNil(summary.date_started)
+    entry.date_finished = _stringOrNil(summary.date_finished) or _stringOrNil(summary.modified)
+    return entry
+end
+
+-- Most recently finished first; a year-only entry follows the dated ones of
+-- its year.
+local function _newerFirst(a, b)
+    local key_a = a.date_finished or tostring(a.year or "")
+    local key_b = b.date_finished or tostring(b.year or "")
+    if key_a ~= key_b then return key_a > key_b end
+    if a.title ~= b.title then return (a.title or "") < (b.title or "") end
+    return a.key < b.key
 end
 
 --- Finished books (see entry fields above), restricted to `year` (integer)
 --- when given.
 function SP.getFinishedBooks(year)
-    local books = _scanFinishedBooks()
-    return year and _filterByYear(books, year) or books
+    local ledger   = _reconciledLedger()
+    local preserve = _finishedBooksStore().preserveGone()
+    local books    = {}
+    for md5, stored in pairs(ledger.books) do
+        if _isListed(stored, preserve) and (not year or _storedYear(stored) == year) then
+            books[#books + 1] = _bookEntry(md5, stored)
+        end
+    end
+    table.sort(books, _newerFirst)
+    return books
+end
+
+--- Oldest and newest completion year among the listed finished books. The
+--- newest is never earlier than the current year.
+function SP.getFinishedYears()
+    local ledger   = _reconciledLedger()
+    local preserve = _finishedBooksStore().preserveGone()
+    local current  = tonumber(os.date("%Y"))
+    local min_year, max_year = current, current
+    for _, stored in pairs(ledger.books) do
+        local year = _isListed(stored, preserve) and _storedYear(stored)
+        if year then
+            min_year = math.min(min_year, year)
+            max_year = math.max(max_year, year)
+        end
+    end
+    return min_year, max_year
 end
 
 --- Number of books in `books` that count towards totals and goals.
 function SP.countFinished(books)
     local count = 0
     for _, book in ipairs(books) do
-        if not book.exclude_from_goals then count = count + 1 end
+        if not book.exclude_from_goals then count = count + (book.count or 1) end
     end
     return count
 end
 
--- Returns the counts for `year_str` and for all time, from a single scan.
+-- Returns the counts for `year_str` and for all time. Manual books always
+-- count towards their year; they count towards all time only when enabled.
 local function countFinishedBooks(year_str)
-    local books = _scanFinishedBooks()
-    return SP.countFinished(_filterByYear(books, tonumber(year_str))), SP.countFinished(books)
+    local ledger     = _reconciledLedger()
+    local store      = _finishedBooksStore()
+    local preserve   = store.preserveGone()
+    local manual_all = store.manualInAllTime()
+    local year       = tonumber(year_str)
+    local in_year, total = 0, 0
+    for _, entry in pairs(ledger.books) do
+        if not entry.excluded and _isListed(entry, preserve) then
+            local count = entry.count or 1
+            if manual_all or not entry.manual then total = total + count end
+            if _storedYear(entry) == year then in_year = in_year + count end
+        end
+    end
+    return in_year, total
+end
+
+--- Completion date a book's summary should carry. A book that is not
+--- complete carries none. A complete book keeps its date; one without it gets
+--- the date the ledger recorded for it, or today when the ledger has not seen
+--- it finished. Nil when the date is unknown.
+local function _expectedFinishedDate(ledger, fp, summary, md5)
+    if summary.status ~= "complete" then return nil end
+    if summary.date_finished then return summary.date_finished end
+    if not ledger.initialised then return nil end
+
+    local _, known = _findEntry(ledger.books, fp, md5)
+    if not known then return os.date("%Y-%m-%d") end
+    return _isFullDate(known.finished) and known.finished or nil
+end
+
+--- Aligns summary.date_finished with the book's status through the given
+--- settings object and flushes it when it changed. KOReader rewrites
+--- summary.modified on every status change, so without this date the
+--- completion year would follow the last status change.
+local function _syncFinishedDate(ledger, fp, doc_settings)
+    local summary = doc_settings:readSetting("summary")
+    if type(summary) ~= "table" then return end
+
+    local date = _expectedFinishedDate(ledger, fp, summary,
+        doc_settings:readSetting("partial_md5_checksum"))
+    if date == summary.date_finished then return end
+    summary.date_finished = date
+    doc_settings:saveSetting("summary", summary)
+    doc_settings:flush()
+end
+
+--- Sidecar fields of `fp`: from the settings object of a document open in the
+--- reader (newer than the sidecar on disk), else from the shared sidecar cache.
+local function _readView(fp, doc_settings)
+    if doc_settings then return _liveView(fp, doc_settings) end
+    local SH = _booksModule()
+    return SH and SH.sidecarData and SH.sidecarData(fp, true)
+end
+
+--- Applies `view` to the ledger and persists it when it changed.
+local function _record(fp, view)
+    local ledger = _loadLedger()
+    if not _applyBook(ledger, fp, view) then return false end
+    _finishedBooksStore().save(ledger)
+    return true
+end
+
+--- Records the current state of `fp` in the ledger. `doc_settings` is the
+--- settings object of a document open in the reader, whose in-memory state is
+--- newer than the sidecar on disk. Returns true when the ledger changed.
+function SP.syncBook(fp, doc_settings)
+    local view = _readView(fp, doc_settings)
+    return view ~= nil and _record(fp, view)
+end
+
+--- Flags every screen for a rebuild the next time it is shown, so the new
+--- counts and book states are painted.
+local function _flagScreensStale()
+    local ScreenEngine = package.loaded["engines/sui_screen_engine"]
+    if ScreenEngine and ScreenEngine.markAllStale then ScreenEngine.markAllStale() end
+end
+
+local function _openDocSettings(fp)
+    local ok_ds, DocSettings = pcall(require, "docsettings")
+    if not ok_ds then return nil end
+    local ok_open, doc_settings = pcall(DocSettings.open, DocSettings, fp)
+    return ok_open and doc_settings or nil
+end
+
+--- Single entry point for every change to a book's completion state, dates
+--- or goal exclusion: drops the shared sidecar cache entry, updates the
+--- ledger, invalidates the counts and flags the screens.
+--- Options:
+---   doc_settings    settings object of a document open in the reader
+---   status_changed  the book's status was just changed: its completion date
+---                   is aligned with the new status first
+--- Returns true when the book is finished.
+function SP.bookChanged(fp, opts)
+    opts = opts or {}
+    local doc_settings = opts.doc_settings
+    if opts.status_changed then
+        local target = doc_settings or _openDocSettings(fp)
+        if target then _syncFinishedDate(_loadLedger(), fp, target) end
+    end
+
+    local SH = _booksModule()
+    if SH and SH.invalidateSidecarCache then SH.invalidateSidecarCache(fp) end
+    local view = _readView(fp, doc_settings)
+    if view then _record(fp, view) end
+
+    SP.invalidateBooks()
+    SP.invalidateStatusCounts()
+    _flagScreensStale()
+    return view ~= nil and type(view.summary) == "table" and view.summary.status == "complete"
+end
+
+local function _isUnderAny(path, roots)
+    for _, root in ipairs(roots) do
+        if path == root or path:sub(1, #root + 1) == root .. "/" then return true end
+    end
+    return false
+end
+
+--- Flags the finished books at or under any of `paths` (files or folders) as
+--- gone from the device.
+function SP.markBooksGone(paths)
+    local ledger  = _loadLedger()
+    local changed = false
+    for _, entry in pairs(ledger.books) do
+        if not entry.gone and entry.path and _isUnderAny(entry.path, paths) then
+            entry.gone = true
+            changed    = true
+        end
+    end
+    if not changed then return end
+    _finishedBooksStore().save(ledger)
+    SP.invalidateBooks()
+    SP.invalidateStatusCounts()
+    _flagScreensStale()
+end
+
+-- ---------------------------------------------------------------------------
+-- Manual books
+--
+-- Books entered by hand live in the ledger as "manual:" entries (see
+-- infra/sui_store). Every change goes through the functions below, which
+-- persist the ledger, drop the cached counts and flag the screens.
+-- ---------------------------------------------------------------------------
+
+local function _commitManual(ledger)
+    _finishedBooksStore().save(ledger)
+    SP.invalidateBooks()
+    _flagScreensStale()
+end
+
+local function _bulkKey(year)
+    return string.format("manual:bulk:%04d", year)
+end
+
+local function _newManualKey(books)
+    local key
+    repeat
+        key = string.format("manual:%x%03x", os.time(), math.random(0, 4095))
+    until not books[key]
+    return key
+end
+
+--- Number of books entered as a plain number for `year` (integer).
+function SP.getManualCount(year)
+    local entry = _loadLedger().books[_bulkKey(year)]
+    return entry and entry.count or 0
+end
+
+--- Total number of books entered by hand, individually or as plain numbers.
+function SP.getManualBookCount()
+    local total = 0
+    for _, stored in pairs(_loadLedger().books) do
+        if stored.manual then total = total + (stored.count or 1) end
+    end
+    return total
+end
+
+--- Sets the number of books entered as a plain number for `year` (integer).
+--- Zero removes the entry.
+function SP.setManualCount(year, count)
+    local ledger = _loadLedger()
+    ledger.books[_bulkKey(year)] = count > 0
+        and { manual = true, count = count, finished = string.format("%04d", year) }
+        or nil
+    _commitManual(ledger)
+end
+
+--- Creates a manual book, or replaces the one stored under `key`. `fields`:
+--- title, authors, started, finished (stamps, either may be nil). Returns
+--- the key of the entry.
+function SP.saveManualBook(key, fields)
+    local ledger = _loadLedger()
+    key = key or _newManualKey(ledger.books)
+    ledger.books[key] = {
+        manual   = true,
+        title    = fields.title,
+        authors  = fields.authors or "",
+        started  = fields.started,
+        finished = fields.finished,
+    }
+    _commitManual(ledger)
+    return key
+end
+
+--- Removes the manual entry stored under `key`; any other key is ignored.
+function SP.removeManualBook(key)
+    local ledger = _loadLedger()
+    local entry  = ledger.books[key]
+    if not (entry and entry.manual) then return end
+    ledger.books[key] = nil
+    _commitManual(ledger)
 end
 
 -- ---------------------------------------------------------------------------
@@ -491,6 +876,36 @@ function SP.applyStatusChange(fp, pre_percent, pre_status, post_percent, post_st
     end
 end
 
+--- Updates the ledger and the cached status counts for the book that was just
+--- closed in the reader. The reader's live settings are newer than the sidecar
+--- on disk and stay valid until the reader widget closes, so this must run
+--- from the close handler.
+function SP.syncClosedBook(fp)
+    local ReaderUI     = package.loaded["apps/reader/readerui"]
+    local ui           = ReaderUI and ReaderUI.instance
+    local doc_settings = ui and type(ui.doc_settings) == "table" and ui.doc_settings or nil
+    if doc_settings and SP.syncBook(fp, doc_settings) then SP.invalidateBooks() end
+
+    -- The pre-session state comes from the sidecar cache; without an entry the
+    -- bucket the book left is unknown, so the counts are recomputed instead.
+    local SH     = _booksModule()
+    local get    = SH and (SH._cacheGetRaw or SH._cacheGet)
+    local cached = get and get(fp)
+    if not cached then
+        SP.invalidateStatusCounts()
+        return
+    end
+
+    local pre_summary  = cached.summary
+    local post_summary = doc_settings and doc_settings:readSetting("summary")
+    local footer       = ui and ui.view and ui.view.footer
+    local post_percent = footer and footer.percent_finished
+        or doc_settings and doc_settings:readSetting("percent_finished")
+    SP.applyStatusChange(fp,
+        cached.percent, type(pre_summary) == "table" and pre_summary.status or nil,
+        post_percent,   type(post_summary) == "table" and post_summary.status or nil)
+end
+
 --- Forces the next SP.getStatusCounts() call to recompute. Called from
 --- SP.invalidate() so status counts share the same invalidation triggers as
 --- the rest of this provider.
@@ -498,12 +913,11 @@ function SP.invalidateStatusCounts()
     _status_cache = nil
 end
 
--- Partial-invalidation flags, declared here so SP.get(), SP.invalidate() and
--- SP.invalidateTimeSeries() all close over the same locals.
---   _books_cache_valid:  set by invalidateTimeSeries() when books_year/
---     books_total are known-unchanged; consumed and cleared by SP.get().
---   _streak_cache_valid: same pattern for the streak value.
-local _books_cache_valid  = false
+-- Partial-invalidation flag, declared here so SP.get(), SP.invalidate() and
+-- SP.invalidateTimeSeries() all close over the same local.
+--   _streak_cache_valid: set when the streak is known-unchanged; consumed and
+--     cleared by SP.get(). (_books_dirty, declared with the finished-books
+--     code, is the equivalent for the book counts.)
 local _streak_cache_valid = false
 
 -- ---------------------------------------------------------------------------
@@ -512,9 +926,9 @@ local _streak_cache_valid = false
 -- db_conn:     shared ljsqlite3 connection from ctx.db_conn (may be nil if
 --              the DB is unavailable; returns a zero-filled table then).
 -- year_str:    current year as a string, e.g. "2025" — pass ctx.year_str.
--- needs_books: when true, runs the sidecar scan for books_year/books_total.
---              Pass false when no active module consumes those fields, to
---              skip up to 200 DS.open() calls. Defaults to true.
+-- needs_books: when true, fills books_year/books_total from the finished-books
+--              ledger. Pass false when no active module consumes those
+--              fields. Defaults to true.
 --
 -- Returns a table; sets result.db_conn_fatal = true on a fatal DB error
 -- (caller should propagate to ctx.db_conn_fatal).
@@ -526,14 +940,14 @@ function SP.get(db_conn, year_str, needs_books)
     local today_str   = string.format("%04d-%02d-%02d", t.year, t.month, t.day)
 
     -- Cache hit: same calendar day. When needs_books=true, the cache must
-    -- also carry books data — books_total > 0 isn't a reliable sentinel for
-    -- a user with zero finished books, so completeness is tracked with the
-    -- explicit `_has_books` flag instead.
+    -- also carry up-to-date books data — books_total > 0 isn't a reliable
+    -- sentinel for a user with zero finished books, so completeness is
+    -- tracked with the explicit `_has_books` flag instead.
     if _cache and _cache_day == today_str then
-        if not needs_books or _cache._has_books then
+        if not needs_books or (_cache._has_books and not _books_dirty) then
             return _cache
         end
-        -- DB fields are already correct; only the sidecar scan needs to run.
+        -- DB fields are already correct; only the book counts need to run.
         local result = {
             today_secs    = _cache.today_secs,
             today_pages   = _cache.today_pages,
@@ -555,6 +969,7 @@ function SP.get(db_conn, year_str, needs_books)
         local by, bt = countFinishedBooks(year_str or tostring(t.year))
         result.books_year  = by
         result.books_total = bt
+        _books_dirty = false
         _cache = result
         return result
     end
@@ -581,7 +996,6 @@ function SP.get(db_conn, year_str, needs_books)
     -- _changed tells consumers which categories were re-fetched this call, so
     -- updateStats() can skip rebuilding cards whose data is unchanged.
     local streak_carried = _streak_cache_valid
-    local books_carried  = _books_cache_valid
 
     local result = {
         today_secs    = 0,
@@ -598,7 +1012,7 @@ function SP.get(db_conn, year_str, needs_books)
         books_year    = 0,
         books_total   = 0,
         db_conn_fatal = false,
-        _changed      = { timeseries = true, streak = not streak_carried, books = not books_carried },
+        _changed      = { timeseries = true, streak = not streak_carried, books = true },
     }
 
     -- ── DB queries ────────────────────────────────────────────────────────
@@ -646,21 +1060,20 @@ function SP.get(db_conn, year_str, needs_books)
         end
     end
 
-    -- ── Sidecar scan (one pass for both year + total) ─────────────────────
+    -- ── Finished-book counts (year + total, from the ledger) ──────────────
     if not needs_books then
-        -- No consumer needs books_year/books_total: skip the sidecar scan.
+        -- No consumer needs books_year/books_total: leave them at zero.
         -- Not cached under today_str, so a later needs_books=true call on
-        -- the same day still runs the scan instead of reading zeros.
+        -- the same day still fills them instead of reading zeros.
         return result
-    elseif _books_cache_valid then
-        result.books_year  = (_cache and _cache.books_year)  or 0
-        result.books_total = (_cache and _cache.books_total) or 0
-        _books_cache_valid = false
-    else
-        local by, bt = countFinishedBooks(year_str or tostring(t.year))
-        result.books_year  = by
-        result.books_total = bt
     end
+    local by, bt = countFinishedBooks(year_str or tostring(t.year))
+    local previous = _cache
+    result.books_year  = by
+    result.books_total = bt
+    result._changed.books = not (previous and previous._has_books
+        and previous.books_year == by and previous.books_total == bt)
+    _books_dirty = false
 
     result._has_books = true
     _cache     = result
@@ -672,24 +1085,22 @@ end
 -- ---------------------------------------------------------------------------
 -- SP.invalidate() — force a full re-fetch on the next SP.get() call.
 -- Preserves _cache (SP.getStale() needs it for the stale first-paint) but
--- clears _cache_day so the next call re-runs every DB query and the sidecar
--- scan unconditionally. Status counts are dropped too, unless the caller has
--- already adjusted them through SP.applyStatusChange (keep_status_counts).
+-- clears _cache_day so the next call re-runs every DB query. Status counts are dropped too, unless the caller
+-- has already adjusted them through SP.applyStatusChange (keep_status_counts).
 -- Call from: main.lua:onCloseDocument, sui_homescreen:onShow (when
 -- _stats_need_refresh is set), module_reading_goals dialogs.
 -- ---------------------------------------------------------------------------
 function SP.invalidate(keep_status_counts)
     _cache_day          = nil
-    _books_cache_valid  = false
     _streak_cache_valid = false
     if not keep_status_counts then SP.invalidateStatusCounts() end
 end
 
 -- ---------------------------------------------------------------------------
 -- SP.invalidateTimeSeries() — partial invalidation for the common case: a
--- reading session ended but the book's completion status did not change, so
--- books_year/books_total (expensive, up to _MAX_HIST sidecar opens) can be
--- preserved while the DB-derived fields are refetched.
+-- reading session ended, so the DB-derived fields are refetched while the
+-- finished-book counts are only recomputed when SP.invalidateBooks() flagged
+-- them.
 --
 -- Streak is preserved too, but only within the same calendar day the cache
 -- was built on — the streak can only change on the first session of a new
@@ -697,33 +1108,40 @@ end
 -- ---------------------------------------------------------------------------
 function SP.invalidateTimeSeries()
     if not _cache then return end
-    local now = os.time()
-    local t = os.date("*t", now)
-    local today_str = string.format("%04d-%02d-%02d", t.year, t.month, t.day)
-    if _cache_day == today_str and _cache.today_secs > 0 then
-        -- Same day, reading already recorded today: streak cannot change again.
-        _streak_cache_valid = true
-        _books_cache_valid  = true
-        _cache_day          = nil
-    else
-        -- Different day, or first session today: streak must be refetched.
-        _streak_cache_valid = false
-        _books_cache_valid  = true
-        _cache_day          = nil
-    end
+    _streak_cache_valid = _cache_day == os.date("%Y-%m-%d") and _cache.today_secs > 0
+    _cache_day          = nil
 end
 
 -- ---------------------------------------------------------------------------
 -- SP.invalidateStreak() — forces the next SP.get() to recount the streak.
 -- For changes to the streak's inputs that do not come from reading activity
 -- (freeze state), where the same-day carry-over of invalidateTimeSeries()
--- would keep serving the old value. books_year/books_total are preserved.
+-- would keep serving the old value.
 -- ---------------------------------------------------------------------------
 function SP.invalidateStreak()
     if not _cache then return end
     _streak_cache_valid = false
-    _books_cache_valid  = true
     _cache_day          = nil
+end
+
+-- ---------------------------------------------------------------------------
+-- SP.invalidateBooks() — forces the next SP.get() to recount the finished
+-- books while the cached time series and streak stay valid. Called whenever
+-- the ledger changed or the way gone books are counted did.
+-- ---------------------------------------------------------------------------
+function SP.invalidateBooks()
+    _books_dirty = true
+end
+
+-- ---------------------------------------------------------------------------
+-- SP.rescanBooks() — full refresh for the "Update Stats Now" actions: the next
+-- SP.get() reconciles the finished-books ledger against the sidecars of the
+-- reading history, picking up changes made outside the plugin, and recomputes
+-- everything else as SP.invalidate() does.
+-- ---------------------------------------------------------------------------
+function SP.rescanBooks()
+    _reconciled_day = nil
+    SP.invalidate()
 end
 
 --- Instant, zero-cost return of the last successful SP.get() result. See

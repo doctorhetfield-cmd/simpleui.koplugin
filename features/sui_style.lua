@@ -1617,15 +1617,18 @@ M.FACE_ICONS   = "symbols"
 M.ICON = {
     -- Navigation
     chevron  = "\u{F105}",   -- nf-fa-angle_right
+    chevron_down = "\u{F107}", -- nf-fa-angle_down
     back     = "\u{E5C4}",   -- arrow_back
     more     = "\u{E8D7}",   -- more_horiz / three dots (the card's "…" button)
 
     -- Actions
+    tick     = "\u{F00C}",   -- nf-fa-check (selected option mark)
     check    = "\u{E832}",   -- check_box (checked)
     uncheck  = "\u{E82F}",   -- check_box_outline_blank
     delete   = "\u{F014}",   -- trash / delete (NerdFonts)
     edit     = "\u{F040}",   -- pencil / edit (NerdFonts)
     add      = "\u{E145}",   -- add / plus
+    add_book = "\u{EB14}",   -- add book (NerdFonts)
     drag     = "\u{E25D}",   -- drag_handle
     arrow_up   = "\u{E75C}", -- arrow up (NerdFonts)
     arrow_down = "\u{E744}", -- arrow down (NerdFonts)
@@ -1641,6 +1644,7 @@ M.ICON = {
     page     = "\u{F40E}",
     book     = "\u{F401}",
     calendar = "\u{F490}",
+    calendar_select = "\u{ED77}", -- calendar with date picker (NerdFonts)
     trophy   = "\u{EC3B}",
     highlights = "\u{EE6B}",
     notes    = "\u{EAEC}",

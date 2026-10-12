@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-10-09 11:09+0000\n"
+"POT-Creation-Date: 2026-10-12 21:04+0000\n"
 "PO-Revision-Date: 2026-08-30 12:40+0900\n"
 "Last-Translator: \n"
 "Language-Team: Korean\n"
@@ -14,19 +14,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: modules/module_reading_goals.lua:1355
+#: modules/module_reading_goals.lua:1219
 msgid "  Set Goal  (%d hr/month)"
 msgstr "  목표 정하기  (%d시간/월)"
 
-#: modules/module_reading_goals.lua:1375
+#: modules/module_reading_goals.lua:1239
 msgid "  Set Goal  (%d min/day)"
 msgstr "  목표 정하기  (%d분/일)"
 
-#: modules/module_reading_goals.lua:1335
+#: modules/module_reading_goals.lua:1199
 msgid "  Set Goal  (%s)"
 msgstr "  목표 정하기  (%s)"
 
-#: modules/module_reading_goals.lua:1354 modules/module_reading_goals.lua:1374
+#: modules/module_reading_goals.lua:1218 modules/module_reading_goals.lua:1238
 msgid "  Set Goal  (disabled)"
 msgstr "  목표 정하기  (사용 안 함)"
 
@@ -34,54 +34,54 @@ msgstr "  목표 정하기  (사용 안 함)"
 msgid " et al."
 msgstr " 등"
 
-#: engines/sui_book_grid.lua:477 features/library/sui_foldercovers.lua:1340
+#: engines/sui_book_grid.lua:496 features/library/sui_foldercovers.lua:1308
 msgid " p."
 msgstr " 쪽"
 
-#: engines/sui_book_grid.lua:1516
+#: engines/sui_book_grid.lua:1537
 msgid "% Read (ascending)"
 msgstr "읽은 비율 (오름차순)"
 
-#: engines/sui_book_grid.lua:1517
+#: engines/sui_book_grid.lua:1538
 msgid "% Read (descending)"
 msgstr "읽은 비율 (내림차순)"
 
-#: modules/module_heatmap.lua:225
+#: modules/module_heatmap.lua:224
 msgid "%1 weeks"
 msgstr "%1주"
 
-#: engines/sui_book_grid.lua:1827 engines/sui_book_grid.lua:1832
-#: screens/sui_menu.lua:3943 screens/sui_menu.lua:3947
+#: engines/sui_book_grid.lua:1848 engines/sui_book_grid.lua:1853
+#: screens/sui_menu.lua:3950 screens/sui_menu.lua:3954
 msgid "%1 × %2"
 msgstr "%1 × %2"
 
-#: features/sui_backup.lua:663
+#: features/sui_backup.lua:674
 msgid "%d files (%s)"
 msgstr "%d개 파일 (%s)"
 
-#: modules/module_reading_goals.lua:1446
+#: modules/module_reading_goals.lua:1309
 msgid "%d hr/month"
 msgstr "%d시간/월"
 
-#: modules/module_reading_goals.lua:1452
+#: modules/module_reading_goals.lua:1314
 msgid "%d min/day"
 msgstr "%d분/일"
 
-#: features/sui_backup.lua:661
+#: features/sui_backup.lua:672
 msgid "%d settings"
 msgstr "설정 %d개"
 
-#: engines/sui_book_grid.lua:816
+#: engines/sui_book_grid.lua:837
 msgid "%d%%"
 msgstr "%d%%"
 
-#: engines/sui_book_grid.lua:876 engines/sui_book_grid.lua:888
-#: modules/module_coverdeck.lua:1043 modules/module_currently.lua:919
+#: engines/sui_book_grid.lua:897 engines/sui_book_grid.lua:909
+#: modules/module_coverdeck.lua:1054 modules/module_currently.lua:919
 #: modules/module_currently.lua:928 modules/module_new_books.lua:138
 msgid "%d%% Read"
 msgstr "%d%% 읽음"
 
-#: screens/sui_stats_windows.lua:3422
+#: screens/sui_stats_windows.lua:3218
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d일 · 다음 유예까지 %d/%d분"
 
@@ -89,19 +89,19 @@ msgstr "%d/%d일 · 다음 유예까지 %d/%d분"
 msgid "%s left"
 msgstr "%s 남음"
 
-#: modules/module_coverdeck.lua:1048 modules/module_currently.lua:962
+#: modules/module_coverdeck.lua:1059 modules/module_currently.lua:962
 #: modules/module_currently.lua:963 modules/module_currently.lua:1022
-#: modules/module_currently.lua:1036 modules/module_reading_goals.lua:849
-#: modules/module_reading_goals.lua:869
+#: modules/module_currently.lua:1036 modules/module_reading_goals.lua:736
+#: modules/module_reading_goals.lua:756
 msgid "%s read"
 msgstr "%s 읽음"
 
-#: modules/module_coverdeck.lua:1054 modules/module_currently.lua:985
+#: modules/module_coverdeck.lua:1065 modules/module_currently.lua:985
 #: modules/module_currently.lua:989
 msgid "%s remaining"
 msgstr "%s 남음"
 
-#: modules/module_quick_actions.lua:524 modules/module_reading_stats.lua:432
+#: modules/module_quick_actions.lua:524 modules/module_reading_stats.lua:415
 msgid "(%d/%d — at limit)"
 msgstr "(%d/%d — 한도 도달)"
 
@@ -110,26 +110,22 @@ msgid "(collection not found)"
 msgstr "(모음집을 찾을 수 없음)"
 
 #: screens/sui_menu.lua:282
-msgid ""
-"0% transparent, 100% solid. Applies across the full width of the title bar."
+msgid "0% transparent, 100% solid. Applies across the full width of the title bar."
 msgstr ""
 
 #: screens/sui_menu.lua:291
-msgid ""
-"0% transparent, 100% solid. Applies to the native page bar in Library, "
-"History, Collections and similar screens."
+msgid "0% transparent, 100% solid. Applies to the native page bar in Library, History, Collections and similar screens."
 msgstr ""
 
-#: infra/sui_config.lua:1316
-msgid ""
-"0% transparent, 100% solid. Values in between add a scrim over the wallpaper."
+#: infra/sui_config.lua:1317
+msgid "0% transparent, 100% solid. Values in between add a scrim over the wallpaper."
 msgstr ""
 
-#: modules/module_collections.lua:1233
+#: modules/module_collections.lua:1237
 msgid "4-Cover Grid"
 msgstr "표지 4칸 격자"
 
-#: screens/sui_menu.lua:3174
+#: screens/sui_menu.lua:3181
 msgid "4-Cover Grid (Mosaic View Only)"
 msgstr "표지 4칸 격자 (모자이크 보기 전용)"
 
@@ -137,20 +133,16 @@ msgstr "표지 4칸 격자 (모자이크 보기 전용)"
 msgid "A folder named \"Books\" will be created and set as the library home."
 msgstr ""
 
-#: screens/sui_stats_windows.lua:3097
-msgid ""
-"A freeze can only bridge a single missed day right after an active one — "
-"yesterday doesn't qualify."
-msgstr ""
-"유예는 활동한 날 바로 다음에 빠진 하루만 메울 수 있습니다 — 어제는 해당되지 "
-"않습니다."
+#: screens/sui_stats_windows.lua:2887
+msgid "A freeze can only bridge a single missed day right after an active one — yesterday doesn't qualify."
+msgstr "유예는 활동한 날 바로 다음에 빠진 하루만 메울 수 있습니다 — 어제는 해당되지 않습니다."
 
 #: features/sui_presets.lua:946 features/sui_presets.lua:1032
-#: screens/sui_menu.lua:4414 screens/sui_menu.lua:4499
+#: screens/sui_menu.lua:4421 screens/sui_menu.lua:4506
 msgid "A preset named \"%s\" already exists."
 msgstr "\"%s\" 이름의 사전 설정이 이미 있습니다."
 
-#: features/sui_presets.lua:887 screens/sui_menu.lua:4360
+#: features/sui_presets.lua:887 screens/sui_menu.lua:4367
 msgid ""
 "A preset named \"%s\" already exists.\n"
 "Overwrite it?"
@@ -168,7 +160,7 @@ msgstr ""
 "\n"
 "지금 다시 시작할까요?"
 
-#: screens/sui_menu.lua:4709
+#: screens/sui_menu.lua:4716
 msgid ""
 "A restart is required to apply the new text size everywhere.\n"
 "\n"
@@ -182,12 +174,12 @@ msgstr ""
 msgid "A simple UI for KOReader"
 msgstr "KOReader용 간단한 UI"
 
-#: screens/sui_stats_windows.lua:2694
+#: screens/sui_stats_windows.lua:2552
 msgid "ALL TIME"
 msgstr "전체 기간"
 
-#: screens/sui_menu.lua:4958 screens/sui_settings_window.lua:395
-#: screens/sui_settings_window.lua:1119
+#: screens/sui_menu.lua:4965 screens/sui_settings_window.lua:396
+#: screens/sui_settings_window.lua:1151
 msgid "About"
 msgstr "정보"
 
@@ -220,35 +212,44 @@ msgstr "사용할 수 없는 동작: %s"
 msgid "Add Action"
 msgstr "동작 추가하기"
 
+#: features/sui_manual_books.lua:116 features/sui_manual_books.lua:169
+#: screens/sui_stats_windows.lua:777
+msgid "Add Book"
+msgstr ""
+
 #: screens/sui_menu.lua:1789 screens/sui_menu.lua:1827
 msgid "Add Button"
 msgstr "단추 추가하기"
 
-#: engines/sui_screen_engine.lua:1997 engines/sui_window.lua:865
+#: engines/sui_screen_engine.lua:1998 engines/sui_window.lua:905
 #: modules/module_action_list.lua:401 modules/module_action_list.lua:431
-#: modules/module_coverdeck.lua:1468 modules/module_coverdeck.lua:1490
-#: modules/module_coverdeck.lua:1605 modules/module_coverdeck.lua:1623
+#: modules/module_coverdeck.lua:1479 modules/module_coverdeck.lua:1501
+#: modules/module_coverdeck.lua:1616 modules/module_coverdeck.lua:1634
 #: modules/module_currently.lua:1699 modules/module_currently.lua:1746
 #: modules/module_quick_actions.lua:478 modules/module_quick_actions.lua:508
-#: modules/module_reading_goals.lua:1400 modules/module_reading_goals.lua:1429
-#: modules/module_reading_stats.lua:803 modules/module_reading_stats.lua:832
+#: modules/module_reading_goals.lua:1264 modules/module_reading_goals.lua:1293
+#: modules/module_reading_stats.lua:786 modules/module_reading_stats.lua:815
 #: screens/sui_menu.lua:1099 screens/sui_menu.lua:1136
 #: screens/sui_menu.lua:1360 screens/sui_menu.lua:1400
-#: screens/sui_menu.lua:2383 screens/sui_menu.lua:2413
-#: screens/sui_quicksettings_bar.lua:992 screens/sui_settings_window.lua:1127
+#: screens/sui_menu.lua:2382 screens/sui_menu.lua:2412
+#: screens/sui_quicksettings_bar.lua:992 screens/sui_settings_window.lua:1159
 msgid "Add Item"
 msgstr "항목 추가하기"
 
-#: screens/sui_settings_window.lua:1124 screens/sui_settings_window.lua:1268
+#: screens/sui_settings_window.lua:1156 screens/sui_settings_window.lua:1303
 msgid "Add Module"
 msgstr "모듈 추가하기"
 
-#: screens/sui_settings_window.lua:1231
+#: screens/sui_settings_window.lua:1266
 msgid "Add Page"
 msgstr "페이지 추가하기"
 
+#: features/sui_manual_books.lua:170
+msgid "Add a book you read outside the device, with its title, author and dates. Added books are listed, and can be edited or deleted, in the Finished Books window."
+msgstr ""
+
 #: modules/module_action_list.lua:312 modules/module_quick_actions.lua:383
-#: screens/sui_menu.lua:2303 screens/sui_quicksettings_bar.lua:1060
+#: screens/sui_menu.lua:2302 screens/sui_quicksettings_bar.lua:1060
 msgid "Add at least 2 actions to arrange."
 msgstr "정렬하려면 동작을 2개 이상 추가하세요."
 
@@ -256,7 +257,7 @@ msgstr "정렬하려면 동작을 2개 이상 추가하세요."
 msgid "Add at least 2 books to arrange."
 msgstr "정렬하려면 책을 2권 이상 추가하세요."
 
-#: modules/module_reading_stats.lua:752
+#: modules/module_reading_stats.lua:735
 msgid "Add at least 2 stats to arrange."
 msgstr "정렬하려면 통계를 2개 이상 추가하세요."
 
@@ -264,21 +265,21 @@ msgstr "정렬하려면 통계를 2개 이상 추가하세요."
 msgid "Add to To Be Read"
 msgstr "읽을 책에 추가하기"
 
-#: screens/sui_menu.lua:2715
+#: screens/sui_menu.lua:2714
 msgid "After closing a book"
 msgstr ""
 
-#: infra/sui_config.lua:1858 modules/module_action_list.lua:483
+#: infra/sui_config.lua:1859 modules/module_action_list.lua:483
 #: modules/module_quick_actions.lua:642 modules/module_quote.lua:1509
-#: modules/module_reading_stats.lua:949
+#: modules/module_reading_stats.lua:908
 msgid "Alignment"
 msgstr "맞춤"
 
-#: engines/sui_window.lua:3423 screens/sui_settings_window.lua:889
+#: engines/sui_window.lua:3546 screens/sui_settings_window.lua:921
 msgid "All items have already been added."
 msgstr "모든 항목이 이미 추가되었습니다."
 
-#: screens/sui_settings_window.lua:867
+#: screens/sui_settings_window.lua:899
 msgid "All modules have already been added."
 msgstr "모든 모듈이 이미 추가되었습니다."
 
@@ -286,35 +287,36 @@ msgstr "모든 모듈이 이미 추가되었습니다."
 msgid "All recent books are finished."
 msgstr "최근 책을 모두 읽었습니다."
 
-#: modules/module_reading_stats.lua:130
+#: modules/module_reading_stats.lua:129
 msgid "All time — Books"
 msgstr "전체 기간 — 도서"
 
-#: modules/module_reading_stats.lua:129
+#: modules/module_reading_stats.lua:128
 msgid "All time — Time"
 msgstr "전체 기간 — 시간"
 
-#: screens/sui_menu.lua:2842
+#: screens/sui_menu.lua:2841
 msgid "Always"
 msgstr "항상"
 
-#: modules/module_clock.lua:1157 modules/module_clock.lua:1176
+#: modules/module_clock.lua:1217 modules/module_clock.lua:1236
 msgid "Analogue"
 msgstr "아날로그"
 
-#: modules/module_reading_goals.lua:1322 modules/module_reading_goals.lua:1388
-#: modules/module_reading_goals.lua:1425 modules/module_reading_goals.lua:1439
+#: infra/sui_goals.lua:43 modules/module_reading_goals.lua:1186
+#: modules/module_reading_goals.lua:1252 modules/module_reading_goals.lua:1289
+#: modules/module_reading_goals.lua:1303
 msgid "Annual Goal"
 msgstr "연간 목표"
 
-#: modules/module_reading_goals.lua:757
+#: infra/sui_goals.lua:44
 msgid "Annual Reading Goal"
 msgstr "연간 읽기 목표"
 
 #: features/sui_module_chrome.lua:239 features/sui_module_chrome.lua:242
-#: features/sui_module_chrome.lua:286 infra/sui_config.lua:1133
-#: modules/module_heatmap.lua:344 modules/module_reading_goals.lua:1512
-#: modules/module_reading_goals.lua:1577
+#: features/sui_module_chrome.lua:286 infra/sui_config.lua:1134
+#: modules/module_heatmap.lua:343 modules/module_reading_goals.lua:1350
+#: modules/module_reading_goals.lua:1415
 msgid "Appearance"
 msgstr "모양"
 
@@ -322,28 +324,28 @@ msgstr "모양"
 msgid "Appearance & Style"
 msgstr "모양 및 스타일"
 
-#: infra/sui_config.lua:1256 infra/sui_config.lua:1325
-#: infra/sui_config.lua:1359 infra/sui_config.lua:1474
-#: infra/sui_config.lua:1547 modules/module_clock.lua:1207
+#: infra/sui_config.lua:1257 infra/sui_config.lua:1326
+#: infra/sui_config.lua:1360 infra/sui_config.lua:1475
+#: infra/sui_config.lua:1548 modules/module_clock.lua:1267
 #: screens/sui_menu.lua:1161 screens/sui_menu.lua:1470
-#: screens/sui_menu.lua:2776 screens/sui_menu.lua:2806
-#: screens/sui_menu.lua:3568 screens/sui_menu.lua:4703
+#: screens/sui_menu.lua:2775 screens/sui_menu.lua:2805
+#: screens/sui_menu.lua:3575 screens/sui_menu.lua:4710
 msgid "Apply"
 msgstr "적용"
 
-#: infra/sui_core.lua:1155
+#: infra/sui_core.lua:1210
 msgid "Applying preset…"
 msgstr "사전 설정 적용 중…"
 
-#: engines/sui_heatmap_widgets.lua:87
+#: engines/sui_heatmap_widgets.lua:109
 msgid "Apr"
 msgstr "4월"
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2815
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
 msgid "April"
 msgstr "4월"
 
-#: modules/module_clock.lua:1031 modules/module_feat_coll.lua:142
+#: modules/module_clock.lua:1091 modules/module_feat_coll.lua:142
 #: modules/module_feat_coll.lua:216 modules/module_feat_coll.lua:235
 #: modules/module_tbr.lua:296 modules/module_tbr.lua:368
 #: modules/module_tbr.lua:391
@@ -351,7 +353,7 @@ msgid "Arrange"
 msgstr "정렬하기"
 
 #: modules/module_action_list.lua:332 modules/module_quick_actions.lua:401
-#: screens/sui_menu.lua:2307
+#: screens/sui_menu.lua:2306
 msgid "Arrange %s"
 msgstr "%s 정렬하기"
 
@@ -364,14 +366,14 @@ msgstr "단추 정렬하기"
 msgid "Arrange Collection"
 msgstr "모음집 정렬하기"
 
-#: engines/sui_screen_engine.lua:1996 modules/module_action_list.lua:305
-#: modules/module_coverdeck.lua:1545 modules/module_coverdeck.lua:1551
+#: engines/sui_screen_engine.lua:1997 modules/module_action_list.lua:305
+#: modules/module_coverdeck.lua:1556 modules/module_coverdeck.lua:1562
 #: modules/module_currently.lua:1572 modules/module_currently.lua:1615
 #: modules/module_quick_actions.lua:376 screens/sui_bottombar.lua:938
 #: screens/sui_menu.lua:814 screens/sui_menu.lua:881 screens/sui_menu.lua:888
-#: screens/sui_menu.lua:2297 screens/sui_quicksettings_bar.lua:991
-#: screens/sui_quicksettings_bar.lua:1052 screens/sui_settings_window.lua:1148
-#: screens/sui_topbar.lua:584
+#: screens/sui_menu.lua:2296 screens/sui_quicksettings_bar.lua:991
+#: screens/sui_quicksettings_bar.lua:1052 screens/sui_settings_window.lua:1180
+#: screens/sui_topbar.lua:651
 msgid "Arrange Items"
 msgstr "항목 정렬하기"
 
@@ -379,11 +381,11 @@ msgstr "항목 정렬하기"
 msgid "Arrange Quick Settings"
 msgstr "빠른 설정 정렬하기"
 
-#: modules/module_reading_stats.lua:763
+#: modules/module_reading_stats.lua:746
 msgid "Arrange Reading Stats"
 msgstr "읽기 통계 정렬하기"
 
-#: modules/module_coverdeck.lua:1566
+#: modules/module_coverdeck.lua:1577
 msgid "Arrange Statistics"
 msgstr "통계 정렬하기"
 
@@ -403,34 +405,35 @@ msgstr "한눈에 보기"
 msgid "At least one item must stay visible."
 msgstr ""
 
-#: engines/sui_heatmap_widgets.lua:88
+#: engines/sui_heatmap_widgets.lua:110
 msgid "Aug"
 msgstr "8월"
 
-#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2816
+#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2675
 msgid "August"
 msgstr "8월"
 
-#: modules/module_coverdeck.lua:163 modules/module_coverdeck.lua:1634
-#: modules/module_currently.lua:326 modules/module_currently.lua:1977
-#: modules/module_quote.lua:1471 modules/module_quote.lua:1492
+#: features/sui_manual_books.lua:119 modules/module_coverdeck.lua:163
+#: modules/module_coverdeck.lua:1645 modules/module_currently.lua:326
+#: modules/module_currently.lua:1977 modules/module_quote.lua:1471
+#: modules/module_quote.lua:1492
 msgid "Author"
 msgstr "저자"
 
-#: engines/sui_book_grid.lua:1515 modules/module_library.lua:215
+#: engines/sui_book_grid.lua:1536 modules/module_library.lua:215
 msgid "Author (A–Z)"
 msgstr "저자 (가–하)"
 
-#: screens/sui_menu.lua:4765
+#: screens/sui_menu.lua:4772
 msgid "Author: %s"
 msgstr "저자: %s"
 
 #: features/library/sui_library_browse.lua:63
-#: features/sui_quickactions.lua:1021 infra/sui_config.lua:134
+#: features/sui_quickactions.lua:1021 infra/sui_config.lua:135
 msgid "Authors"
 msgstr "저자"
 
-#: modules/module_collections.lua:1234 screens/sui_menu.lua:3185
+#: modules/module_collections.lua:1238 screens/sui_menu.lua:3192
 msgid "Auto (Single ↔ 4-Cover Grid)"
 msgstr "자동 (단일 ↔ 표지 4칸 격자)"
 
@@ -438,20 +441,20 @@ msgstr "자동 (단일 ↔ 표지 4칸 격자)"
 msgid "Auto (first book)"
 msgstr "자동 (첫 번째 책)"
 
-#: screens/sui_menu.lua:2658
+#: screens/sui_menu.lua:2657
 msgid "Auto-rotate"
 msgstr "자동 회전"
 
-#: screens/sui_menu.lua:4770
+#: screens/sui_menu.lua:4777
 msgid "Automatic Update Check"
 msgstr "업데이트 자동 확인"
 
-#: screens/sui_stats_windows.lua:1205 screens/sui_stats_windows.lua:2410
-#: screens/sui_stats_windows.lua:3882
+#: screens/sui_stats_windows.lua:1145 screens/sui_stats_windows.lua:2262
+#: screens/sui_stats_windows.lua:3678
 msgid "Average per day"
 msgstr "일평균"
 
-#: screens/sui_stats_windows.lua:1207 screens/sui_stats_windows.lua:3884
+#: screens/sui_stats_windows.lua:1147 screens/sui_stats_windows.lua:3680
 msgid "Average per page"
 msgstr "쪽당 평균"
 
@@ -465,7 +468,7 @@ msgstr "뒤로 단추"
 
 #: features/sui_module_chrome.lua:218 features/sui_module_chrome.lua:263
 #: features/sui_module_chrome.lua:274 screens/sui_menu.lua:313
-#: screens/sui_menu.lua:3773
+#: screens/sui_menu.lua:3780
 msgid "Background Opacity"
 msgstr ""
 
@@ -478,29 +481,27 @@ msgstr "단색 배경"
 msgid "Backup"
 msgstr "백업"
 
-#: screens/sui_menu.lua:4792
+#: screens/sui_menu.lua:4799
 msgid "Backup & Restore"
 msgstr "백업 및 복원"
 
-#: features/sui_backup.lua:639
+#: features/sui_backup.lua:650
 msgid "Backup created"
 msgstr "백업 만들기 완료"
 
-#: features/sui_backup.lua:888 features/sui_backup.lua:1109
+#: features/sui_backup.lua:899 features/sui_backup.lua:1120
 msgid "Backup created:"
 msgstr "백업 만들기 완료:"
 
-#: features/sui_backup.lua:885 features/sui_backup.lua:1112
+#: features/sui_backup.lua:896 features/sui_backup.lua:1123
 msgid "Backup failed."
 msgstr "백업하지 못했습니다."
 
-#: features/sui_backup.lua:947
+#: features/sui_backup.lua:958
 msgid "Backup loaded. Choose what to import, then tap \"Restore Selected…\"."
-msgstr ""
-"백업을 불러왔습니다. 가져올 항목을 선택한 다음 \"선택한 항목 복원…\"을 누르세"
-"요."
+msgstr "백업을 불러왔습니다. 가져올 항목을 선택한 다음 \"선택한 항목 복원…\"을 누르세요."
 
-#: features/sui_backup.lua:1005
+#: features/sui_backup.lua:1016
 msgid ""
 "Backup restored.\n"
 "Restart KOReader now to finish applying all changes?"
@@ -508,37 +509,34 @@ msgstr ""
 "백업을 복원했습니다.\n"
 "모든 변경 사항을 적용하려면 지금 KOReader를 다시 시작할까요?"
 
-#: features/sui_backup.lua:581
-msgid ""
-"Backup was made by a newer SimpleUI version. Please update this plugin first."
-msgstr ""
-"이 백업은 더 새 버전의 SimpleUI에서 만들었습니다. 먼저 이 플러그인을 업데이트"
-"하세요."
+#: features/sui_backup.lua:592
+msgid "Backup was made by a newer SimpleUI version. Please update this plugin first."
+msgstr "이 백업은 더 새 버전의 SimpleUI에서 만들었습니다. 먼저 이 플러그인을 업데이트하세요."
 
-#: engines/sui_book_grid.lua:2022 modules/module_collections.lua:1294
-#: screens/sui_menu.lua:3472 screens/sui_menu.lua:3481
-#: screens/sui_menu.lua:3487
+#: engines/sui_book_grid.lua:2043 modules/module_collections.lua:1298
+#: screens/sui_menu.lua:3479 screens/sui_menu.lua:3488
+#: screens/sui_menu.lua:3494
 msgid "Badge"
 msgstr "배지"
 
-#: infra/sui_config.lua:1273 infra/sui_config.lua:1275
+#: infra/sui_config.lua:1274 infra/sui_config.lua:1276
 msgid "Badge Size"
 msgstr "배지 크기"
 
-#: screens/sui_menu.lua:3203
+#: screens/sui_menu.lua:3210
 msgid "Badges"
 msgstr "배지"
 
-#: features/library/sui_foldercovers.lua:293 screens/sui_menu.lua:3405
-#: screens/sui_menu.lua:3414 screens/sui_menu.lua:3420
+#: features/library/sui_foldercovers.lua:294 screens/sui_menu.lua:3412
+#: screens/sui_menu.lua:3421 screens/sui_menu.lua:3427
 msgid "Banner"
 msgstr "배너"
 
-#: engines/sui_book_grid.lua:1909
+#: engines/sui_book_grid.lua:1930
 msgid "Bar"
 msgstr "막대"
 
-#: engines/sui_book_grid.lua:1911
+#: engines/sui_book_grid.lua:1932
 msgid "Bar + Text"
 msgstr "막대 + 글자"
 
@@ -556,26 +554,26 @@ msgstr "막대 모양"
 msgid "Bare"
 msgstr "단순"
 
-#: features/sui_backup.lua:116 screens/sui_menu.lua:4920
-#: screens/sui_settings_window.lua:360 screens/sui_settings_window.lua:1116
+#: features/sui_backup.lua:116 screens/sui_menu.lua:4927
+#: screens/sui_settings_window.lua:361 screens/sui_settings_window.lua:1148
 msgid "Bars"
 msgstr "막대"
 
-#: infra/sui_config.lua:196 modules/module_clock.lua:214
-#: modules/module_clock.lua:1145
+#: infra/sui_config.lua:197 modules/module_clock.lua:214
+#: modules/module_clock.lua:1205
 msgid "Battery"
 msgstr "배터리"
 
-#: infra/sui_config.lua:1139 screens/sui_menu.lua:3048
-#: screens/sui_settings_window.lua:448 screens/sui_settings_window.lua:1129
+#: infra/sui_config.lua:1140 screens/sui_menu.lua:3031
+#: screens/sui_settings_window.lua:480 screens/sui_settings_window.lua:1161
 msgid "Behaviour"
 msgstr "동작 방식"
 
-#: screens/sui_stats_windows.lua:2180 screens/sui_stats_windows.lua:2200
+#: screens/sui_stats_windows.lua:2032 screens/sui_stats_windows.lua:2052
 msgid "Best streak"
 msgstr "최장 연속 기록"
 
-#: infra/sui_config.lua:194
+#: infra/sui_config.lua:195
 msgid "Bluetooth"
 msgstr ""
 
@@ -587,11 +585,11 @@ msgstr ""
 msgid "Bold italic"
 msgstr ""
 
-#: screens/sui_menu.lua:2885
+#: screens/sui_menu.lua:2884
 msgid "Book Cover Transition"
 msgstr "책 표지 전환 효과"
 
-#: screens/sui_menu.lua:2720
+#: screens/sui_menu.lua:2719
 #, fuzzy
 msgid "Book Folder"
 msgstr "폴더"
@@ -600,11 +598,11 @@ msgstr "폴더"
 msgid "Book Info"
 msgstr "도서 정보"
 
-#: infra/sui_config.lua:1665
+#: infra/sui_config.lua:1666
 msgid "Book Menu"
 msgstr "도서 메뉴"
 
-#: screens/sui_stats_windows.lua:3935
+#: screens/sui_stats_windows.lua:3732
 msgid "Book Statistics"
 msgstr "도서 통계"
 
@@ -612,7 +610,7 @@ msgstr "도서 통계"
 msgid "Book statistics"
 msgstr "도서 통계"
 
-#: screens/sui_settings_window.lua:368
+#: screens/sui_settings_window.lua:369
 msgid "Book-browser settings"
 msgstr "도서 탐색기 설정"
 
@@ -624,7 +622,7 @@ msgstr "책갈피 탐색기"
 msgid "Bookmark browser requires a newer KOReader. Please update."
 msgstr ""
 
-#: features/sui_quickactions.lua:881 infra/sui_config.lua:126
+#: features/sui_quickactions.lua:881 infra/sui_config.lua:127
 msgid "Bookmarks"
 msgstr "책갈피"
 
@@ -632,13 +630,17 @@ msgstr "책갈피"
 msgid "Books"
 msgstr "도서"
 
-#: modules/module_reading_goals.lua:758
+#: features/sui_manual_books.lua:133
+msgid "Books read in %d:"
+msgstr ""
+
+#: infra/sui_goals.lua:45
 msgid "Books to read in %s:"
 msgstr "%s에 읽을 도서:"
 
-#: modules/module_collections.lua:1270 screens/sui_menu.lua:3223
-#: screens/sui_menu.lua:3230 screens/sui_menu.lua:3245
-#: screens/sui_menu.lua:3636 screens/sui_menu.lua:3655
+#: modules/module_collections.lua:1274 screens/sui_menu.lua:3230
+#: screens/sui_menu.lua:3237 screens/sui_menu.lua:3252
+#: screens/sui_menu.lua:3643 screens/sui_menu.lua:3662
 msgid "Bottom"
 msgstr "아래"
 
@@ -647,21 +649,12 @@ msgstr "아래"
 msgid "Bottom Margin"
 msgstr "아래쪽 여백"
 
-#: screens/sui_menu.lua:2886
-msgid ""
-"Briefly show the book cover full-screen when opening or closing a book, "
-"masking the page-layout flash. Normally requires the book to already be "
-"indexed by the cover browser (its cover must have been seen at least once in "
-"a grid/list view) — see \"High-Quality Cover\" below to also cover un-"
-"indexed books."
-msgstr ""
-"도서를 열거나 닫을 때 표지를 잠시 전체 화면으로 표시하여 페이지 레이아웃이 깜"
-"박이는 현상을 가립니다. 일반적으로 표지 탐색기에 이미 색인된 도서에서만 동작"
-"합니다(격자 또는 목록 보기에서 표지를 한 번 이상 본 적이 있어야 함). 아직 색"
-"인되지 않은 도서에도 적용하려면 아래의 \"고품질 표지\"를 참고하세요."
+#: screens/sui_menu.lua:2885
+msgid "Briefly show the book cover full-screen when opening or closing a book, masking the page-layout flash. Normally requires the book to already be indexed by the cover browser (its cover must have been seen at least once in a grid/list view) — see \"High-Quality Cover\" below to also cover un-indexed books."
+msgstr "도서를 열거나 닫을 때 표지를 잠시 전체 화면으로 표시하여 페이지 레이아웃이 깜박이는 현상을 가립니다. 일반적으로 표지 탐색기에 이미 색인된 도서에서만 동작합니다(격자 또는 목록 보기에서 표지를 한 번 이상 본 적이 있어야 함). 아직 색인되지 않은 도서에도 적용하려면 아래의 \"고품질 표지\"를 참고하세요."
 
-#: features/sui_quickactions.lua:947 infra/sui_config.lua:129
-#: infra/sui_config.lua:195
+#: features/sui_quickactions.lua:947 infra/sui_config.lua:130
+#: infra/sui_config.lua:196
 msgid "Brightness"
 msgstr "밝기"
 
@@ -698,12 +691,12 @@ msgstr "%s별 탐색"
 msgid "Browse by Authors/Series/Tags not available."
 msgstr "저자/시리즈/태그별 탐색을 사용할 수 없습니다."
 
-#: screens/sui_titlebar.lua:1046
+#: screens/sui_titlebar.lua:1029
 msgid "Browse library"
 msgstr "서재 탐색"
 
-#: features/sui_quickactions.lua:2190 screens/sui_menu.lua:2589
-#: screens/sui_menu.lua:4126
+#: features/sui_quickactions.lua:2190 screens/sui_menu.lua:2588
+#: screens/sui_menu.lua:4133
 msgid "Browse…"
 msgstr "찾아보기…"
 
@@ -729,43 +722,39 @@ msgstr "단추 크기"
 msgid "Button Type"
 msgstr "단추 종류"
 
-#: screens/sui_titlebar.lua:1050
+#: screens/sui_titlebar.lua:1033
 msgid "By author"
 msgstr "저자별"
 
-#: screens/sui_menu.lua:2925
-msgid ""
-"By default the cover is stretched to fill the whole screen, which can "
-"distort it if its proportions don't match your screen's. When on, the cover "
-"keeps its original proportions instead, centered over a black background."
-msgstr ""
-"기본적으로 표지는 화면 전체를 채우도록 늘어나며, 화면 비율과 다르면 왜곡될 "
-"수 있습니다. 이 옵션을 켜면 검은 배경 위에 원래 비율을 유지한 채 가운데에 표"
-"시됩니다."
+#: screens/sui_menu.lua:2924
+msgid "By default the cover is stretched to fill the whole screen, which can distort it if its proportions don't match your screen's. When on, the cover keeps its original proportions instead, centered over a black background."
+msgstr "기본적으로 표지는 화면 전체를 채우도록 늘어나며, 화면 비율과 다르면 왜곡될 수 있습니다. 이 옵션을 켜면 검은 배경 위에 원래 비율을 유지한 채 가운데에 표시됩니다."
 
-#: screens/sui_titlebar.lua:1051
+#: screens/sui_titlebar.lua:1034
 msgid "By series"
 msgstr "시리즈별"
 
-#: screens/sui_titlebar.lua:1052
+#: screens/sui_titlebar.lua:1035
 msgid "By tags"
 msgstr "태그별"
 
-#: screens/sui_heatmap_popup.lua:140 screens/sui_stats_windows.lua:3118
+#: screens/sui_heatmap_popup.lua:67 screens/sui_stats_windows.lua:2908
 msgid "CALENDAR"
 msgstr "달력"
 
-#: modules/module_heatmap.lua:331
+#: modules/module_heatmap.lua:330
 msgid "Calendar"
 msgstr "달력"
 
 #: features/library/sui_group_actions.lua:74
 #: features/library/sui_group_actions.lua:107
-#: features/library/sui_library_browse.lua:827
+#: features/library/sui_library_browse.lua:838
 #: features/library/sui_library_search.lua:70
 #: features/library/sui_library_search.lua:207
-#: features/library/sui_series_grouping.lua:401 features/sui_backup.lua:993
-#: features/sui_backup.lua:1092 features/sui_presets.lua:859
+#: features/library/sui_series_grouping.lua:401 features/sui_backup.lua:1004
+#: features/sui_backup.lua:1103 features/sui_manual_books.lua:83
+#: features/sui_manual_books.lua:104 features/sui_manual_books.lua:138
+#: features/sui_manual_books.lua:155 features/sui_presets.lua:859
 #: features/sui_presets.lua:889 features/sui_presets.lua:919
 #: features/sui_presets.lua:936 features/sui_presets.lua:964
 #: features/sui_presets.lua:1004 features/sui_presets.lua:1022
@@ -777,40 +766,39 @@ msgstr "달력"
 #: features/sui_quickactions.lua:2636 features/sui_quickactions.lua:2714
 #: features/sui_quickactions.lua:2738 features/sui_quickactions.lua:3050
 #: features/sui_quickactions.lua:3445 features/sui_style.lua:1391
-#: infra/sui_config.lua:1257 infra/sui_config.lua:1326
-#: infra/sui_config.lua:1360 infra/sui_config.lua:1475
-#: infra/sui_config.lua:1548 infra/sui_updater.lua:500
-#: infra/sui_updater.lua:517 modules/module_clock.lua:1208
+#: infra/sui_config.lua:1258 infra/sui_config.lua:1327
+#: infra/sui_config.lua:1361 infra/sui_config.lua:1476
+#: infra/sui_config.lua:1549 infra/sui_goals.lua:112 infra/sui_updater.lua:500
+#: infra/sui_updater.lua:517 modules/module_clock.lua:1268
 #: modules/module_collections.lua:355 modules/module_quote.lua:1328
-#: modules/module_reading_goals.lua:745 screens/sui_menu.lua:770
-#: screens/sui_menu.lua:1032 screens/sui_menu.lua:1162
-#: screens/sui_menu.lua:1471 screens/sui_menu.lua:2777
-#: screens/sui_menu.lua:2807 screens/sui_menu.lua:3569
-#: screens/sui_menu.lua:4334 screens/sui_menu.lua:4362
-#: screens/sui_menu.lua:4391 screens/sui_menu.lua:4408
-#: screens/sui_menu.lua:4434 screens/sui_menu.lua:4475
-#: screens/sui_menu.lua:4493 screens/sui_menu.lua:4520
-#: screens/sui_menu.lua:4704 screens/sui_menu.lua:4809
-#: screens/sui_settings_window.lua:517 screens/sui_settings_window.lua:1208
-#: screens/sui_stats_windows.lua:649 screens/sui_stats_windows.lua:772
-#: screens/sui_titlebar.lua:1053
+#: screens/sui_menu.lua:770 screens/sui_menu.lua:1032 screens/sui_menu.lua:1162
+#: screens/sui_menu.lua:1471 screens/sui_menu.lua:2776
+#: screens/sui_menu.lua:2806 screens/sui_menu.lua:3576
+#: screens/sui_menu.lua:4341 screens/sui_menu.lua:4369
+#: screens/sui_menu.lua:4398 screens/sui_menu.lua:4415
+#: screens/sui_menu.lua:4441 screens/sui_menu.lua:4482
+#: screens/sui_menu.lua:4500 screens/sui_menu.lua:4527
+#: screens/sui_menu.lua:4711 screens/sui_menu.lua:4816
+#: screens/sui_settings_window.lua:549 screens/sui_settings_window.lua:1243
+#: screens/sui_stats_windows.lua:516 screens/sui_stats_windows.lua:636
+#: screens/sui_titlebar.lua:1036
 msgid "Cancel"
 msgstr "취소"
 
-#: modules/module_reading_stats.lua:863 modules/module_reading_stats.lua:949
+#: modules/module_reading_stats.lua:846 modules/module_reading_stats.lua:908
 msgid "Card Opacity"
 msgstr ""
 
-#: modules/module_reading_stats.lua:854
+#: modules/module_reading_stats.lua:837
 msgid "Cards"
 msgstr "카드"
 
-#: infra/sui_config.lua:1849 screens/sui_menu.lua:830 screens/sui_menu.lua:1062
-#: screens/sui_menu.lua:3635 screens/sui_menu.lua:3648
+#: infra/sui_config.lua:1850 screens/sui_menu.lua:830 screens/sui_menu.lua:1062
+#: screens/sui_menu.lua:3642 screens/sui_menu.lua:3655
 msgid "Center"
 msgstr "가운데"
 
-#: screens/sui_menu.lua:4781
+#: screens/sui_menu.lua:4788
 msgid "Check for Updates"
 msgstr "업데이트 확인하기"
 
@@ -822,11 +810,11 @@ msgstr "업데이트 확인 중…"
 msgid "Choose a different folder"
 msgstr ""
 
-#: features/sui_backup.lua:962
+#: features/sui_backup.lua:973
 msgid "Choose backup file"
 msgstr "백업 파일 선택하기"
 
-#: features/sui_backup.lua:1138
+#: features/sui_backup.lua:1149
 msgid "Choose backup file…"
 msgstr "백업 파일 선택하기…"
 
@@ -838,17 +826,15 @@ msgstr "파일 선택하기"
 msgid "Choose icon"
 msgstr "아이콘 선택하기"
 
-#: screens/sui_menu.lua:4136
+#: screens/sui_menu.lua:4143
 msgid "Choose icon pack"
 msgstr "아이콘 묶음 선택하기"
 
 #: screens/sui_onboarding.lua:216
-msgid ""
-"Choose the folder where you will place all your books. Simple UI uses it to "
-"show your books in the Library."
+msgid "Choose the folder where you will place all your books. Simple UI uses it to show your books in the Library."
 msgstr ""
 
-#: screens/sui_menu.lua:2597
+#: screens/sui_menu.lua:2596
 msgid "Choose wallpaper"
 msgstr "배경화면 선택하기"
 
@@ -856,17 +842,17 @@ msgstr "배경화면 선택하기"
 msgid "Choose your initial layout"
 msgstr "초기 레이아웃 선택하기"
 
-#: screens/sui_menu.lua:2136 screens/sui_menu.lua:3845
+#: screens/sui_menu.lua:2136 screens/sui_menu.lua:3852
 msgid "Classic"
 msgstr ""
 
 #: features/sui_presets.lua:155 features/sui_presets.lua:219
-#: infra/sui_config.lua:192 modules/module_clock.lua:212
-#: modules/module_clock.lua:733 modules/module_clock.lua:1145
+#: infra/sui_config.lua:193 modules/module_clock.lua:212
+#: modules/module_clock.lua:759 modules/module_clock.lua:1205
 msgid "Clock"
 msgstr "시계"
 
-#: modules/module_clock.lua:1153
+#: modules/module_clock.lua:1213
 msgid "Clock Style"
 msgstr "시계 모양"
 
@@ -874,11 +860,11 @@ msgstr "시계 모양"
 msgid "Close"
 msgstr "닫기"
 
-#: screens/sui_menu.lua:2838
+#: screens/sui_menu.lua:2837
 msgid "Closing Book Notice"
 msgstr "도서 닫기 알림"
 
-#: main.lua:1886
+#: main.lua:1882
 msgid "Closing book…"
 msgstr "도서 닫는 중…"
 
@@ -891,7 +877,7 @@ msgstr "코드 포인트가 올바른 유니코드 범위(0–10FFFF)를 벗어�
 msgid "Collection"
 msgstr "모음집"
 
-#: modules/module_collections.lua:1345
+#: modules/module_collections.lua:1349
 msgid "Collection Menu"
 msgstr "모음집 메뉴"
 
@@ -912,11 +898,11 @@ msgid "Collection not available: %s"
 msgstr "모음집을 사용할 수 없습니다: %s"
 
 #: features/sui_quickactions.lua:515 features/sui_quickactions.lua:770
-#: features/sui_quickactions.lua:2251 infra/sui_config.lua:120
-#: modules/module_collections.lua:1097 modules/module_collections.lua:1116
-#: modules/module_collections.lua:1125 modules/module_collections.lua:1178
-#: modules/module_collections.lua:1335 modules/module_collections.lua:1336
-#: modules/module_coverdeck.lua:1372
+#: features/sui_quickactions.lua:2251 infra/sui_config.lua:121
+#: modules/module_collections.lua:1101 modules/module_collections.lua:1120
+#: modules/module_collections.lua:1129 modules/module_collections.lua:1182
+#: modules/module_collections.lua:1339 modules/module_collections.lua:1340
+#: modules/module_coverdeck.lua:1383
 msgid "Collections"
 msgstr "모음집"
 
@@ -932,21 +918,21 @@ msgstr "모음집을 사용할 수 없습니다."
 msgid "Collections: Back Button"
 msgstr "모음집: 뒤로 단추"
 
-#: screens/sui_menu.lua:3268 screens/sui_menu.lua:3322
-#: screens/sui_menu.lua:3376 screens/sui_menu.lua:3443
-#: screens/sui_menu.lua:3510 screens/sui_menu.lua:3664
+#: screens/sui_menu.lua:3275 screens/sui_menu.lua:3329
+#: screens/sui_menu.lua:3383 screens/sui_menu.lua:3450
+#: screens/sui_menu.lua:3517 screens/sui_menu.lua:3671
 msgid "Color"
 msgstr "색상"
 
-#: infra/sui_config.lua:1532 infra/sui_config.lua:1540
+#: infra/sui_config.lua:1533 infra/sui_config.lua:1541
 msgid "Column Width (Bento Grid)"
 msgstr "열 너비 (벤토 격자)"
 
-#: engines/sui_book_grid.lua:1838
+#: engines/sui_book_grid.lua:1859
 msgid "Columns"
 msgstr "열"
 
-#: modules/module_currently.lua:2037 modules/module_reading_goals.lua:1518
+#: modules/module_currently.lua:2037 modules/module_reading_goals.lua:1356
 #: screens/sui_menu.lua:2167
 msgid "Compact"
 msgstr "간결"
@@ -955,27 +941,27 @@ msgstr "간결"
 msgid "Confirm"
 msgstr "확인"
 
-#: infra/sui_config.lua:1114
+#: infra/sui_config.lua:1115
 #, fuzzy
 msgid "Content"
 msgstr "계속"
 
-#: features/sui_quickactions.lua:803 infra/sui_config.lua:123
+#: features/sui_quickactions.lua:803 infra/sui_config.lua:124
 #: screens/sui_onboarding.lua:423 screens/sui_onboarding.lua:429
 #: screens/sui_onboarding.lua:441 screens/sui_onboarding.lua:447
 msgid "Continue"
 msgstr "계속"
 
-#: features/sui_backup.lua:1110
+#: features/sui_backup.lua:1121
 msgid "Copy this file somewhere safe (e.g. over USB)."
 msgstr "이 파일을 안전한 곳에 복사하세요 (예: USB로 옮기기)."
 
-#: engines/sui_book_grid.lua:1913
+#: engines/sui_book_grid.lua:1934
 msgid "Corner Badge"
 msgstr "모서리 배지"
 
-#: features/sui_backup.lua:879 features/sui_backup.lua:954
-#: features/sui_backup.lua:1081
+#: features/sui_backup.lua:890 features/sui_backup.lua:965
+#: features/sui_backup.lua:1092
 msgid "Could not determine backup folder."
 msgstr "백업 폴더를 확인할 수 없습니다."
 
@@ -983,11 +969,11 @@ msgstr "백업 폴더를 확인할 수 없습니다."
 msgid "Could not determine packs folder"
 msgstr "묶음 폴더를 확인할 수 없습니다."
 
-#: features/sui_backup.lua:526
+#: features/sui_backup.lua:537
 msgid "Could not open backup file for writing"
 msgstr "백업 파일을 쓰기용으로 열 수 없습니다"
 
-#: screens/sui_stats_windows.lua:172
+#: screens/sui_stats_windows.lua:65
 msgid "Could not open statistics database."
 msgstr "통계 데이터베이스를 열 수 없습니다."
 
@@ -995,25 +981,29 @@ msgstr "통계 데이터베이스를 열 수 없습니다."
 msgid "Could not open zip (invalid format or corrupted)"
 msgstr "ZIP 파일을 열 수 없습니다 (형식이 잘못되었거나 손상됨)."
 
-#: features/sui_backup.lua:538
+#: features/sui_backup.lua:549
 msgid "Could not write backup file"
 msgstr "백업 파일을 쓸 수 없습니다"
+
+#: features/sui_manual_books.lua:182
+msgid "Count manually tracked books in the all-time total of books finished. They always count towards the year they belong to."
+msgstr ""
 
 #: features/sui_presets.lua:175 features/sui_presets.lua:193
 #: modules/module_coverdeck.lua:580
 msgid "Cover Deck"
 msgstr "표지 묶음"
 
-#: screens/sui_menu.lua:3155
+#: screens/sui_menu.lua:3162
 msgid "Cover Settings"
 msgstr "표지 설정"
 
-#: screens/sui_menu.lua:4632
+#: screens/sui_menu.lua:4639
 msgid "Cover Shadow"
 msgstr ""
 
-#: engines/sui_book_grid.lua:1791 engines/sui_book_grid.lua:1793
-#: modules/module_coverdeck.lua:1317 modules/module_coverdeck.lua:1318
+#: engines/sui_book_grid.lua:1812 engines/sui_book_grid.lua:1814
+#: modules/module_coverdeck.lua:1328 modules/module_coverdeck.lua:1329
 #: modules/module_currently.lua:1492 modules/module_currently.lua:1493
 msgid "Cover Size"
 msgstr "표지 크기"
@@ -1022,7 +1012,7 @@ msgstr "표지 크기"
 msgid "Cover Spacing"
 msgstr "표지 간격"
 
-#: modules/module_collections.lua:1227
+#: modules/module_collections.lua:1231
 msgid "Cover Style"
 msgstr "표지 모양"
 
@@ -1031,8 +1021,7 @@ msgid "Cover for \"%s\""
 msgstr "\"%s\"의 표지"
 
 #: infra/sui_compat_check.lua:212
-msgid ""
-"CoverBrowser plugin is not enabled, some features will not work correctly."
+msgid "CoverBrowser plugin is not enabled, some features will not work correctly."
 msgstr ""
 
 #: modules/module_coverdeck.lua:161
@@ -1040,7 +1029,7 @@ msgid "Covers"
 msgstr "표지"
 
 #: features/library/sui_group_actions.lua:112
-#: screens/sui_settings_window.lua:1213
+#: screens/sui_settings_window.lua:1248
 msgid "Create"
 msgstr "만들기"
 
@@ -1048,7 +1037,7 @@ msgstr "만들기"
 msgid "Create Quick Action"
 msgstr "빠른 동작 만들기"
 
-#: screens/sui_settings_window.lua:1196
+#: screens/sui_settings_window.lua:1231
 msgid "Create Screen"
 msgstr "화면 만들기"
 
@@ -1056,22 +1045,22 @@ msgstr "화면 만들기"
 msgid "Create a \"Books\" folder"
 msgstr ""
 
-#: features/library/sui_foldercovers.lua:671
-#: features/library/sui_foldercovers.lua:686
-#: features/library/sui_library_browse.lua:820
+#: features/library/sui_foldercovers.lua:669
+#: features/library/sui_foldercovers.lua:684
+#: features/library/sui_library_browse.lua:831
 #: features/library/sui_series_grouping.lua:393
 msgid "Create collection"
 msgstr "모음집 만들기"
 
-#: screens/sui_settings_window.lua:1203
+#: screens/sui_settings_window.lua:1238
 msgid "Create screen"
 msgstr "화면 만들기"
 
-#: features/sui_backup.lua:876 features/sui_backup.lua:1106
+#: features/sui_backup.lua:887 features/sui_backup.lua:1117
 msgid "Creating backup…"
 msgstr "백업 만드는 중…"
 
-#: screens/sui_stats_windows.lua:2178 screens/sui_stats_windows.lua:2198
+#: screens/sui_stats_windows.lua:2030 screens/sui_stats_windows.lua:2050
 msgid "Current streak"
 msgstr "현재 연속 기록"
 
@@ -1081,7 +1070,7 @@ msgstr "현재 연속 기록"
 msgid "Currently Reading"
 msgstr "읽는 중"
 
-#: infra/sui_config.lua:2654
+#: infra/sui_config.lua:2726
 msgid "Custom"
 msgstr "사용자 지정"
 
@@ -1109,11 +1098,11 @@ msgstr "사용자 지정 화면"
 msgid "Custom Screens"
 msgstr "사용자 지정 화면"
 
-#: screens/sui_settings_window.lua:468
+#: screens/sui_settings_window.lua:500
 msgid "Custom Screens unavailable."
 msgstr "사용자 지정 화면을 사용할 수 없습니다."
 
-#: infra/sui_config.lua:199 screens/sui_menu.lua:762 screens/sui_menu.lua:1025
+#: infra/sui_config.lua:200 screens/sui_menu.lua:762 screens/sui_menu.lua:1025
 msgid "Custom Text"
 msgstr "사용자 지정 글자"
 
@@ -1137,39 +1126,40 @@ msgstr "사용자 지정 배경화면 및 아이콘"
 msgid "Customize even more"
 msgstr "더 세밀하게 꾸미기"
 
-#: screens/sui_stats_windows.lua:2725 screens/sui_stats_windows.lua:3360
+#: screens/sui_stats_windows.lua:2583 screens/sui_stats_windows.lua:3156
 msgid "DAY STREAK"
 msgstr "연속 일수"
 
-#: modules/module_reading_goals.lua:1362 modules/module_reading_goals.lua:1390
-#: modules/module_reading_goals.lua:1427 modules/module_reading_goals.lua:1451
+#: infra/sui_goals.lua:64 modules/module_reading_goals.lua:1226
+#: modules/module_reading_goals.lua:1254 modules/module_reading_goals.lua:1291
+#: modules/module_reading_goals.lua:1313
 msgid "Daily Goal"
 msgstr "일일 목표"
 
-#: modules/module_reading_goals.lua:791
+#: infra/sui_goals.lua:65
 msgid "Daily Reading Goal"
 msgstr "일일 읽기 목표"
 
-#: modules/module_reading_stats.lua:126
+#: modules/module_reading_stats.lua:125
 msgid "Daily avg — Pages"
 msgstr "일평균 — 페이지"
 
-#: modules/module_reading_stats.lua:125
+#: modules/module_reading_stats.lua:124
 msgid "Daily avg — Time"
 msgstr "일평균 — 시간"
 
-#: engines/sui_book_grid.lua:1884 modules/module_collections.lua:1278
-#: modules/module_coverdeck.lua:1666 modules/module_currently.lua:2003
-#: screens/sui_menu.lua:3270 screens/sui_menu.lua:3275
-#: screens/sui_menu.lua:3324 screens/sui_menu.lua:3329
-#: screens/sui_menu.lua:3378 screens/sui_menu.lua:3383
-#: screens/sui_menu.lua:3445 screens/sui_menu.lua:3450
-#: screens/sui_menu.lua:3512 screens/sui_menu.lua:3517
-#: screens/sui_menu.lua:3666 screens/sui_menu.lua:3678
+#: engines/sui_book_grid.lua:1905 modules/module_collections.lua:1282
+#: modules/module_coverdeck.lua:1677 modules/module_currently.lua:2003
+#: screens/sui_menu.lua:3277 screens/sui_menu.lua:3282
+#: screens/sui_menu.lua:3331 screens/sui_menu.lua:3336
+#: screens/sui_menu.lua:3385 screens/sui_menu.lua:3390
+#: screens/sui_menu.lua:3452 screens/sui_menu.lua:3457
+#: screens/sui_menu.lua:3519 screens/sui_menu.lua:3524
+#: screens/sui_menu.lua:3673 screens/sui_menu.lua:3685
 msgid "Dark"
 msgstr "어둡게"
 
-#: screens/sui_menu.lua:2669
+#: screens/sui_menu.lua:2668
 #, fuzzy
 msgid "Darken"
 msgstr "어둡게"
@@ -1178,7 +1168,7 @@ msgstr "어둡게"
 msgid "Dashboard"
 msgstr "대시보드"
 
-#: modules/module_clock.lua:213 modules/module_clock.lua:1145
+#: modules/module_clock.lua:213 modules/module_clock.lua:1205
 msgid "Date"
 msgstr "날짜"
 
@@ -1190,15 +1180,15 @@ msgstr "추가한 날짜 (최신순)"
 msgid "Date added (oldest)"
 msgstr "추가한 날짜 (오래된순)"
 
-#: screens/sui_stats_windows.lua:724
+#: screens/sui_stats_windows.lua:591
 msgid "Date finished"
 msgstr "완료 날짜"
 
-#: screens/sui_stats_windows.lua:717
+#: screens/sui_stats_windows.lua:584
 msgid "Date started"
 msgstr "시작 날짜"
 
-#: screens/sui_stats_windows.lua:945 screens/sui_stats_windows.lua:3651
+#: screens/sui_stats_windows.lua:885 screens/sui_stats_windows.lua:3447
 msgid "Days"
 msgstr "일수"
 
@@ -1206,20 +1196,20 @@ msgstr "일수"
 msgid "Days of reading"
 msgstr "읽은 일수"
 
-#: engines/sui_heatmap_widgets.lua:88
+#: engines/sui_heatmap_widgets.lua:110
 msgid "Dec"
 msgstr "12월"
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2817
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
 msgid "December"
 msgstr "12월"
 
 #: features/sui_quickactions.lua:2168 features/sui_quickactions.lua:2454
 #: features/sui_style.lua:2134 features/sui_style.lua:2181
-#: infra/sui_config.lua:961 modules/module_currently.lua:1531
-#: modules/module_reading_goals.lua:1517 screens/sui_menu.lua:570
+#: infra/sui_config.lua:962 modules/module_currently.lua:1531
+#: modules/module_reading_goals.lua:1355 screens/sui_menu.lua:570
 #: screens/sui_menu.lua:699 screens/sui_menu.lua:1417 screens/sui_menu.lua:2168
-#: screens/sui_menu.lua:3844 screens/sui_titlebar.lua:1049
+#: screens/sui_menu.lua:3851 screens/sui_titlebar.lua:1032
 msgid "Default"
 msgstr "기본값"
 
@@ -1239,7 +1229,7 @@ msgstr "기본값 (시스템)"
 msgid "Default Quotes"
 msgstr "기본 문구"
 
-#: infra/sui_config.lua:1319
+#: infra/sui_config.lua:1320
 #, fuzzy
 msgid "Default: %1"
 msgstr "기본값"
@@ -1260,34 +1250,38 @@ msgstr "기본값: 플러그인"
 msgid "Default: System"
 msgstr "기본값: 시스템"
 
-#: engines/sui_window.lua:1956 engines/sui_window.lua:2884
-#: features/library/sui_book_hold_dialog.lua:151 features/sui_presets.lua:960
-#: features/sui_presets.lua:963 features/sui_presets.lua:1003
-#: features/sui_quickactions.lua:1612 features/sui_quickactions.lua:3044
-#: features/sui_quickactions.lua:3049 screens/sui_menu.lua:4430
-#: screens/sui_menu.lua:4433 screens/sui_menu.lua:4474
-#: screens/sui_settings_window.lua:544 screens/sui_settings_window.lua:592
-#: screens/sui_settings_window.lua:722
+#: engines/sui_window.lua:1998 engines/sui_window.lua:3007
+#: features/library/sui_book_hold_dialog.lua:151
+#: features/sui_manual_books.lua:99 features/sui_manual_books.lua:103
+#: features/sui_presets.lua:960 features/sui_presets.lua:963
+#: features/sui_presets.lua:1003 features/sui_quickactions.lua:1612
+#: features/sui_quickactions.lua:3044 features/sui_quickactions.lua:3049
+#: screens/sui_menu.lua:4437 screens/sui_menu.lua:4440
+#: screens/sui_menu.lua:4481 screens/sui_settings_window.lua:576
+#: screens/sui_settings_window.lua:624 screens/sui_settings_window.lua:754
 msgid "Delete"
 msgstr "삭제"
 
-#: screens/sui_menu.lua:4808
+#: screens/sui_menu.lua:4815
 msgid "Delete Settings"
 msgstr "설정 삭제하기"
 
-#: screens/sui_settings_window.lua:542
+#: screens/sui_settings_window.lua:574
 msgid "Delete \"%s\"? This removes its layout, modules and Quick Action."
-msgstr ""
-"\"%s\"을(를) 삭제할까요? 레이아웃, 모듈 및 빠른 동작이 함께 삭제됩니다."
+msgstr "\"%s\"을(를) 삭제할까요? 레이아웃, 모듈 및 빠른 동작이 함께 삭제됩니다."
 
 #: features/sui_presets.lua:962 features/sui_presets.lua:1002
-#: screens/sui_menu.lua:4432 screens/sui_menu.lua:4473
+#: screens/sui_menu.lua:4439 screens/sui_menu.lua:4480
 msgid "Delete preset \"%s\"?"
 msgstr "사전 설정 \"%s\"을(를) 삭제할까요?"
 
 #: features/sui_quickactions.lua:1611 features/sui_quickactions.lua:3048
 msgid "Delete quick action \"%s\"?"
 msgstr "빠른 동작 \"%s\"을(를) 삭제할까요?"
+
+#: features/sui_manual_books.lua:102
+msgid "Delete this book?"
+msgstr ""
 
 #: modules/module_currently.lua:328 modules/module_currently.lua:1979
 msgid "Description"
@@ -1297,15 +1291,15 @@ msgstr "설명"
 msgid "Description Alignment"
 msgstr ""
 
-#: modules/module_reading_goals.lua:1296
+#: modules/module_reading_goals.lua:1160
 msgid "Detail"
 msgstr ""
 
-#: modules/module_reading_goals.lua:1530
+#: modules/module_reading_goals.lua:1368
 msgid "Detail Below Ring"
 msgstr "고리 아래 세부 정보"
 
-#: modules/module_reading_goals.lua:1529
+#: modules/module_reading_goals.lua:1367
 msgid "Detail Inside Ring"
 msgstr "고리 안쪽 세부 정보"
 
@@ -1317,19 +1311,19 @@ msgstr ""
 msgid "Dictionary Lookup"
 msgstr "사전 찾기"
 
-#: modules/module_clock.lua:1158 modules/module_clock.lua:1162
+#: modules/module_clock.lua:1218 modules/module_clock.lua:1222
 msgid "Digital"
 msgstr "디지털"
 
-#: screens/sui_menu.lua:2793
+#: screens/sui_menu.lua:2792
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
 msgstr "사용자 지정 레이블 배율을 설정하려면 먼저 \"배율 잠금\"을 해제하세요."
 
-#: infra/sui_config.lua:1242
+#: infra/sui_config.lua:1243
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
 msgstr "모듈별 배율을 설정하려면 먼저 \"배율 잠금\"을 해제하세요."
 
-#: infra/sui_config.lua:197
+#: infra/sui_config.lua:198
 msgid "Disk Usage"
 msgstr "디스크 사용량"
 
@@ -1337,11 +1331,11 @@ msgstr "디스크 사용량"
 msgid "Dispatcher not available."
 msgstr "디스패처를 사용할 수 없습니다."
 
-#: screens/sui_menu.lua:3885
+#: screens/sui_menu.lua:3892
 msgid "Display"
 msgstr "표시"
 
-#: screens/sui_menu.lua:4618
+#: screens/sui_menu.lua:4625
 #, fuzzy
 msgid "Don't Invert Colored Icons in Night Mode"
 msgstr "야간 모드에서 반전"
@@ -1378,11 +1372,15 @@ msgstr "동적"
 msgid "Edit"
 msgstr "편집"
 
+#: features/sui_manual_books.lua:116
+msgid "Edit Book"
+msgstr ""
+
 #: screens/sui_menu.lua:754 screens/sui_menu.lua:756 screens/sui_menu.lua:1019
 msgid "Edit Custom Text"
 msgstr "사용자 지정 글자 편집하기"
 
-#: screens/sui_menu.lua:2540 screens/sui_settings_window.lua:409
+#: screens/sui_menu.lua:2539 screens/sui_settings_window.lua:435
 msgid "Edit Home Screen Layout"
 msgstr "홈 화면 레이아웃 편집하기"
 
@@ -1415,11 +1413,11 @@ msgstr "사용함"
 msgid "Enable 'Browse by Author / Series / Tags' in the library menu first."
 msgstr "먼저 서재 메뉴에서 '저자/시리즈/태그별 탐색'을 사용하도록 설정하세요."
 
-#: screens/sui_menu.lua:3106
+#: screens/sui_menu.lua:3089
 msgid "Enable Browse by Author / Series / Tags"
 msgstr "저자/시리즈/태그별 탐색 사용"
 
-#: screens/sui_menu.lua:3090
+#: screens/sui_menu.lua:3073
 msgid "Enable Library Custom Covers"
 msgstr "서재 사용자 지정 표지 사용"
 
@@ -1439,7 +1437,7 @@ msgstr "상태 막대 사용"
 msgid "Enable Title Bar"
 msgstr "제목 표시줄 사용"
 
-#: screens/sui_menu.lua:2631
+#: screens/sui_menu.lua:2630
 msgid "Enable Wallpaper"
 msgstr "배경화면 사용"
 
@@ -1459,7 +1457,7 @@ msgstr ""
 "  /koreader/fonts/nerdfonts/symbols.ttf\n"
 "비워 두고 확인을 누르면 Nerd Font 아이콘이 삭제됩니다."
 
-#: screens/sui_menu.lua:4197
+#: screens/sui_menu.lua:4204
 msgid "Error applying pack:"
 msgstr "묶음 적용 오류:"
 
@@ -1471,7 +1469,7 @@ msgstr "업데이트를 확인하는 중 오류가 발생했습니다."
 msgid "Error checking for updates: "
 msgstr "업데이트 확인 오류: "
 
-#: features/sui_presets.lua:1131 screens/sui_menu.lua:4602
+#: features/sui_presets.lua:1131 screens/sui_menu.lua:4609
 msgid "Error exporting preset: "
 msgstr "사전 설정 내보내기 오류: "
 
@@ -1479,43 +1477,43 @@ msgstr "사전 설정 내보내기 오류: "
 msgid "Error extracting zip: "
 msgstr "ZIP 압축 해제 오류: "
 
-#: features/sui_presets.lua:1105 screens/sui_menu.lua:4575
+#: features/sui_presets.lua:1105 screens/sui_menu.lua:4582
 msgid "Error importing preset: "
 msgstr "사전 설정 가져오기 오류: "
 
-#: modules/module_reading_goals.lua:1171
+#: modules/module_reading_goals.lua:1035
 msgid "Error in Reading Goals: check crash.log"
 msgstr "읽기 목표 오류: crash.log를 확인하세요"
 
-#: screens/sui_menu.lua:4115
+#: screens/sui_menu.lua:4122
 msgid "Error installing pack:"
 msgstr "묶음 설치 오류:"
 
-#: screens/sui_stats_windows.lua:1216
+#: screens/sui_stats_windows.lua:1156
 msgid "Exclude from goals"
 msgstr "목표에서 제외하기"
 
-#: screens/sui_stats_windows.lua:839 screens/sui_stats_windows.lua:845
+#: screens/sui_stats_windows.lua:730 screens/sui_stats_windows.lua:736
 msgid "Excluded"
 msgstr "제외됨"
 
-#: features/sui_backup.lua:1097
+#: features/sui_backup.lua:1108
 msgid "Export"
 msgstr "내보내기"
 
-#: features/sui_backup.lua:1123
+#: features/sui_backup.lua:1134
 msgid "Export Full Backup…"
 msgstr "전체 백업 내보내기…"
 
-#: features/sui_backup.lua:1076
+#: features/sui_backup.lua:1087
 msgid "Export now…"
 msgstr "지금 내보내기…"
 
-#: features/sui_presets.lua:1119 screens/sui_menu.lua:4589
+#: features/sui_presets.lua:1119 screens/sui_menu.lua:4596
 msgid "Export preset"
 msgstr "사전 설정 내보내기"
 
-#: screens/sui_settings_window.lua:420 screens/sui_settings_window.lua:1115
+#: screens/sui_settings_window.lua:446 screens/sui_settings_window.lua:1147
 msgid "Extra Custom Screens"
 msgstr "추가 사용자 지정 화면"
 
@@ -1527,23 +1525,23 @@ msgstr "가장 작게"
 msgid "Extraction error: "
 msgstr "압축 해제 오류: "
 
-#: screens/sui_stats_windows.lua:3472
+#: screens/sui_stats_windows.lua:3268
 msgid "FREEZES"
 msgstr "유예"
 
-#: screens/sui_menu.lua:4801
+#: screens/sui_menu.lua:4808
 msgid "Factory Reset"
 msgstr "공장 초기화"
 
-#: screens/sui_menu.lua:3545
+#: screens/sui_menu.lua:3552
 msgid "Fade Finished Books"
 msgstr "읽기 완료 도서 흐리게 하기"
 
-#: screens/sui_menu.lua:3561
+#: screens/sui_menu.lua:3568
 msgid "Fade Intensity"
 msgstr "흐리기 강도"
 
-#: screens/sui_menu.lua:3562
+#: screens/sui_menu.lua:3569
 msgid ""
 "Fades finished book covers towards white.\n"
 "50% is the default."
@@ -1551,11 +1549,11 @@ msgstr ""
 "읽기 완료한 도서의 표지를 흰색에 가깝게 흐립니다.\n"
 "50%가 기본값입니다."
 
-#: screens/sui_menu.lua:2670
+#: screens/sui_menu.lua:2669
 msgid "Fades the wallpaper towards black."
 msgstr ""
 
-#: screens/sui_menu.lua:2664
+#: screens/sui_menu.lua:2663
 #, fuzzy
 msgid "Fades the wallpaper towards white to improve text readability."
 msgstr ""
@@ -1563,7 +1561,7 @@ msgstr ""
 "0%가 기본값입니다 (밝게 하지 않음)."
 
 #: features/sui_quickactions.lua:868 features/sui_quickactions.lua:2250
-#: infra/sui_config.lua:125 modules/module_coverdeck.lua:1329
+#: infra/sui_config.lua:126 modules/module_coverdeck.lua:1340
 msgid "Favorites"
 msgstr "즐겨찾기"
 
@@ -1579,11 +1577,11 @@ msgstr "추천 모음집"
 msgid "Featured Collection — tap to configure"
 msgstr "추천 모음집 — 눌러서 설정"
 
-#: engines/sui_heatmap_widgets.lua:87
+#: engines/sui_heatmap_widgets.lua:109
 msgid "Feb"
 msgstr "2월"
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2815
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
 msgid "February"
 msgstr "2월"
 
@@ -1607,7 +1605,7 @@ msgstr "파일 관리자를 사용할 수 없습니다."
 msgid "File Search"
 msgstr "파일 검색"
 
-#: features/sui_backup.lua:564
+#: features/sui_backup.lua:575
 msgid "File not found."
 msgstr "파일을 찾을 수 없습니다."
 
@@ -1627,7 +1625,11 @@ msgstr "파일 크기 (작은순)"
 msgid "Filter by name…"
 msgstr "이름으로 필터링…"
 
-#: screens/sui_menu.lua:3538
+#: features/sui_manual_books.lua:121
+msgid "Finished"
+msgstr ""
+
+#: features/sui_stats_menu.lua:116 screens/sui_menu.lua:3545
 msgid "Finished Books"
 msgstr "읽기 완료 도서"
 
@@ -1639,8 +1641,8 @@ msgstr "다섯"
 msgid "Fixed Height"
 msgstr "고정 높이"
 
-#: modules/module_quick_actions.lua:626 modules/module_reading_stats.lua:855
-#: screens/sui_menu.lua:4725 screens/sui_quicksettings_bar.lua:1327
+#: modules/module_quick_actions.lua:626 modules/module_reading_stats.lua:838
+#: screens/sui_menu.lua:4732 screens/sui_quicksettings_bar.lua:1327
 msgid "Flat"
 msgstr "플랫"
 
@@ -1652,11 +1654,11 @@ msgstr "평면 서재"
 msgid "Folder"
 msgstr "폴더"
 
-#: screens/sui_menu.lua:3810
+#: screens/sui_menu.lua:3817
 msgid "Folder Book Stack"
 msgstr ""
 
-#: screens/sui_menu.lua:3160
+#: screens/sui_menu.lua:3167
 msgid "Folder Cover Type"
 msgstr "폴더 표지 종류"
 
@@ -1668,11 +1670,11 @@ msgstr "폴더 표지"
 msgid "Folder Covers: Empty Folder"
 msgstr "폴더 표지: 빈 폴더"
 
-#: screens/sui_menu.lua:3582
+#: screens/sui_menu.lua:3589
 msgid "Folder Name"
 msgstr "폴더 이름"
 
-#: screens/sui_menu.lua:3691
+#: screens/sui_menu.lua:3698
 msgid "Folder Name Text Size"
 msgstr "폴더 이름 글자 크기"
 
@@ -1680,9 +1682,9 @@ msgstr "폴더 이름 글자 크기"
 msgid "Folder Shortcuts"
 msgstr "폴더 바로 가기"
 
-#: features/library/sui_foldercovers.lua:588
+#: features/library/sui_foldercovers.lua:586
 #: features/library/sui_group_actions.lua:79
-#: features/library/sui_library_browse.lua:401
+#: features/library/sui_library_browse.lua:412
 #: features/library/sui_series_grouping.lua:92
 msgid "Folder cover"
 msgstr "폴더 표지"
@@ -1691,17 +1693,17 @@ msgstr "폴더 표지"
 msgid "Folder covers, browse modes, series grouping"
 msgstr "폴더 표지, 탐색 모드, 시리즈 묶기"
 
-#: engines/sui_book_grid.lua:1883 modules/module_coverdeck.lua:1665
+#: engines/sui_book_grid.lua:1904 modules/module_coverdeck.lua:1676
 #: modules/module_currently.lua:2002
 msgid "Follow Library"
 msgstr "서재 설정 따르기"
 
-#: infra/sui_config.lua:985 screens/sui_quicksettings_bar.lua:1250
+#: infra/sui_config.lua:986 screens/sui_quicksettings_bar.lua:1250
 #, fuzzy
 msgid "Font"
 msgstr "UI 글꼴"
 
-#: modules/module_quote.lua:1507 modules/module_reading_stats.lua:947
+#: modules/module_quote.lua:1507 modules/module_reading_stats.lua:906
 #, fuzzy
 msgid "Fonts"
 msgstr "UI 글꼴"
@@ -1727,23 +1729,19 @@ msgstr "열넷"
 msgid "Frame"
 msgstr "테두리"
 
-#: screens/sui_menu.lua:1429 screens/sui_menu.lua:4736
+#: screens/sui_menu.lua:1429 screens/sui_menu.lua:4743
 msgid "Framed"
 msgstr "테두리 있음"
 
-#: modules/module_reading_stats.lua:897
+#: features/sui_stats_menu.lua:63
 msgid "Freezes"
 msgstr "유예"
 
-#: screens/sui_stats_windows.lua:3078
-msgid ""
-"Freezes can only cover a single missed day, and only right after an active "
-"one. Tap yesterday's cell to use one, when eligible."
-msgstr ""
-"유예는 활동한 날 바로 다음에 빠진 하루만 메울 수 있습니다. 자격이 되면 어제 "
-"칸을 눌러 유예를 사용하세요."
+#: screens/sui_stats_windows.lua:2868
+msgid "Freezes can only cover a single missed day, and only right after an active one. Tap yesterday's cell to use one, when eligible."
+msgstr "유예는 활동한 날 바로 다음에 빠진 하루만 메울 수 있습니다. 자격이 되면 어제 칸을 눌러 유예를 사용하세요."
 
-#: engines/sui_heatmap_widgets.lua:95 screens/sui_stats_windows.lua:2805
+#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2664
 msgid "Fri"
 msgstr "금"
 
@@ -1764,37 +1762,31 @@ msgstr "전면 조명 슬라이더"
 msgid "Frontlight not available on this device."
 msgstr "이 기기에서는 전면 조명을 사용할 수 없습니다."
 
-#: features/sui_backup.lua:647
+#: features/sui_backup.lua:658
 msgid "General — %d settings"
 msgstr "일반 — 설정 %d개"
 
-#: screens/sui_menu.lua:2857
+#: screens/sui_menu.lua:2856
 msgid "Gesture Only"
 msgstr "제스처만"
 
-#: screens/sui_menu.lua:4689 screens/sui_menu.lua:4696
+#: screens/sui_menu.lua:4696 screens/sui_menu.lua:4703
 msgid "Global Text Size"
 msgstr "전체 글자 크기"
 
-#: screens/sui_settings_window.lua:382
+#: screens/sui_settings_window.lua:383
 msgid "Global custom actions & icons"
 msgstr "전체 사용자 지정 동작 및 아이콘"
 
-#: screens/sui_menu.lua:4697
+#: screens/sui_menu.lua:4704
 msgid ""
-"Global scale applied to all of KOReader's interface text — menus, dialogs, "
-"titles, and Simple UI. It does not change the book's reading font size, "
-"which has its own setting.\n"
-"100% is the default size. Useful when a chosen UI font (see UI Font above) "
-"renders smaller or larger than usual."
+"Global scale applied to all of KOReader's interface text — menus, dialogs, titles, and Simple UI. It does not change the book's reading font size, which has its own setting.\n"
+"100% is the default size. Useful when a chosen UI font (see UI Font above) renders smaller or larger than usual."
 msgstr ""
-"KOReader의 모든 인터페이스 글자(메뉴, 대화 상자, 제목 및 Simple UI)에 적용되"
-"는 전체 배율입니다. 도서의 읽기 글자 크기는 별도 설정이 있으므로 바뀌지 않습"
-"니다.\n"
-"100%가 기본 크기입니다. 선택한 UI 글꼴(위의 UI 글꼴 참고)이 평소보다 작거나 "
-"크게 표시될 때 유용합니다."
+"KOReader의 모든 인터페이스 글자(메뉴, 대화 상자, 제목 및 Simple UI)에 적용되는 전체 배율입니다. 도서의 읽기 글자 크기는 별도 설정이 있으므로 바뀌지 않습니다.\n"
+"100%가 기본 크기입니다. 선택한 UI 글꼴(위의 UI 글꼴 참고)이 평소보다 작거나 크게 표시될 때 유용합니다."
 
-#: screens/sui_menu.lua:2770
+#: screens/sui_menu.lua:2769
 msgid ""
 "Global scale for all modules.\n"
 "Individual overrides in Module Settings take precedence.\n"
@@ -1808,8 +1800,8 @@ msgstr ""
 msgid "Go to Settings > Home Screen to edit your layout whenever you want."
 msgstr "언제든지 설정 > 홈 화면으로 이동하여 레이아웃을 편집하세요."
 
-#: modules/module_reading_goals.lua:1319 modules/module_reading_goals.lua:1384
-#: modules/module_reading_goals.lua:1398
+#: modules/module_reading_goals.lua:1183 modules/module_reading_goals.lua:1248
+#: modules/module_reading_goals.lua:1262
 msgid "Goals"
 msgstr "목표"
 
@@ -1817,7 +1809,7 @@ msgstr "목표"
 msgid "Goals & Streaks"
 msgstr "목표 및 연속 기록"
 
-#: engines/sui_book_grid.lua:1825 engines/sui_book_grid.lua:1836
+#: engines/sui_book_grid.lua:1846 engines/sui_book_grid.lua:1857
 msgid "Grid size"
 msgstr "격자 크기"
 
@@ -1825,7 +1817,7 @@ msgstr "격자 크기"
 msgid "Group"
 msgstr "그룹"
 
-#: screens/sui_menu.lua:3142
+#: screens/sui_menu.lua:3149
 msgid "Group by Book Series"
 msgstr "도서 시리즈별로 묶기"
 
@@ -1839,17 +1831,13 @@ msgstr "그룹: 동작 선택"
 
 #: modules/module_currently.lua:1535
 msgid ""
-"Grows or shrinks the cover so its height always matches the text column, "
-"keeping the cover's proportions.\n"
+"Grows or shrinks the cover so its height always matches the text column, keeping the cover's proportions.\n"
 "The spacing between cover and text stays as set above.\n"
-"The Cover size setting still applies on top of this, and the cover never "
-"shrinks below its 100% size."
+"The Cover size setting still applies on top of this, and the cover never shrinks below its 100% size."
 msgstr ""
-"표지의 높이가 항상 글자 열과 일치하도록 표지를 확대하거나 축소하며, 표지의 비"
-"율은 유지됩니다.\n"
+"표지의 높이가 항상 글자 열과 일치하도록 표지를 확대하거나 축소하며, 표지의 비율은 유지됩니다.\n"
 "표지와 글자 사이의 간격은 위에서 설정한 대로 유지됩니다.\n"
-"표지 크기 설정은 이 위에 추가로 적용되며, 표지는 100% 크기 아래로 축소되지 않"
-"습니다."
+"표지 크기 설정은 이 위에 추가로 적용되며, 표지는 100% 크기 아래로 축소되지 않습니다."
 
 #: screens/sui_menu.lua:1464
 msgid ""
@@ -1877,21 +1865,21 @@ msgstr ""
 "위쪽 상태 막대의 높이입니다.\n"
 "100%가 기본 크기입니다."
 
-#: modules/module_collections.lua:1257 screens/sui_menu.lua:591
-#: screens/sui_menu.lua:650 screens/sui_menu.lua:3222 screens/sui_menu.lua:3229
-#: screens/sui_menu.lua:3256 screens/sui_menu.lua:3296
-#: screens/sui_menu.lua:3302 screens/sui_menu.lua:3313
-#: screens/sui_menu.lua:3350 screens/sui_menu.lua:3356
-#: screens/sui_menu.lua:3367 screens/sui_menu.lua:3588
-#: screens/sui_menu.lua:3619
+#: modules/module_collections.lua:1261 screens/sui_menu.lua:591
+#: screens/sui_menu.lua:650 screens/sui_menu.lua:3229 screens/sui_menu.lua:3236
+#: screens/sui_menu.lua:3263 screens/sui_menu.lua:3303
+#: screens/sui_menu.lua:3309 screens/sui_menu.lua:3320
+#: screens/sui_menu.lua:3357 screens/sui_menu.lua:3363
+#: screens/sui_menu.lua:3374 screens/sui_menu.lua:3595
+#: screens/sui_menu.lua:3626
 msgid "Hidden"
 msgstr "숨김"
 
-#: screens/sui_menu.lua:3831
+#: screens/sui_menu.lua:3838
 msgid "Hide"
 msgstr ""
 
-#: modules/module_collections.lua:1246
+#: modules/module_collections.lua:1250
 msgid "Hide Book Stack"
 msgstr ""
 
@@ -1900,11 +1888,11 @@ msgid "Hide Currently Reading book"
 msgstr "읽는 중인 도서 숨기기"
 
 #: modules/module_quick_actions.lua:425 modules/module_quick_actions.lua:576
-#: screens/sui_menu.lua:2330 screens/sui_quicksettings_bar.lua:1255
+#: screens/sui_menu.lua:2329 screens/sui_quicksettings_bar.lua:1255
 msgid "Hide Label"
 msgstr "레이블 숨기기"
 
-#: screens/sui_menu.lua:3804
+#: screens/sui_menu.lua:3811
 msgid "Hide Selection Underline"
 msgstr "선택 밑줄 숨기기"
 
@@ -1920,16 +1908,16 @@ msgstr ""
 "홈 화면에서 페이지 표시 막대를 숨깁니다.\n"
 "Navpager 사용 중에는 사용할 수 없습니다."
 
-#: screens/sui_menu.lua:2912
+#: screens/sui_menu.lua:2911
 msgid "High-Quality Cover"
 msgstr "고품질 표지"
 
-#: screens/sui_stats_windows.lua:1210 screens/sui_stats_windows.lua:3887
+#: screens/sui_stats_windows.lua:1150 screens/sui_stats_windows.lua:3683
 msgid "Highlights"
 msgstr "하이라이트"
 
 #: features/sui_quickactions.lua:508 features/sui_quickactions.lua:782
-#: features/sui_quickactions.lua:2248 infra/sui_config.lua:121
+#: features/sui_quickactions.lua:2248 infra/sui_config.lua:122
 msgid "History"
 msgstr "기록"
 
@@ -1937,18 +1925,18 @@ msgstr "기록"
 msgid "History not available."
 msgstr "기록을 사용할 수 없습니다."
 
-#: features/sui_quickactions.lua:723 infra/sui_config.lua:119
+#: features/sui_quickactions.lua:723 infra/sui_config.lua:120
 msgid "Home"
 msgstr "홈"
 
 #: engines/sui_screen_engine.lua:1191 features/sui_backup.lua:111
 #: infra/sui_patches.lua:1190 infra/sui_patches.lua:1200
-#: screens/sui_menu.lua:2718 screens/sui_menu.lua:4925
-#: screens/sui_settings_window.lua:353 screens/sui_settings_window.lua:1114
+#: screens/sui_menu.lua:2717 screens/sui_menu.lua:4932
+#: screens/sui_settings_window.lua:354 screens/sui_settings_window.lua:1146
 msgid "Home Screen"
 msgstr "홈 화면"
 
-#: screens/sui_settings_window.lua:1130
+#: screens/sui_settings_window.lua:1162
 msgid "Home Screen Presets"
 msgstr "홈 화면 사전 설정"
 
@@ -1964,7 +1952,7 @@ msgstr "홈 폴더"
 msgid "Home folder + subfolders"
 msgstr "홈 폴더 + 하위 폴더"
 
-#: screens/sui_menu.lua:2999
+#: screens/sui_menu.lua:2971
 #, fuzzy
 msgid "Home key opens Home Screen"
 msgstr "홈 단추로 홈 화면 열기"
@@ -1981,31 +1969,23 @@ msgstr ""
 "표지와 글자 사이의 가로 간격입니다.\n"
 "100%가 기본 간격입니다."
 
-#: modules/module_reading_goals.lua:780
+#: infra/sui_goals.lua:55
 msgid "Hours per month:"
 msgstr "월간 분량:"
 
-#: modules/module_heatmap.lua:301
-msgid ""
-"How many weeks of history to include, and (in Calendar view) how many weeks "
-"the grid shows — this count is unaffected by Scale, which only resizes the "
-"cells. In Time of day view, this only changes how much history feeds the "
-"shading — the grid itself always has one column per hour."
-msgstr ""
-"포함할 기록의 주 수를 정하며, (달력 보기에서) 격자가 표시하는 주 수도 정합니"
-"다. 이 개수는 칸 크기만 바꾸는 배율의 영향을 받지 않습니다. 시간대 보기에서"
-"는 음영에 반영되는 기록의 양만 바뀌며, 격자 자체는 항상 한 시간에 한 열씩 구"
-"성됩니다."
+#: modules/module_heatmap.lua:300
+msgid "How many weeks of history to include, and (in Calendar view) how many weeks the grid shows — this count is unaffected by Scale, which only resizes the cells. In Time of day view, this only changes how much history feeds the shading — the grid itself always has one column per hour."
+msgstr "포함할 기록의 주 수를 정하며, (달력 보기에서) 격자가 표시하는 주 수도 정합니다. 이 개수는 칸 크기만 바꾸는 배율의 영향을 받지 않습니다. 시간대 보기에서는 음영에 반영되는 기록의 양만 바뀌며, 격자 자체는 항상 한 시간에 한 열씩 구성됩니다."
 
 #: features/sui_quickactions.lua:2408 features/sui_quickactions.lua:2412
 msgid "Icon"
 msgstr "아이콘"
 
-#: screens/sui_menu.lua:4035
+#: screens/sui_menu.lua:4042
 msgid "Icon Packs"
 msgstr "아이콘 묶음"
 
-#: screens/sui_menu.lua:4212
+#: screens/sui_menu.lua:4219
 msgid "Icon Presets"
 msgstr "아이콘 사전 설정"
 
@@ -2022,7 +2002,7 @@ msgstr "sui_icons/의 아이콘 파일 및 설치된 묶음"
 msgid "Icon: Default"
 msgstr "아이콘: 기본값"
 
-#: screens/sui_menu.lua:319 screens/sui_menu.lua:3981
+#: screens/sui_menu.lua:319 screens/sui_menu.lua:3988
 msgid "Icons"
 msgstr "아이콘"
 
@@ -2030,43 +2010,42 @@ msgstr "아이콘"
 msgid "Icons only"
 msgstr "아이콘만"
 
-#: screens/sui_menu.lua:4619
+#: screens/sui_menu.lua:4626
 msgid ""
-"Icons that contain color keep their original colors in night mode instead of "
-"being inverted.\n"
+"Icons that contain color keep their original colors in night mode instead of being inverted.\n"
 "Monochrome icons are not affected and keep following the interface colors.\n"
 "Requires a color screen."
 msgstr ""
 
-#: screens/sui_settings_window.lua:375
+#: screens/sui_settings_window.lua:376
 msgid "Icons, fonts and appearance"
 msgstr "아이콘, 글꼴 및 모양"
 
 #: screens/sui_onboarding.lua:335
-msgid ""
-"If you selected the Momentum Preset, long press the Reading Goal module to "
-"choose and set your reading goals."
-msgstr ""
-"모멘텀 사전 설정을 선택한 경우, 읽기 목표 모듈을 길게 눌러 읽기 목표를 선택하"
-"고 설정하세요."
+msgid "If you selected the Momentum Preset, long press the Reading Goal module to choose and set your reading goals."
+msgstr "모멘텀 사전 설정을 선택한 경우, 읽기 목표 모듈을 길게 눌러 읽기 목표를 선택하고 설정하세요."
 
-#: features/sui_backup.lua:1133
+#: features/sui_backup.lua:1144
 msgid "Import Backup…"
 msgstr "백업 가져오기…"
 
-#: features/sui_presets.lua:1082 screens/sui_menu.lua:4551
+#: features/sui_presets.lua:1082 screens/sui_menu.lua:4558
 msgid "Import preset"
 msgstr "사전 설정 가져오기"
+
+#: features/sui_manual_books.lua:181
+msgid "Include in All Time Books"
+msgstr ""
 
 #: infra/sui_compat_check.lua:306
 msgid "Incompatible items have been disabled:"
 msgstr ""
 
-#: screens/sui_menu.lua:4120
+#: screens/sui_menu.lua:4127
 msgid "Install pack from ZIP"
 msgstr "ZIP에서 묶음 설치하기"
 
-#: screens/sui_menu.lua:3554
+#: screens/sui_menu.lua:3561
 msgid "Intensity"
 msgstr "강도"
 
@@ -2098,7 +2077,7 @@ msgstr "잘못된 입력입니다. 16진수 숫자 1–6자리(0–9, A–F)를 
 msgid "Invalid preset file"
 msgstr "잘못된 사전 설정 파일"
 
-#: screens/sui_menu.lua:2660
+#: screens/sui_menu.lua:2659
 msgid "Invert in Night Mode"
 msgstr "야간 모드에서 반전"
 
@@ -2106,44 +2085,44 @@ msgstr "야간 모드에서 반전"
 msgid "Italic"
 msgstr ""
 
-#: infra/sui_config.lua:1109 modules/module_clock.lua:1054
-#: modules/module_clock.lua:1063 modules/module_clock.lua:1101
-#: modules/module_coverdeck.lua:1542 modules/module_coverdeck.lua:1582
-#: modules/module_coverdeck.lua:1596 modules/module_currently.lua:1670
+#: infra/sui_config.lua:1110 modules/module_clock.lua:1114
+#: modules/module_clock.lua:1123 modules/module_clock.lua:1161
+#: modules/module_coverdeck.lua:1553 modules/module_coverdeck.lua:1593
+#: modules/module_coverdeck.lua:1607 modules/module_currently.lua:1670
 #: modules/module_currently.lua:1675 modules/module_currently.lua:1698
-#: modules/module_reading_stats.lua:748 modules/module_reading_stats.lua:769
-#: modules/module_reading_stats.lua:791 screens/sui_menu.lua:978
+#: modules/module_reading_stats.lua:731 modules/module_reading_stats.lua:752
+#: modules/module_reading_stats.lua:774 screens/sui_menu.lua:978
 #: screens/sui_menu.lua:983 screens/sui_menu.lua:1072 screens/sui_menu.lua:1232
-#: screens/sui_menu.lua:2340 screens/sui_menu.lua:2345
-#: screens/sui_menu.lua:2371
+#: screens/sui_menu.lua:2339 screens/sui_menu.lua:2344
+#: screens/sui_menu.lua:2370
 msgid "Items"
 msgstr "항목"
 
-#: engines/sui_heatmap_widgets.lua:87
+#: engines/sui_heatmap_widgets.lua:109
 msgid "Jan"
 msgstr "1월"
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2815
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
 msgid "January"
 msgstr "1월"
 
-#: engines/sui_heatmap_widgets.lua:88
+#: engines/sui_heatmap_widgets.lua:110
 msgid "Jul"
 msgstr "7월"
 
-#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2816
+#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2675
 msgid "July"
 msgstr "7월"
 
-#: engines/sui_heatmap_widgets.lua:87
+#: engines/sui_heatmap_widgets.lua:109
 msgid "Jun"
 msgstr "6월"
 
-#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2816
+#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2675
 msgid "June"
 msgstr "6월"
 
-#: infra/sui_config.lua:1851 modules/module_quick_actions.lua:644
+#: infra/sui_config.lua:1852 modules/module_quick_actions.lua:644
 msgid "Justified"
 msgstr "양쪽 맞춤"
 
@@ -2151,14 +2130,14 @@ msgstr "양쪽 맞춤"
 msgid "KOReader"
 msgstr "KOReader"
 
-#: screens/sui_stats_windows.lua:2727
+#: screens/sui_stats_windows.lua:2585
 msgid "LAST 7 DAYS"
 msgstr "최근 7일"
 
-#: infra/sui_config.lua:1048 modules/module_action_list.lua:481
-#: modules/module_action_list.lua:496 modules/module_collections.lua:1337
-#: modules/module_quick_actions.lua:597 modules/module_reading_goals.lua:1296
-#: modules/module_reading_stats.lua:846 modules/module_reading_stats.lua:932
+#: infra/sui_config.lua:1049 modules/module_action_list.lua:481
+#: modules/module_action_list.lua:496 modules/module_collections.lua:1341
+#: modules/module_quick_actions.lua:597 modules/module_reading_goals.lua:1160
+#: modules/module_reading_stats.lua:829 modules/module_reading_stats.lua:891
 #: screens/sui_quicksettings_bar.lua:1238
 msgid "Label"
 msgstr "레이블"
@@ -2168,7 +2147,7 @@ msgstr "레이블"
 msgid "Label Font"
 msgstr "레이블"
 
-#: screens/sui_menu.lua:2799
+#: screens/sui_menu.lua:2798
 msgid "Label Scale"
 msgstr "레이블 배율"
 
@@ -2177,11 +2156,11 @@ msgstr "레이블 배율"
 msgid "Label Size"
 msgstr "레이블 크기"
 
-#: screens/sui_menu.lua:2788
+#: screens/sui_menu.lua:2787
 msgid "Labels"
 msgstr "레이블"
 
-#: screens/sui_menu.lua:3945
+#: screens/sui_menu.lua:3952
 msgid "Landscape mosaic mode"
 msgstr ""
 
@@ -2189,29 +2168,29 @@ msgstr ""
 msgid "Large"
 msgstr "크게"
 
-#: features/sui_backup.lua:1029
+#: features/sui_backup.lua:1040
 msgid "Last backup: %s%s"
 msgstr "마지막 백업: %s%s"
 
-#: features/sui_backup.lua:1026
+#: features/sui_backup.lua:1037
 msgid "Last backup: never"
 msgstr "마지막 백업: 없음"
 
-#: features/sui_backup.lua:1007 infra/sui_updater.lua:449
+#: features/sui_backup.lua:1018 infra/sui_updater.lua:449
 #: screens/sui_menu.lua:555 screens/sui_menu.lua:968 screens/sui_menu.lua:1179
 #: screens/sui_menu.lua:1272 screens/sui_menu.lua:1488
-#: screens/sui_menu.lua:2101 screens/sui_menu.lua:3719
-#: screens/sui_menu.lua:3742 screens/sui_menu.lua:3764
-#: screens/sui_menu.lua:4711 screens/sui_menu.lua:4909
+#: screens/sui_menu.lua:2101 screens/sui_menu.lua:3726
+#: screens/sui_menu.lua:3749 screens/sui_menu.lua:3771
+#: screens/sui_menu.lua:4718 screens/sui_menu.lua:4916
 #: screens/sui_quicksettings_bar.lua:1134
 msgid "Later"
 msgstr "나중에"
 
-#: modules/module_currently.lua:1528 modules/module_reading_goals.lua:1515
+#: modules/module_currently.lua:1528 modules/module_reading_goals.lua:1353
 msgid "Layout"
 msgstr "레이아웃"
 
-#: screens/sui_settings_window.lua:1121 screens/sui_settings_window.lua:1122
+#: screens/sui_settings_window.lua:1153 screens/sui_settings_window.lua:1154
 msgid "Layout Editor"
 msgstr "레이아웃 편집기"
 
@@ -2219,26 +2198,26 @@ msgstr "레이아웃 편집기"
 msgid "Layout, modules, custom screens, presets"
 msgstr "레이아웃, 모듈, 사용자 지정 화면, 사전 설정"
 
-#: screens/sui_settings_window.lua:354
+#: screens/sui_settings_window.lua:355
 msgid "Layout, wallpaper, presets and behaviour"
 msgstr "레이아웃, 배경화면, 사전 설정 및 동작 방식"
 
-#: infra/sui_config.lua:1848 modules/module_quick_actions.lua:645
+#: infra/sui_config.lua:1849 modules/module_quick_actions.lua:645
 #: screens/sui_menu.lua:824 screens/sui_menu.lua:1058 screens/sui_menu.lua:1666
 #: screens/sui_menu.lua:1873
 msgid "Left"
 msgstr "왼쪽"
 
-#: engines/sui_heatmap_widgets.lua:375 modules/module_heatmap.lua:179
+#: engines/sui_heatmap_widgets.lua:395 modules/module_heatmap.lua:179
 msgid "Less"
 msgstr "적게"
 
 #: features/library/sui_library_browse.lua:72 features/sui_backup.lua:121
-#: features/sui_quickactions.lua:694 infra/sui_config.lua:118
-#: infra/sui_config.lua:445 screens/sui_menu.lua:2719 screens/sui_menu.lua:4648
-#: screens/sui_menu.lua:4929 screens/sui_settings_window.lua:367
-#: screens/sui_settings_window.lua:1117 screens/sui_titlebar.lua:1126
-#: screens/sui_titlebar.lua:1171
+#: features/sui_quickactions.lua:694 infra/sui_config.lua:119
+#: infra/sui_config.lua:446 screens/sui_menu.lua:2718 screens/sui_menu.lua:4655
+#: screens/sui_menu.lua:4936 screens/sui_settings_window.lua:368
+#: screens/sui_settings_window.lua:1149 screens/sui_titlebar.lua:1109
+#: screens/sui_titlebar.lua:1154
 msgid "Library"
 msgstr "서재"
 
@@ -2250,34 +2229,38 @@ msgstr "서재 단추"
 msgid "Library View"
 msgstr "서재 보기"
 
-#: engines/sui_book_grid.lua:1885 modules/module_collections.lua:1279
-#: modules/module_coverdeck.lua:1667 modules/module_currently.lua:2004
-#: screens/sui_menu.lua:3270 screens/sui_menu.lua:3282
-#: screens/sui_menu.lua:3324 screens/sui_menu.lua:3336
-#: screens/sui_menu.lua:3378 screens/sui_menu.lua:3390
-#: screens/sui_menu.lua:3445 screens/sui_menu.lua:3457
-#: screens/sui_menu.lua:3512 screens/sui_menu.lua:3524
-#: screens/sui_menu.lua:3666 screens/sui_menu.lua:3671
+#: engines/sui_book_grid.lua:1906 modules/module_collections.lua:1283
+#: modules/module_coverdeck.lua:1678 modules/module_currently.lua:2004
+#: screens/sui_menu.lua:3277 screens/sui_menu.lua:3289
+#: screens/sui_menu.lua:3331 screens/sui_menu.lua:3343
+#: screens/sui_menu.lua:3385 screens/sui_menu.lua:3397
+#: screens/sui_menu.lua:3452 screens/sui_menu.lua:3464
+#: screens/sui_menu.lua:3519 screens/sui_menu.lua:3531
+#: screens/sui_menu.lua:3673 screens/sui_menu.lua:3678
 msgid "Light"
 msgstr "밝게"
 
-#: screens/sui_menu.lua:2663
+#: screens/sui_menu.lua:2662
 msgid "Lighten"
 msgstr "밝게 하기"
 
-#: modules/module_reading_stats.lua:856
+#: modules/module_reading_stats.lua:839
 msgid "List"
 msgstr "목록"
 
-#: screens/sui_stats_windows.lua:2491
+#: screens/sui_menu.lua:3126
+msgid "Lists books without an author, series or tag as a separate group in the Authors, Series and Tags views."
+msgstr ""
+
+#: screens/sui_stats_windows.lua:2343
 msgid "Loading statistics…"
 msgstr "통계 불러오는 중…"
 
-#: screens/sui_menu.lua:2749
+#: screens/sui_menu.lua:2748
 msgid "Lock Scale"
 msgstr "배율 잠금"
 
-#: infra/sui_config.lua:1667
+#: infra/sui_config.lua:1668
 msgid "Long Press"
 msgstr "길게 누르기"
 
@@ -2285,7 +2268,7 @@ msgstr "길게 누르기"
 msgid "Long press to customize"
 msgstr "길게 눌러 사용자 지정"
 
-#: features/sui_backup.lua:519 features/sui_backup.lua:568
+#: features/sui_backup.lua:530 features/sui_backup.lua:579
 #: features/sui_presets.lua:415 features/sui_presets.lua:427
 #: features/sui_presets.lua:598 features/sui_presets.lua:610
 msgid "LuaSettings module unavailable"
@@ -2295,20 +2278,14 @@ msgstr "LuaSettings 모듈을 사용할 수 없습니다."
 msgid "Make it yours"
 msgstr "내 방식으로 꾸미기"
 
-#: screens/sui_menu.lua:3000
+#: screens/sui_menu.lua:2972
 #, fuzzy
-msgid ""
-"Makes the device's physical Home key open the SimpleUI Home Screen — while "
-"reading and while browsing files — instead of KOReader's native Home "
-"behaviour. The file browser title-bar home icon still goes to the home "
-"folder."
-msgstr ""
-"기기의 홈 단추를 눌렀을 때 KOReader 기본 홈 동작 대신 항상 SimpleUI 홈 화면"
-"을 열도록 합니다. 읽는 중이거나 파일을 탐색하는 중에도 적용됩니다."
+msgid "Makes the device's physical Home key open the SimpleUI Home Screen — while reading and while browsing files — instead of KOReader's native Home behaviour. The file browser title-bar home icon still goes to the home folder."
+msgstr "기기의 홈 단추를 눌렀을 때 KOReader 기본 홈 동작 대신 항상 SimpleUI 홈 화면을 열도록 합니다. 읽는 중이거나 파일을 탐색하는 중에도 적용됩니다."
 
 #: features/sui_presets.lua:907 features/sui_presets.lua:983
-#: features/sui_presets.lua:988 screens/sui_menu.lua:4379
-#: screens/sui_menu.lua:4453 screens/sui_menu.lua:4458
+#: features/sui_presets.lua:988 screens/sui_menu.lua:4386
+#: screens/sui_menu.lua:4460 screens/sui_menu.lua:4465
 msgid "Manage presets"
 msgstr "사전 설정 관리"
 
@@ -2316,19 +2293,20 @@ msgstr "사전 설정 관리"
 msgid "Manual order"
 msgstr "수동 순서"
 
-#: modules/module_reading_goals.lua:1504
+#: features/sui_manual_books.lua:149 features/sui_manual_books.lua:165
+#: screens/sui_stats_windows.lua:751
 msgid "Manually Tracked Books"
 msgstr "수동 추적 도서"
 
-#: modules/module_reading_goals.lua:1492
-msgid "Manually Tracked Books  (%s)"
-msgstr "수동 추적 도서  (%s)"
+#: features/sui_manual_books.lua:132
+msgid "Manually Tracked Books — %d"
+msgstr ""
 
-#: engines/sui_heatmap_widgets.lua:87
+#: engines/sui_heatmap_widgets.lua:109
 msgid "Mar"
 msgstr "3월"
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2815
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
 msgid "March"
 msgstr "3월"
 
@@ -2336,8 +2314,8 @@ msgstr "3월"
 msgid "Max"
 msgstr "최대"
 
-#: engines/sui_heatmap_widgets.lua:87 modules/module_clock.lua:59
-#: screens/sui_stats_windows.lua:2816
+#: engines/sui_heatmap_widgets.lua:109 modules/module_clock.lua:59
+#: screens/sui_stats_windows.lua:2675
 msgid "May"
 msgstr "5월"
 
@@ -2365,7 +2343,7 @@ msgstr "Navpager 모드에서는 최소 1개의 탭이 필요합니다."
 msgid "Minimum 2 tabs required. Select another tab first."
 msgstr "최소 2개의 탭이 필요합니다. 먼저 다른 탭을 선택하세요."
 
-#: modules/module_reading_goals.lua:792
+#: infra/sui_goals.lua:66
 msgid "Minutes per day:"
 msgstr "일일 분량:"
 
@@ -2373,28 +2351,28 @@ msgstr "일일 분량:"
 msgid "Mode"
 msgstr "모드"
 
-#: screens/sui_menu.lua:2767
+#: screens/sui_menu.lua:2766
 msgid "Module Scale"
 msgstr "모듈 배율"
 
-#: infra/sui_config.lua:1664 screens/sui_menu.lua:2547
+#: infra/sui_config.lua:1665 screens/sui_menu.lua:2546
 msgid "Module Settings"
 msgstr "모듈 설정"
 
-#: screens/sui_menu.lua:4039
+#: screens/sui_menu.lua:4046
 msgid "Module unavailable"
 msgstr "모듈을 사용할 수 없습니다."
 
-#: screens/sui_menu.lua:2760 screens/sui_menu.lua:3019
-#: screens/sui_menu.lua:4653
+#: screens/sui_menu.lua:2759 screens/sui_menu.lua:2998
+#: screens/sui_menu.lua:4660
 msgid "Modules"
 msgstr "모듈"
 
-#: screens/sui_menu.lua:2535
+#: screens/sui_menu.lua:2534
 msgid "Modules  (%d)"
 msgstr "모듈  (%d)"
 
-#: engines/sui_screen_engine.lua:2634
+#: engines/sui_screen_engine.lua:2640
 msgid ""
 "Modules exceed the visible area.\n"
 "Move some to another page or adjust the scale."
@@ -2406,7 +2384,7 @@ msgstr ""
 msgid "Momentum"
 msgstr "모멘텀"
 
-#: engines/sui_heatmap_widgets.lua:95 screens/sui_stats_windows.lua:2805
+#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2664
 msgid "Mon"
 msgstr "월"
 
@@ -2414,16 +2392,17 @@ msgstr "월"
 msgid "Monday"
 msgstr "월요일"
 
-#: modules/module_reading_goals.lua:1342 modules/module_reading_goals.lua:1389
-#: modules/module_reading_goals.lua:1426 modules/module_reading_goals.lua:1445
+#: infra/sui_goals.lua:53 modules/module_reading_goals.lua:1206
+#: modules/module_reading_goals.lua:1253 modules/module_reading_goals.lua:1290
+#: modules/module_reading_goals.lua:1308
 msgid "Monthly Goal"
 msgstr "월간 목표"
 
-#: modules/module_reading_goals.lua:779
+#: infra/sui_goals.lua:54
 msgid "Monthly Reading Goal"
 msgstr "월간 읽기 목표"
 
-#: engines/sui_heatmap_widgets.lua:382
+#: engines/sui_heatmap_widgets.lua:401
 msgid "More"
 msgstr "더 보기"
 
@@ -2431,16 +2410,16 @@ msgstr "더 보기"
 msgid "More by %s (%d)"
 msgstr "%s의 다른 도서 (%d)"
 
-#: engines/sui_window.lua:2867
+#: engines/sui_window.lua:2990
 msgid "Move down"
 msgstr "아래로 이동"
 
-#: engines/sui_window.lua:2861 screens/sui_settings_window.lua:741
-#: screens/sui_settings_window.lua:776
+#: engines/sui_window.lua:2984 screens/sui_settings_window.lua:773
+#: screens/sui_settings_window.lua:808
 msgid "Move to page"
 msgstr "페이지로 이동"
 
-#: engines/sui_window.lua:2864
+#: engines/sui_window.lua:2987
 msgid "Move up"
 msgstr "위로 이동"
 
@@ -2464,16 +2443,16 @@ msgstr "이름 (가–하)"
 msgid "Name (Z–A)"
 msgstr "이름 (하–가)"
 
-#: features/library/sui_foldercovers.lua:298 screens/sui_menu.lua:3406
-#: screens/sui_menu.lua:3415 screens/sui_menu.lua:3427
+#: features/library/sui_foldercovers.lua:299 screens/sui_menu.lua:3413
+#: screens/sui_menu.lua:3422 screens/sui_menu.lua:3434
 msgid "Native"
 msgstr "기본"
 
-#: screens/sui_bottombar.lua:939 screens/sui_menu.lua:3057
+#: screens/sui_bottombar.lua:939 screens/sui_menu.lua:3040
 msgid "Navigation Bar"
 msgstr "탐색 막대"
 
-#: screens/sui_menu.lua:2677
+#: screens/sui_menu.lua:2676
 #, fuzzy
 msgid "Navigation Bar Opacity"
 msgstr "탐색 막대 크기"
@@ -2530,25 +2509,25 @@ msgstr "Nerd Font 기호…"
 msgid "Network manager unavailable."
 msgstr "네트워크 관리자를 사용할 수 없습니다."
 
-#: screens/sui_menu.lua:2868
+#: screens/sui_menu.lua:2867
 msgid "Never"
 msgstr "안 함"
 
-#: engines/sui_book_grid.lua:534 features/library/sui_cover_widgets.lua:483
-#: features/library/sui_foldercovers.lua:1381
-#: features/library/sui_foldercovers.lua:1940 modules/module_new_books.lua:137
+#: engines/sui_book_grid.lua:552 features/library/sui_cover_widgets.lua:474
+#: features/library/sui_foldercovers.lua:1352
+#: features/library/sui_foldercovers.lua:1899 modules/module_new_books.lua:137
 msgid "New"
 msgstr "새 항목"
 
-#: engines/sui_book_grid.lua:2035
+#: engines/sui_book_grid.lua:2056
 msgid "New Badge Color"
 msgstr "새 배지 색상"
 
-#: screens/sui_menu.lua:3469
+#: screens/sui_menu.lua:3476
 msgid "New Book"
 msgstr "새 도서"
 
-#: engines/sui_book_grid.lua:2027 engines/sui_book_grid.lua:2040
+#: engines/sui_book_grid.lua:2048 engines/sui_book_grid.lua:2061
 msgid "New Book Badge"
 msgstr "새 도서 배지"
 
@@ -2564,11 +2543,11 @@ msgstr "새 빠른 동작"
 msgid "New collection name"
 msgstr "새 모음집 이름"
 
-#: screens/sui_bottombar.lua:587
+#: features/sui_manual_books.lua:154 screens/sui_bottombar.lua:587
 msgid "Next"
 msgstr "다음"
 
-#: features/sui_quickactions.lua:956 infra/sui_config.lua:130
+#: features/sui_quickactions.lua:956 infra/sui_config.lua:131
 msgid "Night Mode"
 msgstr "야간 모드"
 
@@ -2580,7 +2559,7 @@ msgstr "아홉"
 msgid "Nineteen"
 msgstr "열아홉"
 
-#: screens/sui_stats_windows.lua:1217
+#: screens/sui_stats_windows.lua:1157
 msgid "No"
 msgstr "아니요"
 
@@ -2588,7 +2567,7 @@ msgstr "아니요"
 msgid "No .lua files found in sui_quotes/"
 msgstr "sui_quotes/에서 .lua 파일을 찾을 수 없습니다."
 
-#: screens/sui_menu.lua:4158
+#: screens/sui_menu.lua:4165
 msgid ""
 "No .zip files found.\n"
 "Place .zip files in:\n"
@@ -2605,7 +2584,7 @@ msgstr "아직 활성화된 동작이 없습니다."
 
 #: features/sui_quickactions.lua:1648 modules/module_action_list.lua:85
 #: modules/module_action_list.lua:104 modules/module_quick_actions.lua:150
-#: screens/sui_settings_window.lua:694
+#: screens/sui_settings_window.lua:726
 msgid "No actions configured"
 msgstr "설정된 동작 없음"
 
@@ -2622,7 +2601,7 @@ msgstr ""
 "설정된 동작이 없습니다.\n"
 "막대 → 빠른 설정 막대로 이동하세요."
 
-#: features/sui_backup.lua:1168
+#: features/sui_backup.lua:1179
 msgid "No backup loaded yet."
 msgstr "아직 불러온 백업이 없습니다."
 
@@ -2630,12 +2609,16 @@ msgstr "아직 불러온 백업이 없습니다."
 msgid "No book in history."
 msgstr "기록된 도서가 없습니다."
 
-#: screens/sui_stats_windows.lua:785
+#: screens/sui_stats_windows.lua:679
+msgid "No books finished"
+msgstr ""
+
+#: screens/sui_stats_windows.lua:771
 msgid "No books finished in %s"
 msgstr "%s에 읽기 완료한 도서가 없습니다."
 
-#: features/library/sui_foldercovers.lua:592
-#: features/library/sui_foldercovers.lua:695
+#: features/library/sui_foldercovers.lua:590
+#: features/library/sui_foldercovers.lua:693
 msgid "No books found in this folder."
 msgstr "이 폴더에서 도서를 찾을 수 없습니다."
 
@@ -2646,8 +2629,8 @@ msgstr "이 시리즈에서 도서를 찾을 수 없습니다."
 
 #: features/library/sui_group_actions.lua:39
 #: features/library/sui_group_actions.lua:96
-#: features/library/sui_library_browse.lua:405
-#: features/library/sui_library_browse.lua:427
+#: features/library/sui_library_browse.lua:416
+#: features/library/sui_library_browse.lua:438
 msgid "No books found."
 msgstr "도서를 찾을 수 없습니다."
 
@@ -2669,7 +2652,7 @@ msgstr "아직 연 도서가 없습니다."
 msgid "No books to show yet — open a book to see it here."
 msgstr "아직 표시할 도서가 없습니다 — 도서를 열면 여기에 표시됩니다."
 
-#: modules/module_feat_coll.lua:345 screens/sui_settings_window.lua:706
+#: modules/module_feat_coll.lua:345 screens/sui_settings_window.lua:738
 msgid "No collection selected"
 msgstr "선택된 모음집 없음"
 
@@ -2677,32 +2660,28 @@ msgstr "선택된 모음집 없음"
 msgid "No collection selected  —  long press to configure"
 msgstr "선택된 모음집 없음  —  길게 눌러 설정"
 
-#: modules/module_coverdeck.lua:1377
+#: modules/module_coverdeck.lua:1388
 msgid "No collections found"
 msgstr "모음집을 찾을 수 없음"
 
-#: modules/module_collections.lua:1180 modules/module_collections.lua:1297
+#: modules/module_collections.lua:1184 modules/module_collections.lua:1301
 #: modules/module_feat_coll.lua:123
 msgid "No collections found."
 msgstr "모음집을 찾을 수 없습니다."
 
-#: modules/module_collections.lua:1383
+#: modules/module_collections.lua:1387
 msgid "No collections selected"
 msgstr "선택된 모음집 없음"
 
-#: modules/module_collections.lua:1382
+#: modules/module_collections.lua:1386
 msgid "No collections selected  —  long press to configure"
 msgstr "선택된 모음집 없음  —  길게 눌러 설정"
 
 #: modules/module_quote.lua:965
-msgid ""
-"No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder "
-"and select it in Settings."
-msgstr ""
-"사용자 지정 문구를 찾을 수 없습니다. 플러그인의 sui_quotes/ 폴더에 .lua 파일"
-"을 추가한 뒤 설정에서 선택하세요."
+msgid "No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder and select it in Settings."
+msgstr "사용자 지정 문구를 찾을 수 없습니다. 플러그인의 sui_quotes/ 폴더에 .lua 파일을 추가한 뒤 설정에서 선택하세요."
 
-#: screens/sui_settings_window.lua:475
+#: screens/sui_settings_window.lua:507
 msgid "No custom screens yet."
 msgstr "아직 사용자 지정 화면이 없습니다."
 
@@ -2720,7 +2699,7 @@ msgstr ""
 msgid "No export directory"
 msgstr "내보내기 폴더 없음"
 
-#: screens/sui_stats_windows.lua:159
+#: screens/sui_stats_windows.lua:52
 msgid "No filepath."
 msgstr "파일 경로가 없습니다."
 
@@ -2738,8 +2717,7 @@ msgstr "글꼴을 찾을 수 없습니다."
 
 #: modules/module_quote.lua:1041
 msgid "No highlights found. Open a book and highlight some passages."
-msgstr ""
-"하이라이트를 찾을 수 없습니다. 도서를 열고 일부 구절을 하이라이트하세요."
+msgstr "하이라이트를 찾을 수 없습니다. 도서를 열고 일부 구절을 하이라이트하세요."
 
 #: features/library/sui_library_search.lua:187
 #, fuzzy
@@ -2750,39 +2728,39 @@ msgstr "홈 폴더"
 msgid "No icons found in:"
 msgstr "다음 위치에서 아이콘을 찾을 수 없습니다:"
 
-#: engines/sui_window.lua:2535 engines/sui_window.lua:3184
+#: engines/sui_window.lua:2658 engines/sui_window.lua:3307
 msgid "No items available."
 msgstr "사용할 수 있는 항목이 없습니다."
 
-#: engines/sui_window.lua:3094 modules/module_action_list.lua:366
-#: modules/module_action_list.lua:391 modules/module_clock.lua:1066
-#: modules/module_collections.lua:1128 modules/module_coverdeck.lua:1590
-#: modules/module_coverdeck.lua:1598 modules/module_currently.lua:1692
+#: engines/sui_window.lua:3217 modules/module_action_list.lua:366
+#: modules/module_action_list.lua:391 modules/module_clock.lua:1126
+#: modules/module_collections.lua:1132 modules/module_coverdeck.lua:1601
+#: modules/module_coverdeck.lua:1609 modules/module_currently.lua:1692
 #: modules/module_currently.lua:1776 modules/module_currently.lua:1908
 #: modules/module_currently.lua:1951 modules/module_quick_actions.lua:443
-#: modules/module_quick_actions.lua:468 modules/module_reading_goals.lua:1392
-#: modules/module_reading_goals.lua:1399 modules/module_reading_stats.lua:772
-#: modules/module_reading_stats.lua:793 screens/sui_menu.lua:996
+#: modules/module_quick_actions.lua:468 modules/module_reading_goals.lua:1256
+#: modules/module_reading_goals.lua:1263 modules/module_reading_stats.lua:755
+#: modules/module_reading_stats.lua:776 screens/sui_menu.lua:996
 #: screens/sui_menu.lua:1074 screens/sui_menu.lua:1298
 #: screens/sui_menu.lua:1349 screens/sui_menu.lua:1782
 #: screens/sui_menu.lua:1889 screens/sui_menu.lua:1992
-#: screens/sui_menu.lua:2348 screens/sui_menu.lua:2373
+#: screens/sui_menu.lua:2347 screens/sui_menu.lua:2372
 msgid "No items selected."
 msgstr "선택된 항목이 없습니다."
 
-#: modules/module_clock.lua:1103
+#: modules/module_clock.lua:1163
 msgid "No items."
 msgstr "항목이 없습니다."
 
-#: screens/sui_settings_window.lua:612 screens/sui_settings_window.lua:787
+#: screens/sui_settings_window.lua:644 screens/sui_settings_window.lua:819
 msgid "No modules"
 msgstr "모듈 없음"
 
-#: screens/sui_settings_window.lua:773
+#: screens/sui_settings_window.lua:805
 msgid "No other pages available."
 msgstr "사용할 수 있는 다른 페이지가 없습니다."
 
-#: screens/sui_menu.lua:4179
+#: screens/sui_menu.lua:4186
 msgid "No packs found."
 msgstr "묶음을 찾을 수 없습니다."
 
@@ -2790,7 +2768,7 @@ msgstr "묶음을 찾을 수 없습니다."
 msgid "No plugins found."
 msgstr "플러그인을 찾을 수 없습니다."
 
-#: features/sui_presets.lua:1089 screens/sui_menu.lua:4559
+#: features/sui_presets.lua:1089 screens/sui_menu.lua:4566
 msgid ""
 "No preset files found.\n"
 "Place .lua files in:\n"
@@ -2800,7 +2778,7 @@ msgstr ""
 "다음 위치에 .lua 파일을 넣으세요:\n"
 "%1"
 
-#: features/sui_presets.lua:1066 screens/sui_menu.lua:4535
+#: features/sui_presets.lua:1066 screens/sui_menu.lua:4542
 msgid "No presets found."
 msgstr "사전 설정을 찾을 수 없습니다."
 
@@ -2817,20 +2795,20 @@ msgstr "최근 도서가 없습니다."
 msgid "No results for: %1"
 msgstr "사전 설정을 찾을 수 없습니다."
 
-#: screens/sui_stats_windows.lua:168 screens/sui_stats_windows.lua:202
-#: screens/sui_stats_windows.lua:3568
+#: screens/sui_stats_windows.lua:61 screens/sui_stats_windows.lua:95
+#: screens/sui_stats_windows.lua:3364
 msgid "No statistics found for this book."
 msgstr "이 도서의 통계를 찾을 수 없습니다."
 
-#: modules/module_coverdeck.lua:1465
+#: modules/module_coverdeck.lua:1476
 msgid "No statistics selected."
 msgstr "선택된 통계가 없습니다."
 
-#: modules/module_reading_stats.lua:519
+#: modules/module_reading_stats.lua:502
 msgid "No stats selected"
 msgstr "선택된 통계 없음"
 
-#: modules/module_reading_stats.lua:518
+#: modules/module_reading_stats.lua:501
 msgid "No stats selected  —  long press to configure"
 msgstr "선택된 통계 없음  —  길게 눌러 설정"
 
@@ -2838,15 +2816,15 @@ msgstr "선택된 통계 없음  —  길게 눌러 설정"
 msgid "No system actions found."
 msgstr "시스템 동작을 찾을 수 없습니다."
 
-#: screens/sui_menu.lua:2620
+#: screens/sui_menu.lua:2619
 msgid "No wallpapers found."
 msgstr "배경화면을 찾을 수 없습니다."
 
-#: engines/sui_book_grid.lua:1908 engines/sui_book_grid.lua:2021
-#: features/library/sui_foldercovers.lua:303 features/sui_quickactions.lua:2492
-#: screens/sui_menu.lua:3407 screens/sui_menu.lua:3416
-#: screens/sui_menu.lua:3434 screens/sui_menu.lua:3474
-#: screens/sui_menu.lua:3483 screens/sui_menu.lua:3501
+#: engines/sui_book_grid.lua:1929 engines/sui_book_grid.lua:2042
+#: features/library/sui_foldercovers.lua:304 features/sui_quickactions.lua:2492
+#: screens/sui_menu.lua:3414 screens/sui_menu.lua:3423
+#: screens/sui_menu.lua:3441 screens/sui_menu.lua:3481
+#: screens/sui_menu.lua:3490 screens/sui_menu.lua:3508
 msgid "None"
 msgstr "없음"
 
@@ -2854,42 +2832,42 @@ msgstr "없음"
 msgid "Noon"
 msgstr "정오"
 
-#: features/sui_backup.lua:573 features/sui_backup.lua:577
-#: features/sui_backup.lua:587 features/sui_backup.lua:772
-#: features/sui_backup.lua:929
+#: features/sui_backup.lua:584 features/sui_backup.lua:588
+#: features/sui_backup.lua:598 features/sui_backup.lua:783
+#: features/sui_backup.lua:940
 msgid "Not a valid backup file."
 msgstr "올바른 백업 파일이 아닙니다."
 
-#: modules/module_reading_goals.lua:1441 modules/module_reading_goals.lua:1447
-#: modules/module_reading_goals.lua:1453
+#: modules/module_reading_goals.lua:1305 modules/module_reading_goals.lua:1310
+#: modules/module_reading_goals.lua:1315
 msgid "Not set"
 msgstr "설정되지 않음"
 
-#: screens/sui_stats_windows.lua:1211 screens/sui_stats_windows.lua:3888
+#: screens/sui_stats_windows.lua:1151 screens/sui_stats_windows.lua:3684
 msgid "Notes"
 msgstr "메모"
 
-#: features/sui_backup.lua:984
+#: features/sui_backup.lua:995
 msgid "Nothing selected to import."
 msgstr "가져올 항목이 선택되지 않았습니다."
 
-#: engines/sui_heatmap_widgets.lua:88
+#: engines/sui_heatmap_widgets.lua:110
 msgid "Nov"
 msgstr "11월"
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2817
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
 msgid "November"
 msgstr "11월"
 
-#: engines/sui_book_grid.lua:1809 engines/sui_book_grid.lua:1810
+#: engines/sui_book_grid.lua:1830 engines/sui_book_grid.lua:1831
 msgid "Number of Books"
 msgstr "도서 수"
 
-#: screens/sui_menu.lua:3220
+#: screens/sui_menu.lua:3227
 msgid "Number of Books in Folder"
 msgstr "폴더의 도서 수"
 
-#: screens/sui_menu.lua:3294
+#: screens/sui_menu.lua:3301
 msgid "Number of Pages"
 msgstr "페이지 수"
 
@@ -2901,19 +2879,19 @@ msgstr "정각"
 msgid "OK"
 msgstr "확인"
 
-#: engines/sui_heatmap_widgets.lua:88
+#: engines/sui_heatmap_widgets.lua:110
 msgid "Oct"
 msgstr "10월"
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2817
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
 msgid "October"
 msgstr "10월"
 
-#: engines/sui_book_grid.lua:1988 engines/sui_book_grid.lua:2014
-#: modules/module_coverdeck.lua:1712 modules/module_currently.lua:2046
+#: engines/sui_book_grid.lua:2009 engines/sui_book_grid.lua:2035
+#: modules/module_coverdeck.lua:1723 modules/module_currently.lua:2046
 #: screens/sui_menu.lua:1630 screens/sui_menu.lua:1840
-#: screens/sui_menu.lua:3540 screens/sui_menu.lua:3705
-#: screens/sui_menu.lua:4893
+#: screens/sui_menu.lua:3547 screens/sui_menu.lua:3712
+#: screens/sui_menu.lua:4900
 msgid "Off"
 msgstr "끄기"
 
@@ -2921,14 +2899,14 @@ msgstr "끄기"
 msgid "Oh"
 msgstr "영"
 
-#: engines/sui_book_grid.lua:1988 engines/sui_book_grid.lua:2014
-#: modules/module_coverdeck.lua:1712 modules/module_currently.lua:2046
+#: engines/sui_book_grid.lua:2009 engines/sui_book_grid.lua:2035
+#: modules/module_coverdeck.lua:1723 modules/module_currently.lua:2046
 #: screens/sui_menu.lua:1630 screens/sui_menu.lua:1840
-#: screens/sui_menu.lua:4893
+#: screens/sui_menu.lua:4900
 msgid "On"
 msgstr "켜기"
 
-#: modules/module_coverdeck.lua:1651
+#: modules/module_coverdeck.lua:1662
 msgid "On side covers too"
 msgstr "옆 표지에도 적용"
 
@@ -2939,11 +2917,11 @@ msgstr "하나"
 #: engines/sui_screen_engine.lua:611 features/library/sui_library_search.lua:69
 #: features/library/sui_library_search.lua:142
 #: features/sui_quickactions.lua:3444 modules/module_quote.lua:1327
-#: screens/sui_stats_windows.lua:771
+#: screens/sui_stats_windows.lua:635
 msgid "Open"
 msgstr "열기"
 
-#: modules/module_collections.lua:1015
+#: modules/module_collections.lua:1019
 msgid "Open Module Settings"
 msgstr "모듈 설정 열기"
 
@@ -2961,7 +2939,7 @@ msgstr "모듈 설정 열기"
 
 #: engines/sui_screen_engine.lua:610 features/library/sui_library_search.lua:68
 #: features/sui_quickactions.lua:3443 modules/module_quote.lua:1326
-#: screens/sui_stats_windows.lua:769
+#: screens/sui_stats_windows.lua:633
 msgid "Open this file?"
 msgstr "이 파일을 열까요?"
 
@@ -2969,17 +2947,17 @@ msgstr "이 파일을 열까요?"
 msgid "Open with…"
 msgstr "다른 앱으로 열기…"
 
-#: screens/sui_menu.lua:2950
+#: screens/sui_menu.lua:2937
 msgid "Overflow Warning"
 msgstr "넘침 경고"
 
-#: screens/sui_menu.lua:3199
+#: screens/sui_menu.lua:3206
 msgid "Overlays"
 msgstr "오버레이"
 
 #: features/sui_presets.lua:888 features/sui_presets.lua:918
-#: features/sui_presets.lua:1050 screens/sui_menu.lua:4361
-#: screens/sui_menu.lua:4390 screens/sui_menu.lua:4519
+#: features/sui_presets.lua:1050 screens/sui_menu.lua:4368
+#: screens/sui_menu.lua:4397 screens/sui_menu.lua:4526
 msgid "Overwrite"
 msgstr "덮어쓰기"
 
@@ -2987,11 +2965,11 @@ msgstr "덮어쓰기"
 msgid "Overwrite preset \"%s\" with the current homescreen settings?"
 msgstr "현재 홈 화면 설정으로 사전 설정 \"%s\"을(를) 덮어쓸까요?"
 
-#: screens/sui_menu.lua:4389 screens/sui_menu.lua:4518
+#: screens/sui_menu.lua:4396 screens/sui_menu.lua:4525
 msgid "Overwrite preset \"%s\" with the current icon settings?"
 msgstr "현재 아이콘 설정으로 사전 설정 \"%s\"을(를) 덮어쓸까요?"
 
-#: screens/sui_menu.lua:4194
+#: screens/sui_menu.lua:4201
 msgid ""
 "Pack \"%s\" applied.\n"
 "%d icons replaced."
@@ -2999,7 +2977,7 @@ msgstr ""
 "묶음 \"%s\"을(를) 적용했습니다.\n"
 "%d개 아이콘을 교체했습니다."
 
-#: screens/sui_menu.lua:4112
+#: screens/sui_menu.lua:4119
 msgid ""
 "Pack \"%s\" installed.\n"
 "You can now apply it from the list."
@@ -3011,46 +2989,46 @@ msgstr ""
 msgid "Pack folder not accessible: "
 msgstr "묶음 폴더에 접근할 수 없습니다: "
 
-#: engines/sui_screen_engine.lua:1868 engines/sui_window.lua:1431
+#: engines/sui_screen_engine.lua:1869 engines/sui_window.lua:1473
 #: infra/sui_patches.lua:2304 infra/sui_patches.lua:3082
 msgid "Page %1 of %2"
 msgstr "%1 / %2 페이지"
 
-#: screens/sui_settings_window.lua:586 screens/sui_settings_window.lua:750
-#: screens/sui_settings_window.lua:1136
+#: screens/sui_settings_window.lua:618 screens/sui_settings_window.lua:782
+#: screens/sui_settings_window.lua:1168
 msgid "Page %d"
 msgstr "%d 페이지"
 
-#: screens/sui_settings_window.lua:585 screens/sui_settings_window.lua:749
-#: screens/sui_settings_window.lua:1135
+#: screens/sui_settings_window.lua:617 screens/sui_settings_window.lua:781
+#: screens/sui_settings_window.lua:1167
 msgid "Page 1 (Home)"
 msgstr "1페이지 (홈)"
 
-#: screens/sui_stats_windows.lua:947 screens/sui_stats_windows.lua:3653
+#: screens/sui_stats_windows.lua:887 screens/sui_stats_windows.lua:3449
 msgid "Pages"
 msgstr "페이지"
 
-#: engines/sui_book_grid.lua:1970 engines/sui_book_grid.lua:1986
+#: engines/sui_book_grid.lua:1991 engines/sui_book_grid.lua:2007
 msgid "Pages Badge"
 msgstr "페이지 배지"
 
-#: engines/sui_book_grid.lua:1981
+#: engines/sui_book_grid.lua:2002
 msgid "Pages Badge Color"
 msgstr "페이지 배지 색상"
 
-#: screens/sui_stats_windows.lua:2412
+#: screens/sui_stats_windows.lua:2264
 msgid "Pages per day"
 msgstr "일일 페이지 수"
 
-#: screens/sui_stats_windows.lua:2429 screens/sui_stats_windows.lua:2445
+#: screens/sui_stats_windows.lua:2281 screens/sui_stats_windows.lua:2297
 msgid "Pages read"
 msgstr "읽은 페이지"
 
-#: features/sui_style.lua:1374 screens/sui_menu.lua:3059
+#: features/sui_style.lua:1374 screens/sui_menu.lua:3042
 msgid "Pagination Bar"
 msgstr "페이지 표시 막대"
 
-#: screens/sui_menu.lua:2676
+#: screens/sui_menu.lua:2675
 #, fuzzy
 msgid "Pagination Bar Opacity"
 msgstr "페이지 표시 막대"
@@ -3109,7 +3087,7 @@ msgstr "경로 선택기를 사용할 수 없습니다."
 msgid "Path does not exist: "
 msgstr "경로가 존재하지 않습니다: "
 
-#: modules/module_reading_goals.lua:1296
+#: modules/module_reading_goals.lua:1160
 #, fuzzy
 msgid "Percentage"
 msgstr "읽은 비율"
@@ -3119,14 +3097,6 @@ msgstr "읽은 비율"
 msgid "Percentage read"
 msgstr "읽은 비율"
 
-#: modules/module_reading_goals.lua:768
-msgid "Physical Books — %s"
-msgstr "실물 도서 — %s"
-
-#: modules/module_reading_goals.lua:769
-msgid "Physical books read this year:"
-msgstr "올해 읽은 실물 도서:"
-
 #: screens/sui_onboarding.lua:198
 msgid "Pick any existing folder to use as the library home."
 msgstr ""
@@ -3135,37 +3105,45 @@ msgstr ""
 msgid "Place .lua files in the plugin's sui_quotes/ folder"
 msgstr "플러그인의 sui_quotes/ 폴더에 .lua 파일을 넣으세요"
 
-#: screens/sui_menu.lua:4180
+#: screens/sui_menu.lua:4187
 msgid "Place a folder or .zip in:"
 msgstr "다음 위치에 폴더 또는 .zip을 넣으세요:"
 
-#: screens/sui_menu.lua:2622
+#: screens/sui_menu.lua:2621
 msgid "Place images in:"
 msgstr "다음 위치에 이미지를 넣으세요:"
 
 #: screens/sui_onboarding.lua:339
-msgid ""
-"Place your files in koreader/settings/simpleui/sui_wallpapers or sui_icons."
-msgstr ""
-"koreader/settings/simpleui/sui_wallpapers 또는 sui_icons에 파일을 넣으세요."
+msgid "Place your files in koreader/settings/simpleui/sui_wallpapers or sui_icons."
+msgstr "koreader/settings/simpleui/sui_wallpapers 또는 sui_icons에 파일을 넣으세요."
 
-#: screens/sui_menu.lua:3852
+#: screens/sui_menu.lua:3859
 msgid "Placeholder Cover for Bookless Folders"
 msgstr "도서가 없는 폴더용 자리 표시 표지"
 
 #: infra/sui_compat_check.lua:235
-msgid ""
-"Please delete the Project: Title plugin from your plugins folder and restart "
-"KOReader."
+msgid "Please delete the Project: Title plugin from your plugins folder and restart KOReader."
 msgstr ""
 
-#: screens/sui_stats_windows.lua:667
+#: screens/sui_stats_windows.lua:534
 msgid "Please enter a date in YYYY-MM-DD format."
 msgstr "YYYY-MM-DD 형식으로 날짜를 입력하세요."
 
-#: features/sui_presets.lua:870 screens/sui_menu.lua:4345
+#: features/sui_presets.lua:870 screens/sui_menu.lua:4352
 msgid "Please enter a name for the preset."
 msgstr "사전 설정 이름을 입력하세요."
+
+#: features/sui_manual_books.lua:55
+msgid "Please enter a start or finish date."
+msgstr ""
+
+#: features/sui_manual_books.lua:49
+msgid "Please enter a title."
+msgstr ""
+
+#: features/sui_manual_books.lua:52
+msgid "Please enter dates as YYYY-MM-DD or YYYY."
+msgstr ""
 
 #: infra/sui_compat_check.lua:196
 msgid "Please restart KOReader for the change to take effect."
@@ -3187,49 +3165,49 @@ msgstr "플러그인 오류: %s"
 msgid "Plugin not available: %s"
 msgstr "플러그인을 사용할 수 없습니다: %s"
 
-#: screens/sui_menu.lua:3949
+#: screens/sui_menu.lua:3956
 msgid "Portrait list mode"
 msgstr ""
 
-#: screens/sui_menu.lua:3941
+#: screens/sui_menu.lua:3948
 msgid "Portrait mosaic mode"
 msgstr ""
 
-#: screens/sui_menu.lua:3227 screens/sui_menu.lua:3631
+#: screens/sui_menu.lua:3234 screens/sui_menu.lua:3638
 msgid "Position"
 msgstr "위치"
 
-#: features/sui_quickactions.lua:989 infra/sui_config.lua:132
+#: features/sui_quickactions.lua:989 infra/sui_config.lua:133
 msgid "Power"
 msgstr "전원"
 
-#: screens/sui_menu.lua:2924
+#: screens/sui_menu.lua:2923
 msgid "Preserve Cover Proportions"
 msgstr "표지 비율 유지"
 
-#: screens/sui_menu.lua:2975
+#: features/sui_stats_menu.lua:88
 msgid "Preserve Deleted Books in Statistics"
 msgstr "삭제한 도서를 통계에 보존"
 
-#: features/sui_presets.lua:1102 screens/sui_menu.lua:4570
+#: features/sui_presets.lua:1102 screens/sui_menu.lua:4577
 msgid "Preset \"%s\" imported."
 msgstr "사전 설정 \"%s\"을(를) 가져왔습니다."
 
 #: features/sui_presets.lua:753 features/sui_presets.lua:831
-#: screens/sui_menu.lua:4308
+#: screens/sui_menu.lua:4315
 msgid "Preset \"%s\" not found."
 msgstr "사전 설정 \"%s\"을(를) 찾을 수 없습니다."
 
-#: features/sui_presets.lua:881 screens/sui_menu.lua:4352
+#: features/sui_presets.lua:881 screens/sui_menu.lua:4359
 msgid "Preset \"%s\" saved."
 msgstr "사전 설정 \"%s\"을(를) 저장했습니다."
 
 #: features/sui_presets.lua:924 features/sui_presets.lua:1056
-#: screens/sui_menu.lua:4396 screens/sui_menu.lua:4525
+#: screens/sui_menu.lua:4403 screens/sui_menu.lua:4532
 msgid "Preset \"%s\" updated."
 msgstr "사전 설정 \"%s\"을(를) 업데이트했습니다."
 
-#: features/sui_presets.lua:1129 screens/sui_menu.lua:4600
+#: features/sui_presets.lua:1129 screens/sui_menu.lua:4607
 msgid ""
 "Preset exported to:\n"
 "%s"
@@ -3237,7 +3215,7 @@ msgstr ""
 "사전 설정을 내보낸 위치:\n"
 "%s"
 
-#: features/sui_presets.lua:856 screens/sui_menu.lua:4331
+#: features/sui_presets.lua:856 screens/sui_menu.lua:4338
 msgid "Preset name"
 msgstr "사전 설정 이름"
 
@@ -3245,58 +3223,54 @@ msgstr "사전 설정 이름"
 msgid "Preset not found"
 msgstr "사전 설정을 찾을 수 없음"
 
-#: screens/sui_menu.lua:3031 screens/sui_settings_window.lua:442
+#: screens/sui_menu.lua:3010 screens/sui_settings_window.lua:468
 msgid "Presets"
 msgstr "사전 설정"
 
-#: screens/sui_settings_window.lua:946
+#: screens/sui_settings_window.lua:978
 msgid "Presets module unavailable."
 msgstr "사전 설정 모듈을 사용할 수 없습니다."
 
 #: screens/sui_onboarding.lua:327
-msgid ""
-"Press and hold any element on the screen (like modules or bars) to quickly "
-"customize its settings."
-msgstr ""
-"화면의 아무 요소(모듈이나 막대 등)나 길게 누르면 설정을 바로 바꿀 수 있습니"
-"다."
+msgid "Press and hold any element on the screen (like modules or bars) to quickly customize its settings."
+msgstr "화면의 아무 요소(모듈이나 막대 등)나 길게 누르면 설정을 바로 바꿀 수 있습니다."
 
 #: screens/sui_bottombar.lua:587
 msgid "Prev"
 msgstr "이전"
 
-#: screens/sui_menu.lua:3402
+#: screens/sui_menu.lua:3409
 msgid "Progress"
 msgstr "진도"
 
-#: modules/module_coverdeck.lua:1642 modules/module_coverdeck.lua:1710
+#: modules/module_coverdeck.lua:1653 modules/module_coverdeck.lua:1721
 #: modules/module_currently.lua:1990 modules/module_currently.lua:2044
 msgid "Progress Badge"
 msgstr "진도 배지"
 
-#: engines/sui_book_grid.lua:1934 modules/module_coverdeck.lua:1662
+#: engines/sui_book_grid.lua:1955 modules/module_coverdeck.lua:1673
 #: modules/module_currently.lua:1999
 msgid "Progress Badge Color"
 msgstr "진도 배지 색상"
 
-#: screens/sui_menu.lua:4722
+#: screens/sui_menu.lua:4729
 msgid "Progress Bar Type"
 msgstr "진도 막대 종류"
 
-#: engines/sui_book_grid.lua:1939
+#: engines/sui_book_grid.lua:1960
 msgid "Progress Indicator"
 msgstr "진도 표시기"
 
-#: engines/sui_book_grid.lua:1926
+#: engines/sui_book_grid.lua:1947
 msgid "Progress Style"
 msgstr "진도 모양"
 
-#: engines/sui_book_grid.lua:2090 modules/module_currently.lua:1980
+#: engines/sui_book_grid.lua:2111 modules/module_currently.lua:1980
 #, fuzzy
 msgid "Progress Text"
 msgstr "진도"
 
-#: infra/sui_config.lua:1138
+#: infra/sui_config.lua:1139
 msgid "Progress and Badges"
 msgstr "진도 및 배지"
 
@@ -3316,7 +3290,7 @@ msgstr "진도 막대 모양"
 msgid "Project: Title is not compatible with Simple UI."
 msgstr ""
 
-#: infra/sui_config.lua:1121
+#: infra/sui_config.lua:1122
 #, fuzzy
 msgid "Proportions"
 msgstr "위치"
@@ -3326,33 +3300,37 @@ msgstr "위치"
 #: modules/module_action_list.lua:363 modules/module_action_list.lua:389
 #: modules/module_quick_actions.lua:435 modules/module_quick_actions.lua:440
 #: modules/module_quick_actions.lua:466 modules/module_quick_actions.lua:575
-#: screens/sui_menu.lua:2524 screens/sui_menu.lua:4946
+#: screens/sui_menu.lua:2523 screens/sui_menu.lua:4953
 #: screens/sui_quicksettings_bar.lua:1144
 #: screens/sui_quicksettings_bar.lua:1149
 #: screens/sui_quicksettings_bar.lua:1170
-#: screens/sui_quicksettings_bar.lua:1360 screens/sui_settings_window.lua:381
+#: screens/sui_quicksettings_bar.lua:1360 screens/sui_settings_window.lua:382
 msgid "Quick Actions"
 msgstr "빠른 동작"
 
-#: screens/sui_menu.lua:4950
+#: screens/sui_menu.lua:4957
 msgid "Quick Actions  (%d/%d — %d left)"
 msgstr "빠른 동작  (%d/%d — %d개 남음)"
 
-#: screens/sui_menu.lua:4948
+#: screens/sui_menu.lua:4955
 msgid "Quick Actions  (%d/%d — at limit)"
 msgstr "빠른 동작  (%d/%d — 한도 도달)"
 
 #: features/sui_quickactions.lua:1535 features/sui_quickactions.lua:1937
-#: screens/sui_menu.lua:4018
+#: screens/sui_menu.lua:4025
 msgid "Quick Actions Icons"
 msgstr "빠른 동작 아이콘"
 
 #: modules/module_quick_actions.lua:290 modules/module_quick_actions.lua:347
-#: modules/module_quick_actions.lua:671 screens/sui_menu.lua:2274
+#: modules/module_quick_actions.lua:671 screens/sui_menu.lua:2273
 msgid "Quick Actions Row"
 msgstr "빠른 동작 행"
 
-#: screens/sui_menu.lua:3061 screens/sui_quicksettings_bar.lua:993
+#: features/sui_manual_books.lua:175
+msgid "Quick Count"
+msgstr ""
+
+#: screens/sui_menu.lua:3044 screens/sui_quicksettings_bar.lua:993
 msgid "Quick Settings Bar"
 msgstr "빠른 설정 막대"
 
@@ -3385,31 +3363,32 @@ msgstr "sui_quotes/의 문구 묶음 파일"
 msgid "Quotes + My Highlights"
 msgstr "문구 + 내 하이라이트"
 
-#: infra/sui_config.lua:198
+#: infra/sui_config.lua:199
 msgid "RAM Usage"
 msgstr "RAM 사용량"
 
-#: features/sui_quickactions.lua:821 infra/sui_config.lua:124
+#: features/sui_quickactions.lua:821 infra/sui_config.lua:125
 #: modules/module_library.lua:220
 msgid "Random"
 msgstr "무작위"
 
 #: features/sui_presets.lua:175 features/sui_presets.lua:220
-#: modules/module_reading_goals.lua:906 modules/module_reading_goals.lua:907
+#: features/sui_stats_menu.lua:121 modules/module_reading_goals.lua:793
+#: modules/module_reading_goals.lua:794
 msgid "Reading Goals"
 msgstr "읽기 목표"
 
-#: modules/module_heatmap.lua:209 modules/module_heatmap.lua:210
-#: screens/sui_heatmap_popup.lua:193
+#: features/sui_stats_menu.lua:118 modules/module_heatmap.lua:208
+#: modules/module_heatmap.lua:209 screens/sui_heatmap_popup.lua:122
 msgid "Reading Heatmap"
 msgstr "읽기 히트맵"
 
-#: screens/sui_stats_windows.lua:2741
+#: features/sui_stats_menu.lua:115 screens/sui_stats_windows.lua:2599
 msgid "Reading Insights"
 msgstr "읽기 인사이트"
 
 #: features/sui_presets.lua:175 features/sui_presets.lua:220
-#: modules/module_reading_stats.lua:399
+#: modules/module_reading_stats.lua:382
 msgid "Reading Stats"
 msgstr "읽기 통계"
 
@@ -3417,7 +3396,7 @@ msgstr "읽기 통계"
 msgid "Reading goals, streak mode and freeze bank"
 msgstr "읽기 목표, 연속 기록 모드 및 유예 횟수"
 
-#: modules/module_reading_stats.lua:898
+#: features/sui_stats_menu.lua:64
 msgid "Real streak only"
 msgstr "실제 연속 기록만"
 
@@ -3426,12 +3405,12 @@ msgid "Reboot"
 msgstr "재부팅"
 
 #: features/sui_quickactions.lua:794 features/sui_quickactions.lua:3550
-#: infra/sui_config.lua:122
+#: infra/sui_config.lua:123
 msgid "Recent"
 msgstr "최근"
 
 #: features/sui_presets.lua:143 features/sui_presets.lua:193
-#: modules/module_coverdeck.lua:1327 modules/module_recent.lua:15
+#: modules/module_coverdeck.lua:1338 modules/module_recent.lua:15
 #: modules/module_recent.lua:16
 msgid "Recent Books"
 msgstr "최근 도서"
@@ -3448,34 +3427,29 @@ msgstr "읽을 책에서 삭제하기"
 msgid "Remove from list when finished"
 msgstr "완료하면 목록에서 삭제"
 
-#: engines/sui_window.lua:1953 engines/sui_window.lua:2873
+#: engines/sui_window.lua:1995 engines/sui_window.lua:2996
 #: features/sui_presets.lua:930 features/sui_presets.lua:937
-#: features/sui_presets.lua:1023 screens/sui_menu.lua:4402
-#: screens/sui_menu.lua:4409 screens/sui_menu.lua:4494
+#: features/sui_presets.lua:1023 screens/sui_menu.lua:4409
+#: screens/sui_menu.lua:4416 screens/sui_menu.lua:4501
 msgid "Rename"
 msgstr "이름 바꾸기"
 
 #: features/sui_presets.lua:933 features/sui_presets.lua:1019
-#: screens/sui_menu.lua:4405 screens/sui_menu.lua:4490
+#: screens/sui_menu.lua:4412 screens/sui_menu.lua:4497
 msgid "Rename \"%s\""
 msgstr "\"%s\" 이름 바꾸기"
 
-#: screens/sui_settings_window.lua:512
+#: screens/sui_settings_window.lua:544
 msgid "Rename screen"
 msgstr "화면 이름 바꾸기"
 
-#: screens/sui_menu.lua:2901
-msgid ""
-"Replaces the \"Closing book…\" notice above with the cover for that close, "
-"when a cover is available."
-msgstr ""
-"표지를 사용할 수 있는 경우 위의 \"도서 닫는 중…\" 알림 대신 그 도서의 표지를 "
-"표시합니다."
+#: screens/sui_menu.lua:2900
+msgid "Replaces the \"Closing book…\" notice above with the cover for that close, when a cover is available."
+msgstr "표지를 사용할 수 있는 경우 위의 \"도서 닫는 중…\" 알림 대신 그 도서의 표지를 표시합니다."
 
 #: screens/sui_menu.lua:583
 msgid ""
-"Replaces the pagination bar with Prev/Next arrows at the edges of the "
-"navigation bar.\n"
+"Replaces the pagination bar with Prev/Next arrows at the edges of the navigation bar.\n"
 "The arrows dim when there is no previous or next page.\n"
 "With navpager active, as few as 1 tab and at most 4 tabs can be configured."
 msgstr ""
@@ -3484,7 +3458,7 @@ msgstr ""
 "Navpager를 사용하면 탭은 최소 1개에서 최대 4개까지 구성할 수 있습니다."
 
 #: features/sui_quickactions.lua:1945 features/sui_style.lua:1390
-#: screens/sui_menu.lua:2824 screens/sui_stats_windows.lua:653
+#: screens/sui_menu.lua:2823 screens/sui_stats_windows.lua:520
 msgid "Reset"
 msgstr "초기화"
 
@@ -3504,7 +3478,7 @@ msgstr "시스템 아이콘 모두 초기화"
 msgid "Reset all Quick Actions icons to default?"
 msgstr "모든 빠른 동작 아이콘을 기본값으로 초기화할까요?"
 
-#: screens/sui_menu.lua:2823
+#: screens/sui_menu.lua:2822
 msgid "Reset all scales to default (100%)? This cannot be undone."
 msgstr "모든 배율을 기본값(100%)으로 초기화할까요? 되돌릴 수 없습니다."
 
@@ -3512,21 +3486,21 @@ msgstr "모든 배율을 기본값(100%)으로 초기화할까요? 되돌릴 수
 msgid "Reset all system icons to default?"
 msgstr "모든 시스템 아이콘을 기본값으로 초기화할까요?"
 
-#: screens/sui_menu.lua:2818
+#: screens/sui_menu.lua:2817
 msgid "Reset to Default Scale"
 msgstr "기본 배율로 초기화"
 
 #: features/sui_quickactions.lua:600 infra/sui_updater.lua:448
 #: screens/sui_menu.lua:555 screens/sui_menu.lua:968 screens/sui_menu.lua:1178
 #: screens/sui_menu.lua:1272 screens/sui_menu.lua:1487
-#: screens/sui_menu.lua:2100 screens/sui_menu.lua:3719
-#: screens/sui_menu.lua:3742 screens/sui_menu.lua:3764
-#: screens/sui_menu.lua:4710 screens/sui_menu.lua:4909
+#: screens/sui_menu.lua:2100 screens/sui_menu.lua:3726
+#: screens/sui_menu.lua:3749 screens/sui_menu.lua:3771
+#: screens/sui_menu.lua:4717 screens/sui_menu.lua:4916
 #: screens/sui_quicksettings_bar.lua:1134
 msgid "Restart"
 msgstr "다시 시작"
 
-#: features/sui_backup.lua:1006 infra/sui_compat_check.lua:197
+#: features/sui_backup.lua:1017 infra/sui_compat_check.lua:197
 #: infra/sui_compat_check.lua:310
 msgid "Restart now"
 msgstr "지금 다시 시작"
@@ -3540,54 +3514,50 @@ msgstr "UI 글꼴 변경을 완전히 적용하려면 다시 시작하세요."
 msgid "Restarting…"
 msgstr "다시 시작"
 
-#: features/sui_backup.lua:992
+#: features/sui_backup.lua:1003
 msgid "Restore"
 msgstr "복원"
 
-#: features/sui_backup.lua:1160
+#: features/sui_backup.lua:1171
 msgid "Restore Selected…"
 msgstr "선택한 항목 복원…"
 
-#: features/sui_backup.lua:997
+#: features/sui_backup.lua:1008
 msgid "Restore failed."
 msgstr "복원에 실패했습니다."
 
-#: features/sui_backup.lua:855
+#: features/sui_backup.lua:866
 msgid "Restore failed. Your previous configuration was kept unchanged."
 msgstr "복원에 실패했습니다. 이전 구성은 그대로 유지됩니다."
 
-#: features/sui_backup.lua:991
-msgid ""
-"Restore this backup? Existing settings for these categories will be "
-"replaced. Saved presets are merged — yours are kept."
-msgstr ""
-"이 백업을 복원할까요? 해당 항목의 기존 설정은 교체됩니다. 저장된 사전 설정은 "
-"병합되며 기존 설정이 유지됩니다."
+#: features/sui_backup.lua:1002
+msgid "Restore this backup? Existing settings for these categories will be replaced. Saved presets are merged — yours are kept."
+msgstr "이 백업을 복원할까요? 해당 항목의 기존 설정은 교체됩니다. 저장된 사전 설정은 병합되며 기존 설정이 유지됩니다."
 
-#: screens/sui_menu.lua:2733
+#: screens/sui_menu.lua:2732
 msgid "Return to Home Screen on Wakeup"
 msgstr "깨어날 때 홈 화면으로 돌아가기"
 
-#: engines/sui_book_grid.lua:2023 screens/sui_menu.lua:3473
-#: screens/sui_menu.lua:3482 screens/sui_menu.lua:3494
+#: engines/sui_book_grid.lua:2044 screens/sui_menu.lua:3480
+#: screens/sui_menu.lua:3489 screens/sui_menu.lua:3501
 msgid "Ribbon"
 msgstr "리본"
 
-#: infra/sui_config.lua:1850 modules/module_quick_actions.lua:646
+#: infra/sui_config.lua:1851 modules/module_quick_actions.lua:646
 #: screens/sui_menu.lua:836 screens/sui_menu.lua:1066 screens/sui_menu.lua:1681
 #: screens/sui_menu.lua:1879
 msgid "Right"
 msgstr "오른쪽"
 
-#: modules/module_reading_goals.lua:1538
+#: modules/module_reading_goals.lua:1376
 msgid "Ring Alignment"
 msgstr "링 맞춤"
 
-#: modules/module_reading_goals.lua:1526
+#: modules/module_reading_goals.lua:1364
 msgid "Ring Style"
 msgstr "링 모양"
 
-#: modules/module_reading_goals.lua:1519
+#: modules/module_reading_goals.lua:1357
 msgid "Rings"
 msgstr "링"
 
@@ -3595,7 +3565,7 @@ msgstr "링"
 msgid "Round"
 msgstr "원형"
 
-#: engines/sui_book_grid.lua:1912
+#: engines/sui_book_grid.lua:1933
 msgid "Round Overlay"
 msgstr "원형 오버레이"
 
@@ -3603,11 +3573,11 @@ msgstr "원형 오버레이"
 msgid "Rounded Square"
 msgstr "둥근 사각형"
 
-#: engines/sui_book_grid.lua:1846
+#: engines/sui_book_grid.lua:1867
 msgid "Rows"
 msgstr "행"
 
-#: screens/sui_stats_windows.lua:2805
+#: screens/sui_stats_windows.lua:2664
 msgid "Sat"
 msgstr "토"
 
@@ -3615,21 +3585,22 @@ msgstr "토"
 msgid "Saturday"
 msgstr "토요일"
 
+#: features/sui_manual_books.lua:85 features/sui_manual_books.lua:137
 #: features/sui_presets.lua:864 features/sui_quickactions.lua:2516
-#: modules/module_reading_goals.lua:745 screens/sui_menu.lua:4339
-#: screens/sui_settings_window.lua:522 screens/sui_stats_windows.lua:662
+#: infra/sui_goals.lua:111 screens/sui_menu.lua:4346
+#: screens/sui_settings_window.lua:554 screens/sui_stats_windows.lua:529
 msgid "Save"
 msgstr "저장"
 
-#: features/sui_presets.lua:849 screens/sui_menu.lua:4324
+#: features/sui_presets.lua:849 screens/sui_menu.lua:4331
 msgid "Save as new preset"
 msgstr "새 사전 설정으로 저장"
 
-#: features/sui_backup.lua:1087
+#: features/sui_backup.lua:1098
 msgid "Save backup as"
 msgstr "백업 저장 이름"
 
-#: screens/sui_menu.lua:4329
+#: screens/sui_menu.lua:4336
 msgid "Save icon preset"
 msgstr "아이콘 사전 설정 저장"
 
@@ -3637,22 +3608,22 @@ msgstr "아이콘 사전 설정 저장"
 msgid "Save preset"
 msgstr "사전 설정 저장"
 
-#: engines/sui_book_grid.lua:1782 engines/sui_book_grid.lua:1784
+#: engines/sui_book_grid.lua:1803 engines/sui_book_grid.lua:1805
 #: modules/module_action_list.lua:445 modules/module_action_list.lua:447
-#: modules/module_clock.lua:1018 modules/module_clock.lua:1020
-#: modules/module_coverdeck.lua:1308 modules/module_coverdeck.lua:1310
+#: modules/module_clock.lua:1078 modules/module_clock.lua:1080
+#: modules/module_coverdeck.lua:1319 modules/module_coverdeck.lua:1321
 #: modules/module_currently.lua:1478 modules/module_currently.lua:1480
-#: modules/module_heatmap.lua:314 modules/module_heatmap.lua:316
+#: modules/module_heatmap.lua:313 modules/module_heatmap.lua:315
 #: modules/module_quick_actions.lua:584 modules/module_quick_actions.lua:586
 #: modules/module_quote.lua:1380 modules/module_quote.lua:1384
-#: modules/module_quote.lua:1505 modules/module_reading_goals.lua:1277
-#: modules/module_reading_goals.lua:1279 modules/module_reading_stats.lua:709
-#: modules/module_reading_stats.lua:711 modules/module_reading_stats.lua:945
-#: screens/sui_menu.lua:2745
+#: modules/module_quote.lua:1505 modules/module_reading_goals.lua:1141
+#: modules/module_reading_goals.lua:1143 modules/module_reading_stats.lua:692
+#: modules/module_reading_stats.lua:694 modules/module_reading_stats.lua:904
+#: screens/sui_menu.lua:2744
 msgid "Scale"
 msgstr "배율"
 
-#: modules/module_collections.lua:1288
+#: modules/module_collections.lua:1292
 msgid "Scale for the collection count badge."
 msgstr "모음집 개수 배지의 배율입니다."
 
@@ -3660,15 +3631,13 @@ msgstr "모음집 개수 배지의 배율입니다."
 msgid ""
 "Scale for the cover thumbnail only.\n"
 "100% is the default size.\n"
-"When Dynamic Cover Size is on, this scales the cover relative to its current "
-"dynamic size instead, and the cover never shrinks below its 100% size."
+"When Dynamic Cover Size is on, this scales the cover relative to its current dynamic size instead, and the cover never shrinks below its 100% size."
 msgstr ""
 "표지 미리보기만 조절합니다.\n"
 "100%가 기본 크기입니다.\n"
-"표지 동적 크기를 켜면 이 배율은 현재 동적 크기에 상대적으로 적용되며, 표지는 "
-"100% 크기보다 작아지지 않습니다."
+"표지 동적 크기를 켜면 이 배율은 현재 동적 크기에 상대적으로 적용되며, 표지는 100% 크기보다 작아지지 않습니다."
 
-#: modules/module_coverdeck.lua:1319
+#: modules/module_coverdeck.lua:1330
 msgid ""
 "Scale for the cover thumbnails only.\n"
 "100% is the default size."
@@ -3676,7 +3645,7 @@ msgstr ""
 "표지 미리보기만 조절합니다.\n"
 "100%가 기본 크기입니다."
 
-#: engines/sui_book_grid.lua:1794
+#: engines/sui_book_grid.lua:1815
 msgid ""
 "Scale for the cover thumbnails only.\n"
 "Text and progress bar follow the module scale.\n"
@@ -3686,7 +3655,7 @@ msgstr ""
 "글자와 진도 막대는 모듈 배율을 따릅니다.\n"
 "100%가 기본 크기입니다."
 
-#: screens/sui_menu.lua:3692
+#: screens/sui_menu.lua:3699
 msgid ""
 "Scale for the folder name overlay text.\n"
 "100% is the default size."
@@ -3702,7 +3671,7 @@ msgstr ""
 "레이블 글자의 배율입니다.\n"
 "100%가 기본 크기입니다."
 
-#: screens/sui_menu.lua:3209
+#: screens/sui_menu.lua:3216
 msgid ""
 "Scale for the library badges (progress, pages, etc.).\n"
 "100% is the default size."
@@ -3710,23 +3679,22 @@ msgstr ""
 "서재 배지(진도, 페이지 등)의 배율입니다.\n"
 "100%가 기본 크기입니다."
 
-#: modules/module_coverdeck.lua:1674 modules/module_currently.lua:2011
+#: modules/module_coverdeck.lua:1685 modules/module_currently.lua:2011
 msgid "Scale for the progress badge."
 msgstr ""
 
-#: engines/sui_book_grid.lua:1961
-msgid ""
-"Scale for this module's corner badges (progress, pages, series, new book)."
+#: engines/sui_book_grid.lua:1982
+msgid "Scale for this module's corner badges (progress, pages, series, new book)."
 msgstr "이 모듈의 모서리 배지(진도, 페이지, 시리즈, 새 도서)의 배율입니다."
 
-#: modules/module_coverdeck.lua:1311
+#: modules/module_coverdeck.lua:1322
 msgid "Scale for this module."
 msgstr "이 모듈의 배율입니다."
 
-#: engines/sui_book_grid.lua:1785 modules/module_action_list.lua:448
-#: modules/module_clock.lua:1021 modules/module_currently.lua:1481
+#: engines/sui_book_grid.lua:1806 modules/module_action_list.lua:448
+#: modules/module_clock.lua:1081 modules/module_currently.lua:1481
 #: modules/module_quick_actions.lua:587 modules/module_quote.lua:1386
-#: modules/module_reading_goals.lua:1280 modules/module_reading_stats.lua:712
+#: modules/module_reading_goals.lua:1144 modules/module_reading_stats.lua:695
 msgid ""
 "Scale for this module.\n"
 "100% is the default size."
@@ -3734,20 +3702,15 @@ msgstr ""
 "이 모듈의 배율입니다.\n"
 "100%가 기본 크기입니다."
 
-#: modules/module_heatmap.lua:317
+#: modules/module_heatmap.lua:316
 msgid ""
 "Scale for this module.\n"
-"100% is the default size. Capped at 100% here: the grid always has as many "
-"columns as \"Weeks shown\" (or, in Time of day view, 24), so there's no room "
-"to grow the cells past their autofit size without the grid overflowing the "
-"card."
+"100% is the default size. Capped at 100% here: the grid always has as many columns as \"Weeks shown\" (or, in Time of day view, 24), so there's no room to grow the cells past their autofit size without the grid overflowing the card."
 msgstr ""
 "이 모듈의 배율입니다.\n"
-"100%가 기본 크기이며 이 모듈에서는 100%로 제한됩니다. 격자의 열 개수는 항상 "
-"\"표시할 주\"와 같고(시간대 보기에서는 24개), 따라서 격자가 카드를 넘치지 않"
-"으려면 칸을 자동 맞춤 크기보다 키울 수 없습니다."
+"100%가 기본 크기이며 이 모듈에서는 100%로 제한됩니다. 격자의 열 개수는 항상 \"표시할 주\"와 같고(시간대 보기에서는 24개), 따라서 격자가 카드를 넘치지 않으려면 칸을 자동 맞춤 크기보다 키울 수 없습니다."
 
-#: screens/sui_menu.lua:2769
+#: screens/sui_menu.lua:2768
 msgid ""
 "Scales all modules and labels together.\n"
 "100% is the default size."
@@ -3755,7 +3718,7 @@ msgstr ""
 "모든 모듈과 레이블을 함께 조절합니다.\n"
 "100%가 기본 크기입니다."
 
-#: screens/sui_menu.lua:2800
+#: screens/sui_menu.lua:2799
 msgid ""
 "Scales the section label text above each module.\n"
 "100% is the default size."
@@ -3763,23 +3726,21 @@ msgstr ""
 "각 모듈 위의 구역 레이블 글자를 조절합니다.\n"
 "100%가 기본 크기입니다."
 
-#: screens/sui_menu.lua:3865
+#: screens/sui_menu.lua:3872
 msgid "Scan Subfolders for Covers"
 msgstr "하위 폴더에서 표지 검색"
 
-#: screens/sui_settings_window.lua:514 screens/sui_settings_window.lua:1205
+#: screens/sui_settings_window.lua:546 screens/sui_settings_window.lua:1240
 msgid "Screen name"
 msgstr "화면 이름"
 
-#: screens/sui_menu.lua:2716
-msgid ""
-"Screen shown after closing a book. Gestures and quick actions that name a "
-"destination always open that destination."
+#: screens/sui_menu.lua:2715
+msgid "Screen shown after closing a book. Gestures and quick actions that name a destination always open that destination."
 msgstr ""
 
 #: features/library/sui_library_search.lua:208
-#: features/sui_quickactions.lua:906 infra/sui_config.lua:127
-#: screens/sui_titlebar.lua:119 screens/sui_titlebar.lua:1169
+#: features/sui_quickactions.lua:906 infra/sui_config.lua:128
+#: screens/sui_titlebar.lua:119 screens/sui_titlebar.lua:1152
 msgid "Search"
 msgstr "검색"
 
@@ -3801,46 +3762,46 @@ msgstr "서재 탐색"
 msgid "Search results: %1"
 msgstr ""
 
-#: engines/sui_window.lua:1942 engines/sui_window.lua:2858
+#: engines/sui_window.lua:1984 engines/sui_window.lua:2981
 msgid "Select"
 msgstr "선택"
 
 #: features/sui_presets.lua:760 features/sui_presets.lua:768
-#: features/sui_presets.lua:773 screens/sui_menu.lua:4315
+#: features/sui_presets.lua:773 screens/sui_menu.lua:4322
 msgid "Select Preset"
 msgstr "사전 설정 선택"
 
-#: screens/sui_menu.lua:2641
+#: screens/sui_menu.lua:2640
 msgid "Select Wallpaper"
 msgstr "배경화면 선택하기"
 
-#: modules/module_collections.lua:1101
+#: modules/module_collections.lua:1105
 msgid "Select at least 2 collections to arrange."
 msgstr "정렬하려면 모음집을 2개 이상 선택하세요."
 
-#: engines/sui_heatmap_widgets.lua:88
+#: engines/sui_heatmap_widgets.lua:110
 msgid "Sep"
 msgstr "9월"
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2817
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
 msgid "September"
 msgstr "9월"
 
 #: features/library/sui_library_browse.lua:64
-#: features/sui_quickactions.lua:1022 infra/sui_config.lua:136
+#: features/sui_quickactions.lua:1022 infra/sui_config.lua:137
 #: modules/module_currently.lua:327 modules/module_currently.lua:1978
 msgid "Series"
 msgstr "시리즈"
 
-#: engines/sui_book_grid.lua:1996 engines/sui_book_grid.lua:2012
+#: engines/sui_book_grid.lua:2017 engines/sui_book_grid.lua:2033
 msgid "Series Badge"
 msgstr "시리즈 배지"
 
-#: engines/sui_book_grid.lua:2007
+#: engines/sui_book_grid.lua:2028
 msgid "Series Badge Color"
 msgstr "시리즈 배지 색상"
 
-#: screens/sui_menu.lua:3348
+#: screens/sui_menu.lua:3355
 msgid "Series Index"
 msgstr "시리즈 순번"
 
@@ -3848,19 +3809,23 @@ msgstr "시리즈 순번"
 msgid "Set"
 msgstr "설정"
 
-#: modules/module_reading_goals.lua:1312
+#: modules/module_reading_goals.lua:1176
 msgid "Set Goal"
 msgstr "목표 정하기"
 
-#: modules/module_collections.lua:1007
+#: modules/module_collections.lua:1011
 msgid "Set collection cover"
 msgstr "모음집 표지 설정"
 
-#: features/library/sui_foldercovers.lua:625
-#: features/library/sui_library_browse.lua:812
+#: features/library/sui_foldercovers.lua:623
+#: features/library/sui_library_browse.lua:823
 #: features/library/sui_series_grouping.lua:381
 msgid "Set folder cover"
 msgstr "폴더 표지 설정"
+
+#: features/sui_manual_books.lua:176
+msgid "Set how many books you read in a year, without entering their details."
+msgstr ""
 
 #: screens/sui_onboarding.lua:209 screens/sui_onboarding.lua:403
 msgid "Set the Home Folder"
@@ -3870,16 +3835,16 @@ msgstr ""
 msgid "Set your reading goal"
 msgstr "읽기 목표 정하기"
 
-#: features/sui_quickactions.lua:999 infra/sui_config.lua:133
+#: features/sui_quickactions.lua:999 infra/sui_config.lua:134
 msgid "Settings"
 msgstr "설정"
 
-#: screens/sui_settings_window.lua:329 screens/sui_settings_window.lua:334
+#: screens/sui_settings_window.lua:330 screens/sui_settings_window.lua:335
 msgid "Settings not found."
 msgstr "설정을 찾을 수 없습니다."
 
 #: screens/sui_menu.lua:1209 screens/sui_menu.lua:1236
-#: screens/sui_menu.lua:1548 screens/sui_menu.lua:2962
+#: screens/sui_menu.lua:1548 screens/sui_menu.lua:2949
 #: screens/sui_quicksettings_bar.lua:1340
 #: screens/sui_quicksettings_bar.lua:1364
 msgid "Settings on Long Tap"
@@ -3893,25 +3858,23 @@ msgstr "일곱"
 msgid "Seventeen"
 msgstr "열일곱"
 
-#: infra/sui_config.lua:1541
+#: infra/sui_config.lua:1542
 msgid ""
 "Share of the row this module occupies.\n"
-"100% = full width. Modules under 100% share a row when their widths fit "
-"(bento grid)."
+"100% = full width. Modules under 100% share a row when their widths fit (bento grid)."
 msgstr ""
 "이 모듈이 차지하는 행의 비율입니다.\n"
-"100%는 전체 너비입니다. 100% 미만인 모듈은 너비가 맞으면 한 행을 나누어 사용"
-"합니다(벤토 격자)."
+"100%는 전체 너비입니다. 100% 미만인 모듈은 너비가 맞으면 한 행을 나누어 사용합니다(벤토 격자)."
 
-#: modules/module_clock.lua:1135
+#: modules/module_clock.lua:1195
 msgid "Show Battery"
 msgstr "배터리 표시"
 
-#: modules/module_clock.lua:1123
+#: modules/module_clock.lua:1183
 msgid "Show Clock"
 msgstr "시계 표시"
 
-#: modules/module_clock.lua:1129
+#: modules/module_clock.lua:1189
 msgid "Show Date"
 msgstr "날짜 표시"
 
@@ -3923,56 +3886,50 @@ msgstr "아이콘 표시"
 msgid "Show Page Count in Title Bar"
 msgstr "제목 표시줄에 페이지 수 표시"
 
-#: screens/sui_menu.lua:2839
-msgid ""
-"Show a brief \"Closing book…\" notice when closing a book, preventing "
-"accidental double-taps while e-ink refreshes."
+#: screens/sui_menu.lua:3125
+msgid "Show Uncategorized Items"
 msgstr ""
-"도서를 닫을 때 \"도서 닫는 중…\" 알림을 잠시 표시하여 전자잉크 화면 갱신 중 "
-"실수로 두 번 누르는 일을 방지합니다."
 
-#: screens/sui_menu.lua:2939
-msgid ""
-"Show a brief \"Loading statistics…\" notice when opening a statistics "
-"window, preventing accidental double-taps while e-ink refreshes."
-msgstr ""
-"통계 창을 열 때 \"통계 불러오는 중…\" 알림을 잠시 표시하여 전자잉크 화면 갱"
-"신 중 실수로 두 번 누르는 일을 방지합니다."
+#: screens/sui_menu.lua:2838
+msgid "Show a brief \"Closing book…\" notice when closing a book, preventing accidental double-taps while e-ink refreshes."
+msgstr "도서를 닫을 때 \"도서 닫는 중…\" 알림을 잠시 표시하여 전자잉크 화면 갱신 중 실수로 두 번 누르는 일을 방지합니다."
 
-#: modules/module_coverdeck.lua:1687 modules/module_library.lua:326
+#: features/sui_stats_menu.lua:101
+msgid "Show a brief \"Loading statistics…\" notice when opening a statistics window, preventing accidental double-taps while e-ink refreshes."
+msgstr "통계 창을 열 때 \"통계 불러오는 중…\" 알림을 잠시 표시하여 전자잉크 화면 갱신 중 실수로 두 번 누르는 일을 방지합니다."
+
+#: modules/module_coverdeck.lua:1698 modules/module_library.lua:326
 #: modules/module_recent.lua:54
 msgid "Show finished books"
 msgstr "읽기 완료 도서 표시"
 
-#: modules/module_heatmap.lua:348
+#: modules/module_heatmap.lua:347
 msgid "Show legend"
 msgstr "범례 표시"
 
-#: screens/sui_menu.lua:2900
+#: screens/sui_menu.lua:2899
 msgid "Show on Close"
 msgstr "닫을 때 표시"
 
-#: screens/sui_menu.lua:2889
+#: screens/sui_menu.lua:2888
 msgid "Show on Open"
 msgstr "열 때 표시"
 
-#: infra/sui_config.lua:1870
+#: infra/sui_config.lua:1871
 msgid "Show section label"
 msgstr "구역 레이블 표시"
 
-#: screens/sui_menu.lua:2646
+#: screens/sui_menu.lua:2645
 msgid "Show wallpaper on all screens"
 msgstr "모든 화면에 배경화면 표시"
 
 #: screens/sui_menu.lua:724
 msgid ""
-"Shows \"Page X of Y\" in the title bar subtitle when browsing the library, "
-"history or collections.\n"
+"Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\n"
 "Navpager enables this automatically.\n"
 "Not available when Navpager is active."
 msgstr ""
-"서재, 기록 또는 모음집을 탐색할 때 제목 표시줄 부제목에 \"X / Y 페이지\"를 표"
-"시합니다.\n"
+"서재, 기록 또는 모음집을 탐색할 때 제목 표시줄 부제목에 \"X / Y 페이지\"를 표시합니다.\n"
 "Navpager를 사용하면 자동으로 활성화됩니다.\n"
 "Navpager 사용 중에는 사용할 수 없습니다."
 
@@ -3986,7 +3943,7 @@ msgstr ""
 "현재 페이지 점은 채워지고 나머지는 흐리게 표시됩니다.\n"
 "Navpager를 선택하면 항상 활성화됩니다."
 
-#: engines/sui_book_grid.lua:1518
+#: engines/sui_book_grid.lua:1539
 msgid "Shuffle"
 msgstr "섞기"
 
@@ -3998,8 +3955,8 @@ msgstr "지금 섞기"
 msgid "Simple"
 msgstr "단순"
 
-#: _meta.lua:5 main.lua:2512 main.lua:2525 screens/sui_menu.lua:4893
-#: screens/sui_menu.lua:4980
+#: _meta.lua:5 main.lua:2361 main.lua:2374 screens/sui_menu.lua:4900
+#: screens/sui_menu.lua:4987
 msgid "Simple UI"
 msgstr "Simple UI"
 
@@ -4021,17 +3978,13 @@ msgstr ""
 "Simple UI %s 버전을 사용할 수 있습니다!\n"
 "현재 버전은 %s입니다."
 
-#: screens/sui_settings_window.lua:1113
+#: screens/sui_settings_window.lua:1145
 msgid "Simple UI Settings"
 msgstr "Simple UI 설정"
 
 #: screens/sui_onboarding.lua:299
-msgid ""
-"Simple UI is designed to be simple and flexible. Here are a few tips to get "
-"the most out of it."
-msgstr ""
-"Simple UI는 단순하면서도 유연하게 사용할 수 있도록 설계되었습니다. 최대한 활"
-"용하는 데 도움이 되는 몇 가지 팁을 소개합니다."
+msgid "Simple UI is designed to be simple and flexible. Here are a few tips to get the most out of it."
+msgstr "Simple UI는 단순하면서도 유연하게 사용할 수 있도록 설계되었습니다. 최대한 활용하는 데 도움이 되는 몇 가지 팁을 소개합니다."
 
 #: infra/sui_updater.lua:486
 msgid "Simple UI is up to date (%s)."
@@ -4047,7 +4000,7 @@ msgstr ""
 "\n"
 "모든 변경 사항을 깔끔하게 적용하려면 다시 시작하는 것이 좋습니다."
 
-#: screens/sui_menu.lua:4908
+#: screens/sui_menu.lua:4915
 msgid ""
 "Simple UI will be %s after restart.\n"
 "\n"
@@ -4081,7 +4034,7 @@ msgstr "Simple UI: 설정"
 msgid "Simple UI: Toggle Homescreen / Library"
 msgstr "Simple UI: 홈 화면 / 서재 전환"
 
-#: modules/module_collections.lua:1232 screens/sui_menu.lua:3163
+#: modules/module_collections.lua:1236 screens/sui_menu.lua:3170
 msgid "Single Cover"
 msgstr "단일 표지"
 
@@ -4093,9 +4046,9 @@ msgstr "여섯"
 msgid "Sixteen"
 msgstr "열여섯"
 
-#: infra/sui_config.lua:994 modules/module_action_list.lua:442
+#: infra/sui_config.lua:995 modules/module_action_list.lua:442
 #: modules/module_action_list.lua:475 screens/sui_menu.lua:1147
-#: screens/sui_menu.lua:3207 screens/sui_quicksettings_bar.lua:1241
+#: screens/sui_menu.lua:3214 screens/sui_quicksettings_bar.lua:1241
 #: screens/sui_quicksettings_bar.lua:1242
 msgid "Size"
 msgstr "크기"
@@ -4116,11 +4069,11 @@ msgstr ""
 "탭 레이블 글자의 크기입니다.\n"
 "100%가 기본 크기입니다."
 
-#: engines/sui_book_grid.lua:2092 modules/module_action_list.lua:497
-#: modules/module_clock.lua:1146 modules/module_coverdeck.lua:1635
+#: engines/sui_book_grid.lua:2113 modules/module_action_list.lua:497
+#: modules/module_clock.lua:1206 modules/module_coverdeck.lua:1646
 #: modules/module_currently.lua:1982 modules/module_quick_actions.lua:598
 #: modules/module_quote.lua:1472 modules/module_quote.lua:1493
-#: modules/module_reading_goals.lua:1297 modules/module_reading_stats.lua:933
+#: modules/module_reading_goals.lua:1161 modules/module_reading_stats.lua:892
 #, fuzzy
 msgid ""
 "Size of this text.\n"
@@ -4137,8 +4090,8 @@ msgstr "절전"
 msgid "Small"
 msgstr "작게"
 
-#: modules/module_quick_actions.lua:625 screens/sui_menu.lua:3589
-#: screens/sui_menu.lua:3593 screens/sui_quicksettings_bar.lua:1317
+#: modules/module_quick_actions.lua:625 screens/sui_menu.lua:3596
+#: screens/sui_menu.lua:3600 screens/sui_quicksettings_bar.lua:1317
 msgid "Solid"
 msgstr "단색"
 
@@ -4146,12 +4099,12 @@ msgstr "단색"
 msgid "Solid Background"
 msgstr "단색 배경"
 
-#: engines/sui_book_grid.lua:1531 modules/module_collections.lua:1218
+#: engines/sui_book_grid.lua:1552 modules/module_collections.lua:1222
 #: modules/module_library.lua:235
 msgid "Sort"
 msgstr "정렬"
 
-#: modules/module_coverdeck.lua:1364 modules/module_quote.lua:1440
+#: modules/module_coverdeck.lua:1375 modules/module_quote.lua:1440
 msgid "Source"
 msgstr "원본"
 
@@ -4171,7 +4124,7 @@ msgstr "간격 칸"
 msgid "Spacer Size"
 msgstr "간격 칸 크기"
 
-#: modules/module_clock.lua:1193 modules/module_clock.lua:1200
+#: modules/module_clock.lua:1253 modules/module_clock.lua:1260
 msgid "Spacing"
 msgstr "간격"
 
@@ -4180,26 +4133,29 @@ msgid "Start using Simple UI"
 msgstr "Simple UI 시작하기"
 
 #: infra/sui_patches.lua:1200 infra/sui_patches.lua:1202
-#: screens/sui_menu.lua:2705
+#: screens/sui_menu.lua:2704
 msgid "Start with"
 msgstr "시작 화면"
 
 #: screens/sui_onboarding.lua:131
 msgid "Start with a ready-made layout. You can change everything later."
-msgstr ""
-"미리 준비된 레이아웃으로 시작하세요. 나중에 모든 것을 바꿀 수 있습니다."
+msgstr "미리 준비된 레이아웃으로 시작하세요. 나중에 모든 것을 바꿀 수 있습니다."
 
-#: modules/module_coverdeck.lua:165 modules/module_coverdeck.lua:1463
-#: modules/module_coverdeck.lua:1496 modules/module_coverdeck.lua:1563
-#: modules/module_coverdeck.lua:1634
+#: features/sui_manual_books.lua:120
+msgid "Started"
+msgstr ""
+
+#: modules/module_coverdeck.lua:165 modules/module_coverdeck.lua:1474
+#: modules/module_coverdeck.lua:1507 modules/module_coverdeck.lua:1574
+#: modules/module_coverdeck.lua:1645
 msgid "Statistics"
 msgstr "통계"
 
-#: screens/sui_menu.lua:2938
+#: features/sui_stats_menu.lua:100
 msgid "Statistics Loading Notice"
 msgstr "통계 불러오기 알림"
 
-#: screens/sui_stats_windows.lua:163
+#: screens/sui_stats_windows.lua:56
 msgid "Statistics database library not available."
 msgstr "통계 데이터베이스 라이브러리를 사용할 수 없습니다."
 
@@ -4207,9 +4163,10 @@ msgstr "통계 데이터베이스 라이브러리를 사용할 수 없습니다.
 msgid "Statistics plugin not available."
 msgstr "통계 플러그인을 사용할 수 없습니다."
 
-#: features/sui_quickactions.lua:968 infra/sui_config.lua:131
+#: features/sui_quickactions.lua:968 infra/sui_config.lua:132
 #: modules/module_currently.lua:1686 modules/module_currently.lua:1768
-#: modules/module_currently.lua:1829
+#: modules/module_currently.lua:1829 screens/sui_menu.lua:3027
+#: screens/sui_settings_window.lua:409 screens/sui_settings_window.lua:474
 msgid "Stats"
 msgstr "통계"
 
@@ -4217,16 +4174,16 @@ msgstr "통계"
 msgid "Stats layout"
 msgstr "통계 레이아웃"
 
-#: modules/module_coverdeck.lua:1736 modules/module_currently.lua:2079
-#: modules/module_reading_goals.lua:1565 modules/module_reading_stats.lua:924
+#: features/sui_stats_menu.lua:56 modules/module_coverdeck.lua:1747
+#: modules/module_currently.lua:2079 modules/module_reading_goals.lua:1403
 msgid "Stats updated successfully."
 msgstr "통계를 성공적으로 업데이트했습니다."
 
-#: screens/sui_menu.lua:3056
+#: screens/sui_menu.lua:3039
 msgid "Status Bar"
 msgstr "상태 막대"
 
-#: screens/sui_menu.lua:2674
+#: screens/sui_menu.lua:2673
 #, fuzzy
 msgid "Status Bar Opacity"
 msgstr "상태 막대 크기"
@@ -4245,38 +4202,39 @@ msgstr ""
 "\n"
 "지금 다시 시작할까요?"
 
-#: modules/module_reading_stats.lua:142
+#: modules/module_reading_stats.lua:141
 msgid "Status — Abandoned"
 msgstr "상태 — 중단함"
 
-#: modules/module_reading_stats.lua:141
+#: modules/module_reading_stats.lua:140
 msgid "Status — Reading"
 msgstr "상태 — 읽는 중"
 
-#: modules/module_reading_stats.lua:140
+#: modules/module_reading_stats.lua:139
 msgid "Status — Unread"
 msgstr "상태 — 읽지 않음"
 
-#: screens/sui_settings_window.lua:361
+#: screens/sui_settings_window.lua:362
 msgid "Status, title, navigation and pagination"
 msgstr "상태, 제목, 탐색 및 페이지 표시"
 
-#: modules/module_reading_stats.lua:131 screens/sui_stats_windows.lua:3497
+#: features/sui_stats_menu.lua:117 modules/module_reading_stats.lua:130
+#: screens/sui_stats_windows.lua:3294
 msgid "Streak"
 msgstr "연속 기록"
 
-#: modules/module_reading_stats.lua:895 modules/module_reading_stats.lua:951
+#: features/sui_stats_menu.lua:61 modules/module_reading_stats.lua:910
 msgid "Streak Mode"
 msgstr "연속 기록 모드"
 
-#: screens/sui_menu.lua:2656
+#: screens/sui_menu.lua:2655
 msgid "Stretch to fill screen"
 msgstr "화면에 맞게 늘리기"
 
-#: infra/sui_config.lua:987 modules/module_reading_stats.lua:852
-#: modules/module_reading_stats.lua:949 screens/sui_menu.lua:2133
-#: screens/sui_menu.lua:3841 screens/sui_menu.lua:4937
-#: screens/sui_settings_window.lua:374 screens/sui_settings_window.lua:1118
+#: infra/sui_config.lua:988 modules/module_reading_stats.lua:835
+#: modules/module_reading_stats.lua:908 screens/sui_menu.lua:2133
+#: screens/sui_menu.lua:3848 screens/sui_menu.lua:4944
+#: screens/sui_settings_window.lua:375 screens/sui_settings_window.lua:1150
 msgid "Style"
 msgstr "모양"
 
@@ -4284,7 +4242,7 @@ msgstr "모양"
 msgid "Sub-page Buttons"
 msgstr "하위 페이지 단추"
 
-#: screens/sui_stats_windows.lua:2805
+#: screens/sui_stats_windows.lua:2664
 msgid "Sun"
 msgstr "일"
 
@@ -4301,8 +4259,8 @@ msgstr "쓸어넘기기 표시기"
 msgid "System Actions"
 msgstr "시스템 동작"
 
-#: features/sui_style.lua:1382 screens/sui_menu.lua:3987
-#: screens/sui_menu.lua:3995
+#: features/sui_style.lua:1382 screens/sui_menu.lua:3994
+#: screens/sui_menu.lua:4002
 msgid "System Icons"
 msgstr "시스템 아이콘"
 
@@ -4310,19 +4268,19 @@ msgstr "시스템 아이콘"
 msgid "System action error: %s"
 msgstr "시스템 동작 오류: %s"
 
-#: screens/sui_stats_windows.lua:2729
+#: screens/sui_stats_windows.lua:2587
 msgid "THIS MONTH"
 msgstr "이번 달"
 
-#: screens/sui_stats_windows.lua:2728
+#: screens/sui_stats_windows.lua:2586
 msgid "THIS WEEK"
 msgstr "이번 주"
 
-#: screens/sui_heatmap_popup.lua:164
+#: screens/sui_heatmap_popup.lua:92
 msgid "TIME OF DAY"
 msgstr "시간대"
 
-#: screens/sui_stats_windows.lua:2724
+#: screens/sui_stats_windows.lua:2582
 msgid "TODAY'S SUMMARY"
 msgstr "오늘의 요약"
 
@@ -4392,11 +4350,11 @@ msgid "Tabs and Search"
 msgstr ""
 
 #: features/library/sui_library_browse.lua:65
-#: features/sui_quickactions.lua:1023 infra/sui_config.lua:138
+#: features/sui_quickactions.lua:1023 infra/sui_config.lua:139
 msgid "Tags"
 msgstr "태그"
 
-#: screens/sui_settings_window.lua:476
+#: screens/sui_settings_window.lua:508
 msgid "Tap \"Create Screen\" below to add one."
 msgstr "아래의 \"화면 만들기\"를 눌러 추가하세요."
 
@@ -4404,13 +4362,13 @@ msgstr "아래의 \"화면 만들기\"를 눌러 추가하세요."
 msgid "Ten"
 msgstr "열"
 
-#: engines/sui_book_grid.lua:1910 infra/sui_config.lua:1032
-#: modules/module_quote.lua:1507 modules/module_reading_stats.lua:947
+#: engines/sui_book_grid.lua:1931 infra/sui_config.lua:1033
+#: modules/module_quote.lua:1507 modules/module_reading_stats.lua:906
 #: screens/sui_menu.lua:319
 msgid "Text"
 msgstr "글자"
 
-#: screens/sui_menu.lua:3689
+#: screens/sui_menu.lua:3696
 msgid "Text Size"
 msgstr "글자 크기"
 
@@ -4428,26 +4386,17 @@ msgstr ""
 "\n"
 "지금 다시 시작할까요?"
 
-#: screens/sui_menu.lua:2913
-msgid ""
-"The cover shown right as a book opens normally comes from the library's "
-"cached thumbnail, which can look soft on higher-resolution screens. When on, "
-"SimpleUI instead reads the cover straight from the book file for that moment "
-"(also covers books never opened before, which otherwise show no cover at "
-"all) — at the cost of a brief extra pause while opening, since the file has "
-"to be read twice. Cover on close is unaffected either way: it already reads "
-"the full-quality cover from the open book."
-msgstr ""
-"도서를 여는 순간 표시되는 표지는 보통 서재에 캐시된 미리보기에서 가져오므로, "
-"해상도가 높은 화면에서는 흐릿하게 보일 수 있습니다. 이 옵션을 켜면 SimpleUI"
-"가 그 순간의 표지를 도서 파일에서 직접 읽어 옵니다(한 번도 열지 않아 표지가 "
-"아예 표시되지 않던 도서에도 적용됨). 파일을 두 번 읽어야 하므로 도서를 여는 "
-"동안 잠시 더 기다려야 합니다. 닫을 때의 표지는 어느 쪽이든 영향을 받지 않습니"
-"다. 이미 열려 있는 도서에서 원본 화질의 표지를 읽어 오기 때문입니다."
+#: screens/sui_menu.lua:2912
+msgid "The cover shown right as a book opens normally comes from the library's cached thumbnail, which can look soft on higher-resolution screens. When on, SimpleUI instead reads the cover straight from the book file for that moment (also covers books never opened before, which otherwise show no cover at all) — at the cost of a brief extra pause while opening, since the file has to be read twice. Cover on close is unaffected either way: it already reads the full-quality cover from the open book."
+msgstr "도서를 여는 순간 표시되는 표지는 보통 서재에 캐시된 미리보기에서 가져오므로, 해상도가 높은 화면에서는 흐릿하게 보일 수 있습니다. 이 옵션을 켜면 SimpleUI가 그 순간의 표지를 도서 파일에서 직접 읽어 옵니다(한 번도 열지 않아 표지가 아예 표시되지 않던 도서에도 적용됨). 파일을 두 번 읽어야 하므로 도서를 여는 동안 잠시 더 기다려야 합니다. 닫을 때의 표지는 어느 쪽이든 영향을 받지 않습니다. 이미 열려 있는 도서에서 원본 화질의 표지를 읽어 오기 때문입니다."
 
-#: main.lua:1364 screens/sui_bottombar.lua:1941
+#: main.lua:1360 screens/sui_bottombar.lua:1941
 msgid "The navigation bar is already available on this screen."
 msgstr "이 화면에서는 탐색 막대를 이미 사용할 수 있습니다."
+
+#: features/sui_manual_books.lua:61
+msgid "The start date is after the finish date."
+msgstr ""
 
 #: screens/sui_menu.lua:2109
 msgid ""
@@ -4468,7 +4417,7 @@ msgstr "열셋"
 msgid "Thirty"
 msgstr "서른"
 
-#: features/sui_backup.lua:939
+#: features/sui_backup.lua:950
 msgid "This backup contains no settings or files."
 msgstr "이 백업에는 설정이나 파일이 없습니다."
 
@@ -4488,11 +4437,11 @@ msgstr ""
 "이 그룹이 비어 있습니다.\n"
 "설정 → 빠른 동작에서 동작을 추가하세요."
 
-#: modules/module_reading_stats.lua:128
+#: modules/module_reading_stats.lua:127
 msgid "This month — Pages"
 msgstr "이번 달 — 페이지"
 
-#: modules/module_reading_stats.lua:127
+#: modules/module_reading_stats.lua:126
 msgid "This month — Time"
 msgstr "이번 달 — 시간"
 
@@ -4501,15 +4450,15 @@ msgstr "이번 달 — 시간"
 msgid "This name is reserved by a built-in preset."
 msgstr "이 이름은 내장 사전 설정이 사용 중인 이름입니다."
 
-#: modules/module_reading_stats.lua:124
+#: modules/module_reading_stats.lua:123
 msgid "This week — Pages"
 msgstr "이번 주 — 페이지"
 
-#: modules/module_reading_stats.lua:123
+#: modules/module_reading_stats.lua:122
 msgid "This week — Time"
 msgstr "이번 주 — 시간"
 
-#: screens/sui_menu.lua:4807
+#: screens/sui_menu.lua:4814
 msgid ""
 "This will delete all Simple UI settings and restart KOReader.\n"
 "Are you sure?"
@@ -4521,7 +4470,7 @@ msgstr ""
 msgid "Three"
 msgstr "셋"
 
-#: screens/sui_stats_windows.lua:2805
+#: screens/sui_stats_windows.lua:2664
 msgid "Thu"
 msgstr "목"
 
@@ -4529,7 +4478,7 @@ msgstr "목"
 msgid "Thursday"
 msgstr "목요일"
 
-#: modules/module_heatmap.lua:224 modules/module_heatmap.lua:332
+#: modules/module_heatmap.lua:223 modules/module_heatmap.lua:331
 msgid "Time of day"
 msgstr "시간대"
 
@@ -4541,25 +4490,25 @@ msgstr "읽은 시간"
 msgid "Time remaining"
 msgstr "남은 시간"
 
-#: modules/module_coverdeck.lua:162 modules/module_coverdeck.lua:1634
-#: modules/module_currently.lua:325 modules/module_currently.lua:1976
-#: screens/sui_titlebar.lua:121
+#: features/sui_manual_books.lua:118 modules/module_coverdeck.lua:162
+#: modules/module_coverdeck.lua:1645 modules/module_currently.lua:325
+#: modules/module_currently.lua:1976 screens/sui_titlebar.lua:121
 msgid "Title"
 msgstr "제목"
 
-#: engines/sui_book_grid.lua:1513 modules/module_library.lua:213
+#: engines/sui_book_grid.lua:1534 modules/module_library.lua:213
 msgid "Title (A–Z)"
 msgstr "제목 (가–하)"
 
-#: engines/sui_book_grid.lua:1514 modules/module_library.lua:214
+#: engines/sui_book_grid.lua:1535 modules/module_library.lua:214
 msgid "Title (Z–A)"
 msgstr "제목 (하–가)"
 
-#: features/sui_style.lua:1372 screens/sui_menu.lua:3058
+#: features/sui_style.lua:1372 screens/sui_menu.lua:3041
 msgid "Title Bar"
 msgstr "제목 표시줄"
 
-#: screens/sui_menu.lua:2675
+#: screens/sui_menu.lua:2674
 msgid "Title Bar Opacity"
 msgstr ""
 
@@ -4573,15 +4522,15 @@ msgstr ""
 "\n"
 "지금 다시 시작할까요?"
 
-#: screens/sui_menu.lua:3751
+#: screens/sui_menu.lua:3758
 msgid "Title and Author"
 msgstr "제목과 저자"
 
-#: screens/sui_menu.lua:3702
+#: screens/sui_menu.lua:3709
 msgid "Title and Author Below Covers"
 msgstr "표지 아래에 제목과 저자"
 
-#: screens/sui_menu.lua:3763
+#: screens/sui_menu.lua:3770
 msgid ""
 "Title and author strip enabled.\n"
 "\n"
@@ -4591,11 +4540,11 @@ msgstr ""
 "\n"
 "지금 다시 시작할까요?"
 
-#: screens/sui_menu.lua:3729
+#: screens/sui_menu.lua:3736
 msgid "Title only"
 msgstr "제목만"
 
-#: screens/sui_menu.lua:3718
+#: screens/sui_menu.lua:3725
 msgid ""
 "Title strip disabled.\n"
 "\n"
@@ -4605,7 +4554,7 @@ msgstr ""
 "\n"
 "지금 다시 시작할까요?"
 
-#: screens/sui_menu.lua:3741
+#: screens/sui_menu.lua:3748
 msgid ""
 "Title strip enabled.\n"
 "\n"
@@ -4615,7 +4564,7 @@ msgstr ""
 "\n"
 "지금 다시 시작할까요?"
 
-#: modules/module_coverdeck.lua:1328 modules/module_tbr.lua:504
+#: modules/module_coverdeck.lua:1339 modules/module_tbr.lua:504
 #: modules/module_tbr.lua:564 modules/module_tbr.lua:565
 msgid "To Be Read"
 msgstr "읽을 책"
@@ -4624,56 +4573,56 @@ msgstr "읽을 책"
 msgid "To Be Read Books"
 msgstr "읽을 책 도서"
 
-#: modules/module_reading_goals.lua:1003 modules/module_reading_goals.lua:1087
-#: modules/module_reading_goals.lua:1089 modules/module_reading_goals.lua:1143
-#: modules/module_reading_goals.lua:1146
+#: modules/module_reading_goals.lua:879 modules/module_reading_goals.lua:957
+#: modules/module_reading_goals.lua:959 modules/module_reading_goals.lua:1007
+#: modules/module_reading_goals.lua:1010
 msgid "Today"
 msgstr "오늘"
 
-#: modules/module_reading_stats.lua:122
+#: modules/module_reading_stats.lua:121
 msgid "Today — Pages"
 msgstr "오늘 — 페이지"
 
-#: modules/module_reading_stats.lua:121
+#: modules/module_reading_stats.lua:120
 msgid "Today — Time"
 msgstr "오늘 — 시간"
 
-#: engines/sui_window.lua:2876
+#: engines/sui_window.lua:2999
 msgid "Toggle"
 msgstr "전환"
 
-#: modules/module_collections.lua:1269 screens/sui_menu.lua:3223
-#: screens/sui_menu.lua:3230 screens/sui_menu.lua:3234
-#: screens/sui_menu.lua:3634 screens/sui_menu.lua:3641
+#: modules/module_collections.lua:1273 screens/sui_menu.lua:3230
+#: screens/sui_menu.lua:3237 screens/sui_menu.lua:3241
+#: screens/sui_menu.lua:3641 screens/sui_menu.lua:3648
 msgid "Top"
 msgstr "위"
 
-#: screens/sui_topbar.lua:585
+#: screens/sui_topbar.lua:652
 msgid "Top Bar"
 msgstr "위쪽 막대"
 
-#: infra/sui_config.lua:1593
+#: infra/sui_config.lua:1594
 msgid "Top Margin"
 msgstr "위쪽 여백"
 
-#: screens/sui_stats_windows.lua:943 screens/sui_stats_windows.lua:3649
+#: screens/sui_stats_windows.lua:883 screens/sui_stats_windows.lua:3445
 msgid "Total"
 msgstr "합계"
 
-#: screens/sui_stats_windows.lua:2427 screens/sui_stats_windows.lua:2443
+#: screens/sui_stats_windows.lua:2279 screens/sui_stats_windows.lua:2295
 msgid "Total time"
 msgstr "총 시간"
 
-#: features/sui_backup.lua:671
+#: features/sui_backup.lua:682
 msgid "Total: %d settings, %d files (%s)"
 msgstr "합계: 설정 %d개, 파일 %d개 (%s)"
 
-#: screens/sui_menu.lua:3589 screens/sui_menu.lua:3606
+#: screens/sui_menu.lua:3596 screens/sui_menu.lua:3613
 #: screens/sui_quicksettings_bar.lua:1307
 msgid "Transparent"
 msgstr "투명"
 
-#: screens/sui_stats_windows.lua:2805
+#: screens/sui_stats_windows.lua:2664
 msgid "Tue"
 msgstr "화"
 
@@ -4693,24 +4642,28 @@ msgstr "스물"
 msgid "Two"
 msgstr "둘"
 
-#: modules/module_heatmap.lua:329 screens/sui_menu.lua:3411
-#: screens/sui_menu.lua:3478
+#: modules/module_heatmap.lua:328 screens/sui_menu.lua:3418
+#: screens/sui_menu.lua:3485
 msgid "Type"
 msgstr "종류"
 
-#: screens/sui_menu.lua:4659 screens/sui_menu.lua:4662
+#: screens/sui_menu.lua:4666 screens/sui_menu.lua:4669
 msgid "UI Font"
 msgstr "UI 글꼴"
 
-#: screens/sui_menu.lua:4666
+#: screens/sui_menu.lua:4673
 msgid "UI Font  (default)"
 msgstr "UI 글꼴  (기본)"
 
-#: screens/sui_menu.lua:4668
+#: screens/sui_menu.lua:4675
 msgid "UI Font  [%s]"
 msgstr "UI 글꼴  [%s]"
 
-#: screens/sui_menu.lua:3795
+#: features/library/sui_virtual_path.lua:74
+msgid "Uncategorized"
+msgstr ""
+
+#: screens/sui_menu.lua:3802
 msgid "Uniformize Covers (2:3)"
 msgstr "표지 비율 통일 (2:3)"
 
@@ -4722,7 +4675,7 @@ msgstr ""
 msgid "Unknown Author"
 msgstr ""
 
-#: screens/sui_stats_windows.lua:859
+#: screens/sui_stats_windows.lua:760
 msgid "Unknown error."
 msgstr "알 수 없는 오류입니다."
 
@@ -4739,13 +4692,14 @@ msgstr ""
 "지원하지 않는 아이콘 형식입니다.\n"
 "PNG 또는 SVG 파일을 사용하세요."
 
-#: engines/sui_window.lua:1950 engines/sui_window.lua:2870
+#: engines/sui_window.lua:1992 engines/sui_window.lua:2993
 msgid "Update"
 msgstr "업데이트"
 
-#: modules/module_coverdeck.lua:1719 modules/module_currently.lua:2061
-#: modules/module_reading_goals.lua:1547 modules/module_reading_goals.lua:1583
-#: modules/module_reading_stats.lua:906 modules/module_reading_stats.lua:953
+#: features/sui_stats_menu.lua:128 modules/module_coverdeck.lua:1730
+#: modules/module_currently.lua:2061 modules/module_reading_goals.lua:1385
+#: modules/module_reading_goals.lua:1421 modules/module_reading_stats.lua:881
+#: modules/module_reading_stats.lua:912
 msgid "Update Stats Now"
 msgstr "지금 통계 업데이트"
 
@@ -4757,15 +4711,15 @@ msgstr "업데이트를 취소했습니다."
 msgid "Update check cancelled."
 msgstr "업데이트 확인을 취소했습니다."
 
-#: features/sui_presets.lua:915 screens/sui_menu.lua:4387
+#: features/sui_presets.lua:915 screens/sui_menu.lua:4394
 msgid "Update with current settings"
 msgstr "현재 설정으로 업데이트"
 
-#: screens/sui_menu.lua:4785
+#: screens/sui_menu.lua:4792
 msgid "Updater module not found."
 msgstr "업데이트 모듈을 찾을 수 없습니다."
 
-#: screens/sui_stats_windows.lua:3106
+#: screens/sui_stats_windows.lua:2896
 msgid "Use freeze"
 msgstr "유예 사용"
 
@@ -4781,19 +4735,19 @@ msgstr ""
 "홈 화면에서 KOReader 기본 페이지 표시 막대를 사용합니다.\n"
 "Navpager 사용 중에는 사용할 수 없습니다."
 
-#: modules/module_reading_stats.lua:846 modules/module_reading_stats.lua:932
+#: modules/module_reading_stats.lua:829 modules/module_reading_stats.lua:891
 msgid "Value"
 msgstr ""
 
-#: screens/sui_settings_window.lua:396
+#: screens/sui_settings_window.lua:397
 msgid "Version, author and updates"
 msgstr "버전, 저자 및 업데이트"
 
-#: screens/sui_menu.lua:4760
+#: screens/sui_menu.lua:4767
 msgid "Version: %s"
 msgstr "버전: %s"
 
-#: infra/sui_config.lua:1595
+#: infra/sui_config.lua:1596
 msgid ""
 "Vertical space above this module.\n"
 "100% is the default spacing."
@@ -4801,7 +4755,7 @@ msgstr ""
 "이 모듈 위의 세로 간격입니다.\n"
 "100%가 기본 간격입니다."
 
-#: modules/module_clock.lua:1201
+#: modules/module_clock.lua:1261
 msgid ""
 "Vertical space between items.\n"
 "100% is the default spacing."
@@ -4809,18 +4763,18 @@ msgstr ""
 "항목 사이의 세로 간격입니다.\n"
 "100%가 기본 간격입니다."
 
-#: screens/sui_menu.lua:3300 screens/sui_menu.lua:3354
-#: screens/sui_menu.lua:3586
+#: screens/sui_menu.lua:3307 screens/sui_menu.lua:3361
+#: screens/sui_menu.lua:3593
 msgid "Visibility"
 msgstr "표시 여부"
 
-#: screens/sui_menu.lua:3296 screens/sui_menu.lua:3302
-#: screens/sui_menu.lua:3306 screens/sui_menu.lua:3350
-#: screens/sui_menu.lua:3356 screens/sui_menu.lua:3360
+#: screens/sui_menu.lua:3303 screens/sui_menu.lua:3309
+#: screens/sui_menu.lua:3313 screens/sui_menu.lua:3357
+#: screens/sui_menu.lua:3363 screens/sui_menu.lua:3367
 msgid "Visible"
 msgstr "표시"
 
-#: screens/sui_stats_windows.lua:2726 screens/sui_stats_windows.lua:3367
+#: screens/sui_stats_windows.lua:2584 screens/sui_stats_windows.lua:3163
 msgid "WEEK STREAK"
 msgstr "연속 주수"
 
@@ -4828,8 +4782,8 @@ msgstr "연속 주수"
 msgid "WORD_CLOCK_TENS_SEP"
 msgstr ""
 
-#: features/sui_backup.lua:136 screens/sui_menu.lua:3025
-#: screens/sui_settings_window.lua:426 screens/sui_settings_window.lua:432
+#: features/sui_backup.lua:136 screens/sui_menu.lua:3004
+#: screens/sui_settings_window.lua:452 screens/sui_settings_window.lua:458
 msgid "Wallpaper"
 msgstr "배경화면"
 
@@ -4847,11 +4801,11 @@ msgstr "색온"
 msgid "Warmth Slider"
 msgstr "색온 슬라이더"
 
-#: screens/sui_menu.lua:2951
+#: screens/sui_menu.lua:2938
 msgid "Warn when modules on a page exceed the available screen height."
 msgstr "페이지의 모듈이 사용 가능한 화면 높이를 초과하면 경고합니다."
 
-#: engines/sui_heatmap_widgets.lua:95 screens/sui_stats_windows.lua:2805
+#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2664
 msgid "Wed"
 msgstr "수"
 
@@ -4859,7 +4813,7 @@ msgstr "수"
 msgid "Wednesday"
 msgstr "수요일"
 
-#: modules/module_heatmap.lua:296 modules/module_heatmap.lua:300
+#: modules/module_heatmap.lua:295 modules/module_heatmap.lua:299
 msgid "Weeks shown"
 msgstr "표시할 주 수"
 
@@ -4871,24 +4825,20 @@ msgstr "Simple UI에 오신 것을 환영합니다"
 msgid "What's new:"
 msgstr "새로운 기능:"
 
-#: screens/sui_menu.lua:2976
+#: features/sui_stats_menu.lua:89
 #, fuzzy
 msgid ""
-"When a finished book is deleted from the device (file or folder), keep it "
-"counted in the Books Read statistics on the Home Screen.\n"
+"When a finished book is deleted from the device (file or folder), keep it counted in the Books Read statistics on the Home Screen.\n"
 "\n"
-"Books changed back to Reading or Abandoned are automatically removed from "
-"this list."
+"Books changed back to Reading or Abandoned are automatically removed from this list."
 msgstr ""
-"기기에서 읽기 완료한 도서를 삭제해도 홈 화면의 읽은 도서 통계에 계속 집계합니"
-"다.\n"
+"기기에서 읽기 완료한 도서를 삭제해도 홈 화면의 읽은 도서 통계에 계속 집계합니다.\n"
 "\n"
 "읽는 중이나 중단함으로 바뀐 도서는 이 목록에서 자동으로 제거됩니다."
 
-#: screens/sui_menu.lua:2963
+#: screens/sui_menu.lua:2950
 msgid ""
-"When enabled, long-pressing a module on the home screen opens its settings "
-"menu.\n"
+"When enabled, long-pressing a module on the home screen opens its settings menu.\n"
 "Disable this to prevent settings from appearing on long tap."
 msgstr ""
 "이 옵션을 켜면 홈 화면에서 모듈을 길게 눌렀을 때 설정 메뉴가 열립니다.\n"
@@ -4918,15 +4868,11 @@ msgstr ""
 "이 옵션을 켜면 위쪽 막대를 길게 눌렀을 때 설정 메뉴가 열립니다.\n"
 "길게 눌러 설정 메뉴가 나타나지 않게 하려면 이 옵션을 끄세요."
 
-#: screens/sui_menu.lua:2734
-msgid ""
-"When waking the device from sleep/suspend, always return to the Home Screen "
-"— even if a book was open when it went to sleep."
-msgstr ""
-"기기가 절전 또는 일시 중단 상태에서 깨어나면 도서가 열려 있었더라도 항상 홈 "
-"화면으로 돌아갑니다."
+#: screens/sui_menu.lua:2733
+msgid "When waking the device from sleep/suspend, always return to the Home Screen — even if a book was open when it went to sleep."
+msgstr "기기가 절전 또는 일시 중단 상태에서 깨어나면 도서가 열려 있었더라도 항상 홈 화면으로 돌아갑니다."
 
-#: features/sui_quickactions.lua:931 infra/sui_config.lua:128
+#: features/sui_quickactions.lua:931 infra/sui_config.lua:129
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
@@ -4934,7 +4880,7 @@ msgstr "Wi-Fi"
 msgid "Wi-Fi off"
 msgstr "Wi-Fi를 껐습니다."
 
-#: infra/sui_config.lua:193
+#: infra/sui_config.lua:194
 msgid "WiFi"
 msgstr "WiFi"
 
@@ -4950,27 +4896,35 @@ msgstr "Wikipedia 찾아보기"
 msgid "With percentage"
 msgstr "백분율 표시"
 
-#: modules/module_clock.lua:1156 modules/module_clock.lua:1169
+#: modules/module_clock.lua:1216 modules/module_clock.lua:1229
 msgid "Word"
 msgstr "글자"
 
-#: screens/sui_stats_windows.lua:1217
+#: features/sui_manual_books.lua:113
+msgid "YYYY-MM-DD or YYYY"
+msgstr ""
+
+#: features/sui_manual_books.lua:150
+msgid "Year:"
+msgstr ""
+
+#: screens/sui_stats_windows.lua:1157
 msgid "Yes"
 msgstr "예"
 
-#: screens/sui_stats_windows.lua:3095
+#: screens/sui_stats_windows.lua:2885
 msgid "Yesterday is already covered by a freeze."
 msgstr "어제는 이미 유예로 메워져 있습니다."
 
-#: screens/sui_stats_windows.lua:3093
+#: screens/sui_stats_windows.lua:2883
 msgid "You already read yesterday — there's nothing to freeze."
 msgstr "어제는 이미 읽었습니다 — 유예로 메울 날이 없습니다."
 
-#: screens/sui_stats_windows.lua:3087
+#: screens/sui_stats_windows.lua:2877
 msgid "You don't have any freezes available yet."
 msgstr "아직 사용할 수 있는 유예가 없습니다."
 
-#: screens/sui_stats_windows.lua:3104
+#: screens/sui_stats_windows.lua:2894
 msgid ""
 "You have %d freeze(s) available.\n"
 "Use one to cover %s?"
@@ -4982,39 +4936,39 @@ msgstr ""
 msgid "Your highlights"
 msgstr "내 하이라이트"
 
-#: modules/module_reading_stats.lua:142
+#: modules/module_reading_stats.lua:141
 msgid "abandoned"
 msgstr "중단함"
 
-#: screens/sui_stats_windows.lua:416 screens/sui_stats_windows.lua:1424
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
 msgid "apr"
 msgstr "4월"
 
-#: screens/sui_stats_windows.lua:1428
+#: screens/sui_stats_windows.lua:1347
 msgid "april"
 msgstr "4월"
 
-#: screens/sui_stats_windows.lua:417 screens/sui_stats_windows.lua:1425
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
 msgid "aug"
 msgstr "8월"
 
-#: screens/sui_stats_windows.lua:1429
+#: screens/sui_stats_windows.lua:1348
 msgid "august"
 msgstr "8월"
 
-#: modules/module_reading_stats.lua:130 screens/sui_stats_windows.lua:2301
+#: modules/module_reading_stats.lua:129 screens/sui_stats_windows.lua:2153
 msgid "books finished"
 msgstr "읽기 완료 도서"
 
-#: modules/module_reading_stats.lua:125
+#: modules/module_reading_stats.lua:124
 msgid "daily avg (7 days)"
 msgstr "일평균 (7일)"
 
-#: screens/sui_stats_windows.lua:417 screens/sui_stats_windows.lua:1425
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
 msgid "dec"
 msgstr "12월"
 
-#: screens/sui_stats_windows.lua:1429
+#: screens/sui_stats_windows.lua:1348
 msgid "december"
 msgstr "12월"
 
@@ -5023,24 +4977,24 @@ msgid "default"
 msgstr "기본"
 
 #: screens/sui_menu.lua:967 screens/sui_menu.lua:1271 screens/sui_menu.lua:2127
-#: screens/sui_menu.lua:4908 screens/sui_quicksettings_bar.lua:1132
+#: screens/sui_menu.lua:4915 screens/sui_quicksettings_bar.lua:1132
 msgid "disabled"
 msgstr "사용 안 함"
 
-#: features/sui_backup.lua:665
+#: features/sui_backup.lua:676
 msgid "empty"
 msgstr "비어 있음"
 
 #: screens/sui_menu.lua:967 screens/sui_menu.lua:1271 screens/sui_menu.lua:2127
-#: screens/sui_menu.lua:4908 screens/sui_quicksettings_bar.lua:1132
+#: screens/sui_menu.lua:4915 screens/sui_quicksettings_bar.lua:1132
 msgid "enabled"
 msgstr "사용함"
 
-#: screens/sui_stats_windows.lua:416 screens/sui_stats_windows.lua:1424
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
 msgid "feb"
 msgstr "2월"
 
-#: screens/sui_stats_windows.lua:1428
+#: screens/sui_stats_windows.lua:1347
 msgid "february"
 msgstr "2월"
 
@@ -5052,35 +5006,35 @@ msgstr "이 KOReader 버전에서는 ffi/archiver를 사용할 수 없습니다.
 msgid "hex code, e.g. E001"
 msgstr "16진수 코드 (예: E001)"
 
-#: screens/sui_stats_windows.lua:1960 screens/sui_stats_windows.lua:2299
+#: screens/sui_stats_windows.lua:1812 screens/sui_stats_windows.lua:2151
 msgid "hours read"
 msgstr "읽은 시간"
 
-#: modules/module_reading_stats.lua:141
+#: modules/module_reading_stats.lua:140
 msgid "in progress"
 msgstr "읽는 중"
 
-#: screens/sui_stats_windows.lua:416 screens/sui_stats_windows.lua:1424
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
 msgid "jan"
 msgstr "1월"
 
-#: screens/sui_stats_windows.lua:1428
+#: screens/sui_stats_windows.lua:1347
 msgid "january"
 msgstr "1월"
 
-#: screens/sui_stats_windows.lua:417 screens/sui_stats_windows.lua:1425
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
 msgid "jul"
 msgstr "7월"
 
-#: screens/sui_stats_windows.lua:1429
+#: screens/sui_stats_windows.lua:1348
 msgid "july"
 msgstr "7월"
 
-#: screens/sui_stats_windows.lua:416 screens/sui_stats_windows.lua:1424
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
 msgid "jun"
 msgstr "6월"
 
-#: screens/sui_stats_windows.lua:1428
+#: screens/sui_stats_windows.lua:1347
 msgid "june"
 msgstr "6월"
 
@@ -5088,20 +5042,20 @@ msgstr "6월"
 msgid "latest"
 msgstr "최신"
 
-#: screens/sui_stats_windows.lua:416 screens/sui_stats_windows.lua:1424
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
 msgid "mar"
 msgstr "3월"
 
-#: screens/sui_stats_windows.lua:1428
+#: screens/sui_stats_windows.lua:1347
 msgid "march"
 msgstr "3월"
 
-#: screens/sui_stats_windows.lua:416 screens/sui_stats_windows.lua:1424
-#: screens/sui_stats_windows.lua:1428
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:1347
 msgid "may"
 msgstr "5월"
 
-#: modules/module_reading_stats.lua:133
+#: modules/module_reading_stats.lua:132
 msgid "no streak"
 msgstr "연속 기록 없음"
 
@@ -5110,35 +5064,35 @@ msgstr "연속 기록 없음"
 msgid "not configured"
 msgstr "설정 안 됨"
 
-#: screens/sui_stats_windows.lua:417 screens/sui_stats_windows.lua:1425
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
 msgid "nov"
 msgstr "11월"
 
-#: screens/sui_stats_windows.lua:1429
+#: screens/sui_stats_windows.lua:1348
 msgid "november"
 msgstr "11월"
 
-#: screens/sui_stats_windows.lua:417 screens/sui_stats_windows.lua:1425
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
 msgid "oct"
 msgstr "10월"
 
-#: screens/sui_stats_windows.lua:1429
+#: screens/sui_stats_windows.lua:1348
 msgid "october"
 msgstr "10월"
 
-#: modules/module_reading_stats.lua:127
+#: modules/module_reading_stats.lua:126
 msgid "of reading this month"
 msgstr "이번 달 읽은 시간"
 
-#: modules/module_reading_stats.lua:123
+#: modules/module_reading_stats.lua:122
 msgid "of reading this week"
 msgstr "이번 주 읽은 시간"
 
-#: modules/module_reading_stats.lua:121
+#: modules/module_reading_stats.lua:120
 msgid "of reading today"
 msgstr "오늘 읽은 시간"
 
-#: modules/module_reading_stats.lua:129
+#: modules/module_reading_stats.lua:128
 msgid "of reading, all time"
 msgstr "전체 기간 읽은 시간"
 
@@ -5146,39 +5100,39 @@ msgstr "전체 기간 읽은 시간"
 msgid "pack_path not provided"
 msgstr "pack_path가 제공되지 않았습니다."
 
-#: screens/sui_stats_windows.lua:2300 screens/sui_stats_windows.lua:2615
+#: screens/sui_stats_windows.lua:2152 screens/sui_stats_windows.lua:2467
 msgid "pages read"
 msgstr "읽은 쪽수"
 
-#: modules/module_reading_stats.lua:128
+#: modules/module_reading_stats.lua:127
 msgid "pages read this month"
 msgstr "이번 달 읽은 쪽수"
 
-#: modules/module_reading_stats.lua:124
+#: modules/module_reading_stats.lua:123
 msgid "pages read this week"
 msgstr "이번 주 읽은 쪽수"
 
-#: modules/module_reading_stats.lua:122
+#: modules/module_reading_stats.lua:121
 msgid "pages read today"
 msgstr "오늘 읽은 쪽수"
 
-#: modules/module_reading_stats.lua:126
+#: modules/module_reading_stats.lua:125
 msgid "pages/day (7 days)"
 msgstr "쪽/일 (7일)"
 
-#: screens/sui_stats_windows.lua:2613
+#: screens/sui_stats_windows.lua:2465
 msgid "reading time"
 msgstr "읽은 시간"
 
-#: screens/sui_stats_windows.lua:417 screens/sui_stats_windows.lua:1425
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
 msgid "sep"
 msgstr "9월"
 
-#: screens/sui_stats_windows.lua:1429
+#: screens/sui_stats_windows.lua:1348
 msgid "september"
 msgstr "9월"
 
-#: modules/module_reading_stats.lua:140
+#: modules/module_reading_stats.lua:139
 msgid "unread"
 msgstr "읽지 않음"
 
@@ -5187,61 +5141,54 @@ msgid "⬆ Update available: %s"
 msgstr "⬆ 업데이트 가능: %s"
 
 #: modules/module_action_list.lua:347 modules/module_quick_actions.lua:415
-#: modules/module_reading_stats.lua:884 screens/sui_menu.lua:461
-#: screens/sui_menu.lua:2320
+#: modules/module_reading_stats.lua:867 screens/sui_menu.lua:461
+#: screens/sui_menu.lua:2319
 msgid "  (%d left)"
 msgid_plural "  (%d left)"
 msgstr[0] "  (%d개 남음)"
 msgstr[1] "  (%d개 남음)"
 
-#: modules/module_reading_goals.lua:1334
+#: modules/module_reading_goals.lua:1198
 msgid "  Set Goal  (%d book in %s)"
 msgid_plural "  Set Goal  (%d books in %s)"
 msgstr[0] "  목표 정하기  (%s에 %d권)"
 msgstr[1] "  목표 정하기  (%s에 %d권)"
 
-#: modules/module_reading_goals.lua:833
+#: modules/module_reading_goals.lua:720 screens/sui_stats_windows.lua:752
 msgid "%d book"
 msgid_plural "%d books"
 msgstr[0] "%d권"
 msgstr[1] "%d권"
 
-#: modules/module_reading_goals.lua:1440
+#: modules/module_reading_goals.lua:1304
 msgid "%d book in %s"
 msgid_plural "%d books in %s"
 msgstr[0] "%s에 %d권"
 msgstr[1] "%s에 %d권"
 
-#: screens/sui_stats_windows.lua:1286
-msgid "%d book read in %s"
-msgid_plural "%d books read in %s"
-msgstr[0] "%s에 읽은 도서 %d권"
-msgstr[1] "%s에 읽은 도서 %d권"
+#: screens/sui_stats_windows.lua:1215
+msgid "%d book read"
+msgid_plural "%d books read"
+msgstr[0] ""
 
-#: screens/sui_stats_windows.lua:2165 screens/sui_stats_windows.lua:2167
+#: screens/sui_stats_windows.lua:2017 screens/sui_stats_windows.lua:2019
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d일"
 msgstr[1] "%d일"
 
-#: modules/module_coverdeck.lua:1046 modules/module_currently.lua:945
+#: modules/module_coverdeck.lua:1057 modules/module_currently.lua:945
 #: modules/module_currently.lua:946 modules/module_currently.lua:1026
 msgid "%d day of reading"
 msgid_plural "%d days of reading"
 msgstr[0] "%d일째 읽는 중"
 msgstr[1] "%d일째 읽는 중"
 
-#: screens/sui_stats_windows.lua:3413
+#: screens/sui_stats_windows.lua:3209
 msgid "%d freeze available"
 msgid_plural "%d freezes available"
 msgstr[0] "사용 가능한 유예 %d개"
 msgstr[1] "사용 가능한 유예 %d개"
-
-#: modules/module_reading_goals.lua:1500
-msgid "%d in %s"
-msgid_plural "%d in %s"
-msgstr[0] "%s에 %d권"
-msgstr[1] "%s에 %d권"
 
 #: features/sui_quickactions.lua:1583 features/sui_quickactions.lua:2996
 #: features/sui_quickactions.lua:3017
@@ -5250,25 +5197,25 @@ msgid_plural "%d items"
 msgstr[0] "%d개 항목"
 msgstr[1] "%d개 항목"
 
-#: screens/sui_stats_windows.lua:2185 screens/sui_stats_windows.lua:2187
+#: screens/sui_stats_windows.lua:2037 screens/sui_stats_windows.lua:2039
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d주"
 msgstr[1] "%d주"
 
-#: modules/module_reading_goals.lua:831
+#: modules/module_reading_goals.lua:718
 msgid "%d/%d book"
 msgid_plural "%d/%d books"
 msgstr[0] "%d/%d권"
 msgstr[1] "%d/%d권"
 
-#: modules/module_collections.lua:1434
+#: modules/module_collections.lua:1438
 msgid "(%d collection)"
 msgid_plural "(%d collections)"
 msgstr[0] "(모음집 %d개)"
 msgstr[1] "(모음집 %d개)"
 
-#: modules/module_quick_actions.lua:525 modules/module_reading_stats.lua:433
+#: modules/module_quick_actions.lua:525 modules/module_reading_stats.lua:416
 msgid "(%d/%d — %d left)"
 msgid_plural "(%d/%d — %d left)"
 msgstr[0] "(%d/%d — %d개 남음)"
@@ -5279,12 +5226,6 @@ msgid "Group (%d item)"
 msgid_plural "Group (%d items)"
 msgstr[0] "그룹 (%d개 항목)"
 msgstr[1] "그룹 (%d개 항목)"
-
-#: modules/module_reading_goals.lua:1491
-msgid "Manually Tracked Books  (%d in %s)"
-msgid_plural "Manually Tracked Books  (%d in %s)"
-msgstr[0] "수동 추적 도서  (%s에 %d권)"
-msgstr[1] "수동 추적 도서  (%s에 %d권)"
 
 #: screens/sui_quicksettings_bar.lua:1108
 #: screens/sui_quicksettings_bar.lua:1194
@@ -5309,30 +5250,23 @@ msgstr[1] ""
 
 #: modules/module_action_list.lua:290 modules/module_action_list.lua:417
 #: modules/module_quick_actions.lua:362 modules/module_quick_actions.lua:494
-#: screens/sui_menu.lua:2285 screens/sui_menu.lua:2399
+#: screens/sui_menu.lua:2284 screens/sui_menu.lua:2398
 msgid "The maximum of %d action per module has been reached. Remove one first."
-msgid_plural ""
-"The maximum of %d actions per module has been reached. Remove one first."
+msgid_plural "The maximum of %d actions per module has been reached. Remove one first."
 msgstr[0] "모듈당 최대 동작 수 %d개에 도달했습니다. 먼저 하나를 제거하세요."
 msgstr[1] "모듈당 최대 동작 수 %d개에 도달했습니다. 먼저 하나를 제거하세요."
 
 #: features/sui_quickactions.lua:1653 features/sui_quickactions.lua:2961
 msgid "The maximum of %d quick action has been reached. Delete one first."
-msgid_plural ""
-"The maximum of %d quick actions has been reached. Delete one first."
-msgstr[0] ""
-"빠른 동작은 최대 %d개까지 추가할 수 있습니다. 먼저 하나를 삭제하세요."
-msgstr[1] ""
-"빠른 동작은 최대 %d개까지 추가할 수 있습니다. 먼저 하나를 삭제하세요."
+msgid_plural "The maximum of %d quick actions has been reached. Delete one first."
+msgstr[0] "빠른 동작은 최대 %d개까지 추가할 수 있습니다. 먼저 하나를 삭제하세요."
+msgstr[1] "빠른 동작은 최대 %d개까지 추가할 수 있습니다. 먼저 하나를 삭제하세요."
 
-#: modules/module_reading_stats.lua:737 modules/module_reading_stats.lua:817
+#: modules/module_reading_stats.lua:720 modules/module_reading_stats.lua:800
 msgid "The maximum of %d stat per row has been reached. Remove one first."
-msgid_plural ""
-"The maximum of %d stats per row has been reached. Remove one first."
-msgstr[0] ""
-"한 줄의 통계는 최대 %d개까지 추가할 수 있습니다. 먼저 하나를 제거하세요."
-msgstr[1] ""
-"한 줄의 통계는 최대 %d개까지 추가할 수 있습니다. 먼저 하나를 제거하세요."
+msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
+msgstr[0] "한 줄의 통계는 최대 %d개까지 추가할 수 있습니다. 먼저 하나를 제거하세요."
+msgstr[1] "한 줄의 통계는 최대 %d개까지 추가할 수 있습니다. 먼저 하나를 제거하세요."
 
 #: screens/sui_menu.lua:490 screens/sui_menu.lua:1382
 msgid "The maximum of %d tab has been reached. Remove one first."
@@ -5340,23 +5274,47 @@ msgid_plural "The maximum of %d tabs has been reached. Remove one first."
 msgstr[0] "탭은 최대 %d개까지 추가할 수 있습니다. 먼저 하나를 제거하세요."
 msgstr[1] "탭은 최대 %d개까지 추가할 수 있습니다. 먼저 하나를 제거하세요."
 
-#: screens/sui_stats_windows.lua:1963
+#: screens/sui_stats_windows.lua:1815
 msgid "day read"
 msgid_plural "days read"
 msgstr[0] "읽은 일수"
 msgstr[1] "읽은 일수"
 
-#: modules/module_reading_stats.lua:134
+#: modules/module_reading_stats.lua:133
 msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "연속 일수"
 msgstr[1] "연속 일수"
 
-#: screens/sui_stats_windows.lua:1978
+#: screens/sui_stats_windows.lua:1830
 msgid "page read"
 msgid_plural "pages read"
 msgstr[0] "읽은 쪽수"
 msgstr[1] "읽은 쪽수"
+
+#~ msgid "Manually Tracked Books  (%s)"
+#~ msgstr "수동 추적 도서  (%s)"
+
+#~ msgid "Physical Books — %s"
+#~ msgstr "실물 도서 — %s"
+
+#~ msgid "Physical books read this year:"
+#~ msgstr "올해 읽은 실물 도서:"
+
+#~ msgid "%d book read in %s"
+#~ msgid_plural "%d books read in %s"
+#~ msgstr[0] "%s에 읽은 도서 %d권"
+#~ msgstr[1] "%s에 읽은 도서 %d권"
+
+#~ msgid "%d in %s"
+#~ msgid_plural "%d in %s"
+#~ msgstr[0] "%s에 %d권"
+#~ msgstr[1] "%s에 %d권"
+
+#~ msgid "Manually Tracked Books  (%d in %s)"
+#~ msgid_plural "Manually Tracked Books  (%d in %s)"
+#~ msgstr[0] "수동 추적 도서  (%s에 %d권)"
+#~ msgstr[1] "수동 추적 도서  (%s에 %d권)"
 
 #~ msgid "Collection: "
 #~ msgstr "모음집: "
@@ -5376,12 +5334,8 @@ msgstr[1] "읽은 쪽수"
 #~ msgid "Start with Home Screen"
 #~ msgstr "홈 화면으로 시작"
 
-#~ msgid ""
-#~ "When closing a book from the Home Screen, go back to the folder where the "
-#~ "book is located instead of the Library home folder."
-#~ msgstr ""
-#~ "홈 화면에서 도서를 닫을 때 서재 홈 폴더가 아니라 도서가 있는 폴더로 돌아갑"
-#~ "니다."
+#~ msgid "When closing a book from the Home Screen, go back to the folder where the book is located instead of the Library home folder."
+#~ msgstr "홈 화면에서 도서를 닫을 때 서재 홈 폴더가 아니라 도서가 있는 폴더로 돌아갑니다."
 
 #~ msgid "Battery Size"
 #~ msgstr "배터리 크기"

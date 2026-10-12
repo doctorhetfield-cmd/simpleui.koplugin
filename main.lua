@@ -1163,11 +1163,7 @@ function SimpleUIPlugin:init()
                         text = _("Book statistics"),
                         callback = function()
                             if close_cb then close_cb() end
-                            local ok_sw, SW = pcall(require, "screens/sui_stats_windows")
-                            if ok_sw and SW then
-                                if SW.showLoadingNotice then SW.showLoadingNotice() end
-                                SW.showBookStatsFromFile(file)
-                            end
+                            require("screens/sui_stats_launcher").open("book", { filepath = file })
                         end,
                     }}
                 end
@@ -1972,22 +1968,17 @@ function SimpleUIPlugin:onCloseDocument()
     local any_needs_refresh = false
 
     -- Invalidate the shared stats provider when any known screen has a stats
-    -- module active. One SP.invalidate() covers both reading_goals and
+    -- module active. One invalidation covers both reading_goals and
     -- reading_stats — they both read ctx.stats which is populated from
     -- StatsProvider.get(). StatsProvider is a single provider shared by every
     -- screen (not per-screen state), so this whole block still runs at most
     -- once per close, regardless of how many screens use it.
     --
-    -- Optimisation: SP contains two parts — DB time-series (always stale after
-    -- a reading session) and books_year/books_total (sidecar scan, expensive).
-    -- The sidecar-derived counts only change when the closed book's
-    -- summary.status transitions to or from "complete". We detect this by
-    -- comparing the cached pre-session status (from SH._cacheGet, still valid
-    -- at this point) with the on-disk status (one DS.open on the closed book).
-    -- If neither was "complete" and neither is now, the counts are unchanged
-    -- and we can spare the full SP.invalidate() — instead we call
-    -- SP.invalidateTimeSeries() which discards only the DB-derived fields,
-    -- leaving books_year/books_total intact in the cache.
+    -- A reading session always changes the DB-derived time series. The
+    -- finished-book counts come from the provider's ledger, which is synced
+    -- from the closed book's live settings — they stay valid until
+    -- UIManager:close() → onCloseWidget, which runs after this handler — and
+    -- are recounted only when that sync changed the ledger.
     if any_stats_active then
         local SP = package.loaded["modules/module_stats_provider"]
         -- Fall back to pcall require: the module may not be in package.loaded yet
@@ -1998,152 +1989,10 @@ function SimpleUIPlugin:onCloseDocument()
             if ok_sp then SP = m end
         end
         if SP then
-            local status_changed = true  -- default: full invalidation (safe)
-            -- True when the cached library status counts were adjusted for the
-            -- closed book and need no recount.
-            local status_counts_patched = false
-            if closed_fp and SP.invalidateTimeSeries then
-                local SH = package.loaded["modules/module_books_shared"]
-                -- Pre-session status: read from sidecar cache (no I/O).
-                -- The cache entry is still valid here — SH.invalidateSidecarCache
-                -- for closed_fp runs later in this function, after this block.
-                --
-                -- cache_hit: true only when _cacheGetRaw found a real entry.
-                -- A miss (book outside the prefetch window) means we cannot
-                -- determine the pre-session status from the cache, so we must
-                -- not assume the book just became complete — it may have been
-                -- complete for years.
-                local pre_status, pre_percent
-                local cache_hit = false
-                if SH and (SH._cacheGetRaw or SH._cacheGet) then
-                    local cached = (SH._cacheGetRaw or SH._cacheGet)(closed_fp)
-                    if cached then
-                        cache_hit = true
-                        local s = cached.summary
-                        pre_status  = type(s) == "table" and s.status or nil
-                        pre_percent = cached.percent
-                    end
-                end
-                -- Post-session status and progress: read from the live reader.
-                -- The status comes from the in-memory doc_settings; the progress
-                -- from the footer, which tracks the current page (doc_settings
-                -- only receives it when the settings are saved). Both stay valid
-                -- until UIManager:close() → onCloseWidget, which runs after this
-                -- handler, so no DS.open is needed.
-                local post_status, post_percent
-                local RUI = package.loaded["apps/reader/readerui"]
-                if RUI and RUI.instance and type(RUI.instance.doc_settings) == "table" then
-                    local s = RUI.instance.doc_settings:readSetting("summary")
-                    post_status  = type(s) == "table" and s.status or nil
-                    local footer = RUI.instance.view and RUI.instance.view.footer
-                    post_percent = footer and footer.percent_finished
-                        or RUI.instance.doc_settings:readSetting("percent_finished")
-                end
-                local pre_complete  = pre_status  == "complete"
-                local post_complete = post_status == "complete"
-                -- status_changed: a genuine complete/not-complete transition.
-                -- Only trust the transition when we had a real cache hit; on a
-                -- cache miss we cannot distinguish "was already complete" from
-                -- "first seen as complete", so fall back to safe full invalidation
-                -- (status_changed = true) without writing date_finished.
-                if cache_hit then
-                    status_changed = pre_complete ~= post_complete
-                    -- Keep the library-wide status counts current by moving
-                    -- this one book between buckets instead of recounting.
-                    if SP.applyStatusChange then
-                        SP.applyStatusChange(closed_fp, pre_percent, pre_status,
-                                             post_percent, post_status)
-                        status_counts_patched = true
-                    end
-                else
-                    -- Cache miss: assume counts may have changed (safe default).
-                    -- pre_complete is unknown, so treat it as equal to post_complete
-                    -- to avoid spurious date_finished writes below.
-                    status_changed = true
-                    pre_complete   = post_complete  -- suppress the date_finished today-fallback
-                end
-
-                -- Auto-populate date_finished if missing for a completed book.
-                -- Sources tried in priority order:
-                --   1. pre_s.date_finished (already a SimpleUI string) — ONLY
-                --        trusted when the book was already complete before this
-                --        session (pre_complete), i.e. it genuinely describes a
-                --        prior completion.
-                --   2. pre_s.modified      (the sidecar's pre-session modified)
-                --        — ONLY trusted under the same pre_complete condition.
-                --        IMPORTANT: filemanagerutil.saveSummary (and
-                --        readerstatus.lua) overwrite summary.modified with
-                --        today's date on EVERY status change, not just on
-                --        completion — tapping "Reading" the day the book was
-                --        started stamps that same date into `modified`. If we
-                --        used pre_s.modified regardless of pre_complete, a
-                --        *genuine new* completion would pick up that stale
-                --        status-change date instead of today, making
-                --        date_finished collapse onto date_started. So this
-                --        source is gated on pre_complete exactly like #1.
-                --   3. Today's date        — used whenever this is a genuine
-                --        new completion (cache_hit AND not pre_complete).
-                --        Never written on a cache miss, because we cannot
-                --        distinguish a genuine new completion from an
-                --        already-complete book outside the prefetch window.
-                if post_complete and closed_fp then
-                    if RUI and RUI.instance and type(RUI.instance.doc_settings) == "table" then
-                        local s = RUI.instance.doc_settings:readSetting("summary") or {}
-                        if not s.date_finished then
-                            local finished_date
-                            if cache_hit then
-                                if pre_complete then
-                                    local cached = SH and (SH._cacheGetRaw or SH._cacheGet) and
-                                                   (SH._cacheGetRaw or SH._cacheGet)(closed_fp)
-                                    local pre_s  = cached and cached.summary
-                                    if type(pre_s) == "table" then
-                                        if type(pre_s.date_finished) == "string" then
-                                            finished_date = pre_s.date_finished
-                                        elseif type(pre_s.modified) == "string" then
-                                            -- filemanagerutil.saveSummary writes modified as
-                                            -- "YYYY-MM-DD" when the user taps a status button.
-                                            -- Safe here because pre_complete confirms the book
-                                            -- was already "complete" before this session, so
-                                            -- this modified date genuinely was the completion
-                                            -- date (books marked complete before SimpleUI).
-                                            finished_date = pre_s.modified
-                                        elseif type(pre_s.modified) == "number" then
-                                            finished_date = os.date("%Y-%m-%d", pre_s.modified)
-                                        elseif type(pre_s.modified) == "table" and pre_s.modified.year then
-                                            finished_date = string.format("%04d-%02d-%02d",
-                                                pre_s.modified.year, pre_s.modified.month, pre_s.modified.day)
-                                        end
-                                    end
-                                end
-                                -- Genuine new completion this session: pre_s.date_finished/
-                                -- modified (if any) describe an unrelated earlier status
-                                -- change, not this completion — always use today instead.
-                                if not finished_date and not pre_complete then
-                                    finished_date = os.date("%Y-%m-%d")
-                                end
-                            end
-                            -- cache_hit = false → finished_date stays nil → nothing written.
-                            -- The book keeps no date_finished until the next screen open
-                            -- warms the sidecar cache, after which the next close will
-                            -- succeed via the cache-hit path above.
-                            if finished_date then
-                                s.date_finished = finished_date
-                                RUI.instance.doc_settings:saveSetting("summary", s)
-                                RUI.instance.doc_settings:flush()
-                            end
-                        end
-                    end
-                end
-            end
-
-            if status_changed then
-                SP.invalidate(status_counts_patched)
-            elseif SP.invalidateTimeSeries then
-                -- Counts unchanged: only discard DB-derived fields (time, pages,
-                -- streak). books_year/books_total survive in the cache intact.
+            if closed_fp then
+                SP.syncClosedBook(closed_fp)
                 SP.invalidateTimeSeries()
             else
-                -- SP.invalidateTimeSeries not available (older version): fall back.
                 SP.invalidate()
             end
             for _, id in ipairs(screen_ids) do

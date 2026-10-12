@@ -1362,7 +1362,7 @@ function M.makeStepperItem(opts)
                 default_value = opts.default_value,
                 callback      = function(spin)
                     opts.set(spin.value)
-                    opts.refresh()
+                    if opts.refresh then opts.refresh() end
                 end,
             })
         end,

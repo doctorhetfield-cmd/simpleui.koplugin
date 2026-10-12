@@ -2224,8 +2224,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- _goalTapCallback: shown when the user taps the Reading Goals widget on
     -- the Homescreen. Lets them set the annual goal.
     self._goalTapCallback = function()
-        local ok_rg, RG = pcall(require, "readinggoals")
-        if ok_rg and RG then RG.showAnnualGoalDialog(function() refreshHomescreen() end) end
+        require("infra/sui_goals").showDialog("annual", refreshHomescreen)
     end
 
     -- -----------------------------------------------------------------------
@@ -2935,18 +2934,6 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 },
             },
             {
-                text           = _("Statistics Loading Notice"),
-                help_text      = _("Show a brief \"Loading statistics…\" notice when opening a statistics window, preventing accidental double-taps while e-ink refreshes."),
-                checked_func   = function()
-                    return SUISettings:nilOrTrue("simpleui_stats_loading_notice")
-                end,
-                keep_menu_open = true,
-                callback       = function()
-                    local on = SUISettings:nilOrTrue("simpleui_stats_loading_notice")
-                    SUISettings:saveSetting("simpleui_stats_loading_notice", not on)
-                end,
-            },
-            {
                 text           = _("Overflow Warning"),
                 help_text      = _("Warn when modules on a page exceed the available screen height."),
                 checked_func   = function()
@@ -2968,21 +2955,6 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 callback       = function()
                     local on = SUISettings:nilOrTrue("simpleui_hs_settings_on_hold")
                     SUISettings:saveSetting("simpleui_hs_settings_on_hold", not on)
-                    refreshHomescreen()
-                end,
-            },
-            {
-                text           = _("Preserve Deleted Books in Statistics"),
-                help_text      = _("When a finished book is deleted from the device (file or folder), keep it counted in the Books Read statistics on the Home Screen.\n\nBooks changed back to Reading or Abandoned are automatically removed from this list."),
-                checked_func   = function()
-                    return SUISettings:nilOrTrue("simpleui_preserve_deleted_books_in_stats")
-                end,
-                keep_menu_open = true,
-                callback       = function()
-                    local on = SUISettings:nilOrTrue("simpleui_preserve_deleted_books_in_stats")
-                    SUISettings:saveSetting("simpleui_preserve_deleted_books_in_stats", not on)
-                    local SP = package.loaded["modules/module_stats_provider"]
-                    if SP and SP.invalidate then pcall(SP.invalidate) end
                     refreshHomescreen()
                 end,
             },
@@ -3012,6 +2984,13 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         return items
     end
     plugin.makeBehaviourMenuItems = makeBehaviourMenuItems
+
+    function plugin.makeStatsMenuItems(opts)
+        return require("features/sui_stats_menu").makeMenuItems{
+            refresh     = refreshHomescreen,
+            open_window = opts and opts.open_window,
+        }
+    end
 
     local function makeHomescreenMenu(ctx_menu)
         return {
@@ -3043,6 +3022,10 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                         unlock_overlay = ctx_menu and ctx_menu.unlock_overlay,
                     }
                 end,
+            },
+            {
+                text = _("Stats"),
+                sub_item_table_func = function() return plugin.makeStatsMenuItems() end,
             },
             {
                 text = _("Behaviour"),

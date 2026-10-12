@@ -30,6 +30,8 @@ local AAPaint         = require("infra/sui_aa_paint")
 
 local UI           = require("infra/sui_core")
 local SUISettings  = require("infra/sui_store")
+local Goals        = require("infra/sui_goals")
+local ManualBooks  = require("features/sui_manual_books")
 local SUIStyle     = require("features/sui_style")
 local PAD          = UI.PAD
 local PAD2         = UI.PAD2
@@ -53,6 +55,10 @@ local _BASE_BOT_PAD = Screen:scaleBySize(18)
 -- Compact layout reuses the same _BASE_* constants as the default layout —
 -- _compactDims(scale) just applies them at a different scale. Callers
 -- already multiply scale by ctx.landscape_factor before it reaches here.
+
+local function _openFinishedBooks()
+    require("screens/sui_stats_launcher").open("finished_books")
+end
 
 -- Rounds a fraction to a whole percentage. Mirrors SH.pctStr from
 -- module_books_shared; duplicated here to avoid loading that module just
@@ -143,15 +149,6 @@ end
 local function showAnnual()   return SUISettings:readSetting(SHOW_ANNUAL) ~= false end
 local function showMonthly()  return SUISettings:readSetting(SHOW_MONTHLY) ~= false end
 local function showDaily()    return SUISettings:readSetting(SHOW_DAILY)  ~= false end
-
--- Default annual goal, used when the user has never set one: 12 books
--- (one a month) is a reasonable, easy-to-reach starting target.
-local ANNUAL_GOAL_DEFAULT = 12
-
-local function getAnnualGoal()      return tonumber(SUISettings:readSetting("simpleui_reading_goal")) or ANNUAL_GOAL_DEFAULT end
-local function getAnnualPhysical()  return tonumber(SUISettings:readSetting("simpleui_reading_goal_physical")) or 0 end
-local function getMonthlyGoalSecs() return tonumber(SUISettings:readSetting("simpleui_monthly_reading_goal_secs")) or 0 end
-local function getDailyGoalSecs()   return tonumber(SUISettings:readSetting("simpleui_daily_reading_goal_secs")) or 0 end
 
 local function _getElemOrder(pfx)
     local saved = SUISettings:readSetting((pfx or "simpleui_hs_") .. "reading_goals_elem_order")
@@ -692,81 +689,6 @@ end
 
 -- Triggers a homescreen refresh after a goal change.
 -- Invalidates StatsProvider so _buildCtx re-fetches with updated ctx.stats.
-local function _refreshHS()
-    local SP = package.loaded["modules/module_stats_provider"]
-    if SP then SP.invalidate() end
-    local HS = package.loaded["screens/sui_homescreen"]
-    if HS then HS.refresh(false) end
-end
-
--- Shows a SpinWidget bound to a settings key, refreshing the homescreen and
--- calling on_confirm after save. Shared by all four goal-setting dialogs
--- below — only the copy, value range, and settings key differ between them.
-local function _showGoalSpinDialog(opts, on_confirm)
-    local SpinWidget = require("ui/widget/spinwidget")
-    UIManager:show(SpinWidget:new{
-        title_text  = opts.title_text,
-        info_text   = opts.info_text,
-        value       = opts.value,
-        value_min   = opts.value_min or 0,
-        value_max   = opts.value_max,
-        value_step  = opts.value_step or 1,
-        ok_text     = _("Save"), cancel_text = _("Cancel"),
-        callback    = function(spin)
-            SUISettings:saveSetting(opts.setting_key, math.floor(spin.value) * (opts.value_multiplier or 1))
-            _refreshHS()
-            if on_confirm then on_confirm() end
-        end,
-    })
-end
-
--- Dialog: set the number of books to read this year
-local function showAnnualGoalDialog(on_confirm)
-    _showGoalSpinDialog({
-        title_text  = _("Annual Reading Goal"),
-        info_text   = string.format(_("Books to read in %s:"), _getYearStr()),
-        value       = getAnnualGoal(),
-        value_max   = 365,
-        setting_key = "simpleui_reading_goal",
-    }, on_confirm)
-end
-
--- Dialog: set the count of physical books read this year
-local function showAnnualPhysicalDialog(on_confirm)
-    _showGoalSpinDialog({
-        title_text  = string.format(_("Physical Books — %s"), _getYearStr()),
-        info_text   = _("Physical books read this year:"),
-        value       = getAnnualPhysical(),
-        value_max   = 365,
-        setting_key = "simpleui_reading_goal_physical",
-    }, on_confirm)
-end
-
--- Dialog: set the monthly reading goal in hours
-local function showMonthlySettingsDialog(on_confirm)
-    _showGoalSpinDialog({
-        title_text       = _("Monthly Reading Goal"),
-        info_text        = _("Hours per month:"),
-        value            = math.floor(getMonthlyGoalSecs() / 3600),
-        value_max        = 350,
-        setting_key      = "simpleui_monthly_reading_goal_secs",
-        value_multiplier = 3600,
-    }, on_confirm)
-end
-
--- Dialog: set the daily reading goal in minutes
-local function showDailySettingsDialog(on_confirm)
-    _showGoalSpinDialog({
-        title_text       = _("Daily Reading Goal"),
-        info_text        = _("Minutes per day:"),
-        value            = math.floor(getDailyGoalSecs() / 60),
-        value_max        = 720,
-        value_step       = 5,
-        setting_key      = "simpleui_daily_reading_goal_secs",
-        value_multiplier = 60,
-    }, on_confirm)
-end
-
 -- Formats a percentage/detail pair, falling back to a plain-text version if
 -- string.format raises (e.g. a translated plural form with mismatched
 -- placeholders) so a bad translation degrades gracefully instead of crashing
@@ -787,13 +709,9 @@ local function _goalPct(value, goal)
 end
 
 -- Returns pct, pct_str, detail for the annual goal row
-local function _annualData(books_read)
-    local goal = getAnnualGoal()
-    local read = books_read + getAnnualPhysical()
+local function _annualData(read)
+    local goal = Goals.get("annual")
     local pct, pct_str = _goalPct(read, goal)
-    logger.dbg("simpleui reading_goals: annual bar — goal=", goal,
-        "books_read=", books_read, "physical=", getAnnualPhysical(),
-        "read=", read, "pct=", pct, "pct_str=", pct_str)
     local detail_text = _safeDetail("annual",
         function()
             if goal > 0 then
@@ -810,7 +728,7 @@ end
 
 -- Returns pct, pct_str, detail for the monthly goal row
 local function _monthlyData(month_secs)
-    local goal_secs = getMonthlyGoalSecs()
+    local goal_secs = Goals.get("monthly")
     local pct, pct_str = _goalPct(month_secs, goal_secs)
     local detail_text = _safeDetail("monthly",
         function()
@@ -830,7 +748,7 @@ end
 
 -- Returns pct, pct_str, detail for the daily goal row
 local function _dailyData(today_secs)
-    local goal_secs = getDailyGoalSecs()
+    local goal_secs = Goals.get("daily")
     local pct, pct_str = _goalPct(today_secs, goal_secs)
     local detail_text = _safeDetail("daily",
         function()
@@ -877,11 +795,6 @@ M.label       = _("Reading Goals")
 M.enabled_key = "reading_goals_enabled"
 M.default_on  = true
 M.text_elems  = TEXT_ELEMS
-
-M.showAnnualGoalDialog      = showAnnualGoalDialog
-M.showAnnualPhysicalDialog  = showAnnualPhysicalDialog
-M.showMonthlySettingsDialog = showMonthlySettingsDialog
-M.showDailySettingsDialog   = showDailySettingsDialog
 
 -- Delegate cache invalidation to StatsProvider (shared with reading_stats).
 function M.invalidateCache()
@@ -955,23 +868,17 @@ function M.build(w, ctx)
             if k == "annual" then
                 label = year_str
                 pct, pct_str, detail = _annualData(books_read)
-                on_tap = function()
-                    local ok_sw, SW = pcall(require, "screens/sui_stats_windows")
-                    if ok_sw and SW and SW.showFinishedBooksDialog then
-                        if SW.showLoadingNotice then SW.showLoadingNotice() end
-                        SW.showFinishedBooksDialog()
-                    end
-                end
+                on_tap = _openFinishedBooks
                 cat = "books"
             elseif k == "monthly" then
                 label = month_str
                 pct, pct_str, detail = _monthlyData(month_secs)
-                on_tap = function() showMonthlySettingsDialog() end
+                on_tap = function() Goals.showDialog("monthly") end
                 cat = "timeseries"
             else
                 label = _("Today")
                 pct, pct_str, detail = _dailyData(today_secs)
-                on_tap = function() showDailySettingsDialog() end
+                on_tap = function() Goals.showDialog("daily") end
                 cat = "timeseries"
             end
             local card_widget, card_update_fn = buildGoalCardWidget(
@@ -1025,13 +932,7 @@ function M.build(w, ctx)
                 cd.lbl_w = lbl_w
                 local row_widget, row_update_fn = buildCompactGoalRow(
                     inner_w, lbl_w, pct_w, year_str, rows.annual.pct, rows.annual.pct_str, rows.annual.detail,
-                    function()
-                        local ok, SW = pcall(require, "screens/sui_stats_windows")
-                        if ok and SW and SW.showFinishedBooksDialog then
-                            if SW.showLoadingNotice then SW.showLoadingNotice() end
-                            SW.showFinishedBooksDialog()
-                        end
-                    end, cd, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
+                    _openFinishedBooks, cd, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "books", fn = function(books_r, _today_s, _month_s)
                     local n_pct, n_str, n_det = _annualData(books_r)
@@ -1044,7 +945,7 @@ function M.build(w, ctx)
                 cd.lbl_w = lbl_w
                 local row_widget, row_update_fn = buildCompactGoalRow(
                     inner_w, lbl_w, pct_w, month_str, rows.monthly.pct, rows.monthly.pct_str, rows.monthly.detail,
-                    function() showMonthlySettingsDialog() end, cd, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
+                    function() Goals.showDialog("monthly") end, cd, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "timeseries", fn = function(_books_r, _today_s, month_s)
                     local n_pct, n_str, n_det = _monthlyData(month_s)
@@ -1056,7 +957,7 @@ function M.build(w, ctx)
                 local lbl_w = _measureLblW({ _("Today") }, cd.face_lbl, cd.bold_lbl, cd.lbl_w)
                 local row_widget, row_update_fn = buildCompactGoalRow(
                     inner_w, lbl_w, pct_w, _("Today"), rows.daily.pct, rows.daily.pct_str, rows.daily.detail,
-                    function() showDailySettingsDialog() end, cd, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
+                    function() Goals.showDialog("daily") end, cd, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "timeseries", fn = function(_books_r, today_s, _month_s)
                     local n_pct, n_str, n_det = _dailyData(today_s)
@@ -1081,13 +982,7 @@ function M.build(w, ctx)
                 d.lbl_w = ann_lbl_w
                 local row_widget, row_update_fn = buildGoalRow(
                     inner_w, year_str, rows.annual.pct, rows.annual.pct_str, rows.annual.detail,
-                    function()
-                        local ok, SW = pcall(require, "screens/sui_stats_windows")
-                        if ok and SW and SW.showFinishedBooksDialog then
-                            if SW.showLoadingNotice then SW.showLoadingNotice() end
-                            SW.showFinishedBooksDialog()
-                        end
-                    end, d, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
+                    _openFinishedBooks, d, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "books", fn = function(books_r, _today_s, _month_s)
                     local n_pct, n_str, n_det = _annualData(books_r)
@@ -1100,7 +995,7 @@ function M.build(w, ctx)
                 d.lbl_w = mon_lbl_w
                 local row_widget, row_update_fn = buildGoalRow(
                     inner_w, month_str, rows.monthly.pct, rows.monthly.pct_str, rows.monthly.detail,
-                    function() showMonthlySettingsDialog() end, d, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
+                    function() Goals.showDialog("monthly") end, d, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "timeseries", fn = function(_books_r, _today_s, month_s)
                     local n_pct, n_str, n_det = _monthlyData(month_s)
@@ -1113,7 +1008,7 @@ function M.build(w, ctx)
                 d.lbl_w = day_lbl_w
                 local row_widget, row_update_fn = buildGoalRow(
                     inner_w, _("Today"), rows.daily.pct, rows.daily.pct_str, rows.daily.detail,
-                    function() showDailySettingsDialog() end, d, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
+                    function() Goals.showDialog("daily") end, d, CLR_TEXT_SUB_EFF, CLR_TEXT_BLK_EFF)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "timeseries", fn = function(_books_r, today_s, _month_s)
                     local n_pct, n_str, n_det = _dailyData(today_s)
@@ -1270,8 +1165,8 @@ function M.getMenuItems(ctx_menu)
     }
     -- Arrange-screen row for one goal. Tapping the row and the "Set Goal"
     -- action both open the same value dialog.
-    local function goalArrangeItem(kind, label, subtitle, showDialog)
-        local function setGoal() showDialog(refresh) end
+    local function goalArrangeItem(kind, label, subtitle)
+        local function setGoal() Goals.showDialog(kind, refresh) end
         return {
             text       = label,
             subtitle   = subtitle,
@@ -1298,13 +1193,13 @@ function M.getMenuItems(ctx_menu)
                 },
                 {
                     text_func = function()
-                        local g = getAnnualGoal()
+                        local g = Goals.get("annual")
                         return g > 0
                             and string.format(N_lc("  Set Goal  (%d book in %s)", "  Set Goal  (%d books in %s)", g), g, _getYearStr())
                             or  string.format(_lc("  Set Goal  (%s)"), _getYearStr())
                     end,
                     keep_menu_open = true,
-                    callback = function() showAnnualGoalDialog(refresh) end,
+                    callback = function() Goals.showDialog("annual", refresh) end,
                 },
 
                 {
@@ -1318,13 +1213,13 @@ function M.getMenuItems(ctx_menu)
                 },
                 {
                     text_func = function()
-                        local secs = getMonthlyGoalSecs()
+                        local secs = Goals.get("monthly")
                         local h    = math.floor(secs / 3600)
                         if secs <= 0 then return _lc("  Set Goal  (disabled)")
                         else              return string.format(_lc("  Set Goal  (%d hr/month)"), h) end
                     end,
                     keep_menu_open = true,
-                    callback = function() showMonthlySettingsDialog(refresh) end,
+                    callback = function() Goals.showDialog("monthly", refresh) end,
                 },
 
                 {
@@ -1338,13 +1233,13 @@ function M.getMenuItems(ctx_menu)
                 },
                 {
                     text_func = function()
-                        local secs = getDailyGoalSecs()
+                        local secs = Goals.get("daily")
                         local m    = math.floor(secs / 60)
                         if secs <= 0 then return _lc("  Set Goal  (disabled)")
                         else              return string.format(_lc("  Set Goal  (%d min/day)"), m) end
                     end,
                     keep_menu_open = true,
-                    callback = function() showDailySettingsDialog(refresh) end,
+                    callback = function() Goals.showDialog("daily", refresh) end,
                 },
             },
             sui_build = ctx_menu.is_sui and function(ctx, _item)
@@ -1404,23 +1299,20 @@ function M.getMenuItems(ctx_menu)
                                 for _, k in ipairs(_getElemOrder(ctx_menu.pfx)) do
                                     local item
                                     if k == "annual" and showAnnual() then
-                                        local g = getAnnualGoal()
+                                        local g = Goals.get("annual")
                                         item = goalArrangeItem(k, _lc("Annual Goal"),
                                             g > 0 and string.format(N_lc("%d book in %s", "%d books in %s", g), g, _getYearStr())
-                                                  or  _lc("Not set"),
-                                            showAnnualGoalDialog)
+                                                  or  _lc("Not set"))
                                     elseif k == "monthly" and showMonthly() then
-                                        local secs = getMonthlyGoalSecs()
+                                        local secs = Goals.get("monthly")
                                         item = goalArrangeItem(k, _lc("Monthly Goal"),
                                             secs > 0 and string.format(_lc("%d hr/month"), math.floor(secs / 3600))
-                                                     or  _lc("Not set"),
-                                            showMonthlySettingsDialog)
+                                                     or  _lc("Not set"))
                                     elseif k == "daily" and showDaily() then
-                                        local secs = getDailyGoalSecs()
+                                        local secs = Goals.get("daily")
                                         item = goalArrangeItem(k, _lc("Daily Goal"),
                                             secs > 0 and string.format(_lc("%d min/day"), math.floor(secs / 60))
-                                                     or  _lc("Not set"),
-                                            showDailySettingsDialog)
+                                                     or  _lc("Not set"))
                                     end
                                     if item then sort_items[#sort_items + 1] = item end
                                 end
@@ -1453,30 +1345,7 @@ function M.getMenuItems(ctx_menu)
                 }
             end or nil,
         },
-        {
-            text_func = function()
-                local p = getAnnualPhysical()
-                return p > 0
-                    and string.format(N_lc("Manually Tracked Books  (%d in %s)", "Manually Tracked Books  (%d in %s)", p), p, _getYearStr())
-                    or  string.format(_lc("Manually Tracked Books  (%s)"), _getYearStr())
-            end,
-            keep_menu_open = true,
-            callback = function() showAnnualPhysicalDialog(refresh) end,
-            sui_build = ctx_menu.is_sui and function(ctx, _item)
-                local SUIWindow = require("engines/sui_window")
-                local p = getAnnualPhysical()
-                local right = p > 0
-                    and string.format(N_lc("%d in %s", "%d in %s", p), p, _getYearStr())
-                    or  _getYearStr()
-                return SUIWindow.ListRow{
-                    inner_w     = ctx.inner_w,
-                    title       = _lc("Manually Tracked Books"),
-                    right_value = right,
-                    separator   = true,
-                    on_tap      = function() showAnnualPhysicalDialog(refresh) end,
-                }
-            end or nil,
-        },
+        ManualBooks.makeMenuItem(refresh),
         {
             text_func      = function() return _lc("Appearance") end,
             sub_item_table = {
@@ -1518,7 +1387,7 @@ function M.getMenuItems(ctx_menu)
             keep_menu_open = true,
             callback       = function()
                 local SP = package.loaded["modules/module_stats_provider"]
-                if SP and SP.invalidate then SP.invalidate() end
+                if SP and SP.rescanBooks then SP.rescanBooks() end
                 local SH = package.loaded["modules/module_books_shared"]
                 if SH and SH.invalidateSidecarCache then SH.invalidateSidecarCache() end
                 local MC = package.loaded["modules/module_currently"]

@@ -25,7 +25,6 @@ local Config          = require("infra/sui_config")
 local UI      = require("infra/sui_core")
 local SUISettings = require("infra/sui_store")
 local SUIStyle    = require("features/sui_style")
-local StreakFreeze = require("infra/sui_streak")
 local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
 local PAD     = UI.PAD
 local MOD_GAP = UI.MOD_GAP
@@ -347,45 +346,29 @@ local function buildStatListCell(cell_w, stat_id, stats, show_sep, d, align, col
     return og, update_fn
 end
 
+--- Opens a statistics window by id. Returns false when the windows module
+--- is unavailable so the caller can fall back.
+local function _openStatsWindow(id)
+    return (pcall(require("screens/sui_stats_launcher").open, id))
+end
+
 local function openReadingInsights()
-    local ok, SW = pcall(require, "screens/sui_stats_windows")
-    if ok and SW and SW.showReadingInsightsWindow then
-        if SW.showLoadingNotice then SW.showLoadingNotice() end
-        SW.showReadingInsightsWindow()
-    else
-        -- Fallback: open the built-in stats plugin if sui_stats_windows is unavailable.
+    if not _openStatsWindow("insights") then
         UIManager:broadcastEvent(require("ui/event"):new("ShowReaderProgress"))
     end
 end
 
---- Opens the Streak Manager window (streak card tap). Returns true on
---- success so the caller can fall back to openReadingInsights() when
---- sui_stats_windows is unavailable.
-local function openStreakManager()
-    local ok, SW = pcall(require, "screens/sui_stats_windows")
-    if ok and SW and SW.showStreakManagerWindow then
-        if SW.showLoadingNotice then SW.showLoadingNotice() end
-        SW.showStreakManagerWindow()
-        return true
-    end
-    return false
-end
-
---- Opens the detail screen for a tapped stat card, if it has one
---- (total_books -> finished-books dialog, streak -> Streak Manager).
+--- Opens the detail window of a tapped stat card, if it has one
+--- (total_books -> finished books, streak -> Streak Manager).
 --- Shared by both tap handlers in M.build() below. Returns true if a
---- detail screen was opened.
+--- detail window was opened.
 local function _openStatDetail(stat_ids, idx, n)
     if idx < 1 or idx > n then return false end
     local sid = stat_ids[idx]
     if sid == "total_books" then
-        local ok, SW = pcall(require, "screens/sui_stats_windows")
-        if ok and SW and SW.showFinishedBooksDialog then
-            SW.showFinishedBooksDialog(nil, "all")
-            return true
-        end
+        return _openStatsWindow("finished_books")
     elseif sid == "streak" then
-        return openStreakManager()
+        return _openStatsWindow("streak")
     end
     return false
 end
@@ -891,38 +874,14 @@ function M.getMenuItems(ctx_menu)
         }
     end
 
-    items[#items+1] = Config.makeRadioSubmenuItem{
-        text    = _lc("Streak Mode"),
-        options = {
-            { value = "freezes", label = _lc("Freezes") },
-            { value = "real",    label = _lc("Real streak only") },
-        },
-        get     = StreakFreeze.getStreakMode,
-        set     = StreakFreeze.setStreakMode,
-        refresh = refresh,
-    }
-
+    -- Shortcuts: both live in the global Stats settings.
+    local StatsMenu = require("features/sui_stats_menu")
+    items[#items+1] = StatsMenu.makeStreakModeItem(refresh)
     items[#items+1] = {
         text           = _lc("Update Stats Now"),
         separator      = true,
         keep_menu_open = true,
-        callback       = function()
-            local SP = package.loaded["modules/module_stats_provider"]
-            if SP and SP.invalidate then SP.invalidate() end
-            local SH = package.loaded["modules/module_books_shared"]
-            if SH and SH.invalidateSidecarCache then SH.invalidateSidecarCache() end
-            local MC = package.loaded["modules/module_currently"]
-            if MC and MC.invalidateCache then MC.invalidateCache() end
-            local MCD = package.loaded["modules/module_coverdeck"]
-            if MCD and MCD.invalidateCache then MCD.invalidateCache() end
-            
-            local ScreenEngine = package.loaded["engines/sui_screen_engine"]
-            if ScreenEngine and ScreenEngine.invalidateAllCfgAndRefresh then
-                ScreenEngine.invalidateAllCfgAndRefresh(true)
-            end
-            if ctx_menu and type(ctx_menu.refresh) == "function" then ctx_menu.refresh() elseif refresh then refresh() end
-            UI.Notify.toast(_lc("Stats updated successfully."), 2)
-        end,
+        callback       = function() StatsMenu.updateNow(ctx_menu.refresh or refresh) end,
     }
 
     local item_rows, size_rows, appearance_extra, content_rows, behaviour_rows = {}, {}, {}, {}, {}

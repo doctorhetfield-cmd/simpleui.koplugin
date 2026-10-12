@@ -3945,6 +3945,23 @@ function ScreenEngine.needsRefresh(id)
     return (inst and inst._stats_need_refresh) or _sget(id, "_stats_need_refresh") or false
 end
 
+-- Flags every known screen for a full data rebuild the next time it becomes
+-- visible: drops the cached books state (and, on a live instance, the cached
+-- ctx) so book progress, statuses and stats are all re-fetched. Call after a
+-- change to a book that any screen may display.
+function ScreenEngine.markAllStale()
+    for _, id in ipairs(ScreenEngine.knownScreenIds()) do
+        ScreenEngine.setNeedsRefresh(id)
+        local inst = _sget(id, "_instance")
+        if inst then
+            inst._ctx_cache          = nil
+            inst._cached_books_state = nil
+        else
+            ScreenEngine.setCachedBooksState(id, nil)
+        end
+    end
+end
+
 -- Refreshes whichever screen `id` is currently open, if any. No-op if that
 -- screen isn't live — callers don't need to check first.
 function ScreenEngine.refreshScreen(id, keep_cache, books_only, stats_only)

@@ -151,6 +151,13 @@ Backup.CATEGORIES = {
     },
 }
 
+-- Exact-match set for a list of keys.
+local function _keySet(keys, extra)
+    local set = extra or {}
+    for _i, key in ipairs(keys) do set[key] = true end
+    return set
+end
+
 -- Ordered classification rules: { category_id, exact = {...}, prefixes = {...} }
 local CLASSIFY_RULES = {
     { "wallpaper",
@@ -159,11 +166,15 @@ local CLASSIFY_RULES = {
     },
     { "goals",
       prefixes = {
-          "simpleui_streak_", "simpleui_reading_goal", "simpleui_daily_reading_goal_secs",
-          "simpleui_monthly_reading_goal_secs", "simpleui_tbr_sort_state",
+          "simpleui_streak_", "simpleui_reading_goals_", "simpleui_tbr_sort_state",
           "simpleui_tbr_auto_remove_finished",
       },
-      exact    = { simpleui_preserve_deleted_books_in_stats = true, simpleui_deleted_books = true },
+      exact    = _keySet(require("infra/sui_goals").KEYS, {
+          simpleui_preserve_deleted_books_in_stats = true,
+          simpleui_manual_books_in_all_time        = true,
+          simpleui_finished_books                  = true,
+          simpleui_deleted_books                   = true,  -- legacy key, folded into the ledger on load
+      }),
     },
     { "library",
       prefixes = { "simpleui_fc_", "simpleui_browsemeta_", "simpleui_reader_cover_" },

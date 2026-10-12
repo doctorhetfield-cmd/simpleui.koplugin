@@ -971,10 +971,10 @@ local function _registerBuiltins()
             execute = function(ctx)
                 local su = ctx.show_unavailable or _unavailToast
                 local plugin = ctx.plugin or _simpleui_plugin()
-                local ok, SW = pcall(require, "screens/sui_stats_windows")
-                if ok and SW and SW.showReadingInsightsWindow then
+                local ok, Launcher = pcall(require, "screens/sui_stats_launcher")
+                if ok and Launcher then
                     QA.trackIndicatorViaCallback(plugin, "stats_calendar", function(restore)
-                        SW.showReadingInsightsWindow(restore)
+                        Launcher.open("insights", { on_close = restore })
                     end)
                 else
                     local ok2, err = pcall(function()
