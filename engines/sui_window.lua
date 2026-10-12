@@ -330,7 +330,15 @@ function SUIWindow:show()
     local bot_h = 0
     local ok_bb_early, Bottombar_early = pcall(require, "screens/sui_bottombar")
     if ok_bb_early and Bottombar_early and Bottombar_early.TOTAL_H then
-        bot_h = Bottombar_early.TOTAL_H()
+        local has_bar = Bottombar_early.isBarInjectedOnCurrentScreen
+        if type(has_bar) == "function" then
+            has_bar = has_bar()
+        else
+            has_bar = true
+        end
+        if has_bar then
+            bot_h = Bottombar_early.TOTAL_H()
+        end
     end
 
     -- Usable region: from top_h to (screen_h - bot_h).
@@ -352,10 +360,10 @@ function SUIWindow:show()
     local modal_y
     if self._position == "top" then
         modal_y = top_h + pad
-    elseif self._position == "bottom" then
+    elseif self._position == "bottom" and bot_h > 0 then
         modal_y = self._screen_h - bot_h - self._modal_h - pad
     else  -- "center" (default)
-        modal_y = top_h + math.floor((usable_h - self._modal_h) / 2)
+        modal_y = math.floor((self._screen_h - self._modal_h) / 2)
     end
     -- overlap_offset positions the child relative to the OverlapGroup origin.
     mf.overlap_offset = { modal_x, modal_y }
@@ -1023,10 +1031,10 @@ function SUIWindow:_rebuildFrame(ctx, items)
             local new_y
             if self._position == "top" then
                 new_y = self._top_h_cache + Size.padding.small
-            elseif self._position == "bottom" then
+            elseif self._position == "bottom" and self._bot_h_cache > 0 then
                 new_y = self._screen_h - self._bot_h_cache - wanted_h - Size.padding.small
             else
-                new_y = self._top_h_cache + math.floor((self._usable_h_cache - wanted_h) / 2)
+                new_y = math.floor((self._screen_h - wanted_h) / 2)
             end
             mf.overlap_offset = { new_x, new_y }
 
