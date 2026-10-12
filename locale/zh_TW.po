@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
 "POT-Creation-Date: 2026-10-12 01:23+0000\n"
-"PO-Revision-Date: 2026-10-12 15:11+0800\n"
+"PO-Revision-Date: 2026-10-12 19:58+0800\n"
 "Last-Translator: gsWang <gs.wang@outlook.com>\n"
 "Language-Team: Chinese (Traditional)\n"
 "Language: zh_TW\n"
@@ -120,12 +120,13 @@ msgid ""
 "0% transparent, 100% solid. Applies to the native page bar in Library, "
 "History, Collections and similar screens."
 msgstr ""
-"0% 為透明，100% 為純色。套用於「書庫」、「歷史紀錄」與「書單」等原生頁面導覽欄。"
+"0% 為透明，100% 為完全不透明。套用於「書庫」、「歷史紀錄」與「書單」等原生頁"
+"面導覽欄。"
 
 #: infra/sui_config.lua:1317
 msgid ""
 "0% transparent, 100% solid. Values in between add a scrim over the wallpaper."
-msgstr "0% 透明，100% 純色。介於兩者之間的值會在桌布上疊加一層遮罩。"
+msgstr "0% 為透明，100% 為完全不透明。介於兩者之間的值會在桌布上疊加一層遮罩。"
 
 #: modules/module_collections.lua:1237
 msgid "4-Cover Grid"
@@ -449,11 +450,11 @@ msgstr "自動檢查更新"
 #: screens/sui_stats_windows.lua:1205 screens/sui_stats_windows.lua:2410
 #: screens/sui_stats_windows.lua:3882
 msgid "Average per day"
-msgstr "每日平均"
+msgstr "每日平均時長"
 
 #: screens/sui_stats_windows.lua:1207 screens/sui_stats_windows.lua:3884
 msgid "Average per page"
-msgstr "每頁平均"
+msgstr "每頁平均時長"
 
 #: screens/sui_titlebar.lua:118 screens/sui_titlebar.lua:124
 msgid "Back"
@@ -683,8 +684,8 @@ msgid "Browse Icons"
 msgstr "瀏覽圖示"
 
 #: features/library/sui_library_browse.lua:463
-msgid "Browse by"
-msgstr "瀏覽方式"
+msgid "Browse by %s"
+msgstr "依%s瀏覽"
 
 #: features/sui_quickactions.lua:683
 msgid "Browse by Authors/Series/Tags not available."
@@ -836,8 +837,7 @@ msgid ""
 "Choose the folder where you will place all your books. Simple UI uses it to "
 "show your books in the Library."
 msgstr ""
-"請選擇用於存放所有書籍的資料夾。SimpleUI 將使用此資料夹在「書庫」中顯示你的書"
-"籍。"
+"請選擇用於存放書籍的資料夾。SimpleUI 將使用此資料夹在「書庫」中顯示你的書籍。"
 
 #: screens/sui_menu.lua:2597
 msgid "Choose wallpaper"
@@ -1044,7 +1044,7 @@ msgstr "建立螢幕"
 
 #: screens/sui_onboarding.lua:192
 msgid "Create a \"Books\" folder"
-msgstr "建立「書籍」資料夾"
+msgstr "建立「Books」資料夾"
 
 #: features/library/sui_foldercovers.lua:669
 #: features/library/sui_foldercovers.lua:684
@@ -1161,7 +1161,7 @@ msgstr "深色"
 
 #: screens/sui_menu.lua:2669
 msgid "Darken"
-msgstr "變暗​"
+msgstr "變暗"
 
 #: features/sui_presets.lua:218
 msgid "Dashboard"
@@ -1282,7 +1282,7 @@ msgstr "描述"
 
 #: modules/module_currently.lua:2088
 msgid "Description Alignment"
-msgstr "描述對齊"
+msgstr "描述對齊方式"
 
 #: modules/module_reading_goals.lua:1265
 msgid "Detail"
@@ -4552,7 +4552,7 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
-"標題與作者欄已啟用。\n"
+"封面下方顯示標題與作者已啟用。\n"
 "\n"
 "要立即重新啟動嗎？"
 
@@ -4566,7 +4566,7 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
-"標題欄已停用。\n"
+"封面下方顯示標題已停用。\n"
 "\n"
 "要立即重新啟動嗎？"
 
@@ -4576,7 +4576,7 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
-"標題欄已啟用。\n"
+"封面下方顯示標題已啟用。\n"
 "\n"
 "要立即重新啟動嗎？"
 

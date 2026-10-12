@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
 "POT-Creation-Date: 2026-10-12 01:23+0000\n"
-"PO-Revision-Date: 2026-10-12 15:11+0800\n"
+"PO-Revision-Date: 2026-10-12 19:58+0800\n"
 "Last-Translator: gsWang <gs.wang@outlook.com>\n"
 "Language-Team: Chinese (Simplified)\n"
 "Language: zh_CN\n"
@@ -120,12 +120,13 @@ msgid ""
 "0% transparent, 100% solid. Applies to the native page bar in Library, "
 "History, Collections and similar screens."
 msgstr ""
-"0% 为透明，100% 为纯色。应用于“书库”、“历史记录”与“书单”等原生页面导航栏。"
+"0% 为透明，100% 为完全不透明。应用于“书库”、“历史记录”与“书单”等原生页面导航"
+"栏。"
 
 #: infra/sui_config.lua:1317
 msgid ""
 "0% transparent, 100% solid. Values in between add a scrim over the wallpaper."
-msgstr "0% 透明，100% 纯色。介于两者之间的值会在壁纸上叠加一层遮罩。"
+msgstr "0% 为透明，100% 为完全不透明。介于两者之间的值会在壁纸上叠加一层遮罩。"
 
 #: modules/module_collections.lua:1237
 msgid "4-Cover Grid"
@@ -449,11 +450,11 @@ msgstr "自动检查更新"
 #: screens/sui_stats_windows.lua:1205 screens/sui_stats_windows.lua:2410
 #: screens/sui_stats_windows.lua:3882
 msgid "Average per day"
-msgstr "每日均值"
+msgstr "每日平均时长"
 
 #: screens/sui_stats_windows.lua:1207 screens/sui_stats_windows.lua:3884
 msgid "Average per page"
-msgstr "每页均值"
+msgstr "每页平均时长"
 
 #: screens/sui_titlebar.lua:118 screens/sui_titlebar.lua:124
 msgid "Back"
@@ -683,8 +684,8 @@ msgid "Browse Icons"
 msgstr "浏览图标"
 
 #: features/library/sui_library_browse.lua:463
-msgid "Browse by"
-msgstr "浏览方式"
+msgid "Browse by %s"
+msgstr "按%s浏览"
 
 #: features/sui_quickactions.lua:683
 msgid "Browse by Authors/Series/Tags not available."
@@ -836,8 +837,7 @@ msgid ""
 "Choose the folder where you will place all your books. Simple UI uses it to "
 "show your books in the Library."
 msgstr ""
-"请选择用于存放所有书籍的文件夹。SimpleUI 将使用该文件夹在“书库”中显示你的书"
-"籍。"
+"请选择用于存放书籍的文件夹。SimpleUI 将使用该文件夹在“书库”中显示你的书籍。"
 
 #: screens/sui_menu.lua:2597
 msgid "Choose wallpaper"
@@ -1044,7 +1044,7 @@ msgstr "创建屏幕"
 
 #: screens/sui_onboarding.lua:192
 msgid "Create a \"Books\" folder"
-msgstr "创建“书籍”文件夹"
+msgstr "创建“Books”文件夹"
 
 #: features/library/sui_foldercovers.lua:669
 #: features/library/sui_foldercovers.lua:684
@@ -1282,7 +1282,7 @@ msgstr "描述"
 
 #: modules/module_currently.lua:2088
 msgid "Description Alignment"
-msgstr "描述对齐"
+msgstr "描述对齐方式"
 
 #: modules/module_reading_goals.lua:1265
 msgid "Detail"
@@ -1538,7 +1538,7 @@ msgstr ""
 
 #: screens/sui_menu.lua:2670
 msgid "Fades the wallpaper towards black."
-msgstr "​将壁纸渐变为黑色。"
+msgstr "将壁纸渐变为黑色。"
 
 #: screens/sui_menu.lua:2664
 msgid "Fades the wallpaper towards white to improve text readability."
@@ -4552,7 +4552,7 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
-"标题与作者栏已启用。\n"
+"封面下方显示标题与作者已启用。\n"
 "\n"
 "是否立即重启？"
 
@@ -4566,7 +4566,7 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
-"标题栏已禁用。\n"
+"封面下方显示标题已禁用。\n"
 "\n"
 "是否立即重启？"
 
@@ -4576,7 +4576,7 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
-"标题栏已启用。\n"
+"封面下方显示标题已启用。\n"
 "\n"
 "是否立即重启？"
 
@@ -5200,8 +5200,8 @@ msgstr[1] "阅读 %d 天"
 #: screens/sui_stats_windows.lua:3413
 msgid "%d freeze available"
 msgid_plural "%d freezes available"
-msgstr[0] "%d 次冻结可用"
-msgstr[1] "%d 次冻结可用"
+msgstr[0] "%d 个冻结权可用"
+msgstr[1] "%d 个冻结权可用"
 
 #: modules/module_reading_goals.lua:1469
 msgid "%d in %s"
