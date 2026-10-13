@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-10-12 21:04+0000\n"
-"PO-Revision-Date: 2026-10-12 19:58+0800\n"
+"POT-Creation-Date: 2026-10-12 22:54+0100\n"
+"PO-Revision-Date: 2026-10-13 10:29+0800\n"
 "Last-Translator: gsWang <gs.wang@outlook.com>\n"
 "Language-Team: Chinese (Simplified)\n"
 "Language: zh_CN\n"
@@ -82,7 +82,7 @@ msgstr "%d%%"
 msgid "%d%% Read"
 msgstr "已读 %d%%"
 
-#: screens/sui_stats_windows.lua:3218
+#: screens/sui_stats_windows.lua:3220
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d 天 · 距下一个冻结权还需 %d/%d 分钟"
 
@@ -111,7 +111,8 @@ msgid "(collection not found)"
 msgstr "（未找到书单）"
 
 #: screens/sui_menu.lua:282
-msgid "0% transparent, 100% solid. Applies across the full width of the title bar."
+msgid ""
+"0% transparent, 100% solid. Applies across the full width of the title bar."
 msgstr "0% 为透明，100% 为完全不透明。应用于标题栏的整个宽度。"
 
 #: screens/sui_menu.lua:291
@@ -139,8 +140,10 @@ msgstr "四封面网格（仅限网格视图）"
 msgid "A folder named \"Books\" will be created and set as the library home."
 msgstr "将创建一个名为“Books”的文件夹，并将其设置为书库主目录。"
 
-#: screens/sui_stats_windows.lua:2887
-msgid "A freeze can only bridge a single missed day right after an active one — yesterday doesn't qualify."
+#: screens/sui_stats_windows.lua:2889
+msgid ""
+"A freeze can only bridge a single missed day right after an active one — "
+"yesterday doesn't qualify."
 msgstr "冻结补签仅可衔接一次紧接有效阅读日之后的缺勤 — 昨天不符合条件。"
 
 #: features/sui_presets.lua:946 features/sui_presets.lua:1032
@@ -180,7 +183,7 @@ msgstr ""
 msgid "A simple UI for KOReader"
 msgstr "SimpleUI 是 KOReader 的一个简约界面插件"
 
-#: screens/sui_stats_windows.lua:2552
+#: screens/sui_stats_windows.lua:2554
 msgid "ALL TIME"
 msgstr "所有时间"
 
@@ -218,16 +221,15 @@ msgstr "操作不可用：%s"
 msgid "Add Action"
 msgstr "添加操作"
 
-#: features/sui_manual_books.lua:116 features/sui_manual_books.lua:169
-#: screens/sui_stats_windows.lua:777
+#: features/sui_manual_books.lua:119 features/sui_manual_books.lua:183
 msgid "Add Book"
-msgstr ""
+msgstr "添加书籍"
 
 #: screens/sui_menu.lua:1789 screens/sui_menu.lua:1827
 msgid "Add Button"
 msgstr "添加按钮"
 
-#: engines/sui_screen_engine.lua:1998 engines/sui_window.lua:905
+#: engines/sui_screen_engine.lua:1998 engines/sui_window.lua:912
 #: modules/module_action_list.lua:401 modules/module_action_list.lua:431
 #: modules/module_coverdeck.lua:1479 modules/module_coverdeck.lua:1501
 #: modules/module_coverdeck.lua:1616 modules/module_coverdeck.lua:1634
@@ -249,10 +251,6 @@ msgstr "添加模块"
 #: screens/sui_settings_window.lua:1266
 msgid "Add Page"
 msgstr "添加页面"
-
-#: features/sui_manual_books.lua:170
-msgid "Add a book you read outside the device, with its title, author and dates. Added books are listed, and can be edited or deleted, in the Finished Books window."
-msgstr ""
 
 #: modules/module_action_list.lua:312 modules/module_quick_actions.lua:383
 #: screens/sui_menu.lua:2302 screens/sui_quicksettings_bar.lua:1060
@@ -281,7 +279,7 @@ msgstr "关闭书籍后"
 msgid "Alignment"
 msgstr "对齐方式"
 
-#: engines/sui_window.lua:3546 screens/sui_settings_window.lua:921
+#: engines/sui_window.lua:3577 screens/sui_settings_window.lua:921
 msgid "All items have already been added."
 msgstr "所有项目都已添加。"
 
@@ -347,7 +345,7 @@ msgstr "正在应用预设…"
 msgid "Apr"
 msgstr "4月"
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2676
 msgid "April"
 msgstr "4月"
 
@@ -415,11 +413,11 @@ msgstr "至少保留一个可见项。"
 msgid "Aug"
 msgstr "8月"
 
-#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2675
+#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2677
 msgid "August"
 msgstr "8月"
 
-#: features/sui_manual_books.lua:119 modules/module_coverdeck.lua:163
+#: features/sui_manual_books.lua:122 modules/module_coverdeck.lua:163
 #: modules/module_coverdeck.lua:1645 modules/module_currently.lua:326
 #: modules/module_currently.lua:1977 modules/module_quote.lua:1471
 #: modules/module_quote.lua:1492
@@ -455,12 +453,12 @@ msgstr "自动旋转"
 msgid "Automatic Update Check"
 msgstr "自动检查更新"
 
-#: screens/sui_stats_windows.lua:1145 screens/sui_stats_windows.lua:2262
-#: screens/sui_stats_windows.lua:3678
+#: screens/sui_stats_windows.lua:1143 screens/sui_stats_windows.lua:2264
+#: screens/sui_stats_windows.lua:3680
 msgid "Average per day"
 msgstr "每日平均时长"
 
-#: screens/sui_stats_windows.lua:1147 screens/sui_stats_windows.lua:3680
+#: screens/sui_stats_windows.lua:1145 screens/sui_stats_windows.lua:3682
 msgid "Average per page"
 msgstr "每页平均时长"
 
@@ -515,7 +513,8 @@ msgstr ""
 "是否立即重启 KOReader 以应用所有更改？"
 
 #: features/sui_backup.lua:592
-msgid "Backup was made by a newer SimpleUI version. Please update this plugin first."
+msgid ""
+"Backup was made by a newer SimpleUI version. Please update this plugin first."
 msgstr "此备份由更新版本的 SimpleUI 创建。请先更新本插件。"
 
 #: engines/sui_book_grid.lua:2043 modules/module_collections.lua:1298
@@ -574,19 +573,19 @@ msgstr "电池"
 msgid "Behaviour"
 msgstr "行为"
 
-#: screens/sui_stats_windows.lua:2032 screens/sui_stats_windows.lua:2052
+#: screens/sui_stats_windows.lua:2034 screens/sui_stats_windows.lua:2054
 msgid "Best streak"
-msgstr "最佳连续"
+msgstr "最佳连续阅读"
 
 #: infra/sui_config.lua:195
 msgid "Bluetooth"
 msgstr "蓝牙"
 
-#: features/sui_style.lua:2157
+#: features/sui_style.lua:2158
 msgid "Bold"
 msgstr "粗体"
 
-#: features/sui_style.lua:2159
+#: features/sui_style.lua:2160
 msgid "Bold italic"
 msgstr "粗斜体"
 
@@ -606,7 +605,7 @@ msgstr "书籍信息"
 msgid "Book Menu"
 msgstr "图书菜单"
 
-#: screens/sui_stats_windows.lua:3732
+#: screens/sui_stats_windows.lua:3734
 msgid "Book Statistics"
 msgstr "书籍统计"
 
@@ -634,10 +633,6 @@ msgstr "书签"
 msgid "Books"
 msgstr "书籍"
 
-#: features/sui_manual_books.lua:133
-msgid "Books read in %d:"
-msgstr ""
-
 #: infra/sui_goals.lua:45
 msgid "Books to read in %s:"
 msgstr "%s 年需要阅读的书籍："
@@ -654,8 +649,16 @@ msgid "Bottom Margin"
 msgstr "下边距"
 
 #: screens/sui_menu.lua:2885
-msgid "Briefly show the book cover full-screen when opening or closing a book, masking the page-layout flash. Normally requires the book to already be indexed by the cover browser (its cover must have been seen at least once in a grid/list view) — see \"High-Quality Cover\" below to also cover un-indexed books."
-msgstr "在打开或关闭书籍时以全屏封面短暂显示，以遮盖页面布局刷新。通常要求该书已被封面浏览器索引（即在网格/列表视图中至少显示过一次封面）。如需覆盖未索引书籍，请参阅下方的“高质量封面”选项。"
+msgid ""
+"Briefly show the book cover full-screen when opening or closing a book, "
+"masking the page-layout flash. Normally requires the book to already be "
+"indexed by the cover browser (its cover must have been seen at least once in "
+"a grid/list view) — see \"High-Quality Cover\" below to also cover un-"
+"indexed books."
+msgstr ""
+"在打开或关闭书籍时以全屏封面短暂显示，以遮盖页面布局刷新。通常要求该书已被封"
+"面浏览器索引（即在网格/列表视图中至少显示过一次封面）。如需覆盖未索引书籍，请"
+"参阅下方的“高质量封面”选项。"
 
 #: features/sui_quickactions.lua:947 infra/sui_config.lua:130
 #: infra/sui_config.lua:196
@@ -728,8 +731,13 @@ msgid "By author"
 msgstr "按作者"
 
 #: screens/sui_menu.lua:2924
-msgid "By default the cover is stretched to fill the whole screen, which can distort it if its proportions don't match your screen's. When on, the cover keeps its original proportions instead, centered over a black background."
-msgstr "默认情况下，封面会拉伸以填满整个屏幕；如果封面的宽高比与屏幕不匹配，可能会导致变形。开启后，封面将保持原始比例，并以黑色背景居中显示。"
+msgid ""
+"By default the cover is stretched to fill the whole screen, which can "
+"distort it if its proportions don't match your screen's. When on, the cover "
+"keeps its original proportions instead, centered over a black background."
+msgstr ""
+"默认情况下，封面会拉伸以填满整个屏幕；如果封面的宽高比与屏幕不匹配，可能会导"
+"致变形。开启后，封面将保持原始比例，并以黑色背景居中显示。"
 
 #: screens/sui_titlebar.lua:1034
 msgid "By series"
@@ -739,7 +747,7 @@ msgstr "按丛书"
 msgid "By tags"
 msgstr "按标签"
 
-#: screens/sui_heatmap_popup.lua:67 screens/sui_stats_windows.lua:2908
+#: screens/sui_heatmap_popup.lua:67 screens/sui_stats_windows.lua:2910
 msgid "CALENDAR"
 msgstr "日历"
 
@@ -753,9 +761,9 @@ msgstr "日历"
 #: features/library/sui_library_search.lua:70
 #: features/library/sui_library_search.lua:207
 #: features/library/sui_series_grouping.lua:401 features/sui_backup.lua:1004
-#: features/sui_backup.lua:1103 features/sui_manual_books.lua:83
-#: features/sui_manual_books.lua:104 features/sui_manual_books.lua:138
-#: features/sui_manual_books.lua:155 features/sui_presets.lua:859
+#: features/sui_backup.lua:1103 features/sui_manual_books.lua:86
+#: features/sui_manual_books.lua:107 features/sui_manual_books.lua:141
+#: features/sui_manual_books.lua:158 features/sui_presets.lua:859
 #: features/sui_presets.lua:889 features/sui_presets.lua:919
 #: features/sui_presets.lua:936 features/sui_presets.lua:964
 #: features/sui_presets.lua:1004 features/sui_presets.lua:1022
@@ -968,7 +976,7 @@ msgstr "角落徽章"
 msgid "Could not determine backup folder."
 msgstr "无法确定备份文件夹。"
 
-#: features/sui_style.lua:2332
+#: features/sui_style.lua:2333
 msgid "Could not determine packs folder"
 msgstr "无法确定包文件夹位置"
 
@@ -980,7 +988,7 @@ msgstr "无法打开备份文件进行写入"
 msgid "Could not open statistics database."
 msgstr "无法打开统计数据库。"
 
-#: features/sui_style.lua:2334
+#: features/sui_style.lua:2335
 msgid "Could not open zip (invalid format or corrupted)"
 msgstr "无法打开 .zip 文件（格式无效或已损坏）"
 
@@ -988,9 +996,12 @@ msgstr "无法打开 .zip 文件（格式无效或已损坏）"
 msgid "Could not write backup file"
 msgstr "无法写入备份文件"
 
-#: features/sui_manual_books.lua:182
-msgid "Count manually tracked books in the all-time total of books finished. They always count towards the year they belong to."
+#: features/sui_stats_menu.lua:102
+msgid ""
+"Count manually tracked books in the all-time total of books finished. They "
+"always count towards the year they belong to."
 msgstr ""
+"将手动跟踪的书籍计入已读完书籍的历史总数中。它们始终计入其所属年份的统计。"
 
 #: features/sui_presets.lua:175 features/sui_presets.lua:193
 #: modules/module_coverdeck.lua:580
@@ -1024,7 +1035,8 @@ msgid "Cover for \"%s\""
 msgstr "“%s”的封面"
 
 #: infra/sui_compat_check.lua:212
-msgid "CoverBrowser plugin is not enabled, some features will not work correctly."
+msgid ""
+"CoverBrowser plugin is not enabled, some features will not work correctly."
 msgstr "封面浏览器插件未启用，部分功能将无法正常工作。"
 
 #: modules/module_coverdeck.lua:161
@@ -1063,9 +1075,9 @@ msgstr "创建屏幕"
 msgid "Creating backup…"
 msgstr "正在创建备份…"
 
-#: screens/sui_stats_windows.lua:2030 screens/sui_stats_windows.lua:2050
+#: screens/sui_stats_windows.lua:2032 screens/sui_stats_windows.lua:2052
 msgid "Current streak"
-msgstr "当前连续"
+msgstr "当前连续阅读"
 
 #: features/sui_presets.lua:143 features/sui_presets.lua:155
 #: features/sui_presets.lua:219 modules/module_currently.lua:401
@@ -1129,7 +1141,7 @@ msgstr "自定义壁纸和图标"
 msgid "Customize even more"
 msgstr "更多自定义设置"
 
-#: screens/sui_stats_windows.lua:2583 screens/sui_stats_windows.lua:3156
+#: screens/sui_stats_windows.lua:2585 screens/sui_stats_windows.lua:3158
 msgid "DAY STREAK"
 msgstr "连续天数"
 
@@ -1190,7 +1202,7 @@ msgstr "读完日期"
 msgid "Date started"
 msgstr "开始日期"
 
-#: screens/sui_stats_windows.lua:885 screens/sui_stats_windows.lua:3447
+#: screens/sui_stats_windows.lua:883 screens/sui_stats_windows.lua:3449
 msgid "Days"
 msgstr "天数"
 
@@ -1202,12 +1214,12 @@ msgstr "阅读天数"
 msgid "Dec"
 msgstr "12月"
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2678
 msgid "December"
 msgstr "12月"
 
 #: features/sui_quickactions.lua:2168 features/sui_quickactions.lua:2454
-#: features/sui_style.lua:2134 features/sui_style.lua:2181
+#: features/sui_style.lua:2135 features/sui_style.lua:2182
 #: infra/sui_config.lua:962 modules/module_currently.lua:1531
 #: modules/module_reading_goals.lua:1355 screens/sui_menu.lua:570
 #: screens/sui_menu.lua:699 screens/sui_menu.lua:1417 screens/sui_menu.lua:2168
@@ -1251,9 +1263,9 @@ msgstr "默认：插件"
 msgid "Default: System"
 msgstr "默认：系统"
 
-#: engines/sui_window.lua:1998 engines/sui_window.lua:3007
+#: engines/sui_window.lua:2029 engines/sui_window.lua:3038
 #: features/library/sui_book_hold_dialog.lua:151
-#: features/sui_manual_books.lua:99 features/sui_manual_books.lua:103
+#: features/sui_manual_books.lua:102 features/sui_manual_books.lua:106
 #: features/sui_presets.lua:960 features/sui_presets.lua:963
 #: features/sui_presets.lua:1003 features/sui_quickactions.lua:1612
 #: features/sui_quickactions.lua:3044 features/sui_quickactions.lua:3049
@@ -1280,9 +1292,9 @@ msgstr "删除预设“%s”？"
 msgid "Delete quick action \"%s\"?"
 msgstr "删除快捷操作“%s”？"
 
-#: features/sui_manual_books.lua:102
+#: features/sui_manual_books.lua:105
 msgid "Delete this book?"
-msgstr ""
+msgstr "确定删除这本书？"
 
 #: modules/module_currently.lua:328 modules/module_currently.lua:1979
 msgid "Description"
@@ -1372,9 +1384,9 @@ msgstr "动态"
 msgid "Edit"
 msgstr "编辑"
 
-#: features/sui_manual_books.lua:116
+#: features/sui_manual_books.lua:119
 msgid "Edit Book"
-msgstr ""
+msgstr "编辑书籍"
 
 #: screens/sui_menu.lua:754 screens/sui_menu.lua:756 screens/sui_menu.lua:1019
 msgid "Edit Custom Text"
@@ -1440,7 +1452,7 @@ msgstr "启用标题栏"
 msgid "Enable Wallpaper"
 msgstr "启用壁纸"
 
-#: features/sui_style.lua:1974
+#: features/sui_style.lua:1975
 msgid "Enable custom UI font"
 msgstr "启用自定义界面字体"
 
@@ -1472,7 +1484,7 @@ msgstr "检查更新时出错："
 msgid "Error exporting preset: "
 msgstr "导出预设时出错："
 
-#: features/sui_style.lua:2381
+#: features/sui_style.lua:2382
 msgid "Error extracting zip: "
 msgstr "解压 .zip 文件时出错："
 
@@ -1488,11 +1500,11 @@ msgstr "阅读目标出错：请查看 crash.log"
 msgid "Error installing pack:"
 msgstr "安装图标包时出错："
 
-#: screens/sui_stats_windows.lua:1156
+#: screens/sui_stats_windows.lua:1154
 msgid "Exclude from goals"
 msgstr "不计入阅读目标"
 
-#: screens/sui_stats_windows.lua:730 screens/sui_stats_windows.lua:736
+#: screens/sui_stats_windows.lua:735 screens/sui_stats_windows.lua:741
 msgid "Excluded"
 msgstr "已排除"
 
@@ -1520,11 +1532,15 @@ msgstr "额外自定义屏幕"
 msgid "Extra Small"
 msgstr "超小"
 
+#: features/sui_manual_books.lua:136
+msgid "Extra books read in %d, on top of the automatic count:"
+msgstr "%d 年中额外阅读的书籍（在自动统计数量之外）："
+
 #: infra/sui_updater.lua:439
 msgid "Extraction error: "
 msgstr "提取错误："
 
-#: screens/sui_stats_windows.lua:3268
+#: screens/sui_stats_windows.lua:3270
 msgid "FREEZES"
 msgstr "冻结权"
 
@@ -1577,7 +1593,7 @@ msgstr "精选书单 — 点击以配置"
 msgid "Feb"
 msgstr "2月"
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2676
 msgid "February"
 msgstr "2月"
 
@@ -1605,7 +1621,7 @@ msgstr "文件搜索"
 msgid "File not found."
 msgstr "文件未找到。"
 
-#: features/sui_style.lua:2328
+#: features/sui_style.lua:2329
 msgid "File not found: "
 msgstr "未找到文件："
 
@@ -1621,11 +1637,11 @@ msgstr "文件大小（最小）"
 msgid "Filter by name…"
 msgstr "按名称筛选…"
 
-#: features/sui_manual_books.lua:121
+#: features/sui_manual_books.lua:124
 msgid "Finished"
-msgstr ""
+msgstr "读完日期"
 
-#: features/sui_stats_menu.lua:116 screens/sui_menu.lua:3545
+#: features/sui_stats_menu.lua:132 screens/sui_menu.lua:3545
 msgid "Finished Books"
 msgstr "已读完书籍"
 
@@ -1731,11 +1747,15 @@ msgstr "有边框"
 msgid "Freezes"
 msgstr "冻结"
 
-#: screens/sui_stats_windows.lua:2868
-msgid "Freezes can only cover a single missed day, and only right after an active one. Tap yesterday's cell to use one, when eligible."
-msgstr " 冻结权只能补救连续阅读日后错过第一天的情况。符合条件时，点击昨天的格子即可使用。"
+#: screens/sui_stats_windows.lua:2870
+msgid ""
+"Freezes can only cover a single missed day, and only right after an active "
+"one. Tap yesterday's cell to use one, when eligible."
+msgstr ""
+" 冻结权只能补救连续阅读日后错过第一天的情况。符合条件时，点击昨天的格子即可使"
+"用。"
 
-#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2664
+#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2666
 msgid "Fri"
 msgstr "星期五"
 
@@ -1774,11 +1794,16 @@ msgstr "全局自定义操作与图标"
 
 #: screens/sui_menu.lua:4704
 msgid ""
-"Global scale applied to all of KOReader's interface text — menus, dialogs, titles, and Simple UI. It does not change the book's reading font size, which has its own setting.\n"
-"100% is the default size. Useful when a chosen UI font (see UI Font above) renders smaller or larger than usual."
+"Global scale applied to all of KOReader's interface text — menus, dialogs, "
+"titles, and Simple UI. It does not change the book's reading font size, "
+"which has its own setting.\n"
+"100% is the default size. Useful when a chosen UI font (see UI Font above) "
+"renders smaller or larger than usual."
 msgstr ""
-"作用于 KOReader 所有界面文本的全局缩放，包括菜单、对话框、标题及 SimpleUI。不影响书籍正文的阅读字号（其有独立设置）。\n"
-"默认大小为 100%。当所选界面文本（见上方界面字体）显示偏大或偏小时，可通过此项调整。"
+"作用于 KOReader 所有界面文本的全局缩放，包括菜单、对话框、标题及 SimpleUI。不"
+"影响书籍正文的阅读字号（其有独立设置）。\n"
+"默认大小为 100%。当所选界面文本（见上方界面字体）显示偏大或偏小时，可通过此项"
+"调整。"
 
 #: screens/sui_menu.lua:2769
 msgid ""
@@ -1825,9 +1850,11 @@ msgstr "分组：选择操作"
 
 #: modules/module_currently.lua:1535
 msgid ""
-"Grows or shrinks the cover so its height always matches the text column, keeping the cover's proportions.\n"
+"Grows or shrinks the cover so its height always matches the text column, "
+"keeping the cover's proportions.\n"
 "The spacing between cover and text stays as set above.\n"
-"The Cover size setting still applies on top of this, and the cover never shrinks below its 100% size."
+"The Cover size setting still applies on top of this, and the cover never "
+"shrinks below its 100% size."
 msgstr ""
 "根据文本栏高度自动放大或缩小封面，并保持封面比例。\n"
 "封面与文本之间的间距保持为上述设置。\n"
@@ -1906,7 +1933,7 @@ msgstr ""
 msgid "High-Quality Cover"
 msgstr "高质量封面"
 
-#: screens/sui_stats_windows.lua:1150 screens/sui_stats_windows.lua:3683
+#: screens/sui_stats_windows.lua:1148 screens/sui_stats_windows.lua:3685
 msgid "Highlights"
 msgstr "高亮标注"
 
@@ -1967,8 +1994,15 @@ msgid "Hours per month:"
 msgstr "每月小时数："
 
 #: modules/module_heatmap.lua:300
-msgid "How many weeks of history to include, and (in Calendar view) how many weeks the grid shows — this count is unaffected by Scale, which only resizes the cells. In Time of day view, this only changes how much history feeds the shading — the grid itself always has one column per hour."
-msgstr "要包含多少周的历史记录，以及（在日历视图中）网格显示多少周，此数值不受缩放设定影响，缩放只改变格子大小。在时间段视图中，此设置只改变有多少历史记录数据参与深浅渲染 — 网格本身始终每小时一列。"
+msgid ""
+"How many weeks of history to include, and (in Calendar view) how many weeks "
+"the grid shows — this count is unaffected by Scale, which only resizes the "
+"cells. In Time of day view, this only changes how much history feeds the "
+"shading — the grid itself always has one column per hour."
+msgstr ""
+"要包含多少周的历史记录，以及（在日历视图中）网格显示多少周，此数值不受缩放设"
+"定影响，缩放只改变格子大小。在时间段视图中，此设置只改变有多少历史记录数据参"
+"与深浅渲染 — 网格本身始终每小时一列。"
 
 #: features/sui_quickactions.lua:2408 features/sui_quickactions.lua:2412
 msgid "Icon"
@@ -2005,7 +2039,8 @@ msgstr "仅图标"
 
 #: screens/sui_menu.lua:4626
 msgid ""
-"Icons that contain color keep their original colors in night mode instead of being inverted.\n"
+"Icons that contain color keep their original colors in night mode instead of "
+"being inverted.\n"
 "Monochrome icons are not affected and keep following the interface colors.\n"
 "Requires a color screen."
 msgstr ""
@@ -2018,8 +2053,11 @@ msgid "Icons, fonts and appearance"
 msgstr "图标、字体与外观"
 
 #: screens/sui_onboarding.lua:335
-msgid "If you selected the Momentum Preset, long press the Reading Goal module to choose and set your reading goals."
-msgstr "如果你选择了“阅读势头”预设，请长按“阅读目标”模块以选择和设置你的阅读目标。"
+msgid ""
+"If you selected the Momentum Preset, long press the Reading Goal module to "
+"choose and set your reading goals."
+msgstr ""
+"如果你选择了“阅读势头”预设，请长按“阅读目标”模块以选择和设置你的阅读目标。"
 
 #: features/sui_backup.lua:1144
 msgid "Import Backup…"
@@ -2029,9 +2067,9 @@ msgstr "导入备份…"
 msgid "Import preset"
 msgstr "导入预设"
 
-#: features/sui_manual_books.lua:181
+#: features/sui_stats_menu.lua:101
 msgid "Include in All Time Books"
-msgstr ""
+msgstr "计入历史总数"
 
 #: infra/sui_compat_check.lua:306
 msgid "Incompatible items have been disabled:"
@@ -2077,7 +2115,7 @@ msgstr "无效的预设文件"
 msgid "Invert in Night Mode"
 msgstr "夜间模式下反转颜色"
 
-#: features/sui_style.lua:2158
+#: features/sui_style.lua:2159
 msgid "Italic"
 msgstr "斜体"
 
@@ -2098,7 +2136,7 @@ msgstr "项目"
 msgid "Jan"
 msgstr "1月"
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2676
 msgid "January"
 msgstr "1月"
 
@@ -2106,7 +2144,7 @@ msgstr "1月"
 msgid "Jul"
 msgstr "7月"
 
-#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2675
+#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2677
 msgid "July"
 msgstr "7月"
 
@@ -2114,7 +2152,7 @@ msgstr "7月"
 msgid "Jun"
 msgstr "6月"
 
-#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2675
+#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2677
 msgid "June"
 msgstr "6月"
 
@@ -2126,7 +2164,7 @@ msgstr "两端对齐"
 msgid "KOReader"
 msgstr "KOReader"
 
-#: screens/sui_stats_windows.lua:2585
+#: screens/sui_stats_windows.lua:2587
 msgid "LAST 7 DAYS"
 msgstr "最近 7 天"
 
@@ -2244,10 +2282,13 @@ msgid "List"
 msgstr "列表"
 
 #: screens/sui_menu.lua:3126
-msgid "Lists books without an author, series or tag as a separate group in the Authors, Series and Tags views."
-msgstr "在“作者”“丛书”“标签”视图中，将无作者、无丛书或无标签的书籍单独归为一组。"
+msgid ""
+"Lists books without an author, series or tag as a separate group in the "
+"Authors, Series and Tags views."
+msgstr ""
+"在“作者”“丛书”“标签”视图中，将无作者、无丛书或无标签的书籍单独归为一组。"
 
-#: screens/sui_stats_windows.lua:2343
+#: screens/sui_stats_windows.lua:2345
 msgid "Loading statistics…"
 msgstr "正在加载统计数据…"
 
@@ -2274,8 +2315,14 @@ msgid "Make it yours"
 msgstr "打造成你的专属样式"
 
 #: screens/sui_menu.lua:2972
-msgid "Makes the device's physical Home key open the SimpleUI Home Screen — while reading and while browsing files — instead of KOReader's native Home behaviour. The file browser title-bar home icon still goes to the home folder."
-msgstr "使设备的物理主页键打开 SimpleUI 主页，无论是在阅读时还是在浏览文件时，而非 KOReader 的原生主页行为。文件浏览器标题栏的主页图标仍会进入主文件夹。"
+msgid ""
+"Makes the device's physical Home key open the SimpleUI Home Screen — while "
+"reading and while browsing files — instead of KOReader's native Home "
+"behaviour. The file browser title-bar home icon still goes to the home "
+"folder."
+msgstr ""
+"使设备的物理主页键打开 SimpleUI 主页，无论是在阅读时还是在浏览文件时，而非 "
+"KOReader 的原生主页行为。文件浏览器标题栏的主页图标仍会进入主文件夹。"
 
 #: features/sui_presets.lua:907 features/sui_presets.lua:983
 #: features/sui_presets.lua:988 screens/sui_menu.lua:4386
@@ -2283,24 +2330,28 @@ msgstr "使设备的物理主页键打开 SimpleUI 主页，无论是在阅读�
 msgid "Manage presets"
 msgstr "管理预设"
 
+#: features/sui_manual_books.lua:152 features/sui_manual_books.lua:190
+#: screens/sui_stats_windows.lua:756
+msgid "Manual Yearly Count"
+msgstr "手动记录的年度数量"
+
+#: features/sui_manual_books.lua:135
+msgid "Manual Yearly Count — %d"
+msgstr "手动记录的年度数量 — %d"
+
 #: modules/module_collections.lua:508
 msgid "Manual order"
 msgstr "手动排序"
 
-#: features/sui_manual_books.lua:149 features/sui_manual_books.lua:165
-#: screens/sui_stats_windows.lua:751
+#: features/sui_manual_books.lua:199
 msgid "Manually Tracked Books"
 msgstr "手动记录的书籍"
-
-#: features/sui_manual_books.lua:132
-msgid "Manually Tracked Books — %d"
-msgstr ""
 
 #: engines/sui_heatmap_widgets.lua:109
 msgid "Mar"
 msgstr "3月"
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
+#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2676
 msgid "March"
 msgstr "3月"
 
@@ -2309,7 +2360,7 @@ msgid "Max"
 msgstr "最大值"
 
 #: engines/sui_heatmap_widgets.lua:109 modules/module_clock.lua:59
-#: screens/sui_stats_windows.lua:2675
+#: screens/sui_stats_windows.lua:2677
 msgid "May"
 msgstr "5月"
 
@@ -2378,7 +2429,7 @@ msgstr ""
 msgid "Momentum"
 msgstr "阅读势头"
 
-#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2664
+#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2666
 msgid "Mon"
 msgstr "星期一"
 
@@ -2404,16 +2455,16 @@ msgstr "较多"
 msgid "More by %s (%d)"
 msgstr "更多 %s 的作品（%d）"
 
-#: engines/sui_window.lua:2990
+#: engines/sui_window.lua:3021
 msgid "Move down"
 msgstr "下移"
 
-#: engines/sui_window.lua:2984 screens/sui_settings_window.lua:773
+#: engines/sui_window.lua:3015 screens/sui_settings_window.lua:773
 #: screens/sui_settings_window.lua:808
 msgid "Move to page"
 msgstr "移至页面"
 
-#: engines/sui_window.lua:2987
+#: engines/sui_window.lua:3018
 msgid "Move up"
 msgstr "上移"
 
@@ -2536,7 +2587,7 @@ msgstr "新建快捷操作"
 msgid "New collection name"
 msgstr "新的书单名字"
 
-#: features/sui_manual_books.lua:154 screens/sui_bottombar.lua:587
+#: features/sui_manual_books.lua:157 screens/sui_bottombar.lua:587
 msgid "Next"
 msgstr "下一页"
 
@@ -2552,7 +2603,7 @@ msgstr "九"
 msgid "Nineteen"
 msgstr "十九"
 
-#: screens/sui_stats_windows.lua:1157
+#: screens/sui_stats_windows.lua:1155
 msgid "No"
 msgstr "否"
 
@@ -2604,9 +2655,9 @@ msgstr "历史记录中没有书籍。"
 
 #: screens/sui_stats_windows.lua:679
 msgid "No books finished"
-msgstr ""
+msgstr "暂无已读完的书籍"
 
-#: screens/sui_stats_windows.lua:771
+#: screens/sui_stats_windows.lua:776
 msgid "No books finished in %s"
 msgstr "%s 年尚未读完任何书籍"
 
@@ -2671,8 +2722,12 @@ msgid "No collections selected  —  long press to configure"
 msgstr "未选择任何书单 — 长按以配置"
 
 #: modules/module_quote.lua:965
-msgid "No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder and select it in Settings."
-msgstr "未找到自定义名言。请将 .lua 文件添加到插件的 sui_quotes/ 文件夹中，然后在设置中选择它。"
+msgid ""
+"No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder "
+"and select it in Settings."
+msgstr ""
+"未找到自定义名言。请将 .lua 文件添加到插件的 sui_quotes/ 文件夹中，然后在设置"
+"中选择它。"
 
 #: screens/sui_settings_window.lua:507
 msgid "No custom screens yet."
@@ -2704,7 +2759,7 @@ msgstr ""
 "未配置文件夹、书单或插件。\n"
 "请前往「设置 > 快捷操作」进行配置。"
 
-#: features/sui_style.lua:1989
+#: features/sui_style.lua:1990
 msgid "No fonts found."
 msgstr "未找到字体。"
 
@@ -2720,11 +2775,11 @@ msgstr "主目录未设置"
 msgid "No icons found in:"
 msgstr "未在以下位置找到图标："
 
-#: engines/sui_window.lua:2658 engines/sui_window.lua:3307
+#: engines/sui_window.lua:2689 engines/sui_window.lua:3338
 msgid "No items available."
 msgstr "没有可用项目。"
 
-#: engines/sui_window.lua:3217 modules/module_action_list.lua:366
+#: engines/sui_window.lua:3248 modules/module_action_list.lua:366
 #: modules/module_action_list.lua:391 modules/module_clock.lua:1126
 #: modules/module_collections.lua:1132 modules/module_coverdeck.lua:1601
 #: modules/module_coverdeck.lua:1609 modules/module_currently.lua:1692
@@ -2787,7 +2842,7 @@ msgid "No results for: %1"
 msgstr "没有关于“%1”的搜索结果"
 
 #: screens/sui_stats_windows.lua:61 screens/sui_stats_windows.lua:95
-#: screens/sui_stats_windows.lua:3364
+#: screens/sui_stats_windows.lua:3366
 msgid "No statistics found for this book."
 msgstr "未找到此书的统计数据。"
 
@@ -2834,7 +2889,7 @@ msgstr "不是有效的备份文件。"
 msgid "Not set"
 msgstr "未设置"
 
-#: screens/sui_stats_windows.lua:1151 screens/sui_stats_windows.lua:3684
+#: screens/sui_stats_windows.lua:1149 screens/sui_stats_windows.lua:3686
 msgid "Notes"
 msgstr "笔记"
 
@@ -2846,7 +2901,7 @@ msgstr "未选择任何要导入的内容。"
 msgid "Nov"
 msgstr "11月"
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2678
 msgid "November"
 msgstr "11月"
 
@@ -2874,7 +2929,7 @@ msgstr "确定"
 msgid "Oct"
 msgstr "10月"
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2678
 msgid "October"
 msgstr "10月"
 
@@ -2976,11 +3031,11 @@ msgstr ""
 "图标包“%s”已安装。\n"
 "你现在可以从列表中选择应用。"
 
-#: features/sui_style.lua:2386
+#: features/sui_style.lua:2387
 msgid "Pack folder not accessible: "
 msgstr "无法访问包文件夹："
 
-#: engines/sui_screen_engine.lua:1869 engines/sui_window.lua:1473
+#: engines/sui_screen_engine.lua:1869 engines/sui_window.lua:1516
 #: infra/sui_patches.lua:2304 infra/sui_patches.lua:3082
 msgid "Page %1 of %2"
 msgstr "第 %1 页，共 %2 页"
@@ -2995,7 +3050,7 @@ msgstr "第 %d 页"
 msgid "Page 1 (Home)"
 msgstr "第 1 页（主页）"
 
-#: screens/sui_stats_windows.lua:887 screens/sui_stats_windows.lua:3449
+#: screens/sui_stats_windows.lua:885 screens/sui_stats_windows.lua:3451
 msgid "Pages"
 msgstr "页数"
 
@@ -3007,11 +3062,11 @@ msgstr "页数徽章"
 msgid "Pages Badge Color"
 msgstr "页数徽章颜色"
 
-#: screens/sui_stats_windows.lua:2264
+#: screens/sui_stats_windows.lua:2266
 msgid "Pages per day"
 msgstr "每日页数"
 
-#: screens/sui_stats_windows.lua:2281 screens/sui_stats_windows.lua:2297
+#: screens/sui_stats_windows.lua:2283 screens/sui_stats_windows.lua:2299
 msgid "Pages read"
 msgstr "已读页数"
 
@@ -3073,7 +3128,7 @@ msgstr "分页：上一页"
 msgid "Path chooser not available."
 msgstr "路径选择器不可用。"
 
-#: features/sui_style.lua:2375
+#: features/sui_style.lua:2376
 msgid "Path does not exist: "
 msgstr "路径不存在："
 
@@ -3103,15 +3158,19 @@ msgid "Place images in:"
 msgstr "请将图片放入："
 
 #: screens/sui_onboarding.lua:339
-msgid "Place your files in koreader/settings/simpleui/sui_wallpapers or sui_icons."
-msgstr "请将文件放入 koreader/settings/simpleui/sui_wallpapers 或 sui_icons 文件夹。"
+msgid ""
+"Place your files in koreader/settings/simpleui/sui_wallpapers or sui_icons."
+msgstr ""
+"请将文件放入 koreader/settings/simpleui/sui_wallpapers 或 sui_icons 文件夹。"
 
 #: screens/sui_menu.lua:3859
 msgid "Placeholder Cover for Bookless Folders"
 msgstr "空文件夹的占位封面"
 
 #: infra/sui_compat_check.lua:235
-msgid "Please delete the Project: Title plugin from your plugins folder and restart KOReader."
+msgid ""
+"Please delete the Project: Title plugin from your plugins folder and restart "
+"KOReader."
 msgstr "请从你的插件文件夹中删除“Project: Title”插件，然后重启 KOReader。"
 
 #: screens/sui_stats_windows.lua:534
@@ -3122,17 +3181,17 @@ msgstr "请输入 YYYY-MM-DD 格式的日期。"
 msgid "Please enter a name for the preset."
 msgstr "请输入预设名称。"
 
-#: features/sui_manual_books.lua:55
+#: features/sui_manual_books.lua:58
 msgid "Please enter a start or finish date."
-msgstr ""
-
-#: features/sui_manual_books.lua:49
-msgid "Please enter a title."
-msgstr ""
+msgstr "请输入开始或完成日期。"
 
 #: features/sui_manual_books.lua:52
+msgid "Please enter a title."
+msgstr "请输入书名。"
+
+#: features/sui_manual_books.lua:55
 msgid "Please enter dates as YYYY-MM-DD or YYYY."
-msgstr ""
+msgstr "请按 YYYY-MM-DD 或 YYYY 格式输入日期。"
 
 #: infra/sui_compat_check.lua:196
 msgid "Please restart KOReader for the change to take effect."
@@ -3176,7 +3235,7 @@ msgstr "保持封面比例"
 
 #: features/sui_stats_menu.lua:88
 msgid "Preserve Deleted Books in Statistics"
-msgstr "删除书籍后仍保留统计"
+msgstr "在统计数据中保留已删除的书籍"
 
 #: features/sui_presets.lua:1102 screens/sui_menu.lua:4577
 msgid "Preset \"%s\" imported."
@@ -3221,7 +3280,9 @@ msgid "Presets module unavailable."
 msgstr "预设模块不可用。"
 
 #: screens/sui_onboarding.lua:327
-msgid "Press and hold any element on the screen (like modules or bars) to quickly customize its settings."
+msgid ""
+"Press and hold any element on the screen (like modules or bars) to quickly "
+"customize its settings."
 msgstr "长按屏幕上的任意元素（如模块或栏），快速自定义其设置。"
 
 #: screens/sui_bottombar.lua:587
@@ -3313,10 +3374,6 @@ msgstr "快捷操作图标"
 msgid "Quick Actions Row"
 msgstr "快捷操作行"
 
-#: features/sui_manual_books.lua:175
-msgid "Quick Count"
-msgstr ""
-
 #: screens/sui_menu.lua:3044 screens/sui_quicksettings_bar.lua:993
 msgid "Quick Settings Bar"
 msgstr "快捷设置栏"
@@ -3360,17 +3417,17 @@ msgid "Random"
 msgstr "随机"
 
 #: features/sui_presets.lua:175 features/sui_presets.lua:220
-#: features/sui_stats_menu.lua:121 modules/module_reading_goals.lua:793
+#: features/sui_stats_menu.lua:137 modules/module_reading_goals.lua:793
 #: modules/module_reading_goals.lua:794
 msgid "Reading Goals"
 msgstr "阅读目标"
 
-#: features/sui_stats_menu.lua:118 modules/module_heatmap.lua:208
+#: features/sui_stats_menu.lua:134 modules/module_heatmap.lua:208
 #: modules/module_heatmap.lua:209 screens/sui_heatmap_popup.lua:122
 msgid "Reading Heatmap"
 msgstr "阅读热力图"
 
-#: features/sui_stats_menu.lua:115 screens/sui_stats_windows.lua:2599
+#: features/sui_stats_menu.lua:131 screens/sui_stats_windows.lua:2601
 msgid "Reading Insights"
 msgstr "阅读洞察"
 
@@ -3402,7 +3459,7 @@ msgstr "最近"
 msgid "Recent Books"
 msgstr "最近书籍"
 
-#: features/sui_style.lua:2156
+#: features/sui_style.lua:2157
 msgid "Regular"
 msgstr "常规体"
 
@@ -3414,7 +3471,7 @@ msgstr "从待读中移除"
 msgid "Remove from list when finished"
 msgstr "读完后从列表中移除"
 
-#: engines/sui_window.lua:1995 engines/sui_window.lua:2996
+#: engines/sui_window.lua:2026 engines/sui_window.lua:3027
 #: features/sui_presets.lua:930 features/sui_presets.lua:937
 #: features/sui_presets.lua:1023 screens/sui_menu.lua:4409
 #: screens/sui_menu.lua:4416 screens/sui_menu.lua:4501
@@ -3431,12 +3488,15 @@ msgid "Rename screen"
 msgstr "重命名屏幕"
 
 #: screens/sui_menu.lua:2900
-msgid "Replaces the \"Closing book…\" notice above with the cover for that close, when a cover is available."
+msgid ""
+"Replaces the \"Closing book…\" notice above with the cover for that close, "
+"when a cover is available."
 msgstr "关闭书籍时以该书的书籍封面取代“正在关闭书籍…”的文本提示。"
 
 #: screens/sui_menu.lua:583
 msgid ""
-"Replaces the pagination bar with Prev/Next arrows at the edges of the navigation bar.\n"
+"Replaces the pagination bar with Prev/Next arrows at the edges of the "
+"navigation bar.\n"
 "The arrows dim when there is no previous or next page.\n"
 "With navpager active, as few as 1 tab and at most 4 tabs can be configured."
 msgstr ""
@@ -3492,7 +3552,7 @@ msgstr "重启"
 msgid "Restart now"
 msgstr "立即重启"
 
-#: features/sui_style.lua:1981 features/sui_style.lua:2021
+#: features/sui_style.lua:1982 features/sui_style.lua:2022
 msgid "Restart to fully apply the UI font change."
 msgstr "重启以完全应用界面字体更改。"
 
@@ -3517,8 +3577,12 @@ msgid "Restore failed. Your previous configuration was kept unchanged."
 msgstr "恢复失败。你之前的配置保持不变。"
 
 #: features/sui_backup.lua:1002
-msgid "Restore this backup? Existing settings for these categories will be replaced. Saved presets are merged — yours are kept."
-msgstr "是否恢复此备份？这些分类的现有设置将被替换。已保存的预设将合并，你原有的预设会予以保留。"
+msgid ""
+"Restore this backup? Existing settings for these categories will be "
+"replaced. Saved presets are merged — yours are kept."
+msgstr ""
+"是否恢复此备份？这些分类的现有设置将被替换。已保存的预设将合并，你原有的预设"
+"会予以保留。"
 
 #: screens/sui_menu.lua:2732
 msgid "Return to Home Screen on Wakeup"
@@ -3563,7 +3627,7 @@ msgstr "圆角方形"
 msgid "Rows"
 msgstr "行数"
 
-#: screens/sui_stats_windows.lua:2664
+#: screens/sui_stats_windows.lua:2666
 msgid "Sat"
 msgstr "星期六"
 
@@ -3571,7 +3635,7 @@ msgstr "星期六"
 msgid "Saturday"
 msgstr "星期六"
 
-#: features/sui_manual_books.lua:85 features/sui_manual_books.lua:137
+#: features/sui_manual_books.lua:88 features/sui_manual_books.lua:140
 #: features/sui_presets.lua:864 features/sui_quickactions.lua:2516
 #: infra/sui_goals.lua:111 screens/sui_menu.lua:4346
 #: screens/sui_settings_window.lua:554 screens/sui_stats_windows.lua:529
@@ -3617,11 +3681,13 @@ msgstr "书单计数徽章的缩放。"
 msgid ""
 "Scale for the cover thumbnail only.\n"
 "100% is the default size.\n"
-"When Dynamic Cover Size is on, this scales the cover relative to its current dynamic size instead, and the cover never shrinks below its 100% size."
+"When Dynamic Cover Size is on, this scales the cover relative to its current "
+"dynamic size instead, and the cover never shrinks below its 100% size."
 msgstr ""
 "仅封面缩略图的缩放。\n"
 "默认大小为 100%。\n"
-"启用“动态封面大小”后，此设置将相对于其当前动态大小缩放封面，且封面永远不会小于其 100% 大小。"
+"启用“动态封面大小”后，此设置将相对于其当前动态大小缩放封面，且封面永远不会小"
+"于其 100% 大小。"
 
 #: modules/module_coverdeck.lua:1330
 msgid ""
@@ -3670,7 +3736,8 @@ msgid "Scale for the progress badge."
 msgstr "进度徽章的缩放。"
 
 #: engines/sui_book_grid.lua:1982
-msgid "Scale for this module's corner badges (progress, pages, series, new book)."
+msgid ""
+"Scale for this module's corner badges (progress, pages, series, new book)."
 msgstr "此模块角落徽章（进度、页数、丛书、新书）的缩放。"
 
 #: modules/module_coverdeck.lua:1322
@@ -3691,10 +3758,14 @@ msgstr ""
 #: modules/module_heatmap.lua:316
 msgid ""
 "Scale for this module.\n"
-"100% is the default size. Capped at 100% here: the grid always has as many columns as \"Weeks shown\" (or, in Time of day view, 24), so there's no room to grow the cells past their autofit size without the grid overflowing the card."
+"100% is the default size. Capped at 100% here: the grid always has as many "
+"columns as \"Weeks shown\" (or, in Time of day view, 24), so there's no room "
+"to grow the cells past their autofit size without the grid overflowing the "
+"card."
 msgstr ""
 "此模块的缩放。\n"
-"默认大小为 100%。此处上限为 100%：网格的列数始终与“显示周数”一致（在时间段视图中则固定为 24 列），格子一旦放大到超出其自适应大小，网格就会溢出卡片。"
+"默认大小为 100%。此处上限为 100%：网格的列数始终与“显示周数”一致（在时间段视"
+"图中则固定为 24 列），格子一旦放大到超出其自适应大小，网格就会溢出卡片。"
 
 #: screens/sui_menu.lua:2768
 msgid ""
@@ -3721,8 +3792,12 @@ msgid "Screen name"
 msgstr "屏幕名称"
 
 #: screens/sui_menu.lua:2715
-msgid "Screen shown after closing a book. Gestures and quick actions that name a destination always open that destination."
-msgstr "关闭书籍后显示的屏幕。手势和快速操作中若指定了目标位置，将始终直接打开该目标位置。"
+msgid ""
+"Screen shown after closing a book. Gestures and quick actions that name a "
+"destination always open that destination."
+msgstr ""
+"关闭书籍后显示的屏幕。手势和快速操作中若指定了目标位置，将始终直接打开该目标"
+"位置。"
 
 #: features/library/sui_library_search.lua:208
 #: features/sui_quickactions.lua:906 infra/sui_config.lua:128
@@ -3746,7 +3821,7 @@ msgstr "书库搜索"
 msgid "Search results: %1"
 msgstr "搜索结果：%1"
 
-#: engines/sui_window.lua:1984 engines/sui_window.lua:2981
+#: engines/sui_window.lua:2015 engines/sui_window.lua:3012
 msgid "Select"
 msgstr "选择"
 
@@ -3767,7 +3842,7 @@ msgstr "请至少选择 2 个书单以便排序。"
 msgid "Sep"
 msgstr "9月"
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
+#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2678
 msgid "September"
 msgstr "9月"
 
@@ -3807,10 +3882,6 @@ msgstr "设置书单封面"
 msgid "Set folder cover"
 msgstr "设置文件夹封面"
 
-#: features/sui_manual_books.lua:176
-msgid "Set how many books you read in a year, without entering their details."
-msgstr ""
-
 #: screens/sui_onboarding.lua:209 screens/sui_onboarding.lua:403
 msgid "Set the Home Folder"
 msgstr "设置主目录"
@@ -3845,10 +3916,12 @@ msgstr "十七"
 #: infra/sui_config.lua:1542
 msgid ""
 "Share of the row this module occupies.\n"
-"100% = full width. Modules under 100% share a row when their widths fit (bento grid)."
+"100% = full width. Modules under 100% share a row when their widths fit "
+"(bento grid)."
 msgstr ""
 "此模块在该行中所占的比例。\n"
-"100% 表示整行宽度。宽度小于 100% 的模块，若宽度合适则会共用同一行（Bento 网格）。"
+"100% 表示整行宽度。宽度小于 100% 的模块，若宽度合适则会共用同一行（Bento 网"
+"格）。"
 
 #: modules/module_clock.lua:1195
 msgid "Show Battery"
@@ -3875,12 +3948,18 @@ msgid "Show Uncategorized Items"
 msgstr "显示未分类项"
 
 #: screens/sui_menu.lua:2838
-msgid "Show a brief \"Closing book…\" notice when closing a book, preventing accidental double-taps while e-ink refreshes."
+msgid ""
+"Show a brief \"Closing book…\" notice when closing a book, preventing "
+"accidental double-taps while e-ink refreshes."
 msgstr "关闭书籍时显示短暂的“正在关闭书籍…”提示，防止墨水屏刷新时误触。"
 
-#: features/sui_stats_menu.lua:101
-msgid "Show a brief \"Loading statistics…\" notice when opening a statistics window, preventing accidental double-taps while e-ink refreshes."
-msgstr "打开统计窗口时，显示短暂的“正在加载统计数据…”提示，以防止电子墨水屏刷新期间发生误触。"
+#: features/sui_stats_menu.lua:117
+msgid ""
+"Show a brief \"Loading statistics…\" notice when opening a statistics "
+"window, preventing accidental double-taps while e-ink refreshes."
+msgstr ""
+"打开统计窗口时，显示短暂的“正在加载统计数据…”提示，以防止墨水屏刷新期间发生误"
+"触。"
 
 #: modules/module_coverdeck.lua:1698 modules/module_library.lua:326
 #: modules/module_recent.lua:54
@@ -3909,7 +3988,8 @@ msgstr "在所有屏幕显示壁纸"
 
 #: screens/sui_menu.lua:724
 msgid ""
-"Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\n"
+"Shows \"Page X of Y\" in the title bar subtitle when browsing the library, "
+"history or collections.\n"
 "Navpager enables this automatically.\n"
 "Not available when Navpager is active."
 msgstr ""
@@ -3967,7 +4047,9 @@ msgid "Simple UI Settings"
 msgstr "SimpleUI 设置"
 
 #: screens/sui_onboarding.lua:299
-msgid "Simple UI is designed to be simple and flexible. Here are a few tips to get the most out of it."
+msgid ""
+"Simple UI is designed to be simple and flexible. Here are a few tips to get "
+"the most out of it."
 msgstr "SimpleUI 的设计兼具简洁与灵活，以下是充分发挥其功能的一些小技巧。"
 
 #: infra/sui_updater.lua:486
@@ -4017,6 +4099,10 @@ msgstr "SimpleUI：设置"
 #: main.lua:929
 msgid "Simple UI: Toggle Homescreen / Library"
 msgstr "SimpleUI：切换主屏幕/书库"
+
+#: features/sui_manual_books.lua:188
+msgid "Single Book"
+msgstr "单本书籍"
 
 #: modules/module_collections.lua:1236 screens/sui_menu.lua:3170
 msgid "Single Cover"
@@ -4124,9 +4210,9 @@ msgstr "启动时显示"
 msgid "Start with a ready-made layout. You can change everything later."
 msgstr "从预设布局开始，后续均可自由调整。"
 
-#: features/sui_manual_books.lua:120
+#: features/sui_manual_books.lua:123
 msgid "Started"
-msgstr ""
+msgstr "开始日期"
 
 #: modules/module_coverdeck.lua:165 modules/module_coverdeck.lua:1474
 #: modules/module_coverdeck.lua:1507 modules/module_coverdeck.lua:1574
@@ -4134,7 +4220,7 @@ msgstr ""
 msgid "Statistics"
 msgstr "统计"
 
-#: features/sui_stats_menu.lua:100
+#: features/sui_stats_menu.lua:116
 msgid "Statistics Loading Notice"
 msgstr "统计数据加载提示"
 
@@ -4200,8 +4286,8 @@ msgstr "状态 — 未读"
 msgid "Status, title, navigation and pagination"
 msgstr "状态栏、标题栏、导航栏与分页栏"
 
-#: features/sui_stats_menu.lua:117 modules/module_reading_stats.lua:130
-#: screens/sui_stats_windows.lua:3294
+#: features/sui_stats_menu.lua:133 modules/module_reading_stats.lua:130
+#: screens/sui_stats_windows.lua:3296
 msgid "Streak"
 msgstr "连续阅读"
 
@@ -4224,7 +4310,7 @@ msgstr "样式"
 msgid "Sub-page Buttons"
 msgstr "子页面按钮"
 
-#: screens/sui_stats_windows.lua:2664
+#: screens/sui_stats_windows.lua:2666
 msgid "Sun"
 msgstr "星期日"
 
@@ -4250,11 +4336,11 @@ msgstr "系统图标"
 msgid "System action error: %s"
 msgstr "系统操作错误：%s"
 
-#: screens/sui_stats_windows.lua:2587
+#: screens/sui_stats_windows.lua:2589
 msgid "THIS MONTH"
 msgstr "本月"
 
-#: screens/sui_stats_windows.lua:2586
+#: screens/sui_stats_windows.lua:2588
 msgid "THIS WEEK"
 msgstr "本周"
 
@@ -4262,7 +4348,7 @@ msgstr "本周"
 msgid "TIME OF DAY"
 msgstr "时间段"
 
-#: screens/sui_stats_windows.lua:2582
+#: screens/sui_stats_windows.lua:2584
 msgid "TODAY'S SUMMARY"
 msgstr "今日摘要"
 
@@ -4369,16 +4455,27 @@ msgstr ""
 "是否立即重启？"
 
 #: screens/sui_menu.lua:2912
-msgid "The cover shown right as a book opens normally comes from the library's cached thumbnail, which can look soft on higher-resolution screens. When on, SimpleUI instead reads the cover straight from the book file for that moment (also covers books never opened before, which otherwise show no cover at all) — at the cost of a brief extra pause while opening, since the file has to be read twice. Cover on close is unaffected either way: it already reads the full-quality cover from the open book."
-msgstr "书籍打开时显示的封面，一般来自书库的缓存缩略图，在高分辨率屏幕上可能发虚。启用此选项后，插件会直接从书籍文件中读取封面，即便是从未打开过的书也能显示封面（否则将无封面显示），代价是打开书籍时会多一次短暂停顿，因为文件需要被读取两次。关闭时的封面不受影响：其始终从已打开的书籍中读取完整质量封面。"
+msgid ""
+"The cover shown right as a book opens normally comes from the library's "
+"cached thumbnail, which can look soft on higher-resolution screens. When on, "
+"SimpleUI instead reads the cover straight from the book file for that moment "
+"(also covers books never opened before, which otherwise show no cover at "
+"all) — at the cost of a brief extra pause while opening, since the file has "
+"to be read twice. Cover on close is unaffected either way: it already reads "
+"the full-quality cover from the open book."
+msgstr ""
+"书籍打开时显示的封面，一般来自书库的缓存缩略图，在高分辨率屏幕上可能发虚。启"
+"用此选项后，插件会直接从书籍文件中读取封面，即便是从未打开过的书也能显示封面"
+"（否则将无封面显示），代价是打开书籍时会多一次短暂停顿，因为文件需要被读取两"
+"次。关闭时的封面不受影响：其始终从已打开的书籍中读取完整质量封面。"
 
 #: main.lua:1360 screens/sui_bottombar.lua:1941
 msgid "The navigation bar is already available on this screen."
 msgstr "此屏幕已提供导航栏。"
 
-#: features/sui_manual_books.lua:61
+#: features/sui_manual_books.lua:64
 msgid "The start date is after the finish date."
-msgstr ""
+msgstr "开始日期晚于完成日期。"
 
 #: screens/sui_menu.lua:2109
 msgid ""
@@ -4455,7 +4552,7 @@ msgstr ""
 msgid "Three"
 msgstr "三"
 
-#: screens/sui_stats_windows.lua:2664
+#: screens/sui_stats_windows.lua:2666
 msgid "Thu"
 msgstr "星期四"
 
@@ -4475,7 +4572,7 @@ msgstr "已读时间"
 msgid "Time remaining"
 msgstr "剩余时间"
 
-#: features/sui_manual_books.lua:118 modules/module_coverdeck.lua:162
+#: features/sui_manual_books.lua:121 modules/module_coverdeck.lua:162
 #: modules/module_coverdeck.lua:1645 modules/module_currently.lua:325
 #: modules/module_currently.lua:1976 screens/sui_titlebar.lua:121
 msgid "Title"
@@ -4483,11 +4580,11 @@ msgstr "标题"
 
 #: engines/sui_book_grid.lua:1534 modules/module_library.lua:213
 msgid "Title (A–Z)"
-msgstr "标题（A–Z）"
+msgstr "书名（A–Z）"
 
 #: engines/sui_book_grid.lua:1535 modules/module_library.lua:214
 msgid "Title (Z–A)"
-msgstr "标题（Z–A）"
+msgstr "书名（Z–A）"
 
 #: features/sui_style.lua:1372 screens/sui_menu.lua:3041
 msgid "Title Bar"
@@ -4503,17 +4600,17 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
-"重启后标题栏将变为 %s。\n"
+"重启后标题栏将变为%s。\n"
 "\n"
 "是否立即重启？"
 
 #: screens/sui_menu.lua:3758
 msgid "Title and Author"
-msgstr "标题与作者"
+msgstr "书名与作者"
 
 #: screens/sui_menu.lua:3709
 msgid "Title and Author Below Covers"
-msgstr "封面下方显示标题和作者"
+msgstr "封面下方显示书名和作者"
 
 #: screens/sui_menu.lua:3770
 msgid ""
@@ -4521,13 +4618,13 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
-"封面下方显示标题与作者已启用。\n"
+"已在封面下方启用书名与作者。\n"
 "\n"
 "是否立即重启？"
 
 #: screens/sui_menu.lua:3736
 msgid "Title only"
-msgstr "仅标题"
+msgstr "仅书名"
 
 #: screens/sui_menu.lua:3725
 msgid ""
@@ -4535,7 +4632,7 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
-"封面下方显示标题已禁用。\n"
+"已在封面下方显示禁用书名。\n"
 "\n"
 "是否立即重启？"
 
@@ -4545,7 +4642,7 @@ msgid ""
 "\n"
 "Restart now?"
 msgstr ""
-"封面下方显示标题已启用。\n"
+"已在封面下方启用书名。\n"
 "\n"
 "是否立即重启？"
 
@@ -4572,7 +4669,7 @@ msgstr "今天 — 页数"
 msgid "Today — Time"
 msgstr "今天 — 时间"
 
-#: engines/sui_window.lua:2999
+#: engines/sui_window.lua:3030
 msgid "Toggle"
 msgstr "切换"
 
@@ -4590,11 +4687,11 @@ msgstr "顶部栏"
 msgid "Top Margin"
 msgstr "上边距"
 
-#: screens/sui_stats_windows.lua:883 screens/sui_stats_windows.lua:3445
+#: screens/sui_stats_windows.lua:881 screens/sui_stats_windows.lua:3447
 msgid "Total"
 msgstr "总计"
 
-#: screens/sui_stats_windows.lua:2279 screens/sui_stats_windows.lua:2295
+#: screens/sui_stats_windows.lua:2281 screens/sui_stats_windows.lua:2297
 msgid "Total time"
 msgstr "总时长"
 
@@ -4607,7 +4704,7 @@ msgstr "总计：%d 项设置、%d 个文件（%s）"
 msgid "Transparent"
 msgstr "透明"
 
-#: screens/sui_stats_windows.lua:2664
+#: screens/sui_stats_windows.lua:2666
 msgid "Tue"
 msgstr "星期二"
 
@@ -4660,11 +4757,11 @@ msgstr "未知"
 msgid "Unknown Author"
 msgstr "未知作者"
 
-#: screens/sui_stats_windows.lua:760
+#: screens/sui_stats_windows.lua:765
 msgid "Unknown error."
 msgstr "未知错误。"
 
-#: features/sui_style.lua:2384
+#: features/sui_style.lua:2385
 msgid "Unsupported format (use a folder or a .zip file)"
 msgstr "不支持的格式（请使用文件夹或 .zip 文件）"
 
@@ -4677,11 +4774,11 @@ msgstr ""
 "不支持的图标格式。\n"
 "请使用 PNG 或 SVG 文件。"
 
-#: engines/sui_window.lua:1992 engines/sui_window.lua:2993
+#: engines/sui_window.lua:2023 engines/sui_window.lua:3024
 msgid "Update"
 msgstr "更新"
 
-#: features/sui_stats_menu.lua:128 modules/module_coverdeck.lua:1730
+#: features/sui_stats_menu.lua:145 modules/module_coverdeck.lua:1730
 #: modules/module_currently.lua:2061 modules/module_reading_goals.lua:1385
 #: modules/module_reading_goals.lua:1421 modules/module_reading_stats.lua:881
 #: modules/module_reading_stats.lua:912
@@ -4704,7 +4801,7 @@ msgstr "使用当前设置更新"
 msgid "Updater module not found."
 msgstr "未找到更新模块。"
 
-#: screens/sui_stats_windows.lua:2896
+#: screens/sui_stats_windows.lua:2898
 msgid "Use freeze"
 msgstr "使用冻结权"
 
@@ -4759,7 +4856,7 @@ msgstr "可见性"
 msgid "Visible"
 msgstr "可见"
 
-#: screens/sui_stats_windows.lua:2584 screens/sui_stats_windows.lua:3163
+#: screens/sui_stats_windows.lua:2586 screens/sui_stats_windows.lua:3165
 msgid "WEEK STREAK"
 msgstr "连续周数"
 
@@ -4790,7 +4887,7 @@ msgstr "色温滑块"
 msgid "Warn when modules on a page exceed the available screen height."
 msgstr "当页面上的模块超出屏幕高度时发出警告。"
 
-#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2664
+#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2666
 msgid "Wed"
 msgstr "星期三"
 
@@ -4812,17 +4909,21 @@ msgstr "更新内容："
 
 #: features/sui_stats_menu.lua:89
 msgid ""
-"When a finished book is deleted from the device (file or folder), keep it counted in the Books Read statistics on the Home Screen.\n"
+"When a finished book is deleted from the device (file or folder), keep it "
+"counted in the Books Read statistics on the Home Screen.\n"
 "\n"
-"Books changed back to Reading or Abandoned are automatically removed from this list."
+"Books changed back to Reading or Abandoned are automatically removed from "
+"this list."
 msgstr ""
-"当从设备中删除已读完的书籍（文件或文件夹）时，仍在主页的“已读图书”统计中保留计数。\n"
+"当从设备中删除已读完的书籍（文件或文件夹）时，仍在主页的“已读完图书”统计中保"
+"留计数。\n"
 "\n"
 "状态改回“在读”或“搁置”的书籍会自动从此列表中移除。"
 
 #: screens/sui_menu.lua:2950
 msgid ""
-"When enabled, long-pressing a module on the home screen opens its settings menu.\n"
+"When enabled, long-pressing a module on the home screen opens its settings "
+"menu.\n"
 "Disable this to prevent settings from appearing on long tap."
 msgstr ""
 "启用后，长按主页上的模块会打开其设置菜单。\n"
@@ -4853,7 +4954,9 @@ msgstr ""
 "禁用此项可防止长按时出现设置菜单。"
 
 #: screens/sui_menu.lua:2733
-msgid "When waking the device from sleep/suspend, always return to the Home Screen — even if a book was open when it went to sleep."
+msgid ""
+"When waking the device from sleep/suspend, always return to the Home Screen "
+"— even if a book was open when it went to sleep."
 msgstr "设备从休眠唤醒时始终返回主页，即使休眠前正在阅读书籍。"
 
 #: features/sui_quickactions.lua:931 infra/sui_config.lua:129
@@ -4884,31 +4987,31 @@ msgstr "带百分比"
 msgid "Word"
 msgstr "单词"
 
-#: features/sui_manual_books.lua:113
+#: features/sui_manual_books.lua:116
 msgid "YYYY-MM-DD or YYYY"
-msgstr ""
+msgstr "YYYY-MM-DD 或 YYYY"
 
-#: features/sui_manual_books.lua:150
+#: features/sui_manual_books.lua:153
 msgid "Year:"
-msgstr ""
+msgstr "年份："
 
-#: screens/sui_stats_windows.lua:1157
+#: screens/sui_stats_windows.lua:1155
 msgid "Yes"
 msgstr "是"
 
-#: screens/sui_stats_windows.lua:2885
+#: screens/sui_stats_windows.lua:2887
 msgid "Yesterday is already covered by a freeze."
 msgstr "昨天已被冻结覆盖。"
 
-#: screens/sui_stats_windows.lua:2883
+#: screens/sui_stats_windows.lua:2885
 msgid "You already read yesterday — there's nothing to freeze."
 msgstr "昨天的内容你已经读过了 — 无需冻结。"
 
-#: screens/sui_stats_windows.lua:2877
+#: screens/sui_stats_windows.lua:2879
 msgid "You don't have any freezes available yet."
 msgstr "你当前没有可用的冻结权。"
 
-#: screens/sui_stats_windows.lua:2894
+#: screens/sui_stats_windows.lua:2896
 msgid ""
 "You have %d freeze(s) available.\n"
 "Use one to cover %s?"
@@ -4924,23 +5027,23 @@ msgstr "你的高亮标注"
 msgid "abandoned"
 msgstr "搁置"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1345
 msgid "apr"
 msgstr "4月"
 
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:1349
 msgid "april"
 msgstr "4月"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1346
 msgid "aug"
 msgstr "8月"
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1350
 msgid "august"
 msgstr "8月"
 
-#: modules/module_reading_stats.lua:129 screens/sui_stats_windows.lua:2153
+#: modules/module_reading_stats.lua:129 screens/sui_stats_windows.lua:2155
 msgid "books finished"
 msgstr "读完书籍数"
 
@@ -4948,11 +5051,11 @@ msgstr "读完书籍数"
 msgid "daily avg (7 days)"
 msgstr "日平均（近 7 天）"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1346
 msgid "dec"
 msgstr "12月"
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1350
 msgid "december"
 msgstr "12月"
 
@@ -4974,15 +5077,15 @@ msgstr "空"
 msgid "enabled"
 msgstr "已启用"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1345
 msgid "feb"
 msgstr "2月"
 
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:1349
 msgid "february"
 msgstr "2月"
 
-#: features/sui_style.lua:2330
+#: features/sui_style.lua:2331
 msgid "ffi/archiver not available in this KOReader version"
 msgstr "此版本的 KOReader 中 ffi/archiver 不可用"
 
@@ -4990,7 +5093,7 @@ msgstr "此版本的 KOReader 中 ffi/archiver 不可用"
 msgid "hex code, e.g. E001"
 msgstr "十六进制代码，例如 E001"
 
-#: screens/sui_stats_windows.lua:1812 screens/sui_stats_windows.lua:2151
+#: screens/sui_stats_windows.lua:1814 screens/sui_stats_windows.lua:2153
 msgid "hours read"
 msgstr "已读小时数"
 
@@ -4998,27 +5101,27 @@ msgstr "已读小时数"
 msgid "in progress"
 msgstr "在读"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1345
 msgid "jan"
 msgstr "1月"
 
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:1349
 msgid "january"
 msgstr "1月"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1346
 msgid "jul"
 msgstr "7月"
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1350
 msgid "july"
 msgstr "7月"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1345
 msgid "jun"
 msgstr "6月"
 
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:1349
 msgid "june"
 msgstr "6月"
 
@@ -5026,16 +5129,16 @@ msgstr "6月"
 msgid "latest"
 msgstr "最新版"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1345
 msgid "mar"
 msgstr "3月"
 
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:1349
 msgid "march"
 msgstr "3月"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1345
+#: screens/sui_stats_windows.lua:1349
 msgid "may"
 msgstr "5月"
 
@@ -5048,19 +5151,19 @@ msgstr "无连续阅读"
 msgid "not configured"
 msgstr "未配置"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1346
 msgid "nov"
 msgstr "11月"
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1350
 msgid "november"
 msgstr "11月"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1346
 msgid "oct"
 msgstr "10月"
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1350
 msgid "october"
 msgstr "10月"
 
@@ -5080,11 +5183,11 @@ msgstr "今日阅读时长"
 msgid "of reading, all time"
 msgstr "总阅读时长"
 
-#: features/sui_style.lua:2373
+#: features/sui_style.lua:2374
 msgid "pack_path not provided"
 msgstr "未提供 pack_path 参数"
 
-#: screens/sui_stats_windows.lua:2152 screens/sui_stats_windows.lua:2467
+#: screens/sui_stats_windows.lua:2154 screens/sui_stats_windows.lua:2469
 msgid "pages read"
 msgstr "已读页数"
 
@@ -5104,15 +5207,15 @@ msgstr "今天阅读页数"
 msgid "pages/day (7 days)"
 msgstr "页/天（7天）"
 
-#: screens/sui_stats_windows.lua:2465
+#: screens/sui_stats_windows.lua:2467
 msgid "reading time"
 msgstr "阅读时长"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1346
 msgid "sep"
 msgstr "9月"
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1350
 msgid "september"
 msgstr "9月"
 
@@ -5138,7 +5241,8 @@ msgid_plural "  Set Goal  (%d books in %s)"
 msgstr[0] "  设定目标（读 %d 本书在 %s 年）"
 msgstr[1] "  设定目标（读 %d 本书在 %s 年）"
 
-#: modules/module_reading_goals.lua:720 screens/sui_stats_windows.lua:752
+#: features/sui_manual_books.lua:170 modules/module_reading_goals.lua:720
+#: screens/sui_stats_windows.lua:757
 msgid "%d book"
 msgid_plural "%d books"
 msgstr[0] "%d 本书"
@@ -5150,12 +5254,13 @@ msgid_plural "%d books in %s"
 msgstr[0] "读 %d 本书在 %s 年"
 msgstr[1] "读 %d 本书在 %s 年"
 
-#: screens/sui_stats_windows.lua:1215
+#: screens/sui_stats_windows.lua:1213
 msgid "%d book read"
 msgid_plural "%d books read"
-msgstr[0] ""
+msgstr[0] "%d 本书已读"
+msgstr[1] "%d 本书已读"
 
-#: screens/sui_stats_windows.lua:2017 screens/sui_stats_windows.lua:2019
+#: screens/sui_stats_windows.lua:2019 screens/sui_stats_windows.lua:2021
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d 天"
@@ -5168,17 +5273,11 @@ msgid_plural "%d days of reading"
 msgstr[0] "阅读 %d 天"
 msgstr[1] "阅读 %d 天"
 
-#: screens/sui_stats_windows.lua:3209
+#: screens/sui_stats_windows.lua:3211
 msgid "%d freeze available"
 msgid_plural "%d freezes available"
 msgstr[0] "%d 个冻结权可用"
 msgstr[1] "%d 个冻结权可用"
-
-#: modules/module_reading_goals.lua:1469
-msgid "%d in %s"
-msgid_plural "%d in %s"
-msgstr[0] "%d 本在 %s 年"
-msgstr[1] "%d 本在 %s 年"
 
 #: features/sui_quickactions.lua:1583 features/sui_quickactions.lua:2996
 #: features/sui_quickactions.lua:3017
@@ -5187,7 +5286,7 @@ msgid_plural "%d items"
 msgstr[0] "%d 个项目"
 msgstr[1] "%d 个项目"
 
-#: screens/sui_stats_windows.lua:2037 screens/sui_stats_windows.lua:2039
+#: screens/sui_stats_windows.lua:2039 screens/sui_stats_windows.lua:2041
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d 周"
@@ -5242,19 +5341,22 @@ msgstr[1] ""
 #: modules/module_quick_actions.lua:362 modules/module_quick_actions.lua:494
 #: screens/sui_menu.lua:2284 screens/sui_menu.lua:2398
 msgid "The maximum of %d action per module has been reached. Remove one first."
-msgid_plural "The maximum of %d actions per module has been reached. Remove one first."
+msgid_plural ""
+"The maximum of %d actions per module has been reached. Remove one first."
 msgstr[0] "每个模块最多 %d 个操作，请先移除一个。"
 msgstr[1] "每个模块最多 %d 个操作，请先移除一个。"
 
 #: features/sui_quickactions.lua:1653 features/sui_quickactions.lua:2961
 msgid "The maximum of %d quick action has been reached. Delete one first."
-msgid_plural "The maximum of %d quick actions has been reached. Delete one first."
+msgid_plural ""
+"The maximum of %d quick actions has been reached. Delete one first."
 msgstr[0] "最多 %d 个快捷操作，请先删除一个。"
 msgstr[1] "最多 %d 个快捷操作，请先删除一个。"
 
 #: modules/module_reading_stats.lua:720 modules/module_reading_stats.lua:800
 msgid "The maximum of %d stat per row has been reached. Remove one first."
-msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
+msgid_plural ""
+"The maximum of %d stats per row has been reached. Remove one first."
 msgstr[0] "每行最多 %d 个统计项，请先移除一项。"
 msgstr[1] "每行最多 %d 个统计项，请先移除一项。"
 
@@ -5264,7 +5366,7 @@ msgid_plural "The maximum of %d tabs has been reached. Remove one first."
 msgstr[0] "最多 %d 个标签，请先移除一个。"
 msgstr[1] "最多 %d 个标签，请先移除一个。"
 
-#: screens/sui_stats_windows.lua:1815
+#: screens/sui_stats_windows.lua:1817
 msgid "day read"
 msgid_plural "days read"
 msgstr[0] "已读天数"
@@ -5276,7 +5378,7 @@ msgid_plural "days streak"
 msgstr[0] "连续阅读天数"
 msgstr[1] "连续阅读天数"
 
-#: screens/sui_stats_windows.lua:1830
+#: screens/sui_stats_windows.lua:1832
 msgid "page read"
 msgid_plural "pages read"
 msgstr[0] "已读页数"
