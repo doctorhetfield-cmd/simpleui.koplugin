@@ -15,19 +15,16 @@
 --                                                one (`book` is a provider entry)
 --   ManualBooks.showCountDialog(year, on_done)   number of books for `year`
 --   ManualBooks.showYearCountDialog(on_done)     asks the year, then the number
---   ManualBooks.showMenuDialog(refresh)          small dialog offering the two ways above
---   ManualBooks.makeMenuItem(refresh)            settings entry opening that dialog;
---                                                shows the number of tracked books
+--   ManualBooks.menuTitle()                      title of the menu listing the two ways above
+--   ManualBooks.makeEntryItems(on_done)          the items of that menu
+--   ManualBooks.makeMenuItem(refresh)            settings entry opening that menu
 
 local UIManager = require("ui/uimanager")
 local UI        = require("infra/sui_core")
 local _         = require("infra/sui_i18n").translate
-local N_        = require("infra/sui_i18n").ngettext
-local Screen    = require("device").screen
 
-local MIN_YEAR     = 1900
-local MAX_COUNT    = 999
-local DIALOG_MIN_W = 240   -- unscaled px; keeps side room around the button text
+local MIN_YEAR  = 1900
+local MAX_COUNT = 999
 
 local ManualBooks = {}
 
@@ -164,43 +161,31 @@ function ManualBooks.showYearCountDialog(on_done)
     })
 end
 
--- Right-side value of the settings entry: how many books are tracked by hand.
-local function _countLabel()
-    local count = _provider().getManualBookCount()
-    return string.format(N_("%d book", "%d books", count), count)
+function ManualBooks.menuTitle()
+    return _("Add Manual Books")
 end
 
--- Small untitled chooser between the two ways of entering books.
-function ManualBooks.showMenuDialog(refresh)
-    local dialog
-    local function close_then(action)
-        return function()
-            UIManager:close(dialog)
-            action(refresh)
-        end
-    end
-    dialog = require("ui/widget/buttondialog"):new{
-        title                 = _("Add Book"),
-        title_align           = "center",
-        shrink_unneeded_width = true,
-        shrink_min_width      = Screen:scaleBySize(DIALOG_MIN_W),
-        buttons = {
-            {{ text = _("Single Book"),
-               callback = close_then(function(done) ManualBooks.showBookDialog(nil, done) end) }},
-            {{ text = _("Manual Yearly Count"),
-               callback = close_then(ManualBooks.showYearCountDialog) }},
+-- Menu items for the two ways of entering books. `on_done` runs after a book
+-- or a count has been saved.
+function ManualBooks.makeEntryItems(on_done)
+    return {
+        {
+            text           = _("Add Single Book"),
+            keep_menu_open = true,
+            callback       = function() ManualBooks.showBookDialog(nil, on_done) end,
+        },
+        {
+            text           = _("Add Manual Count"),
+            keep_menu_open = true,
+            callback       = function() ManualBooks.showYearCountDialog(on_done) end,
         },
     }
-    UIManager:show(dialog)
 end
 
 function ManualBooks.makeMenuItem(refresh)
     return {
-        text           = _("Manually Tracked Books"),
-        value_func     = _countLabel,
-        mandatory_func = _countLabel,
-        keep_menu_open = true,
-        callback       = function() ManualBooks.showMenuDialog(refresh) end,
+        text                = ManualBooks.menuTitle(),
+        sub_item_table_func = function() return ManualBooks.makeEntryItems(refresh) end,
     }
 end
 

@@ -32,6 +32,7 @@ local SectionLabel = require("engines/sui_section_label")
 local UI           = require("infra/sui_core")
 local SUISettings  = require("infra/sui_store")
 local SUIStyle     = require("features/sui_style")
+local Chrome       = require("features/sui_module_chrome")
 local PAD          = UI.PAD
 local LABEL_H      = UI.LABEL_H
 local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
@@ -490,17 +491,6 @@ local function _computeCoverDims(w, thumb_scale, ratio)
     return cover_w, cover_h
 end
 
--- True when frame or module backdrop (>0) needs outer padding.
-local function _hasBox(pfx)
-    if SUISettings:isTrue(pfx .. "currently_show_frame") then return true end
-    local ok, WP = pcall(require, "features/sui_wallpaper")
-    if ok and WP and WP.getModuleBackdropStrength then
-        return WP.getModuleBackdropStrength(pfx, "currently") > 0
-    end
-    return SUISettings:isTrue(pfx .. "currently_solid_bg")
-end
-
-
 -- Clears the entire stats cache. Called from main.lua:onCloseDocument as a
 -- fallback when the closed book's md5 could not be resolved; safe since
 -- fetchBookStats() re-populates entries on demand.
@@ -589,13 +579,6 @@ function M.build(w, ctx)
     local lf          = ctx.landscape_factor or 1
     local raw_scale   = c and c.scale       or Config.getModuleScale("currently", pfx)
     local scale       = raw_scale * lf
-    -- Frame border / solid background — same optional box every other
-    -- homescreen module offers (module_heatmap.lua, module_reading_goals.lua):
-    -- a border, a filled background, or both, each adding PAD to every edge.
-    -- Computed up front so tw0 below already reserves room for the border,
-    -- keeping the box's real outer width equal to `w`.
-    -- Chrome applied by ModuleChrome on the homescreen.
-    local box = { inset_h = 0, inset_v = 0, outer_margin = 0 }
     local raw_thumb_scale = c and c.thumb_scale or Config.getThumbScale("currently", pfx)
     local lbl_scale   = (c and c.lbl_scale   or Config.getItemLabelScale("currently", pfx)) * lf
     local bar_style   = c and c.bar_style   or getBarStyle(pfx)
@@ -678,7 +661,7 @@ function M.build(w, ctx)
     -- computed from the base cover size (D.COVER_W). When dynamic cover
     -- sizing is enabled, the final width used for the text column may
     -- differ — see the two-pass layout below.
-    local tw0 = w - D.COVER_W - cover_gap - box.inset_h
+    local tw0 = w - D.COVER_W - cover_gap
 
     -- Fetch stats once if any stats element is active.
     local bstats
@@ -1116,7 +1099,7 @@ function M.build(w, ctx)
         local new_cover_w  = math.max(1, math.floor(new_cover_h * ratio))
         if new_cover_w ~= cover_w or new_cover_h ~= cover_h then
             cover_w, cover_h = new_cover_w, new_cover_h
-            tw = math.max(1, w - cover_w - cover_gap - box.inset_h)
+            tw = math.max(1, w - cover_w - cover_gap)
             -- Pass 2: rebuild the text column at the corrected width now
             -- that the cover (and thus the space left for text) changed
             -- size. Height cannot change between passes (see comment on
@@ -1457,15 +1440,8 @@ function M.getHeight(_ctx)
     else
         content_h = math.max(D.COVER_H, text_h_no_desc)
     end
-    if _hasBox(pfx) then
-        -- Mirrors build()'s FrameContainer: bordersize is drawn outside the
-        -- padding, so the border itself (not just the padding) grows the
-        -- real widget by border_sz * 2 pixels whenever the frame is on.
-        content_h = content_h + PAD * 2
-        if SUISettings:isTrue(pfx .. "currently_show_frame") then
-            content_h = content_h + SUIStyle.BORDER_SZ * 2
-        end
-    end
+    -- The module chrome adds its padding and border around the content.
+    content_h = content_h + Chrome.boxInset(Chrome.resolve(pfx, M.id))
     return SectionLabel.height(M.id, lf) + content_h
 end
 

@@ -16,6 +16,7 @@ local Screen          = Device.screen
 local _ = require("infra/sui_i18n").translate
 
 local UI           = require("infra/sui_core")
+local DateNames    = require("infra/sui_datenames")
 local UIManager    = require("ui/uimanager")
 local SUIStyle     = require("features/sui_style")
 local Config       = require("infra/sui_config")
@@ -31,13 +32,6 @@ local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
 -- We use os.date("*t") for the numeric indices and look up translated names.
 -- ---------------------------------------------------------------------------
 
--- _WEEKDAYS and _MONTHS are intentionally NOT built at module-load time so
--- that _() is called after the user's locale has been applied. They are built
--- on the first _localDate() call and reused from that point on — the locale
--- never changes within a running KOReader session, so caching is safe.
-local _weekdays = nil
-local _months   = nil
-
 local function _localDate()
     -- Pass os.time() explicitly: os.date("*t") without argument can return
     -- nil in LuaJIT on some platforms (macOS emulator) when timezone handling
@@ -48,20 +42,8 @@ local function _localDate()
         -- Fallback via the datetime module's locale-aware formatter.
         return datetime.secondsToDate(now, true)
     end
-    -- Build translation tables on first call only; never recreated afterwards.
-    if not _weekdays then
-        _weekdays = {
-            _("Sunday"), _("Monday"), _("Tuesday"), _("Wednesday"),
-            _("Thursday"), _("Friday"), _("Saturday"),
-        }
-        _months = {
-            _("January"), _("February"), _("March"),     _("April"),
-            _("May"),     _("June"),     _("July"),       _("August"),
-            _("September"), _("October"), _("November"),  _("December"),
-        }
-    end
-    local weekday = _weekdays[t.wday] or os.date("%A", now)
-    local month   = _months[t.month]  or os.date("%B", now)
+    local weekday = DateNames.weekdayFull()[t.wday] or os.date("%A", now)
+    local month   = DateNames.monthFull()[t.month]  or os.date("%B", now)
     return string.format("%s, %d %s", weekday, t.day, month)
 end
 
@@ -842,7 +824,7 @@ local function _rebuildModule(screen)
         local col_w = screen._clock_col_w
         if not col_w and chrome then
             col_w = inner_w + Chrome.outerMargin(chrome) * 2
-                + Chrome.innerPad(chrome) * 2 + Chrome.borderSz(chrome) * 2
+                + Chrome.boxInset(chrome)
         end
         col_w = col_w or inner_w
 
@@ -1136,26 +1118,15 @@ function M.getMenuItems(ctx_menu)
                     on_tap       = function()
                         local sort_items = {}
                         for _, key in ipairs(getItemOrder(pfx)) do
-                            local _key = key
-                            local hidden = not isItemVisible(pfx, _key)
-                            local item = {
-                                text        = itemLabel(_key, _lc),
-                                orig_item   = _key,
-                                dim_row     = hidden or nil,
-                                -- Eye glyph reflects current state: open while
-                                -- visible, closed once hidden.
-                                toggle_icon = hidden and "hide" or "show",
-                            }
-                            item.on_toggle = function()
-                                local now_hidden = not isItemVisible(pfx, _key)
-                                setItemVisible(pfx, _key, now_hidden)
-                                local hidden2 = not isItemVisible(pfx, _key)
-                                item.dim_row     = hidden2 or nil
-                                item.toggle_icon = hidden2 and "hide" or "show"
-                                refresh()
-                                ctx.repaint()
-                            end
-                            sort_items[#sort_items + 1] = item
+                            sort_items[#sort_items + 1] = Config.applyVisibilityToggle({
+                                text      = itemLabel(key, _lc),
+                                orig_item = key,
+                            }, {
+                                is_visible  = function() return isItemVisible(pfx, key) end,
+                                set_visible = function(visible) setItemVisible(pfx, key, visible) end,
+                                on_change   = refresh,
+                                repaint     = ctx.repaint,
+                            })
                         end
                         ctx.push("arrange", {
                             title      = _lc("Items"),

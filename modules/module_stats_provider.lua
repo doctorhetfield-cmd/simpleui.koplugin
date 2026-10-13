@@ -742,15 +742,6 @@ function SP.getManualCount(year)
     return entry and entry.count or 0
 end
 
---- Total number of books entered by hand, individually or as plain numbers.
-function SP.getManualBookCount()
-    local total = 0
-    for _, stored in pairs(_loadLedger().books) do
-        if stored.manual then total = total + (stored.count or 1) end
-    end
-    return total
-end
-
 --- Sets the number of books entered as a plain number for `year` (integer).
 --- Zero removes the entry.
 function SP.setManualCount(year, count)

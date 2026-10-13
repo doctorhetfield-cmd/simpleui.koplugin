@@ -25,7 +25,7 @@
 -- Not a registry module (no top-level M.id / M.build) — a pure library.
 --
 -- Settings keys used (all prefixed by ctx.pfx .. id .. "_"):
---   progress_style, show_frame, solid_bg, grid_rows, grid_cols (only when
+--   progress_style, grid_rows, grid_cols (only when
 --   spec.grid = true — see makeModule), badge_pages, badge_series,
 --   badge_new_mode, badge_scale, badge_color_<pages|series|new|progress>.
 --   Legacy keys read once for migration, then superseded: show_progress,
@@ -57,6 +57,7 @@ local PageState    = SectionLabel.PageState
 local UI          = require("infra/sui_core")
 local SUISettings = require("infra/sui_store")
 local SUIStyle    = require("features/sui_style")
+local SUIWallpaper = require("features/sui_wallpaper")
 local PAD    = UI.PAD
 local Screen = require("device").screen
 
@@ -146,23 +147,6 @@ end
 -- ---------------------------------------------------------------------------
 local function _toggleDefault(mode) return mode == "on" or mode == "locked_on" end
 local function _toggleLocked(mode)  return mode == "locked_on" or mode == "locked_off" end
-
-function GridRenderer.showFrame(pfx, id) return SUISettings:isTrue(pfx .. id .. "_show_frame") end
-function GridRenderer.solidBg(pfx, id)
-    local ok, WP = pcall(require, "features/sui_wallpaper")
-    if ok and WP and WP.getModuleBackdropStrength then
-        return WP.getModuleBackdropStrength(pfx, id) >= 100
-    end
-    return SUISettings:isTrue(pfx .. id .. "_solid_bg")
-end
-
-function GridRenderer.backdropStrength(pfx, id)
-    local ok, WP = pcall(require, "features/sui_wallpaper")
-    if ok and WP and WP.getModuleBackdropStrength then
-        return WP.getModuleBackdropStrength(pfx, id)
-    end
-    return SUISettings:isTrue(pfx .. id .. "_solid_bg") and 100 or 0
-end
 
 -- ---------------------------------------------------------------------------
 -- Progress style — single enum for how a cell shows reading progress.
@@ -707,17 +691,9 @@ function GridRenderer.build(w, ctx, opts)
     local D           = SH.getDims(scale, thumb_scale)
     local pct_fs      = math.max(8, math.floor(_BASE_RB_PCT_FS * scale * (styles.label.scale or 1)))
 
-    -- Frame border / solid background — same optional box every other
-    -- homescreen module offers (module_currently.lua, module_heatmap.lua,
-    -- module_reading_goals.lua). Computed up front so inner_w below already
-    -- reserves room for the border, keeping the box's real outer width
-    -- equal to `w`.
-    -- Module chrome (frame/background) is applied by the homescreen wrapper.
-    local box = { inset_h = 0, inset_v = 0 }
-    local inner_w = w
 
     -- Cover size: base is the auto-fit size (grid_cols covers + gaps filling
-    -- inner_w). Width uses grid_cols, not the item count on this page, so a
+    -- the module width). Width uses grid_cols, not the item count on this page, so a
     -- partial last row keeps the same cell width as full rows above.
     --
     -- cs = scale * thumb_scale multiplies that base: 100% fills the row.
@@ -728,7 +704,7 @@ function GridRenderer.build(w, ctx, opts)
     local raw_scale       = Config.getModuleScaleRaw(id, pfx)
     local raw_thumb_scale = Config.getThumbScaleRaw(id, pfx)
     local cs = raw_scale * raw_thumb_scale
-    local cw, gap = GridRenderer.computeAutoFitCell(inner_w, grid_cols, cs)
+    local cw, gap = GridRenderer.computeAutoFitCell(w, grid_cols, cs)
     local ch = math.max(1, math.floor(cw * (D.RECENT_H / D.RECENT_W)))
     -- Vertical spacing between grid rows (grid_rows>1): half the
     -- horizontal `gap`. The full horizontal gap has to accommodate the
@@ -1021,7 +997,7 @@ function GridRenderer.build(w, ctx, opts)
         -- area to the right, where the previous page had more
         -- covers/labels/progress bars, is not touched by this paintTo().
         -- _refreshBookModSlot requests a partial e-ink refresh of that
-        -- dimen (which always covers inner_w, a constant width — see
+        -- dimen (which always covers the full module width — see
         -- swipe_area.dimen below), but a partial refresh only reflects
         -- what's in the framebuffer; without something repainting that
         -- area, the previous page's pixels stay there.
@@ -1039,25 +1015,20 @@ function GridRenderer.build(w, ctx, opts)
             -- _buildRoundedBackdrop. getSize/paintTo are overridden for this
             -- widget's custom (non-child-based) appearance.
             local eraser = WidgetContainer:new{}
-            eraser.dimen = Geom:new{ w = inner_w, h = row_h }
+            eraser.dimen = Geom:new{ w = w, h = row_h }
             function eraser:getSize() return self.dimen end
             function eraser:paintTo(bb, x, y)
-                local ok_wp, WP = pcall(require, "features/sui_wallpaper")
-                if ok_wp and WP and WP.paintEraser then
-                    WP.paintEraser(bb, x, y, self.dimen.w, self.dimen.h,
-                        GridRenderer.backdropStrength(pfx, id), 0)
-                else
-                    bb:paintRect(x, y, self.dimen.w, self.dimen.h, SUIStyle.COLOR.surface)
-                end
+                SUIWallpaper.paintEraser(bb, x, y, self.dimen.w, self.dimen.h,
+                    SUIWallpaper.getModuleBackdropStrength(pfx, id), 0)
             end
             content_row = OverlapGroup:new{
-                dimen = Geom:new{ w = inner_w, h = row_h },
+                dimen = Geom:new{ w = w, h = row_h },
                 eraser,
                 row,
             }
         end
         local swipe_area = InputContainer:new{
-            dimen = Geom:new{ w = inner_w, h = row_h },
+            dimen = Geom:new{ w = w, h = row_h },
             [1]   = content_row,
         }
         swipe_area.ges_events = {
@@ -1280,15 +1251,10 @@ function GridRenderer.getHeight(_ctx, opts)
     local grid_cols = opts.grid_cols or opts.max_items or 5
     local w = (_ctx and (_ctx.col_w or _ctx.inner_w))
               or UI.getInnerW()
-    -- Frame border / solid background — computed up front so inner_w below
-    -- mirrors build()'s own corrected value exactly (see build()'s comment
-    -- on why the border must be reserved here too, not just the padding).
-    local box = { inset_h = 0, inset_v = 0 }
-    local inner_w = w
 
     -- cs uses the raw getters — mirrors build()'s cs above.
     local cs = Config.getModuleScaleRaw(id, pfx) * Config.getThumbScaleRaw(id, pfx)
-    local cw, gap_for_row = GridRenderer.computeAutoFitCell(inner_w, grid_cols, cs)
+    local cw, gap_for_row = GridRenderer.computeAutoFitCell(w, grid_cols, cs)
     local rh = math.max(1, math.floor(cw * (D.RECENT_H / D.RECENT_W)))
     -- Same vertical gap used in build() — half the horizontal gap.
     local row_gap = math.max(0, math.floor(gap_for_row / 2))
@@ -1325,15 +1291,8 @@ function GridRenderer.getHeight(_ctx, opts)
             cell_h = cell_h + cellExtraHeight(draw_progress, draw_text, D.RB_GAP1, D.RB_BAR_H, D.RB_GAP2, label_h)
         end
     end
-    -- grid_rows rows of cell_h + (grid_rows-1) vertical gaps between them —
-    -- frame/border/padding (below) belong to the whole grid, not per row,
-    -- so they stay outside this multiplication.
+    -- grid_rows rows of cell_h + (grid_rows-1) vertical gaps between them.
     local h = grid_rows * cell_h + math.max(0, grid_rows - 1) * row_gap
-
-    -- box.inset_v already folds in the border (FrameContainer draws it
-    -- outside the padding — see computeBox's doc comment), so no separate
-    -- border_sz*2 addition is needed here.
-    h = h + box.inset_v
     return SectionLabel.height(id, lf) + h
 end
 

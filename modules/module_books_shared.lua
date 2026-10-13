@@ -524,6 +524,16 @@ end
 -- consumer reads the same cached record (see _loadSidecarData for its fields).
 SH.sidecarData = _sidecarData
 
+-- Whether the book at fp is finished: marked complete or read to the end.
+-- Uses the book's prefetched record when there is one, else its cached
+-- sidecar data.
+function SH.isFinished(fp, prefetched)
+    local data = (prefetched and prefetched[fp]) or _sidecarData(fp)
+    if not data then return false end
+    return (data.percent or 0) >= 1.0
+        or (type(data.summary) == "table" and data.summary.status == "complete")
+end
+
 -- Cache accessors exposed for modules that manage entries directly.
 -- Semi-internal (prefixed _) but stable.
 SH._cacheGet = _cacheGet

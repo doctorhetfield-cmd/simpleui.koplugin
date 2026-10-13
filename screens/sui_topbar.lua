@@ -21,6 +21,7 @@ local _ = require("infra/sui_i18n").translate
 
 local Config      = require("infra/sui_config")
 local SUISettings = require("infra/sui_store")
+local Backdrop    = require("infra/sui_backdrop")
 local SUIStyle    = require("features/sui_style")
 
 local M = {}
@@ -601,10 +602,7 @@ function M.buildTopbarWidget(bar)
             local h = (dimen and dimen.h) or M.TOPBAR_H()
             -- Full screen width: the bar content is inset with side margins,
             -- but the backdrop should span edge to edge.
-            local ok, WP = pcall(require, "features/sui_wallpaper")
-            if ok and WP and WP.paintBackdrop then
-                WP.paintBackdrop(bb, 0, y, Screen:getWidth(), h, strength)
-            end
+            Backdrop.paintBackdrop(bb, 0, y, Screen:getWidth(), h, strength)
             return orig_paint(self, bb, x, y)
         end
     end

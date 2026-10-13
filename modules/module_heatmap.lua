@@ -114,14 +114,6 @@ local function computeLayout(w, ctx)
     local raw_scale = math.min(1.0, Config.getModuleScaleRaw("heatmap", pfx))
     local scale     = raw_scale * lf
 
-    -- Frame border / solid background — same optional box every other
-    -- homescreen module offers (module_currently.lua, module_reading_goals.lua):
-    -- a border, a filled background, or both, each adding PAD to every edge.
-    -- Computed up front so avail_w below already reserves room for the
-    -- border, keeping the box's real outer width equal to `w`.
-    -- Chrome applied by ModuleChrome on the homescreen.
-    local box = { inset_h = 0, inset_v = 0, outer_margin = 0 }
-
     -- Layout font: only used to size the weekday-label column and, from
     -- that, the grid's own cell size (below) — kept at its original tiny,
     -- scale-linked size so the calendar cells stay the size they've
@@ -135,7 +127,6 @@ local function computeLayout(w, ctx)
     -- module's own Scale setting, so card and popup read the same.
     local display_fonts = { small = Font:getFace(SUIStyle.FACE_REGULAR, UI.SZ(SUIStyle.FS_CAPTION)) }
 
-    local avail_w = w - box.inset_h
     local start_t, end_t = HD.getWeekBlockRange(weeks, 0)
 
     local mode = getMode(pfx)
@@ -152,7 +143,7 @@ local function computeLayout(w, ctx)
     -- fonts). Using the tiny layout face here made cells overflow avail_w
     -- once the wider display labels were drawn.
     local wd_label_w = HW.getWeekdayLabelWidth(display_fonts)
-    local grid_w     = avail_w - wd_label_w - gap
+    local grid_w     = w - wd_label_w - gap
     -- Half of the original 8px target floor; the hard 2px (half of the
     -- original 4px) underneath it is a legibility backstop, not a
     -- "default size" — it only bites at the very bottom of the Scale range.
@@ -187,14 +178,11 @@ local function computeLayout(w, ctx)
                  + 7 * cell_size + 6 * Screen:scaleBySize(2)
                  + gap_v + legend_h
 
-    body_h = body_h + box.inset_v
-
     return {
         pfx = pfx, weeks = weeks, mode = mode, fonts = display_fonts,
-        avail_w = avail_w, start_t = start_t, end_t = end_t,
+        avail_w = w, start_t = start_t, end_t = end_t,
         cell_size = cell_size, body_h = body_h, gap_v = gap_v,
         legend_h = legend_h, legend_cell = legend_cell, show_legend = show_legend,
-        box = box,
     }
 end
 
@@ -255,15 +243,9 @@ function M.build(w, ctx)
         table.insert(body, CenterContainer:new{ dimen = Geom:new{ w = L.avail_w, h = legend:getSize().h }, legend })
     end
 
-    -- Content sits at avail_w (w minus the box's own insets); the box below
-    -- supplies the left/right gutter via padding rather than by centering
-    -- inside a full-w wrapper, so its real outer width — content + 2*padding
-    -- + 2*bordersize — lands on exactly `w`, matching the section label.
-    local box = body
-
     local tappable = InputContainer:new{
-        dimen = Geom:new{ w = w, h = box:getSize().h },
-        [1]   = box,
+        dimen = Geom:new{ w = w, h = body:getSize().h },
+        [1]   = body,
     }
     tappable.ges_events = {
         TapHeatmap = { GestureRange:new{ ges = "tap", range = function() return tappable.dimen end } },

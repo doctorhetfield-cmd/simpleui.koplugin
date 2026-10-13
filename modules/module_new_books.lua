@@ -11,6 +11,7 @@ local _ = require("infra/sui_i18n").translate
 
 local GridRenderer = require("engines/sui_book_grid")
 local LibraryScan  = require("engines/sui_library_scan")
+local SH           = require("modules/module_books_shared")
 
 local _BOOK_EXTS = {
     epub = true, mobi = true, azw3 = true, azw = true, kfx = true,
@@ -90,32 +91,12 @@ local new_books_module = GridRenderer.makeModule{
 
     getFileList = function(_ctx) return getNewBooksCandidates() end,
 
-    -- Excludes 100% read/complete books — same filtering logic used by
-    -- prefetchBooks() in module_books_shared.lua, with a fallback to a
-    -- direct read from DocSettings when the book isn't yet in
-    -- ctx.prefetched. Unlike module_recent.lua, does NOT exclude the
+    -- Excludes finished books. Unlike module_recent.lua, does NOT exclude the
     -- currently open book: "New Books" tracks recency of acquisition, not
     -- reading progress, so a freshly added book you've already started
     -- stays listed here until it's finished.
     filterItem = function(fp, ctx)
-        local pct, is_complete = 0, false
-        local pre = ctx.prefetched and ctx.prefetched[fp]
-        if pre and pre ~= false then
-            pct = pre.percent or 0
-            is_complete = type(pre.summary) == "table" and pre.summary.status == "complete"
-        else
-            local ok, DS = pcall(require, "docsettings")
-            if ok and DS then
-                local ok2, ds = pcall(DS.open, DS, fp)
-                if ok2 and ds then
-                    pct = ds:readSetting("percent_finished") or 0
-                    local summary = ds:readSetting("summary")
-                    is_complete = type(summary) == "table" and summary.status == "complete"
-                    pcall(function() ds:close() end)
-                end
-            end
-        end
-        return pct < 1.0 and not is_complete
+        return not SH.isFinished(fp, ctx.prefetched)
     end,
 
     -- Same defaults as Recent Books/Library/TBR: progress bar + "% Read"

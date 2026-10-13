@@ -17,6 +17,7 @@
 
 local Config       = require("infra/sui_config")
 local Goals        = require("infra/sui_goals")
+local Launcher     = require("screens/sui_stats_launcher")
 local ManualBooks  = require("features/sui_manual_books")
 local StreakFreeze = require("infra/sui_streak")
 local SUISettings  = require("infra/sui_store")
@@ -98,7 +99,7 @@ end
 local function _manualInAllTimeItem(refresh)
     local FinishedBooks = SUISettings.FinishedBooks
     return {
-        text           = _("Include in All Time Books"),
+        text           = _("Include Manual Books in All Time Total"),
         help_text      = _("Count manually tracked books in the all-time total of books finished. They always count towards the year they belong to."),
         checked_func   = FinishedBooks.manualInAllTime,
         keep_menu_open = true,
@@ -115,15 +116,15 @@ local function _loadingNoticeItem()
     return _nilOrTrueToggle(
         _("Statistics Loading Notice"),
         _("Show a brief \"Loading statistics…\" notice when opening a statistics window, preventing accidental double-taps while e-ink refreshes."),
-        "simpleui_stats_loading_notice")
+        Launcher.LOADING_NOTICE_KEY)
 end
 
 function StatsMenu.makeMenuItems(opts)
     opts = opts or {}
     local refresh     = opts.refresh
     local open_window = opts.open_window or _defaultOpenWindow
-    local manual_books = ManualBooks.makeMenuItem(refresh)
-    manual_books.separator = true
+    local manual_in_all_time = _manualInAllTimeItem(refresh)
+    manual_in_all_time.separator = true
     local function windowItem(text, id, separator)
         return { text = text, separator = separator, callback = function() open_window(id) end }
     end
@@ -137,9 +138,9 @@ function StatsMenu.makeMenuItems(opts)
             text           = _("Reading Goals"),
             sub_item_table_func = function() return Goals.makeMenuItems() end,
         },
-        manual_books,
+        ManualBooks.makeMenuItem(refresh),
+        manual_in_all_time,
         _preserveDeletedItem(refresh),
-        _manualInAllTimeItem(refresh),
         _loadingNoticeItem(),
         {
             text           = _("Update Stats Now"),

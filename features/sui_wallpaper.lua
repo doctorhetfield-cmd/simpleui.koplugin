@@ -4,11 +4,15 @@
 -- background ImageWidget (plus its associated pre-scaled Blitbuffer used for
 -- stretch mode), every simpleui_style_wallpaper_* / simpleui_wallpaper_*
 -- setting getter/setter, the on-disk wallpaper directory scan, the
--- backdrop strength settings for bars, title bar, pagination and
+-- per-surface backdrop strength settings for bars, title bar, pagination and
 -- modules (they only ever have a visible effect while a wallpaper is
 -- active, so they live here next to the settings that gate them, as part of
--- the same sub-page), the shared backdrop / frame painters, and the
--- night-mode hook that invalidates the cache when night mode is toggled.
+-- the same sub-page), the tint / eraser painters, and the night-mode hook
+-- that invalidates the cache when night mode is toggled.
+--
+-- The 0–100 strength scale and the backdrop / frame painters themselves live
+-- in infra/sui_backdrop.lua; this module only stores the per-surface values
+-- and gates them on a wallpaper being active.
 --
 -- All settings live under the "simpleui_style_wallpaper_*" namespace (plus
 -- the standalone "simpleui_wallpaper_show_in_fm" key) — unchanged from
@@ -31,9 +35,8 @@
 --   * screens/sui_menu.lua — builds the "Wallpaper" TouchMenu / MenuTable
 --     entries, consumed both from the native KOReader menu and from the
 --     SUIWindow-based Settings window (screens/sui_settings_window.lua).
---   * bars, title bar, pagination, module chrome and quick-action / card
---     renderers — read their strength and paint through paintBackdrop /
---     paintFrame.
+--   * bars, title bar, pagination and module chrome — read their strength
+--     from here and paint it through infra/sui_backdrop.lua.
 --
 -- Any wallpaper-image setter here that affects what is on screen frees the
 -- cached ImageWidget/Blitbuffer and asks the homescreen engine to rebuild
@@ -48,9 +51,8 @@
 
 local Device      = require("device")
 local logger       = require("logger")
-local _            = require("infra/sui_i18n").translate
-local AA           = require("infra/sui_aa_paint")
 local SUISettings  = require("infra/sui_store")
+local Backdrop     = require("infra/sui_backdrop")
 local ImageWidget  = require("ui/widget/imagewidget")
 local UIManager    = require("ui/uimanager")
 local lfs          = require("libs/libkoreader-lfs")
@@ -459,32 +461,17 @@ do
 end
 
 -- ---------------------------------------------------------------------------
--- Backdrop strength (0–100) for bars, chrome and modules:
---   0    = fully transparent (wallpaper shows through)
---   1–99 = scrim (semi-opaque surface blend)
---   100  = solid surface
+-- Per-surface backdrop strengths (scale and painters: infra/sui_backdrop.lua).
 --
--- Every setting has a single semantic default (BACKDROP_DEFAULT). Setters
--- only store the value; the caller refreshes the UI once afterwards.
+-- Without a wallpaper the getters return a fixed fallback: solid for surfaces
+-- that have a native look, transparent for those with nothing to paint over.
+-- Setters only store the value; the caller refreshes the UI once afterwards.
 -- Legacy booleans migrate once on first read:
 --   status / navigation bar transparent true  → 0
 --   status / navigation bar transparent false → default
 --   module solid_bg true                      → 100
 -- ---------------------------------------------------------------------------
-local _BACKDROP_MIN, _BACKDROP_MAX = 0, 100
-
--- Bars keep the solid look of a plain UI; cards, buttons and the cover strip
--- start solid; modules start transparent over the wallpaper.
-M.BACKDROP_DEFAULT = {
-    statusbar       = 100,
-    navbar          = 100,
-    pagination      = 100,
-    titlebar        = 100,
-    module          = 0,
-    cover_strip     = 100,
-    card            = 100,
-    button          = 100,
-}
+local STRENGTH_MIN, STRENGTH_MAX = Backdrop.STRENGTH_MIN, Backdrop.STRENGTH_MAX
 
 local KEY_STATUSBAR       = "simpleui_statusbar_backdrop"
 local KEY_NAVBAR          = "simpleui_navbar_backdrop"
@@ -493,37 +480,6 @@ local KEY_TITLEBAR        = "simpleui_titlebar_backdrop"
 local KEY_MODULE          = "simpleui_module_backdrop"
 local KEY_COVER_STRIP     = "simpleui_cover_strip_backdrop"
 
--- Rounds and clamps n to 0–100; nil when n is not a number.
-local function _clampBackdrop(n)
-    n = tonumber(n)
-    if not n then return nil end
-    return math.max(_BACKDROP_MIN, math.min(_BACKDROP_MAX, math.floor(n + 0.5)))
-end
-M.clampBackdropStrength = _clampBackdrop
-
--- Reads a strength setting; `default` applies when it is unset or invalid.
-function M.readBackdropStrength(key, default)
-    return _clampBackdrop(SUISettings:readSetting(key)) or default
-end
-
--- Stores a strength setting and returns the stored value. Invalid input is
--- ignored and returns nil.
-function M.saveBackdropStrength(key, n)
-    local v = _clampBackdrop(n)
-    if v then SUISettings:saveSetting(key, v) end
-    return v
-end
-
--- Human-readable strength label for menus: Transparent / N% / Solid.
--- `tr` overrides the translator for callers that carry their own.
-function M.formatBackdropStrength(s, tr)
-    tr = tr or _
-    s = tonumber(s) or 0
-    if s <= 0 then return tr("Transparent") end
-    if s >= 100 then return tr("Solid") end
-    return tostring(s) .. "%"
-end
-
 -- True while a wallpaper is enabled and selected. Surfaces that only exist
 -- over a wallpaper fall back to their native look otherwise.
 function M.isWallpaperActive()
@@ -531,9 +487,9 @@ function M.isWallpaperActive()
 end
 
 local function _migrateBarStrength(bool_key, strength_key, default)
-    local stored = M.readBackdropStrength(strength_key)
+    local stored = Backdrop.readBackdropStrength(strength_key)
     if stored then return stored end
-    local strength = SUISettings:isTrue(bool_key) and _BACKDROP_MIN or default
+    local strength = SUISettings:isTrue(bool_key) and STRENGTH_MIN or default
     SUISettings:saveSetting(strength_key, strength)
     return strength
 end
@@ -541,14 +497,14 @@ end
 -- Stores a bar strength and keeps the legacy boolean in sync for any
 -- external reader.
 local function _saveBarStrength(strength_key, bool_key, n)
-    local v = M.saveBackdropStrength(strength_key, n)
-    if v then SUISettings:saveSetting(bool_key, v <= _BACKDROP_MIN) end
+    local v = Backdrop.saveBackdropStrength(strength_key, n)
+    if v then SUISettings:saveSetting(bool_key, v <= STRENGTH_MIN) end
 end
 
 function M.getStatusbarBackdropStrength()
-    if not M.isWallpaperActive() then return _BACKDROP_MAX end
+    if not M.isWallpaperActive() then return STRENGTH_MAX end
     return _migrateBarStrength("simpleui_statusbar_transparent", KEY_STATUSBAR,
-        M.BACKDROP_DEFAULT.statusbar)
+        Backdrop.BACKDROP_DEFAULT.statusbar)
 end
 
 function M.setStatusbarBackdropStrength(n)
@@ -556,9 +512,9 @@ function M.setStatusbarBackdropStrength(n)
 end
 
 function M.getNavbarBackdropStrength()
-    if not M.isWallpaperActive() then return _BACKDROP_MAX end
+    if not M.isWallpaperActive() then return STRENGTH_MAX end
     return _migrateBarStrength("simpleui_navbar_transparent", KEY_NAVBAR,
-        M.BACKDROP_DEFAULT.navbar)
+        Backdrop.BACKDROP_DEFAULT.navbar)
 end
 
 function M.setNavbarBackdropStrength(n)
@@ -566,154 +522,64 @@ function M.setNavbarBackdropStrength(n)
 end
 
 function M.getPaginationBackdropStrength()
-    if not M.isWallpaperActive() then return _BACKDROP_MAX end
-    return M.readBackdropStrength(KEY_PAGINATION, M.BACKDROP_DEFAULT.pagination)
+    if not M.isWallpaperActive() then return STRENGTH_MAX end
+    return Backdrop.readBackdropStrength(KEY_PAGINATION, Backdrop.BACKDROP_DEFAULT.pagination)
 end
 
 function M.setPaginationBackdropStrength(n)
-    M.saveBackdropStrength(KEY_PAGINATION, n)
+    Backdrop.saveBackdropStrength(KEY_PAGINATION, n)
 end
 
 -- Without a wallpaper there is no backdrop to paint.
 function M.getTitlebarBackdropStrength()
-    if not M.isWallpaperActive() then return _BACKDROP_MIN end
-    return M.readBackdropStrength(KEY_TITLEBAR, M.BACKDROP_DEFAULT.titlebar)
+    if not M.isWallpaperActive() then return STRENGTH_MIN end
+    return Backdrop.readBackdropStrength(KEY_TITLEBAR, Backdrop.BACKDROP_DEFAULT.titlebar)
 end
 
 function M.setTitlebarBackdropStrength(n)
-    M.saveBackdropStrength(KEY_TITLEBAR, n)
+    Backdrop.saveBackdropStrength(KEY_TITLEBAR, n)
 end
 
 -- Backdrop behind the title/author strip below Library covers. Without a
 -- wallpaper the strip keeps its native solid look.
 function M.getCoverStripBackdropStrength()
-    if not M.isWallpaperActive() then return _BACKDROP_MAX end
-    return M.readBackdropStrength(KEY_COVER_STRIP, M.BACKDROP_DEFAULT.cover_strip)
+    if not M.isWallpaperActive() then return STRENGTH_MAX end
+    return Backdrop.readBackdropStrength(KEY_COVER_STRIP, Backdrop.BACKDROP_DEFAULT.cover_strip)
 end
 
 function M.setCoverStripBackdropStrength(n)
-    M.saveBackdropStrength(KEY_COVER_STRIP, n)
+    Backdrop.saveBackdropStrength(KEY_COVER_STRIP, n)
 end
 
 -- Module backdrop strength; without a wallpaper there is no backdrop to paint.
 -- With (pfx, id): per-module override, migrating legacy solid_bg once.
 -- With no args: global default.
 function M.getModuleBackdropStrength(pfx, id)
-    if not M.isWallpaperActive() then return _BACKDROP_MIN end
+    if not M.isWallpaperActive() then return STRENGTH_MIN end
     if type(pfx) ~= "string" or not id then
-        return M.readBackdropStrength(KEY_MODULE, M.BACKDROP_DEFAULT.module)
+        return Backdrop.readBackdropStrength(KEY_MODULE, Backdrop.BACKDROP_DEFAULT.module)
     end
     local key = pfx .. id .. "_backdrop"
     local solid_key = pfx .. id .. "_solid_bg"
-    local n = M.readBackdropStrength(key)
+    local n = Backdrop.readBackdropStrength(key)
     -- A stored 0 next to an explicit solid_bg=false is a stale migration
     -- result (meaning "not solid", not "force transparent"): drop it.
-    if n == 0 and SUISettings:get(solid_key) ~= nil and not SUISettings:isTrue(solid_key) then
+    if n == STRENGTH_MIN and SUISettings:get(solid_key) ~= nil and not SUISettings:isTrue(solid_key) then
         SUISettings:del(key)
         n = nil
     end
     if n then return n end
     -- Only solid_bg=true is a positive legacy signal; false means inherit.
     if SUISettings:isTrue(solid_key) then
-        SUISettings:saveSetting(key, _BACKDROP_MAX)
-        return _BACKDROP_MAX
+        SUISettings:saveSetting(key, STRENGTH_MAX)
+        return STRENGTH_MAX
     end
     return M.getModuleBackdropStrength()
 end
 
 function M.setModuleBackdropStrength(n, pfx, id)
     local key = (type(pfx) == "string" and id) and (pfx .. id .. "_backdrop") or KEY_MODULE
-    M.saveBackdropStrength(key, n)
-end
-
--- Tile a rounded rect into non-overlapping horizontal spans so each pixel is
--- written once (blending corners separately would double-tint them).
-local _SQUARE_SPAN = { {} }
-local function _roundedSpans(x, y, w, h, r)
-    r = math.min(r or 0, math.floor(w / 2), math.floor(h / 2))
-    if r <= 0 then
-        local sp = _SQUARE_SPAN[1]
-        sp.x, sp.y, sp.w, sp.h = x, y, w, h
-        return _SQUARE_SPAN
-    end
-    local spans = {}
-    for i = 0, r - 1 do
-        local dy = r - i - 0.5
-        local inset = math.floor(r - math.sqrt(r * r - dy * dy) + 0.5)
-        local sw = w - inset * 2
-        if sw > 0 then
-            spans[#spans + 1] = { x = x + inset, y = y + i,         w = sw, h = 1 }
-            spans[#spans + 1] = { x = x + inset, y = y + h - 1 - i, w = sw, h = 1 }
-        end
-    end
-    local mid_h = h - r * 2
-    if mid_h > 0 then
-        spans[#spans + 1] = { x = x, y = y + r, w = w, h = mid_h }
-    end
-    return spans
-end
-
-local function _surfaceColor()
-    return require("features/sui_style").COLOR.surface
-end
-
--- Runs fn with the buffer's inverse flag cleared on Android, where night
--- mode may set it: the logical colour is then written exactly once and
--- frame inversion turns it into its night-mode counterpart. Returns pcall's
--- results.
-function M.withInverseGuard(bb, fn)
-    local suppress = Device:isAndroid() and bb.getInverse and bb:getInverse() == 1
-    if suppress then bb:setInverse(0) end
-    local ok, result = pcall(fn)
-    if suppress then bb:setInverse(1) end
-    return ok, result
-end
-
--- Paint a backdrop into bb.
--- strength: 0 no-op, 1–99 scrim (wallpaper shows through), 100 solid surface.
--- radius: optional corner radius, drawn with anti-aliased corners.
--- Optional `color` overrides the default surface fill (e.g. surface_flat for
--- flat cards/buttons).
---
--- No day/night colour branch: always paint the light-mode surface colour
--- (white by default). Frame inversion turns it black in night mode while
--- preserving the same alpha — same approach as chrome scrims elsewhere.
-function M.paintBackdrop(bb, x, y, w, h, strength, radius, color)
-    strength = _clampBackdrop(strength) or 0
-    if strength <= 0 or w <= 0 or h <= 0 then return end
-    local alpha = math.floor(255 * strength / 100 + 0.5)
-    local c = color or _surfaceColor()
-    radius = math.max(0, math.floor(tonumber(radius) or 0))
-
-    local ok, drawn = M.withInverseGuard(bb, function()
-        return AA.fillRoundedRect(bb, x, y, w, h, radius, c, alpha)
-    end)
-    if ok and drawn then return end
-
-    -- Corners without anti-aliasing.
-    M.withInverseGuard(bb, function()
-        for _, sp in ipairs(_roundedSpans(x, y, w, h, radius)) do
-            AA.fillRect(bb, sp.x, sp.y, sp.w, sp.h, c, alpha)
-        end
-    end)
-end
-
--- Paint an opaque rounded border of `thickness` inside (x, y, w, h), with
--- anti-aliased corners where the radius allows it.
-function M.paintFrame(bb, x, y, w, h, thickness, radius, color)
-    thickness = math.max(1, math.floor(tonumber(thickness) or 1))
-    radius = math.max(0, math.floor(tonumber(radius) or 0))
-
-    local ok, drawn = M.withInverseGuard(bb, function()
-        return AA.strokeRoundedRect(bb, x, y, w, h, radius, thickness, color)
-    end)
-    if ok and drawn then return end
-
-    if type(bb.paintBorderRGB32) == "function" then
-        M.withInverseGuard(bb, function()
-            bb:paintBorderRGB32(x, y, w, h, thickness, color, radius, true)
-        end)
-    end
+    Backdrop.saveBackdropStrength(key, n)
 end
 
 -- Applies the lighten / darken tint over a region that already holds the
@@ -742,11 +608,11 @@ end
 -- including night-mode handling. No extra invert is applied here.
 function M.paintEraser(bb, x, y, w, h, strength, radius)
     if w <= 0 or h <= 0 then return end
-    strength = _clampBackdrop(strength) or 0
+    strength = Backdrop.clampBackdropStrength(strength) or STRENGTH_MIN
 
     -- Opaque chrome: surface fill alone is the final pixel state.
-    if strength >= 100 then
-        M.paintBackdrop(bb, x, y, w, h, 100, radius or 0)
+    if strength >= STRENGTH_MAX then
+        Backdrop.paintBackdrop(bb, x, y, w, h, STRENGTH_MAX, radius or 0)
         return
     end
 
@@ -775,14 +641,12 @@ function M.paintEraser(bb, x, y, w, h, strength, radius)
     end
     if not restored then
         local SUIStyle = require("features/sui_style")
-        M.withInverseGuard(bb, function()
+        Backdrop.withInverseGuard(bb, function()
             bb:paintRect(x, y, w, h, SUIStyle.COLOR.surface)
         end)
     end
 
-    if strength > 0 then
-        M.paintBackdrop(bb, x, y, w, h, strength, radius or 0)
-    end
+    Backdrop.paintBackdrop(bb, x, y, w, h, strength, radius or 0)
 end
 
 -- ---------------------------------------------------------------------------

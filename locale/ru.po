@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-10-12 21:04+0000\n"
+"POT-Creation-Date: 2026-10-13 08:50+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
@@ -12,47 +12,48 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "X-Generator: Poedit 3.9\n"
 
-#: modules/module_reading_goals.lua:1219
+#: modules/module_reading_goals.lua:1223
 msgid "  Set Goal  (%d hr/month)"
 msgstr "  Задать цель  (%d дн./месяц)"
 
-#: modules/module_reading_goals.lua:1239
+#: modules/module_reading_goals.lua:1235
 msgid "  Set Goal  (%d min/day)"
 msgstr "  Задать цель  (%d мин/день)"
 
-#: modules/module_reading_goals.lua:1199
+#: modules/module_reading_goals.lua:1211
 msgid "  Set Goal  (%s)"
 msgstr "  Задать цель  (%s)"
 
-#: modules/module_reading_goals.lua:1218 modules/module_reading_goals.lua:1238
+#: modules/module_reading_goals.lua:1222 modules/module_reading_goals.lua:1234
 msgid "  Set Goal  (disabled)"
 msgstr "  Задать цель  (отключено)"
 
-#: modules/module_coverdeck.lua:110 modules/module_currently.lua:393
+#: modules/module_coverdeck.lua:110 modules/module_currently.lua:394
 msgid " et al."
 msgstr " и др."
 
-#: engines/sui_book_grid.lua:496 features/library/sui_foldercovers.lua:1308
+#: engines/sui_book_grid.lua:480 features/library/sui_foldercovers.lua:1318
 msgid " p."
 msgstr " стр."
 
-#: engines/sui_book_grid.lua:1537
+#: engines/sui_book_grid.lua:1496
 msgid "% Read (ascending)"
 msgstr "% прочитано (по возрастанию)"
 
-#: engines/sui_book_grid.lua:1538
+#: engines/sui_book_grid.lua:1497
 msgid "% Read (descending)"
 msgstr "% прочитано (по убыванию)"
 
-#: modules/module_heatmap.lua:224
+#: modules/module_heatmap.lua:212
 msgid "%1 weeks"
 msgstr "%1 нед."
 
-#: engines/sui_book_grid.lua:1848 engines/sui_book_grid.lua:1853
-#: screens/sui_menu.lua:3950 screens/sui_menu.lua:3954
+#: engines/sui_book_grid.lua:1807 engines/sui_book_grid.lua:1812
+#: screens/sui_menu.lua:3956 screens/sui_menu.lua:3960
 msgid "%1 × %2"
 msgstr "%1 × %2"
 
@@ -61,11 +62,11 @@ msgstr "%1 × %2"
 msgid "%d files (%s)"
 msgstr "Модули  (%d)"
 
-#: modules/module_reading_goals.lua:1309
+#: modules/module_reading_goals.lua:1161
 msgid "%d hr/month"
 msgstr "%d ч./месяц"
 
-#: modules/module_reading_goals.lua:1314
+#: modules/module_reading_goals.lua:1163
 msgid "%d min/day"
 msgstr "%d мин./день"
 
@@ -74,37 +75,37 @@ msgstr "%d мин./день"
 msgid "%d settings"
 msgstr "Настройки"
 
-#: engines/sui_book_grid.lua:837
+#: engines/sui_book_grid.lua:813
 msgid "%d%%"
 msgstr "%d%%"
 
-#: engines/sui_book_grid.lua:897 engines/sui_book_grid.lua:909
-#: modules/module_coverdeck.lua:1054 modules/module_currently.lua:919
-#: modules/module_currently.lua:928 modules/module_new_books.lua:138
+#: engines/sui_book_grid.lua:873 engines/sui_book_grid.lua:885
+#: modules/module_coverdeck.lua:1054 modules/module_currently.lua:902
+#: modules/module_currently.lua:911 modules/module_new_books.lua:119
 msgid "%d%% Read"
 msgstr "Прочитано %d%%"
 
-#: screens/sui_stats_windows.lua:3218
+#: screens/sui_stats_windows.lua:3180
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d дней · %d/%d мин до следующей заморозки"
 
-#: modules/module_currently.lua:1024
+#: modules/module_currently.lua:1007
 msgid "%s left"
 msgstr "осталось: %s"
 
-#: modules/module_coverdeck.lua:1059 modules/module_currently.lua:962
-#: modules/module_currently.lua:963 modules/module_currently.lua:1022
-#: modules/module_currently.lua:1036 modules/module_reading_goals.lua:736
-#: modules/module_reading_goals.lua:756
+#: modules/module_coverdeck.lua:1059 modules/module_currently.lua:945
+#: modules/module_currently.lua:946 modules/module_currently.lua:1005
+#: modules/module_currently.lua:1019 modules/module_reading_goals.lua:743
+#: modules/module_reading_goals.lua:763
 msgid "%s read"
 msgstr "прочитано: %s"
 
-#: modules/module_coverdeck.lua:1065 modules/module_currently.lua:985
-#: modules/module_currently.lua:989
+#: modules/module_coverdeck.lua:1065 modules/module_currently.lua:968
+#: modules/module_currently.lua:972
 msgid "%s remaining"
 msgstr "осталось: %s"
 
-#: modules/module_quick_actions.lua:524 modules/module_reading_stats.lua:415
+#: modules/module_quick_actions.lua:524 modules/module_reading_stats.lua:383
 msgid "(%d/%d — at limit)"
 msgstr "(%d/%d — лимит достигнут)"
 
@@ -112,23 +113,33 @@ msgstr "(%d/%d — лимит достигнут)"
 msgid "(collection not found)"
 msgstr "(коллекция не найдена)"
 
-#: screens/sui_menu.lua:282
-msgid "0% transparent, 100% solid. Applies across the full width of the title bar."
+#: screens/sui_menu.lua:283
+msgid ""
+"0% transparent, 100% solid. Applies across the full width of the title bar."
 msgstr ""
 
-#: screens/sui_menu.lua:291
-msgid "0% transparent, 100% solid. Applies to the native page bar in Library, History, Collections and similar screens."
+#: screens/sui_menu.lua:292
+msgid ""
+"0% transparent, 100% solid. Applies to the native page bar in Library, "
+"History, Collections and similar screens."
 msgstr ""
 
-#: infra/sui_config.lua:1317
-msgid "0% transparent, 100% solid. Values in between add a scrim over the wallpaper."
+#: screens/sui_menu.lua:3692
+msgid ""
+"0% transparent, 100% solid. Only the background changes; the text stays "
+"solid."
 msgstr ""
 
-#: modules/module_collections.lua:1237
+#: infra/sui_config.lua:1318
+msgid ""
+"0% transparent, 100% solid. Values in between add a scrim over the wallpaper."
+msgstr ""
+
+#: modules/module_collections.lua:1225
 msgid "4-Cover Grid"
 msgstr "Сетка из 4 обложек"
 
-#: screens/sui_menu.lua:3181
+#: screens/sui_menu.lua:3221
 msgid "4-Cover Grid (Mosaic View Only)"
 msgstr "Сетка из 4 обложек (Только мозаика)"
 
@@ -136,16 +147,20 @@ msgstr "Сетка из 4 обложек (Только мозаика)"
 msgid "A folder named \"Books\" will be created and set as the library home."
 msgstr ""
 
-#: screens/sui_stats_windows.lua:2887
-msgid "A freeze can only bridge a single missed day right after an active one — yesterday doesn't qualify."
-msgstr "Заморозка может закрыть только один пропущенный день сразу после активного — вчерашний день не подходит."
+#: screens/sui_stats_windows.lua:2857
+msgid ""
+"A freeze can only bridge a single missed day right after an active one — "
+"yesterday doesn't qualify."
+msgstr ""
+"Заморозка может закрыть только один пропущенный день сразу после активного — "
+"вчерашний день не подходит."
 
 #: features/sui_presets.lua:946 features/sui_presets.lua:1032
-#: screens/sui_menu.lua:4421 screens/sui_menu.lua:4506
+#: screens/sui_menu.lua:4427 screens/sui_menu.lua:4512
 msgid "A preset named \"%s\" already exists."
 msgstr "Пресет с именем \"%s\" уже существует."
 
-#: features/sui_presets.lua:887 screens/sui_menu.lua:4367
+#: features/sui_presets.lua:887 screens/sui_menu.lua:4373
 msgid ""
 "A preset named \"%s\" already exists.\n"
 "Overwrite it?"
@@ -153,7 +168,8 @@ msgstr ""
 "Пресет с именем \"%s\" уже существует.\n"
 "Перезаписать его?"
 
-#: screens/sui_menu.lua:1177 screens/sui_menu.lua:1486
+#: screens/sui_menu.lua:1178 screens/sui_menu.lua:1487
+#: screens/sui_menu.lua:2112
 msgid ""
 "A restart is required to apply the new bar size across all layouts.\n"
 "\n"
@@ -163,7 +179,7 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: screens/sui_menu.lua:4716
+#: screens/sui_menu.lua:4722
 msgid ""
 "A restart is required to apply the new text size everywhere.\n"
 "\n"
@@ -177,11 +193,11 @@ msgstr ""
 msgid "A simple UI for KOReader"
 msgstr ""
 
-#: screens/sui_stats_windows.lua:2552
+#: screens/sui_stats_windows.lua:2546
 msgid "ALL TIME"
 msgstr "ЗА ВСЕ ВРЕМЯ"
 
-#: screens/sui_menu.lua:4965 screens/sui_settings_window.lua:396
+#: screens/sui_menu.lua:4971 screens/sui_settings_window.lua:396
 #: screens/sui_settings_window.lua:1151
 msgid "About"
 msgstr "О плагине"
@@ -215,29 +231,35 @@ msgstr "Действие недоступно: %s"
 msgid "Add Action"
 msgstr "Добавить действие"
 
-#: features/sui_manual_books.lua:116 features/sui_manual_books.lua:169
-#: screens/sui_stats_windows.lua:777
+#: features/sui_manual_books.lua:116
 msgid "Add Book"
 msgstr ""
 
-#: screens/sui_menu.lua:1789 screens/sui_menu.lua:1827
+#: screens/sui_menu.lua:1790 screens/sui_menu.lua:1828
 msgid "Add Button"
 msgstr "Добавить кнопку"
 
-#: engines/sui_screen_engine.lua:1998 engines/sui_window.lua:905
+#: engines/sui_screen_engine.lua:1998 engines/sui_window.lua:935
 #: modules/module_action_list.lua:401 modules/module_action_list.lua:431
 #: modules/module_coverdeck.lua:1479 modules/module_coverdeck.lua:1501
 #: modules/module_coverdeck.lua:1616 modules/module_coverdeck.lua:1634
-#: modules/module_currently.lua:1699 modules/module_currently.lua:1746
+#: modules/module_currently.lua:1675 modules/module_currently.lua:1722
 #: modules/module_quick_actions.lua:478 modules/module_quick_actions.lua:508
-#: modules/module_reading_goals.lua:1264 modules/module_reading_goals.lua:1293
-#: modules/module_reading_stats.lua:786 modules/module_reading_stats.lua:815
-#: screens/sui_menu.lua:1099 screens/sui_menu.lua:1136
-#: screens/sui_menu.lua:1360 screens/sui_menu.lua:1400
-#: screens/sui_menu.lua:2382 screens/sui_menu.lua:2412
+#: modules/module_reading_stats.lua:754 modules/module_reading_stats.lua:783
+#: screens/sui_menu.lua:1100 screens/sui_menu.lua:1137
+#: screens/sui_menu.lua:1361 screens/sui_menu.lua:1401
+#: screens/sui_menu.lua:2379 screens/sui_menu.lua:2409
 #: screens/sui_quicksettings_bar.lua:992 screens/sui_settings_window.lua:1159
 msgid "Add Item"
 msgstr "Добавить элемент"
+
+#: features/sui_manual_books.lua:165
+msgid "Add Manual Books"
+msgstr ""
+
+#: features/sui_manual_books.lua:178
+msgid "Add Manual Count"
+msgstr ""
 
 #: screens/sui_settings_window.lua:1156 screens/sui_settings_window.lua:1303
 msgid "Add Module"
@@ -247,12 +269,12 @@ msgstr "Добавить модуль"
 msgid "Add Page"
 msgstr "Добавить страницу"
 
-#: features/sui_manual_books.lua:170
-msgid "Add a book you read outside the device, with its title, author and dates. Added books are listed, and can be edited or deleted, in the Finished Books window."
+#: features/sui_manual_books.lua:173
+msgid "Add Single Book"
 msgstr ""
 
 #: modules/module_action_list.lua:312 modules/module_quick_actions.lua:383
-#: screens/sui_menu.lua:2302 screens/sui_quicksettings_bar.lua:1060
+#: screens/sui_menu.lua:2299 screens/sui_quicksettings_bar.lua:1060
 msgid "Add at least 2 actions to arrange."
 msgstr "Добавьте минимум 2 действия для сортировки."
 
@@ -260,7 +282,7 @@ msgstr "Добавьте минимум 2 действия для сортиро
 msgid "Add at least 2 books to arrange."
 msgstr "Добавьте минимум 2 книги для сортировки."
 
-#: modules/module_reading_stats.lua:735
+#: modules/module_reading_stats.lua:703
 msgid "Add at least 2 stats to arrange."
 msgstr "Добавьте минимум 2 элемента статистики для сортировки."
 
@@ -268,17 +290,17 @@ msgstr "Добавьте минимум 2 элемента статистики 
 msgid "Add to To Be Read"
 msgstr "Добавить в «Буду читать»"
 
-#: screens/sui_menu.lua:2714
+#: screens/sui_menu.lua:2711
 msgid "After closing a book"
 msgstr ""
 
-#: infra/sui_config.lua:1859 modules/module_action_list.lua:483
+#: infra/sui_config.lua:1860 modules/module_action_list.lua:483
 #: modules/module_quick_actions.lua:642 modules/module_quote.lua:1509
-#: modules/module_reading_stats.lua:908
+#: modules/module_reading_stats.lua:876
 msgid "Alignment"
 msgstr "Выравнивание"
 
-#: engines/sui_window.lua:3546 screens/sui_settings_window.lua:921
+#: engines/sui_window.lua:4002 screens/sui_settings_window.lua:921
 msgid "All items have already been added."
 msgstr "Все элементы уже добавлены."
 
@@ -290,36 +312,33 @@ msgstr "Все модули уже добавлены."
 msgid "All recent books are finished."
 msgstr "Все недавние книги завершены."
 
-#: modules/module_reading_stats.lua:129
+#: modules/module_reading_stats.lua:128
 msgid "All time — Books"
 msgstr "За всё время — Книги"
 
-#: modules/module_reading_stats.lua:128
+#: modules/module_reading_stats.lua:127
 msgid "All time — Time"
 msgstr "За всё время — Время"
 
-#: screens/sui_menu.lua:2841
+#: screens/sui_menu.lua:2838
 msgid "Always"
 msgstr "Всегда"
 
-#: modules/module_clock.lua:1217 modules/module_clock.lua:1236
+#: modules/module_clock.lua:1188 modules/module_clock.lua:1207
 msgid "Analogue"
 msgstr "Аналоговые"
 
-#: infra/sui_goals.lua:43 modules/module_reading_goals.lua:1186
-#: modules/module_reading_goals.lua:1252 modules/module_reading_goals.lua:1289
-#: modules/module_reading_goals.lua:1303
+#: infra/sui_goals.lua:44
 msgid "Annual Goal"
 msgstr "Цель на год"
 
-#: infra/sui_goals.lua:44
+#: infra/sui_goals.lua:45
 msgid "Annual Reading Goal"
 msgstr "Книжная цель на год"
 
-#: features/sui_module_chrome.lua:239 features/sui_module_chrome.lua:242
-#: features/sui_module_chrome.lua:286 infra/sui_config.lua:1134
-#: modules/module_heatmap.lua:343 modules/module_reading_goals.lua:1350
-#: modules/module_reading_goals.lua:1415
+#: features/sui_module_chrome.lua:207 features/sui_module_chrome.lua:228
+#: infra/sui_config.lua:1135 modules/module_heatmap.lua:325
+#: modules/module_reading_goals.lua:1277 modules/module_reading_goals.lua:1342
 msgid "Appearance"
 msgstr "Внешний вид"
 
@@ -328,12 +347,12 @@ msgstr "Внешний вид"
 msgid "Appearance & Style"
 msgstr "Внешний вид"
 
-#: infra/sui_config.lua:1257 infra/sui_config.lua:1326
-#: infra/sui_config.lua:1360 infra/sui_config.lua:1475
-#: infra/sui_config.lua:1548 modules/module_clock.lua:1267
-#: screens/sui_menu.lua:1161 screens/sui_menu.lua:1470
-#: screens/sui_menu.lua:2775 screens/sui_menu.lua:2805
-#: screens/sui_menu.lua:3575 screens/sui_menu.lua:4710
+#: infra/sui_config.lua:1258 infra/sui_config.lua:1327
+#: infra/sui_config.lua:1361 infra/sui_config.lua:1476
+#: infra/sui_config.lua:1549 modules/module_clock.lua:1238
+#: screens/sui_menu.lua:1162 screens/sui_menu.lua:1471
+#: screens/sui_menu.lua:2772 screens/sui_menu.lua:2802
+#: screens/sui_menu.lua:3091 screens/sui_menu.lua:4716
 msgid "Apply"
 msgstr "Применить"
 
@@ -342,15 +361,15 @@ msgstr "Применить"
 msgid "Applying preset…"
 msgstr "Применить палитру…"
 
-#: engines/sui_heatmap_widgets.lua:109
+#: infra/sui_datenames.lua:29
 msgid "Apr"
 msgstr "апр."
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
+#: infra/sui_datenames.lua:36
 msgid "April"
 msgstr "Апрель"
 
-#: modules/module_clock.lua:1091 modules/module_feat_coll.lua:142
+#: modules/module_clock.lua:1073 modules/module_feat_coll.lua:142
 #: modules/module_feat_coll.lua:216 modules/module_feat_coll.lua:235
 #: modules/module_tbr.lua:296 modules/module_tbr.lua:368
 #: modules/module_tbr.lua:391
@@ -358,12 +377,12 @@ msgid "Arrange"
 msgstr "Упорядочить"
 
 #: modules/module_action_list.lua:332 modules/module_quick_actions.lua:401
-#: screens/sui_menu.lua:2306
+#: screens/sui_menu.lua:2303
 msgid "Arrange %s"
 msgstr "Упорядочить %s"
 
-#: screens/sui_menu.lua:1745 screens/sui_menu.lua:1752
-#: screens/sui_menu.lua:1929 screens/sui_menu.lua:1944
+#: screens/sui_menu.lua:1746 screens/sui_menu.lua:1753
+#: screens/sui_menu.lua:1930 screens/sui_menu.lua:1945
 msgid "Arrange Buttons"
 msgstr "Упорядочить кнопки"
 
@@ -373,12 +392,12 @@ msgstr "Упорядочить коллекцию"
 
 #: engines/sui_screen_engine.lua:1997 modules/module_action_list.lua:305
 #: modules/module_coverdeck.lua:1556 modules/module_coverdeck.lua:1562
-#: modules/module_currently.lua:1572 modules/module_currently.lua:1615
-#: modules/module_quick_actions.lua:376 screens/sui_bottombar.lua:938
-#: screens/sui_menu.lua:814 screens/sui_menu.lua:881 screens/sui_menu.lua:888
-#: screens/sui_menu.lua:2296 screens/sui_quicksettings_bar.lua:991
+#: modules/module_currently.lua:1548 modules/module_currently.lua:1591
+#: modules/module_quick_actions.lua:376 screens/sui_bottombar.lua:897
+#: screens/sui_menu.lua:815 screens/sui_menu.lua:882 screens/sui_menu.lua:889
+#: screens/sui_menu.lua:2293 screens/sui_quicksettings_bar.lua:991
 #: screens/sui_quicksettings_bar.lua:1052 screens/sui_settings_window.lua:1180
-#: screens/sui_topbar.lua:651
+#: screens/sui_topbar.lua:649
 msgid "Arrange Items"
 msgstr "Упорядочить элементы"
 
@@ -386,7 +405,7 @@ msgstr "Упорядочить элементы"
 msgid "Arrange Quick Settings"
 msgstr "Упорядочить быстрые настройки"
 
-#: modules/module_reading_stats.lua:746
+#: modules/module_reading_stats.lua:714
 msgid "Arrange Reading Stats"
 msgstr "Упорядочить статистику"
 
@@ -394,7 +413,7 @@ msgstr "Упорядочить статистику"
 msgid "Arrange Statistics"
 msgstr "Упорядочить статистику"
 
-#: screens/sui_menu.lua:417 screens/sui_menu.lua:435
+#: screens/sui_menu.lua:418 screens/sui_menu.lua:436
 msgid "Arrange Tabs"
 msgstr "Упорядочить вкладки"
 
@@ -406,39 +425,39 @@ msgstr "Упорядочить список «Буду читать»"
 msgid "At a Glance"
 msgstr "На первый взгляд"
 
-#: screens/sui_menu.lua:1971
+#: screens/sui_menu.lua:1972
 msgid "At least one item must stay visible."
 msgstr ""
 
-#: engines/sui_heatmap_widgets.lua:110
+#: infra/sui_datenames.lua:30
 msgid "Aug"
 msgstr "авг."
 
-#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2675
+#: infra/sui_datenames.lua:37
 msgid "August"
 msgstr "Август"
 
 #: features/sui_manual_books.lua:119 modules/module_coverdeck.lua:163
-#: modules/module_coverdeck.lua:1645 modules/module_currently.lua:326
-#: modules/module_currently.lua:1977 modules/module_quote.lua:1471
+#: modules/module_coverdeck.lua:1645 modules/module_currently.lua:327
+#: modules/module_currently.lua:1953 modules/module_quote.lua:1471
 #: modules/module_quote.lua:1492
 msgid "Author"
 msgstr "Автор"
 
-#: engines/sui_book_grid.lua:1536 modules/module_library.lua:215
+#: engines/sui_book_grid.lua:1495 modules/module_library.lua:205
 msgid "Author (A–Z)"
 msgstr "Автор (А-Я)"
 
-#: screens/sui_menu.lua:4772
+#: screens/sui_menu.lua:4778
 msgid "Author: %s"
 msgstr "Автор: %s"
 
 #: features/library/sui_library_browse.lua:63
-#: features/sui_quickactions.lua:1021 infra/sui_config.lua:135
+#: features/sui_quickactions.lua:1021 infra/sui_config.lua:136
 msgid "Authors"
 msgstr "Авторы"
 
-#: modules/module_collections.lua:1238 screens/sui_menu.lua:3192
+#: modules/module_collections.lua:1226 screens/sui_menu.lua:3232
 msgid "Auto (Single ↔ 4-Cover Grid)"
 msgstr "Авто (1 ↔ 4 обложки)"
 
@@ -446,48 +465,46 @@ msgstr "Авто (1 ↔ 4 обложки)"
 msgid "Auto (first book)"
 msgstr "Авто (первая книга)"
 
-#: screens/sui_menu.lua:2657
+#: screens/sui_menu.lua:2654
 msgid "Auto-rotate"
 msgstr "Автоповорот"
 
-#: screens/sui_menu.lua:4777
+#: screens/sui_menu.lua:4783
 msgid "Automatic Update Check"
 msgstr "Автоматическая проверка обновлений"
 
-#: screens/sui_stats_windows.lua:1145 screens/sui_stats_windows.lua:2262
-#: screens/sui_stats_windows.lua:3678
+#: screens/sui_stats_windows.lua:1165 screens/sui_stats_windows.lua:2285
+#: screens/sui_stats_windows.lua:3643
 msgid "Average per day"
 msgstr "В среднем за день"
 
-#: screens/sui_stats_windows.lua:1147 screens/sui_stats_windows.lua:3680
+#: screens/sui_stats_windows.lua:1167 screens/sui_stats_windows.lua:3645
 msgid "Average per page"
 msgstr "В среднем на страницу"
 
-#: screens/sui_titlebar.lua:118 screens/sui_titlebar.lua:124
+#: screens/sui_titlebar.lua:117 screens/sui_titlebar.lua:123
 msgid "Back"
 msgstr "Назад"
 
-#: features/sui_style.lua:96
+#: features/sui_style.lua:93
 msgid "Back Button"
 msgstr "Кнопка Назад"
 
-#: features/sui_module_chrome.lua:218 features/sui_module_chrome.lua:263
-#: features/sui_module_chrome.lua:274 screens/sui_menu.lua:313
-#: screens/sui_menu.lua:3780
-msgid "Background Opacity"
+#: features/sui_module_chrome.lua:198
+msgid "Background"
 msgstr ""
 
-#: features/sui_module_chrome.lua:275
-#, fuzzy
-msgid "Background width"
-msgstr "Сплошной фон"
+#: features/sui_module_chrome.lua:190 screens/sui_menu.lua:314
+#: screens/sui_menu.lua:3691 screens/sui_menu.lua:3786
+msgid "Background Opacity"
+msgstr ""
 
 #: features/sui_quickactions.lua:1011
 #, fuzzy
 msgid "Backup"
 msgstr "Назад"
 
-#: screens/sui_menu.lua:4799
+#: screens/sui_menu.lua:4805
 msgid "Backup & Restore"
 msgstr ""
 
@@ -514,86 +531,87 @@ msgid ""
 msgstr ""
 
 #: features/sui_backup.lua:592
-msgid "Backup was made by a newer SimpleUI version. Please update this plugin first."
+msgid ""
+"Backup was made by a newer SimpleUI version. Please update this plugin first."
 msgstr ""
 
-#: engines/sui_book_grid.lua:2043 modules/module_collections.lua:1298
-#: screens/sui_menu.lua:3479 screens/sui_menu.lua:3488
-#: screens/sui_menu.lua:3494
+#: engines/sui_book_grid.lua:2002 modules/module_collections.lua:1286
+#: screens/sui_menu.lua:3519 screens/sui_menu.lua:3528
+#: screens/sui_menu.lua:3534
 msgid "Badge"
 msgstr "Значок"
 
-#: infra/sui_config.lua:1274 infra/sui_config.lua:1276
+#: infra/sui_config.lua:1275 infra/sui_config.lua:1277
 msgid "Badge Size"
 msgstr "Размер значка"
 
-#: screens/sui_menu.lua:3210
+#: screens/sui_menu.lua:3250
 msgid "Badges"
 msgstr "Значки"
 
-#: features/library/sui_foldercovers.lua:294 screens/sui_menu.lua:3412
-#: screens/sui_menu.lua:3421 screens/sui_menu.lua:3427
+#: features/library/sui_foldercovers.lua:304 screens/sui_menu.lua:3452
+#: screens/sui_menu.lua:3461 screens/sui_menu.lua:3467
 msgid "Banner"
 msgstr "Баннер"
 
-#: engines/sui_book_grid.lua:1930
+#: engines/sui_book_grid.lua:1889
 msgid "Bar"
 msgstr "Полоса"
 
-#: engines/sui_book_grid.lua:1932
+#: engines/sui_book_grid.lua:1891
 msgid "Bar + Text"
 msgstr "Полоса + текст"
 
-#: screens/sui_menu.lua:671 screens/sui_menu.lua:1223 screens/sui_menu.lua:1456
-#: screens/sui_menu.lua:1566
+#: screens/sui_menu.lua:672 screens/sui_menu.lua:1224 screens/sui_menu.lua:1457
+#: screens/sui_menu.lua:1567
 msgid "Bar Size"
 msgstr "Размер панели"
 
-#: screens/sui_menu.lua:1414
+#: screens/sui_menu.lua:1415
 msgid "Bar Style"
 msgstr "Стиль панели"
 
-#: modules/module_quick_actions.lua:615 screens/sui_menu.lua:1441
+#: modules/module_quick_actions.lua:615 screens/sui_menu.lua:1442
 #: screens/sui_quicksettings_bar.lua:1290
 msgid "Bare"
 msgstr "Без фона"
 
-#: features/sui_backup.lua:116 screens/sui_menu.lua:4927
+#: features/sui_backup.lua:116 screens/sui_menu.lua:4933
 #: screens/sui_settings_window.lua:361 screens/sui_settings_window.lua:1148
 msgid "Bars"
 msgstr "Панели"
 
-#: infra/sui_config.lua:197 modules/module_clock.lua:214
-#: modules/module_clock.lua:1205
+#: infra/sui_config.lua:198 modules/module_clock.lua:196
+#: modules/module_clock.lua:1176
 msgid "Battery"
 msgstr "Батарея"
 
-#: infra/sui_config.lua:1140 screens/sui_menu.lua:3031
+#: infra/sui_config.lua:1141 screens/sui_menu.lua:3028
 #: screens/sui_settings_window.lua:480 screens/sui_settings_window.lua:1161
 msgid "Behaviour"
 msgstr "Поведение"
 
-#: screens/sui_stats_windows.lua:2032 screens/sui_stats_windows.lua:2052
+#: screens/sui_stats_windows.lua:2055 screens/sui_stats_windows.lua:2075
 msgid "Best streak"
 msgstr "Лучшая серия"
 
-#: infra/sui_config.lua:195
+#: infra/sui_config.lua:196
 msgid "Bluetooth"
 msgstr ""
 
-#: features/sui_style.lua:2157
+#: features/sui_style.lua:2082
 msgid "Bold"
 msgstr ""
 
-#: features/sui_style.lua:2159
+#: features/sui_style.lua:2084
 msgid "Bold italic"
 msgstr ""
 
-#: screens/sui_menu.lua:2884
+#: screens/sui_menu.lua:2881
 msgid "Book Cover Transition"
 msgstr "Переход обложки книги"
 
-#: screens/sui_menu.lua:2719
+#: screens/sui_menu.lua:2716
 #, fuzzy
 msgid "Book Folder"
 msgstr "Папка"
@@ -602,15 +620,15 @@ msgstr "Папка"
 msgid "Book Info"
 msgstr "О книге"
 
-#: infra/sui_config.lua:1666
+#: infra/sui_config.lua:1667
 msgid "Book Menu"
 msgstr "Меню книги"
 
-#: screens/sui_stats_windows.lua:3732
+#: screens/sui_stats_windows.lua:3697
 msgid "Book Statistics"
 msgstr "Статистика по книге"
 
-#: main.lua:1163
+#: main.lua:1182
 msgid "Book statistics"
 msgstr "Статистика по книге"
 
@@ -626,63 +644,69 @@ msgstr "Браузер закладок"
 msgid "Bookmark browser requires a newer KOReader. Please update."
 msgstr ""
 
-#: features/sui_quickactions.lua:881 infra/sui_config.lua:127
+#: features/sui_quickactions.lua:881 infra/sui_config.lua:128
 msgid "Bookmarks"
 msgstr "Закладки"
 
-#: modules/module_feat_coll.lua:192 modules/module_library.lua:274
+#: modules/module_feat_coll.lua:192 modules/module_library.lua:266
 msgid "Books"
 msgstr "Книги"
 
-#: features/sui_manual_books.lua:133
-msgid "Books read in %d:"
-msgstr ""
-
-#: infra/sui_goals.lua:45
+#: infra/sui_goals.lua:46
 msgid "Books to read in %s:"
 msgstr "Книг для прочтения в %s:"
 
-#: modules/module_collections.lua:1274 screens/sui_menu.lua:3230
-#: screens/sui_menu.lua:3237 screens/sui_menu.lua:3252
-#: screens/sui_menu.lua:3643 screens/sui_menu.lua:3662
+#: modules/module_collections.lua:1262 screens/sui_menu.lua:3270
+#: screens/sui_menu.lua:3277 screens/sui_menu.lua:3292
+#: screens/sui_menu.lua:3640 screens/sui_menu.lua:3659
 msgid "Bottom"
 msgstr "Снизу"
 
-#: screens/sui_menu.lua:1530 screens/sui_menu.lua:1531
-#: screens/sui_menu.lua:1569
+#: screens/sui_menu.lua:1531 screens/sui_menu.lua:1532
+#: screens/sui_menu.lua:1570
 msgid "Bottom Margin"
 msgstr "Отступ снизу"
 
-#: screens/sui_menu.lua:2885
-msgid "Briefly show the book cover full-screen when opening or closing a book, masking the page-layout flash. Normally requires the book to already be indexed by the cover browser (its cover must have been seen at least once in a grid/list view) — see \"High-Quality Cover\" below to also cover un-indexed books."
-msgstr "Кратко показывает обложку книги на весь экран при её открытии или закрытии, скрывая мелькание вёрстки страницы. Обычно требует, чтобы обложка книги уже была проиндексирована браузером обложек (её нужно было хотя бы раз увидеть в виде сетки/списка) — см. «Высококачественная обложка» ниже, чтобы охватить и непроиндексированные книги."
+#: screens/sui_menu.lua:2882
+msgid ""
+"Briefly show the book cover full-screen when opening or closing a book, "
+"masking the page-layout flash. Normally requires the book to already be "
+"indexed by the cover browser (its cover must have been seen at least once in "
+"a grid/list view) — see \"High-Quality Cover\" below to also cover un-"
+"indexed books."
+msgstr ""
+"Кратко показывает обложку книги на весь экран при её открытии или закрытии, "
+"скрывая мелькание вёрстки страницы. Обычно требует, чтобы обложка книги уже "
+"была проиндексирована браузером обложек (её нужно было хотя бы раз увидеть в "
+"виде сетки/списка) — см. «Высококачественная обложка» ниже, чтобы охватить и "
+"непроиндексированные книги."
 
-#: features/sui_quickactions.lua:947 infra/sui_config.lua:130
-#: infra/sui_config.lua:196
+#: features/sui_quickactions.lua:947 infra/sui_config.lua:131
+#: infra/sui_config.lua:197
 msgid "Brightness"
 msgstr "Яркость"
 
-#: screens/sui_titlebar.lua:120
+#: screens/sui_titlebar.lua:119
 msgid "Browse"
 msgstr "Обзор"
 
-#: features/sui_style.lua:111
+#: features/sui_style.lua:108
 msgid "Browse Button (author)"
 msgstr "Кнопка просмотра (автор)"
 
-#: features/sui_style.lua:105
+#: features/sui_style.lua:102
 msgid "Browse Button (default)"
 msgstr "Кнопка просмотра (по умолчанию)"
 
-#: features/sui_style.lua:117
+#: features/sui_style.lua:114
 msgid "Browse Button (series)"
 msgstr "Кнопка просмотра (серии)"
 
-#: features/sui_style.lua:123
+#: features/sui_style.lua:120
 msgid "Browse Button (tags)"
 msgstr "Кнопка просмотра (теги)"
 
-#: features/sui_style.lua:1373
+#: features/sui_style.lua:1370
 msgid "Browse Icons"
 msgstr "Иконки просмотра"
 
@@ -695,12 +719,12 @@ msgstr "Просмотр по %s"
 msgid "Browse by Authors/Series/Tags not available."
 msgstr "Просмотр по авторам/сериям/тегам недоступен."
 
-#: screens/sui_titlebar.lua:1029
+#: screens/sui_titlebar.lua:1041
 msgid "Browse library"
 msgstr "Просмотр библиотеки"
 
-#: features/sui_quickactions.lua:2190 screens/sui_menu.lua:2588
-#: screens/sui_menu.lua:4133
+#: features/sui_quickactions.lua:2190 screens/sui_menu.lua:2585
+#: screens/sui_menu.lua:4139
 #, fuzzy
 msgid "Browse…"
 msgstr "Обзор"
@@ -714,10 +738,6 @@ msgstr "Фон кнопки"
 msgid "Button Opacity"
 msgstr "Размер кнопки"
 
-#: screens/sui_menu.lua:2164
-msgid "Button Size"
-msgstr "Размер кнопки"
-
 #: modules/module_quick_actions.lua:622
 #, fuzzy
 msgid "Button Style"
@@ -727,27 +747,33 @@ msgstr "Размер кнопки"
 msgid "Button Type"
 msgstr "Тип кнопки"
 
-#: screens/sui_titlebar.lua:1033
+#: screens/sui_titlebar.lua:1045
 msgid "By author"
 msgstr "По автору"
 
-#: screens/sui_menu.lua:2924
-msgid "By default the cover is stretched to fill the whole screen, which can distort it if its proportions don't match your screen's. When on, the cover keeps its original proportions instead, centered over a black background."
-msgstr "По умолчанию обложка растягивается на весь экран, что может её исказить, если пропорции не совпадают с экраном. Если включено, обложка сохраняет исходные пропорции и центрируется на чёрном фоне."
+#: screens/sui_menu.lua:2921
+msgid ""
+"By default the cover is stretched to fill the whole screen, which can "
+"distort it if its proportions don't match your screen's. When on, the cover "
+"keeps its original proportions instead, centered over a black background."
+msgstr ""
+"По умолчанию обложка растягивается на весь экран, что может её исказить, "
+"если пропорции не совпадают с экраном. Если включено, обложка сохраняет "
+"исходные пропорции и центрируется на чёрном фоне."
 
-#: screens/sui_titlebar.lua:1034
+#: screens/sui_titlebar.lua:1046
 msgid "By series"
 msgstr "По серии"
 
-#: screens/sui_titlebar.lua:1035
+#: screens/sui_titlebar.lua:1047
 msgid "By tags"
 msgstr "По тегам"
 
-#: screens/sui_heatmap_popup.lua:67 screens/sui_stats_windows.lua:2908
+#: screens/sui_heatmap_popup.lua:67 screens/sui_stats_windows.lua:2878
 msgid "CALENDAR"
 msgstr "КАЛЕНДАРЬ"
 
-#: modules/module_heatmap.lua:330
+#: modules/module_heatmap.lua:312
 msgid "Calendar"
 msgstr "Календарь"
 
@@ -770,40 +796,40 @@ msgstr "Календарь"
 #: features/sui_quickactions.lua:2585 features/sui_quickactions.lua:2611
 #: features/sui_quickactions.lua:2636 features/sui_quickactions.lua:2714
 #: features/sui_quickactions.lua:2738 features/sui_quickactions.lua:3050
-#: features/sui_quickactions.lua:3445 features/sui_style.lua:1391
-#: infra/sui_config.lua:1258 infra/sui_config.lua:1327
-#: infra/sui_config.lua:1361 infra/sui_config.lua:1476
-#: infra/sui_config.lua:1549 infra/sui_goals.lua:112 infra/sui_updater.lua:500
-#: infra/sui_updater.lua:517 modules/module_clock.lua:1268
+#: features/sui_quickactions.lua:3445 features/sui_style.lua:1388
+#: infra/sui_config.lua:1259 infra/sui_config.lua:1328
+#: infra/sui_config.lua:1362 infra/sui_config.lua:1477
+#: infra/sui_config.lua:1550 infra/sui_goals.lua:117 infra/sui_updater.lua:500
+#: infra/sui_updater.lua:517 modules/module_clock.lua:1239
 #: modules/module_collections.lua:355 modules/module_quote.lua:1328
-#: screens/sui_menu.lua:770 screens/sui_menu.lua:1032 screens/sui_menu.lua:1162
-#: screens/sui_menu.lua:1471 screens/sui_menu.lua:2776
-#: screens/sui_menu.lua:2806 screens/sui_menu.lua:3576
-#: screens/sui_menu.lua:4341 screens/sui_menu.lua:4369
-#: screens/sui_menu.lua:4398 screens/sui_menu.lua:4415
-#: screens/sui_menu.lua:4441 screens/sui_menu.lua:4482
-#: screens/sui_menu.lua:4500 screens/sui_menu.lua:4527
-#: screens/sui_menu.lua:4711 screens/sui_menu.lua:4816
+#: screens/sui_menu.lua:771 screens/sui_menu.lua:1033 screens/sui_menu.lua:1163
+#: screens/sui_menu.lua:1472 screens/sui_menu.lua:2773
+#: screens/sui_menu.lua:2803 screens/sui_menu.lua:3092
+#: screens/sui_menu.lua:4347 screens/sui_menu.lua:4375
+#: screens/sui_menu.lua:4404 screens/sui_menu.lua:4421
+#: screens/sui_menu.lua:4447 screens/sui_menu.lua:4488
+#: screens/sui_menu.lua:4506 screens/sui_menu.lua:4533
+#: screens/sui_menu.lua:4717 screens/sui_menu.lua:4822
 #: screens/sui_settings_window.lua:549 screens/sui_settings_window.lua:1243
-#: screens/sui_stats_windows.lua:516 screens/sui_stats_windows.lua:636
-#: screens/sui_titlebar.lua:1036
+#: screens/sui_stats_windows.lua:517 screens/sui_stats_windows.lua:637
+#: screens/sui_titlebar.lua:1048
 msgid "Cancel"
 msgstr "Отмена"
 
-#: modules/module_reading_stats.lua:846 modules/module_reading_stats.lua:908
+#: modules/module_reading_stats.lua:814 modules/module_reading_stats.lua:876
 msgid "Card Opacity"
 msgstr ""
 
-#: modules/module_reading_stats.lua:837
+#: modules/module_reading_stats.lua:805
 msgid "Cards"
 msgstr "Карточки"
 
-#: infra/sui_config.lua:1850 screens/sui_menu.lua:830 screens/sui_menu.lua:1062
-#: screens/sui_menu.lua:3642 screens/sui_menu.lua:3655
+#: infra/sui_config.lua:1851 screens/sui_menu.lua:831 screens/sui_menu.lua:1063
+#: screens/sui_menu.lua:3639 screens/sui_menu.lua:3652
 msgid "Center"
 msgstr "По центру"
 
-#: screens/sui_menu.lua:4788
+#: screens/sui_menu.lua:4794
 msgid "Check for Updates"
 msgstr "Проверить наличие обновлений"
 
@@ -831,15 +857,17 @@ msgstr ""
 msgid "Choose icon"
 msgstr ""
 
-#: screens/sui_menu.lua:4143
+#: screens/sui_menu.lua:4149
 msgid "Choose icon pack"
 msgstr ""
 
 #: screens/sui_onboarding.lua:216
-msgid "Choose the folder where you will place all your books. Simple UI uses it to show your books in the Library."
+msgid ""
+"Choose the folder where you will place all your books. Simple UI uses it to "
+"show your books in the Library."
 msgstr ""
 
-#: screens/sui_menu.lua:2596
+#: screens/sui_menu.lua:2593
 #, fuzzy
 msgid "Choose wallpaper"
 msgstr "Осветлить обои"
@@ -848,29 +876,29 @@ msgstr "Осветлить обои"
 msgid "Choose your initial layout"
 msgstr "Выберите начальную раскладку"
 
-#: screens/sui_menu.lua:2136 screens/sui_menu.lua:3852
+#: screens/sui_menu.lua:2144 screens/sui_menu.lua:3858
 msgid "Classic"
 msgstr ""
 
 #: features/sui_presets.lua:155 features/sui_presets.lua:219
-#: infra/sui_config.lua:193 modules/module_clock.lua:212
-#: modules/module_clock.lua:759 modules/module_clock.lua:1205
+#: infra/sui_config.lua:194 modules/module_clock.lua:194
+#: modules/module_clock.lua:741 modules/module_clock.lua:1176
 msgid "Clock"
 msgstr "Часы"
 
-#: modules/module_clock.lua:1213
+#: modules/module_clock.lua:1184
 msgid "Clock Style"
 msgstr "Стиль часов"
 
-#: screens/sui_titlebar.lua:123
+#: screens/sui_titlebar.lua:122
 msgid "Close"
 msgstr "Закрыть"
 
-#: screens/sui_menu.lua:2837
+#: screens/sui_menu.lua:2834
 msgid "Closing Book Notice"
 msgstr "Уведомление при закрытии книги"
 
-#: main.lua:1882
+#: main.lua:1861
 msgid "Closing book…"
 msgstr "Закрытие книги…"
 
@@ -883,7 +911,7 @@ msgstr "Код символа вне диапазона Unicode (0–10FFFF)."
 msgid "Collection"
 msgstr "Коллекция"
 
-#: modules/module_collections.lua:1349
+#: modules/module_collections.lua:1337
 msgid "Collection Menu"
 msgstr "Меню коллекции"
 
@@ -904,15 +932,15 @@ msgid "Collection not available: %s"
 msgstr "Коллекция недоступна: %s"
 
 #: features/sui_quickactions.lua:515 features/sui_quickactions.lua:770
-#: features/sui_quickactions.lua:2251 infra/sui_config.lua:121
+#: features/sui_quickactions.lua:2251 infra/sui_config.lua:122
 #: modules/module_collections.lua:1101 modules/module_collections.lua:1120
-#: modules/module_collections.lua:1129 modules/module_collections.lua:1182
-#: modules/module_collections.lua:1339 modules/module_collections.lua:1340
+#: modules/module_collections.lua:1129 modules/module_collections.lua:1170
+#: modules/module_collections.lua:1327 modules/module_collections.lua:1328
 #: modules/module_coverdeck.lua:1383
 msgid "Collections"
 msgstr "Коллекции"
 
-#: infra/sui_patches.lua:1444
+#: infra/sui_patches.lua:1445
 msgid "Collections (%1)"
 msgstr "Коллекции (%1)"
 
@@ -920,26 +948,25 @@ msgstr "Коллекции (%1)"
 msgid "Collections not available."
 msgstr "Коллекции недоступны."
 
-#: features/sui_style.lua:173
+#: features/sui_style.lua:170
 msgid "Collections: Back Button"
 msgstr "Коллекции: Кнопка Назад"
 
-#: screens/sui_menu.lua:3275 screens/sui_menu.lua:3329
-#: screens/sui_menu.lua:3383 screens/sui_menu.lua:3450
-#: screens/sui_menu.lua:3517 screens/sui_menu.lua:3671
+#: screens/sui_menu.lua:3315 screens/sui_menu.lua:3369
+#: screens/sui_menu.lua:3423 screens/sui_menu.lua:3490
+#: screens/sui_menu.lua:3557 screens/sui_menu.lua:3668
 msgid "Color"
 msgstr "Цвет"
 
-#: infra/sui_config.lua:1533 infra/sui_config.lua:1541
+#: infra/sui_config.lua:1534 infra/sui_config.lua:1542
 msgid "Column Width (Bento Grid)"
 msgstr ""
 
-#: engines/sui_book_grid.lua:1859
+#: engines/sui_book_grid.lua:1818
 msgid "Columns"
 msgstr "Столбцы"
 
-#: modules/module_currently.lua:2037 modules/module_reading_goals.lua:1356
-#: screens/sui_menu.lua:2167
+#: modules/module_currently.lua:2013 modules/module_reading_goals.lua:1283
 msgid "Compact"
 msgstr "Компактный"
 
@@ -947,12 +974,12 @@ msgstr "Компактный"
 msgid "Confirm"
 msgstr "Подтвердить"
 
-#: infra/sui_config.lua:1115
+#: infra/sui_config.lua:1116
 #, fuzzy
 msgid "Content"
 msgstr "Продолжить"
 
-#: features/sui_quickactions.lua:803 infra/sui_config.lua:124
+#: features/sui_quickactions.lua:803 infra/sui_config.lua:125
 #: screens/sui_onboarding.lua:423 screens/sui_onboarding.lua:429
 #: screens/sui_onboarding.lua:441 screens/sui_onboarding.lua:447
 msgid "Continue"
@@ -962,7 +989,7 @@ msgstr "Продолжить"
 msgid "Copy this file somewhere safe (e.g. over USB)."
 msgstr ""
 
-#: engines/sui_book_grid.lua:1934
+#: engines/sui_book_grid.lua:1893
 msgid "Corner Badge"
 msgstr "Угловой значок"
 
@@ -972,7 +999,7 @@ msgstr "Угловой значок"
 msgid "Could not determine backup folder."
 msgstr "Не удалось определить папку наборов"
 
-#: features/sui_style.lua:2332
+#: features/sui_style.lua:2257
 msgid "Could not determine packs folder"
 msgstr "Не удалось определить папку наборов"
 
@@ -981,11 +1008,11 @@ msgstr "Не удалось определить папку наборов"
 msgid "Could not open backup file for writing"
 msgstr "Не удалось открыть zip (неверный формат или поврежден)"
 
-#: screens/sui_stats_windows.lua:65
+#: screens/sui_stats_windows.lua:66
 msgid "Could not open statistics database."
 msgstr "Не удалось открыть базу данных статистики."
 
-#: features/sui_style.lua:2334
+#: features/sui_style.lua:2259
 msgid "Could not open zip (invalid format or corrupted)"
 msgstr "Не удалось открыть zip (неверный формат или поврежден)"
 
@@ -994,8 +1021,10 @@ msgstr "Не удалось открыть zip (неверный формат и
 msgid "Could not write backup file"
 msgstr "Не удалось определить папку наборов"
 
-#: features/sui_manual_books.lua:182
-msgid "Count manually tracked books in the all-time total of books finished. They always count towards the year they belong to."
+#: features/sui_stats_menu.lua:103
+msgid ""
+"Count manually tracked books in the all-time total of books finished. They "
+"always count towards the year they belong to."
 msgstr ""
 
 #: features/sui_presets.lua:175 features/sui_presets.lua:193
@@ -1003,25 +1032,25 @@ msgstr ""
 msgid "Cover Deck"
 msgstr "Колода обложек"
 
-#: screens/sui_menu.lua:3162
+#: screens/sui_menu.lua:3202
 msgid "Cover Settings"
 msgstr "Настройки обложки"
 
-#: screens/sui_menu.lua:4639
+#: screens/sui_menu.lua:4645
 msgid "Cover Shadow"
 msgstr ""
 
-#: engines/sui_book_grid.lua:1812 engines/sui_book_grid.lua:1814
+#: engines/sui_book_grid.lua:1771 engines/sui_book_grid.lua:1773
 #: modules/module_coverdeck.lua:1328 modules/module_coverdeck.lua:1329
-#: modules/module_currently.lua:1492 modules/module_currently.lua:1493
+#: modules/module_currently.lua:1468 modules/module_currently.lua:1469
 msgid "Cover Size"
 msgstr "Размер обложки"
 
-#: modules/module_currently.lua:1507 modules/module_currently.lua:1508
+#: modules/module_currently.lua:1483 modules/module_currently.lua:1484
 msgid "Cover Spacing"
 msgstr "Расстояние между обложками"
 
-#: modules/module_collections.lua:1231
+#: modules/module_collections.lua:1219
 msgid "Cover Style"
 msgstr "Стиль обложки"
 
@@ -1030,7 +1059,8 @@ msgid "Cover for \"%s\""
 msgstr "Обложка для \"%s\""
 
 #: infra/sui_compat_check.lua:212
-msgid "CoverBrowser plugin is not enabled, some features will not work correctly."
+msgid ""
+"CoverBrowser plugin is not enabled, some features will not work correctly."
 msgstr ""
 
 #: modules/module_coverdeck.lua:161
@@ -1054,8 +1084,8 @@ msgstr "Создать экран"
 msgid "Create a \"Books\" folder"
 msgstr ""
 
-#: features/library/sui_foldercovers.lua:669
-#: features/library/sui_foldercovers.lua:684
+#: features/library/sui_foldercovers.lua:679
+#: features/library/sui_foldercovers.lua:694
 #: features/library/sui_library_browse.lua:831
 #: features/library/sui_series_grouping.lua:393
 msgid "Create collection"
@@ -1070,17 +1100,17 @@ msgstr "Создать экран"
 msgid "Creating backup…"
 msgstr "Получение закладок…"
 
-#: screens/sui_stats_windows.lua:2030 screens/sui_stats_windows.lua:2050
+#: screens/sui_stats_windows.lua:2053 screens/sui_stats_windows.lua:2073
 msgid "Current streak"
 msgstr "Текущая серия"
 
 #: features/sui_presets.lua:143 features/sui_presets.lua:155
-#: features/sui_presets.lua:219 modules/module_currently.lua:401
-#: modules/module_currently.lua:402
+#: features/sui_presets.lua:219 modules/module_currently.lua:402
+#: modules/module_currently.lua:403
 msgid "Currently Reading"
 msgstr "Сейчас читаю"
 
-#: infra/sui_config.lua:2726
+#: infra/sui_config.lua:2750
 msgid "Custom"
 msgstr "Свой вариант"
 
@@ -1112,7 +1142,7 @@ msgstr "Свои экраны"
 msgid "Custom Screens unavailable."
 msgstr "Свои экраны недоступны."
 
-#: infra/sui_config.lua:200 screens/sui_menu.lua:762 screens/sui_menu.lua:1025
+#: infra/sui_config.lua:201 screens/sui_menu.lua:763 screens/sui_menu.lua:1026
 msgid "Custom Text"
 msgstr "Пользовательский текст"
 
@@ -1138,40 +1168,38 @@ msgstr "Пользовательские обои и иконки"
 msgid "Customize even more"
 msgstr "Персонализируйте еще больше"
 
-#: screens/sui_stats_windows.lua:2583 screens/sui_stats_windows.lua:3156
+#: screens/sui_stats_windows.lua:2577 screens/sui_stats_windows.lua:3118
 msgid "DAY STREAK"
 msgstr "ДНЕЙ ПОДРЯД"
 
-#: infra/sui_goals.lua:64 modules/module_reading_goals.lua:1226
-#: modules/module_reading_goals.lua:1254 modules/module_reading_goals.lua:1291
-#: modules/module_reading_goals.lua:1313
+#: infra/sui_goals.lua:65
 msgid "Daily Goal"
 msgstr "Дневная цель"
 
-#: infra/sui_goals.lua:65
+#: infra/sui_goals.lua:66
 msgid "Daily Reading Goal"
 msgstr "Книжная цель на день"
 
-#: modules/module_reading_stats.lua:125
+#: modules/module_reading_stats.lua:124
 msgid "Daily avg — Pages"
 msgstr "В среднем за день — Страницы"
 
-#: modules/module_reading_stats.lua:124
+#: modules/module_reading_stats.lua:123
 msgid "Daily avg — Time"
 msgstr "В среднем за день — Время"
 
-#: engines/sui_book_grid.lua:1905 modules/module_collections.lua:1282
-#: modules/module_coverdeck.lua:1677 modules/module_currently.lua:2003
-#: screens/sui_menu.lua:3277 screens/sui_menu.lua:3282
-#: screens/sui_menu.lua:3331 screens/sui_menu.lua:3336
-#: screens/sui_menu.lua:3385 screens/sui_menu.lua:3390
-#: screens/sui_menu.lua:3452 screens/sui_menu.lua:3457
-#: screens/sui_menu.lua:3519 screens/sui_menu.lua:3524
-#: screens/sui_menu.lua:3673 screens/sui_menu.lua:3685
+#: engines/sui_book_grid.lua:1864 modules/module_collections.lua:1270
+#: modules/module_coverdeck.lua:1677 modules/module_currently.lua:1979
+#: screens/sui_menu.lua:3317 screens/sui_menu.lua:3322
+#: screens/sui_menu.lua:3371 screens/sui_menu.lua:3376
+#: screens/sui_menu.lua:3425 screens/sui_menu.lua:3430
+#: screens/sui_menu.lua:3492 screens/sui_menu.lua:3497
+#: screens/sui_menu.lua:3559 screens/sui_menu.lua:3564
+#: screens/sui_menu.lua:3670 screens/sui_menu.lua:3682
 msgid "Dark"
 msgstr "Тёмный"
 
-#: screens/sui_menu.lua:2668
+#: screens/sui_menu.lua:2665
 #, fuzzy
 msgid "Darken"
 msgstr "Тёмный"
@@ -1180,49 +1208,49 @@ msgstr "Тёмный"
 msgid "Dashboard"
 msgstr ""
 
-#: modules/module_clock.lua:213 modules/module_clock.lua:1205
+#: modules/module_clock.lua:195 modules/module_clock.lua:1176
 #, fuzzy
 msgid "Date"
 msgstr "Показать дату"
 
-#: modules/module_library.lua:216
+#: modules/module_library.lua:206
 msgid "Date added (newest)"
 msgstr "Дата добавления (сначала новые)"
 
-#: modules/module_library.lua:217
+#: modules/module_library.lua:207
 msgid "Date added (oldest)"
 msgstr "Дата добавления (сначала старые)"
 
-#: screens/sui_stats_windows.lua:591
+#: screens/sui_stats_windows.lua:592
 msgid "Date finished"
 msgstr "Дата завершения"
 
-#: screens/sui_stats_windows.lua:584
+#: screens/sui_stats_windows.lua:585
 msgid "Date started"
 msgstr "Дата начала"
 
-#: screens/sui_stats_windows.lua:885 screens/sui_stats_windows.lua:3447
+#: screens/sui_stats_windows.lua:905 screens/sui_stats_windows.lua:3412
 msgid "Days"
 msgstr "Дни"
 
-#: modules/module_coverdeck.lua:151 modules/module_currently.lua:331
+#: modules/module_coverdeck.lua:151 modules/module_currently.lua:332
 msgid "Days of reading"
 msgstr "Дней чтения"
 
-#: engines/sui_heatmap_widgets.lua:110
+#: infra/sui_datenames.lua:30
 msgid "Dec"
 msgstr "дек."
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
+#: infra/sui_datenames.lua:38
 msgid "December"
 msgstr "Декабрь"
 
 #: features/sui_quickactions.lua:2168 features/sui_quickactions.lua:2454
-#: features/sui_style.lua:2134 features/sui_style.lua:2181
-#: infra/sui_config.lua:962 modules/module_currently.lua:1531
-#: modules/module_reading_goals.lua:1355 screens/sui_menu.lua:570
-#: screens/sui_menu.lua:699 screens/sui_menu.lua:1417 screens/sui_menu.lua:2168
-#: screens/sui_menu.lua:3851 screens/sui_titlebar.lua:1032
+#: features/sui_style.lua:2059 features/sui_style.lua:2106
+#: infra/sui_config.lua:963 modules/module_currently.lua:1507
+#: modules/module_reading_goals.lua:1282 screens/sui_menu.lua:571
+#: screens/sui_menu.lua:700 screens/sui_menu.lua:1418 screens/sui_menu.lua:3857
+#: screens/sui_titlebar.lua:1044
 msgid "Default"
 msgstr "По умолчанию"
 
@@ -1242,40 +1270,40 @@ msgstr "По умолчанию (Система)"
 msgid "Default Quotes"
 msgstr "Цитаты по умолчанию"
 
-#: infra/sui_config.lua:1320
+#: infra/sui_config.lua:1321
 #, fuzzy
 msgid "Default: %1"
 msgstr "По умолчанию"
 
-#: features/sui_style.lua:180
+#: features/sui_style.lua:177
 msgid "Default: Folder"
 msgstr "По умолчанию: Папка"
 
-#: features/sui_style.lua:198
+#: features/sui_style.lua:195
 msgid "Default: Group"
 msgstr "По умолчанию: Группа"
 
-#: features/sui_style.lua:186
+#: features/sui_style.lua:183
 msgid "Default: Plugin"
 msgstr "По умолчанию: Плагин"
 
-#: features/sui_style.lua:192
+#: features/sui_style.lua:189
 msgid "Default: System"
 msgstr "По умолчанию: Система"
 
-#: engines/sui_window.lua:1998 engines/sui_window.lua:3007
+#: engines/sui_window.lua:2071 engines/sui_window.lua:3463
 #: features/library/sui_book_hold_dialog.lua:151
 #: features/sui_manual_books.lua:99 features/sui_manual_books.lua:103
 #: features/sui_presets.lua:960 features/sui_presets.lua:963
 #: features/sui_presets.lua:1003 features/sui_quickactions.lua:1612
 #: features/sui_quickactions.lua:3044 features/sui_quickactions.lua:3049
-#: screens/sui_menu.lua:4437 screens/sui_menu.lua:4440
-#: screens/sui_menu.lua:4481 screens/sui_settings_window.lua:576
+#: screens/sui_menu.lua:4443 screens/sui_menu.lua:4446
+#: screens/sui_menu.lua:4487 screens/sui_settings_window.lua:576
 #: screens/sui_settings_window.lua:624 screens/sui_settings_window.lua:754
 msgid "Delete"
 msgstr "Удалить"
 
-#: screens/sui_menu.lua:4815
+#: screens/sui_menu.lua:4821
 msgid "Delete Settings"
 msgstr "Удалить настройки"
 
@@ -1284,7 +1312,7 @@ msgid "Delete \"%s\"? This removes its layout, modules and Quick Action."
 msgstr "Удалить «%s»? Это удалит его раскладку, модули и быстрое действие."
 
 #: features/sui_presets.lua:962 features/sui_presets.lua:1002
-#: screens/sui_menu.lua:4439 screens/sui_menu.lua:4480
+#: screens/sui_menu.lua:4445 screens/sui_menu.lua:4486
 msgid "Delete preset \"%s\"?"
 msgstr "Удалить пресет \"%s\"?"
 
@@ -1296,27 +1324,27 @@ msgstr "Удалить быстрое действие \"%s\"?"
 msgid "Delete this book?"
 msgstr ""
 
-#: modules/module_currently.lua:328 modules/module_currently.lua:1979
+#: modules/module_currently.lua:329 modules/module_currently.lua:1955
 msgid "Description"
 msgstr "Описание"
 
-#: modules/module_currently.lua:2088
+#: modules/module_currently.lua:2064
 msgid "Description Alignment"
 msgstr ""
 
-#: modules/module_reading_goals.lua:1160
+#: modules/module_reading_goals.lua:1148
 msgid "Detail"
 msgstr ""
 
-#: modules/module_reading_goals.lua:1368
+#: modules/module_reading_goals.lua:1295
 msgid "Detail Below Ring"
 msgstr ""
 
-#: modules/module_reading_goals.lua:1367
+#: modules/module_reading_goals.lua:1294
 msgid "Detail Inside Ring"
 msgstr ""
 
-#: modules/module_currently.lua:2036
+#: modules/module_currently.lua:2012
 msgid "Detailed"
 msgstr ""
 
@@ -1324,19 +1352,19 @@ msgstr ""
 msgid "Dictionary Lookup"
 msgstr "Поиск в словаре"
 
-#: modules/module_clock.lua:1218 modules/module_clock.lua:1222
+#: modules/module_clock.lua:1189 modules/module_clock.lua:1193
 msgid "Digital"
 msgstr "Цифровой"
 
-#: screens/sui_menu.lua:2792
+#: screens/sui_menu.lua:2789
 msgid "Disable \"Lock Scale\" first to set a custom label scale."
 msgstr "Отключите «Блок масштаба», чтобы задать свой масштаб подписей."
 
-#: infra/sui_config.lua:1243
+#: infra/sui_config.lua:1244
 msgid "Disable \"Lock Scale\" first to set a per-module scale."
 msgstr "Отключите «Блок масштаба», чтобы задать масштаб модулей."
 
-#: infra/sui_config.lua:198
+#: infra/sui_config.lua:199
 msgid "Disk Usage"
 msgstr "Использование диска"
 
@@ -1344,11 +1372,11 @@ msgstr "Использование диска"
 msgid "Dispatcher not available."
 msgstr "Диспетчер недоступен."
 
-#: screens/sui_menu.lua:3892
+#: screens/sui_menu.lua:3898
 msgid "Display"
 msgstr "Отображение"
 
-#: screens/sui_menu.lua:4625
+#: screens/sui_menu.lua:4631
 #, fuzzy
 msgid "Don't Invert Colored Icons in Night Mode"
 msgstr "Инвертировать в ночном режиме"
@@ -1357,7 +1385,7 @@ msgstr "Инвертировать в ночном режиме"
 msgid "Done"
 msgstr "Готово"
 
-#: screens/sui_menu.lua:607
+#: screens/sui_menu.lua:608
 msgid "Dot Pager"
 msgstr "Точечная навигация"
 
@@ -1377,7 +1405,7 @@ msgstr "Ошибка загрузки: "
 msgid "Downloading Simple UI %s…"
 msgstr "Загрузка Simple UI %s…"
 
-#: modules/module_currently.lua:1534
+#: modules/module_currently.lua:1510
 msgid "Dynamic"
 msgstr "Динамический"
 
@@ -1389,11 +1417,11 @@ msgstr "Изменить"
 msgid "Edit Book"
 msgstr ""
 
-#: screens/sui_menu.lua:754 screens/sui_menu.lua:756 screens/sui_menu.lua:1019
+#: screens/sui_menu.lua:755 screens/sui_menu.lua:757 screens/sui_menu.lua:1020
 msgid "Edit Custom Text"
 msgstr "Редактировать персональный текст"
 
-#: screens/sui_menu.lua:2539 screens/sui_settings_window.lua:435
+#: screens/sui_menu.lua:2536 screens/sui_settings_window.lua:435
 msgid "Edit Home Screen Layout"
 msgstr "Изменить раскладку домашнего экрана"
 
@@ -1401,19 +1429,19 @@ msgstr "Изменить раскладку домашнего экрана"
 msgid "Edit Quick Action"
 msgstr "Изменить быстрое действие"
 
-#: modules/module_clock.lua:277
+#: modules/module_clock.lua:259
 msgid "Eight"
 msgstr "Восемь"
 
-#: modules/module_clock.lua:280
+#: modules/module_clock.lua:262
 msgid "Eighteen"
 msgstr "Восемьнадцать"
 
-#: modules/module_clock.lua:278
+#: modules/module_clock.lua:260
 msgid "Eleven"
 msgstr "Одиннадцать"
 
-#: screens/sui_menu.lua:1012
+#: screens/sui_menu.lua:1013
 msgid "Empty"
 msgstr "Пусто"
 
@@ -1424,17 +1452,18 @@ msgstr "включено"
 
 #: features/sui_quickactions.lua:684
 msgid "Enable 'Browse by Author / Series / Tags' in the library menu first."
-msgstr "Сначала включите «Просмотр по автору / серии / тегам» в меню библиотеки."
+msgstr ""
+"Сначала включите «Просмотр по автору / серии / тегам» в меню библиотеки."
 
-#: screens/sui_menu.lua:3089
+#: screens/sui_menu.lua:3129
 msgid "Enable Browse by Author / Series / Tags"
 msgstr "Просмотр по авторам, сериям и тегам"
 
-#: screens/sui_menu.lua:3073
+#: screens/sui_menu.lua:3113
 msgid "Enable Library Custom Covers"
 msgstr "Пользовательские обложки в библиотеке"
 
-#: screens/sui_menu.lua:1263
+#: screens/sui_menu.lua:1264
 msgid "Enable Navigation Bar"
 msgstr "Навигационная панель"
 
@@ -1442,19 +1471,19 @@ msgstr "Навигационная панель"
 msgid "Enable Quick Settings Bar"
 msgstr "Панель быстрых настроек"
 
-#: screens/sui_menu.lua:959
+#: screens/sui_menu.lua:960
 msgid "Enable Status Bar"
 msgstr "Cтрока состояния"
 
-#: screens/sui_menu.lua:2117
+#: screens/sui_menu.lua:2125
 msgid "Enable Title Bar"
 msgstr "Строка заголовка"
 
-#: screens/sui_menu.lua:2630
+#: screens/sui_menu.lua:2627
 msgid "Enable Wallpaper"
 msgstr "Обои"
 
-#: features/sui_style.lua:1974
+#: features/sui_style.lua:1899
 msgid "Enable custom UI font"
 msgstr "Пользовательский шрифт интерфейса"
 
@@ -1470,7 +1499,7 @@ msgstr ""
 "  /koreader/fonts/nerdfonts/symbols.ttf\n"
 "Оставьте пустым и нажмите ОК, чтобы удалить иконку Nerd Font."
 
-#: screens/sui_menu.lua:4204
+#: screens/sui_menu.lua:4210
 msgid "Error applying pack:"
 msgstr "Ошибка применения набора:"
 
@@ -1482,31 +1511,31 @@ msgstr "Ошибка проверки обновлений."
 msgid "Error checking for updates: "
 msgstr "Ошибка проверки обновлений: "
 
-#: features/sui_presets.lua:1131 screens/sui_menu.lua:4609
+#: features/sui_presets.lua:1131 screens/sui_menu.lua:4615
 msgid "Error exporting preset: "
 msgstr "Ошибка экспортирования пресета: "
 
-#: features/sui_style.lua:2381
+#: features/sui_style.lua:2306
 msgid "Error extracting zip: "
 msgstr "Ошибка распаковки zip: "
 
-#: features/sui_presets.lua:1105 screens/sui_menu.lua:4582
+#: features/sui_presets.lua:1105 screens/sui_menu.lua:4588
 msgid "Error importing preset: "
 msgstr "Ошибка импортирования пресета: "
 
-#: modules/module_reading_goals.lua:1035
+#: modules/module_reading_goals.lua:1034
 msgid "Error in Reading Goals: check crash.log"
 msgstr "Ошибка в \"Целях чтения\": проверьте crash.log"
 
-#: screens/sui_menu.lua:4122
+#: screens/sui_menu.lua:4128
 msgid "Error installing pack:"
 msgstr "Ошибка установки набора:"
 
-#: screens/sui_stats_windows.lua:1156
+#: screens/sui_stats_windows.lua:1176
 msgid "Exclude from goals"
 msgstr "Исключить из целей"
 
-#: screens/sui_stats_windows.lua:730 screens/sui_stats_windows.lua:736
+#: screens/sui_stats_windows.lua:761 screens/sui_stats_windows.lua:767
 msgid "Excluded"
 msgstr "Исключено"
 
@@ -1523,7 +1552,7 @@ msgstr ""
 msgid "Export now…"
 msgstr ""
 
-#: features/sui_presets.lua:1119 screens/sui_menu.lua:4596
+#: features/sui_presets.lua:1119 screens/sui_menu.lua:4602
 msgid "Export preset"
 msgstr "Экспортировать пресет"
 
@@ -1531,31 +1560,41 @@ msgstr "Экспортировать пресет"
 msgid "Extra Custom Screens"
 msgstr "Дополнительные свои экраны"
 
-#: screens/sui_menu.lua:675
+#: screens/sui_menu.lua:676
 msgid "Extra Small"
 msgstr "Очень маленький"
+
+#: features/sui_manual_books.lua:133
+msgid "Extra books read in %d, on top of the automatic count:"
+msgstr ""
 
 #: infra/sui_updater.lua:439
 msgid "Extraction error: "
 msgstr "Ошибка распаковки: "
 
-#: screens/sui_stats_windows.lua:3268
+#: screens/sui_stats_windows.lua:3230
 msgid "FREEZES"
 msgstr "ЗАМОРОЗКИ"
 
-#: screens/sui_menu.lua:4808
+#: screens/sui_menu.lua:4814
 msgid "Factory Reset"
 msgstr "Сброс к заводским настройкам"
 
-#: screens/sui_menu.lua:3552
-msgid "Fade Finished Books"
-msgstr "Делать прочитанные книги бледнее"
+#: features/library/sui_finished_books.lua:62
+msgid "Fade"
+msgstr ""
 
-#: screens/sui_menu.lua:3568
+#: screens/sui_menu.lua:3084
 msgid "Fade Intensity"
 msgstr "Интенсивность затемнения"
 
-#: screens/sui_menu.lua:3569
+#: features/library/sui_finished_books.lua:63
+msgid ""
+"Fades finished book covers in the file browser. Other lists show them as "
+"usual."
+msgstr ""
+
+#: screens/sui_menu.lua:3085
 msgid ""
 "Fades finished book covers towards white.\n"
 "50% is the default."
@@ -1563,11 +1602,11 @@ msgstr ""
 "Осветляет обложки прочитанной книги до белого.\n"
 "50% — значение по умолчанию."
 
-#: screens/sui_menu.lua:2669
+#: screens/sui_menu.lua:2666
 msgid "Fades the wallpaper towards black."
 msgstr ""
 
-#: screens/sui_menu.lua:2663
+#: screens/sui_menu.lua:2660
 #, fuzzy
 msgid "Fades the wallpaper towards white to improve text readability."
 msgstr ""
@@ -1575,7 +1614,7 @@ msgstr ""
 "0% — значение по умолчанию (без осветления)."
 
 #: features/sui_quickactions.lua:868 features/sui_quickactions.lua:2250
-#: infra/sui_config.lua:126 modules/module_coverdeck.lua:1340
+#: infra/sui_config.lua:127 modules/module_coverdeck.lua:1340
 msgid "Favorites"
 msgstr "Избранное"
 
@@ -1591,11 +1630,11 @@ msgstr "Избранная коллекция"
 msgid "Featured Collection — tap to configure"
 msgstr "Избранная коллекция — нажмите, чтобы настроить"
 
-#: engines/sui_heatmap_widgets.lua:109
+#: infra/sui_datenames.lua:29
 msgid "Feb"
 msgstr "февр."
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
+#: infra/sui_datenames.lua:36
 msgid "February"
 msgstr "Февраль"
 
@@ -1603,11 +1642,11 @@ msgstr "Февраль"
 msgid "Fetching bookmarks…"
 msgstr "Получение закладок…"
 
-#: modules/module_clock.lua:279
+#: modules/module_clock.lua:261
 msgid "Fifteen"
 msgstr "Пятнадцать"
 
-#: modules/module_clock.lua:285
+#: modules/module_clock.lua:267
 msgid "Fifty"
 msgstr "Пятьдесят"
 
@@ -1624,15 +1663,15 @@ msgstr "Поиск файлов"
 msgid "File not found."
 msgstr "Файлов не найдено: "
 
-#: features/sui_style.lua:2328
+#: features/sui_style.lua:2253
 msgid "File not found: "
 msgstr "Файлов не найдено: "
 
-#: modules/module_library.lua:218
+#: modules/module_library.lua:208
 msgid "File size (largest)"
 msgstr "Размер файла (сначала большие)"
 
-#: modules/module_library.lua:219
+#: modules/module_library.lua:209
 msgid "File size (smallest)"
 msgstr "Размер файла (сначала маленькие)"
 
@@ -1644,11 +1683,11 @@ msgstr ""
 msgid "Finished"
 msgstr ""
 
-#: features/sui_stats_menu.lua:116 screens/sui_menu.lua:3545
+#: features/library/sui_finished_books.lua:84 features/sui_stats_menu.lua:133
 msgid "Finished Books"
 msgstr "Прочитанные книги"
 
-#: modules/module_clock.lua:276
+#: modules/module_clock.lua:258
 msgid "Five"
 msgstr "Пять"
 
@@ -1656,40 +1695,44 @@ msgstr "Пять"
 msgid "Fixed Height"
 msgstr "Фиксированная высота"
 
-#: modules/module_quick_actions.lua:626 modules/module_reading_stats.lua:838
-#: screens/sui_menu.lua:4732 screens/sui_quicksettings_bar.lua:1327
+#: modules/module_quick_actions.lua:626 modules/module_reading_stats.lua:806
+#: screens/sui_menu.lua:4738 screens/sui_quicksettings_bar.lua:1327
 msgid "Flat"
 msgstr "Плоский"
 
-#: modules/module_library.lua:273
+#: modules/module_library.lua:265
 msgid "Flat Library"
 msgstr "Плоская библиотека"
+
+#: screens/sui_menu.lua:3614 screens/sui_menu.lua:3619
+msgid "Floating"
+msgstr ""
 
 #: features/sui_quickactions.lua:2728
 msgid "Folder"
 msgstr "Папка"
 
-#: screens/sui_menu.lua:3817
+#: screens/sui_menu.lua:3823
 msgid "Folder Book Stack"
 msgstr ""
 
-#: screens/sui_menu.lua:3167
+#: screens/sui_menu.lua:3207
 msgid "Folder Cover Type"
 msgstr "Тип обложки папки"
 
-#: features/sui_style.lua:1376
+#: features/sui_style.lua:1373
 msgid "Folder Covers"
 msgstr "Обложки папок"
 
-#: features/sui_style.lua:205
+#: features/sui_style.lua:202
 msgid "Folder Covers: Empty Folder"
 msgstr "Обложки папок: Пустая папка"
 
-#: screens/sui_menu.lua:3589
+#: screens/sui_menu.lua:3586
 msgid "Folder Name"
 msgstr "Имя папки"
 
-#: screens/sui_menu.lua:3698
+#: screens/sui_menu.lua:3704
 msgid "Folder Name Text Size"
 msgstr "Размер текста имени папки"
 
@@ -1697,7 +1740,7 @@ msgstr "Размер текста имени папки"
 msgid "Folder Shortcuts"
 msgstr "Ярлыки папок"
 
-#: features/library/sui_foldercovers.lua:586
+#: features/library/sui_foldercovers.lua:596
 #: features/library/sui_group_actions.lua:79
 #: features/library/sui_library_browse.lua:412
 #: features/library/sui_series_grouping.lua:92
@@ -1708,17 +1751,17 @@ msgstr "Обложка папки"
 msgid "Folder covers, browse modes, series grouping"
 msgstr ""
 
-#: engines/sui_book_grid.lua:1904 modules/module_coverdeck.lua:1676
-#: modules/module_currently.lua:2002
+#: engines/sui_book_grid.lua:1863 modules/module_coverdeck.lua:1676
+#: modules/module_currently.lua:1978
 msgid "Follow Library"
 msgstr "Как в библиотеке"
 
-#: infra/sui_config.lua:986 screens/sui_quicksettings_bar.lua:1250
+#: infra/sui_config.lua:987 screens/sui_quicksettings_bar.lua:1250
 #, fuzzy
 msgid "Font"
 msgstr "Шрифт интерфейса"
 
-#: modules/module_quote.lua:1507 modules/module_reading_stats.lua:906
+#: modules/module_quote.lua:1507 modules/module_reading_stats.lua:874
 #, fuzzy
 msgid "Fonts"
 msgstr "Шрифт интерфейса"
@@ -1727,40 +1770,44 @@ msgstr "Шрифт интерфейса"
 msgid "Fonts, icon assignments, icon presets"
 msgstr ""
 
-#: modules/module_clock.lua:285
+#: modules/module_clock.lua:267
 msgid "Forty"
 msgstr "Сорок"
 
-#: modules/module_clock.lua:276
+#: modules/module_clock.lua:258
 msgid "Four"
 msgstr "Четыре"
 
-#: modules/module_clock.lua:279
+#: modules/module_clock.lua:261
 msgid "Fourteen"
 msgstr "Четырнадцать"
 
-#: features/sui_module_chrome.lua:206 features/sui_module_chrome.lua:262
-#: features/sui_module_chrome.lua:274
+#: features/sui_module_chrome.lua:179
 msgid "Frame"
 msgstr "Рамка"
 
-#: screens/sui_menu.lua:1429 screens/sui_menu.lua:4743
+#: screens/sui_menu.lua:1430 screens/sui_menu.lua:4749
 msgid "Framed"
 msgstr "В рамке"
 
-#: features/sui_stats_menu.lua:63
+#: features/sui_stats_menu.lua:64
 msgid "Freezes"
 msgstr "Заморозки"
 
-#: screens/sui_stats_windows.lua:2868
-msgid "Freezes can only cover a single missed day, and only right after an active one. Tap yesterday's cell to use one, when eligible."
-msgstr "Заморозки могут закрыть только один пропущенный день, и только сразу после активного. Нажмите на ячейку вчерашнего дня, чтобы использовать заморозку, если это возможно."
+#: screens/sui_stats_windows.lua:2838
+msgid ""
+"Freezes can only cover a single missed day, and only right after an active "
+"one. Tap yesterday's cell to use one, when eligible."
+msgstr ""
+"Заморозки могут закрыть только один пропущенный день, и только сразу после "
+"активного. Нажмите на ячейку вчерашнего дня, чтобы использовать заморозку, "
+"если это возможно."
 
-#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2664
+#: engines/sui_heatmap_widgets.lua:113 infra/sui_datenames.lua:43
 msgid "Fri"
 msgstr "Пятница"
 
-#: modules/module_clock.lua:55
+#: infra/sui_datenames.lua:49
 msgid "Friday"
 msgstr "Пятница"
 
@@ -1777,16 +1824,20 @@ msgstr "Слайдер подсветки"
 msgid "Frontlight not available on this device."
 msgstr "Подсветка недоступна на этом устройстве."
 
+#: screens/sui_menu.lua:3614 screens/sui_menu.lua:3626
+msgid "Full Width"
+msgstr ""
+
 #: features/sui_backup.lua:658
 #, fuzzy
 msgid "General — %d settings"
 msgstr "Настройки модуля"
 
-#: screens/sui_menu.lua:2856
+#: screens/sui_menu.lua:2853
 msgid "Gesture Only"
 msgstr "Только жестом"
 
-#: screens/sui_menu.lua:4696 screens/sui_menu.lua:4703
+#: screens/sui_menu.lua:4702 screens/sui_menu.lua:4709
 msgid "Global Text Size"
 msgstr "Общий размер текста"
 
@@ -1794,15 +1845,21 @@ msgstr "Общий размер текста"
 msgid "Global custom actions & icons"
 msgstr "Глобальные пользовательские действия и иконки"
 
-#: screens/sui_menu.lua:4704
+#: screens/sui_menu.lua:4710
 msgid ""
-"Global scale applied to all of KOReader's interface text — menus, dialogs, titles, and Simple UI. It does not change the book's reading font size, which has its own setting.\n"
-"100% is the default size. Useful when a chosen UI font (see UI Font above) renders smaller or larger than usual."
+"Global scale applied to all of KOReader's interface text — menus, dialogs, "
+"titles, and Simple UI. It does not change the book's reading font size, "
+"which has its own setting.\n"
+"100% is the default size. Useful when a chosen UI font (see UI Font above) "
+"renders smaller or larger than usual."
 msgstr ""
-"Общий масштаб, применяемый ко всему интерфейсному тексту KOReader — меню, диалогам, заголовкам и Simple UI. Не изменяет размер шрифта чтения книги, у которого есть своя настройка.\n"
-"100% — размер по умолчанию. Полезно, когда выбранный шрифт интерфейса (см. «Шрифт интерфейса» выше) отображается мельче или крупнее обычного."
+"Общий масштаб, применяемый ко всему интерфейсному тексту KOReader — меню, "
+"диалогам, заголовкам и Simple UI. Не изменяет размер шрифта чтения книги, у "
+"которого есть своя настройка.\n"
+"100% — размер по умолчанию. Полезно, когда выбранный шрифт интерфейса (см. "
+"«Шрифт интерфейса» выше) отображается мельче или крупнее обычного."
 
-#: screens/sui_menu.lua:2769
+#: screens/sui_menu.lua:2766
 msgid ""
 "Global scale for all modules.\n"
 "Individual overrides in Module Settings take precedence.\n"
@@ -1814,10 +1871,12 @@ msgstr ""
 
 #: screens/sui_onboarding.lua:331
 msgid "Go to Settings > Home Screen to edit your layout whenever you want."
-msgstr "Перейдите в раздел «Настройки» > «Главный экран», чтобы в любой момент изменить раскладку."
+msgstr ""
+"Перейдите в раздел «Настройки» > «Главный экран», чтобы в любой момент "
+"изменить раскладку."
 
-#: modules/module_reading_goals.lua:1183 modules/module_reading_goals.lua:1248
-#: modules/module_reading_goals.lua:1262
+#: modules/module_reading_goals.lua:1203 modules/module_reading_goals.lua:1244
+#: modules/module_reading_goals.lua:1256
 msgid "Goals"
 msgstr "Цели"
 
@@ -1825,7 +1884,7 @@ msgstr "Цели"
 msgid "Goals & Streaks"
 msgstr ""
 
-#: engines/sui_book_grid.lua:1846 engines/sui_book_grid.lua:1857
+#: engines/sui_book_grid.lua:1805 engines/sui_book_grid.lua:1816
 msgid "Grid size"
 msgstr "Размер сетки"
 
@@ -1833,7 +1892,7 @@ msgstr "Размер сетки"
 msgid "Group"
 msgstr "Группа"
 
-#: screens/sui_menu.lua:3149
+#: screens/sui_menu.lua:3189
 msgid "Group by Book Series"
 msgstr "Группировать по сериям"
 
@@ -1845,17 +1904,21 @@ msgstr "Группа быстрых действий"
 msgid "Group: select actions"
 msgstr "Группа: выберите действия"
 
-#: modules/module_currently.lua:1535
+#: modules/module_currently.lua:1511
 msgid ""
-"Grows or shrinks the cover so its height always matches the text column, keeping the cover's proportions.\n"
+"Grows or shrinks the cover so its height always matches the text column, "
+"keeping the cover's proportions.\n"
 "The spacing between cover and text stays as set above.\n"
-"The Cover size setting still applies on top of this, and the cover never shrinks below its 100% size."
+"The Cover size setting still applies on top of this, and the cover never "
+"shrinks below its 100% size."
 msgstr ""
-"Увеличивает или уменьшает обложку так, чтобы её высота всегда совпадала с текстовой колонкой, сохраняя пропорции обложки.\n"
+"Увеличивает или уменьшает обложку так, чтобы её высота всегда совпадала с "
+"текстовой колонкой, сохраняя пропорции обложки.\n"
 "Отступ между обложкой и текстом остаётся таким, как задано выше.\n"
-"Настройка «Размер обложки» по-прежнему применяется поверх этого, и обложка никогда не уменьшается менее 100% своего размера."
+"Настройка «Размер обложки» по-прежнему применяется поверх этого, и обложка "
+"никогда не уменьшается менее 100% своего размера."
 
-#: screens/sui_menu.lua:1464
+#: screens/sui_menu.lua:1465
 msgid ""
 "Height of the bottom navigation bar.\n"
 "100% is the default size."
@@ -1873,7 +1936,7 @@ msgstr ""
 "Высота разделителя.\n"
 "100% — размер по умолчанию."
 
-#: screens/sui_menu.lua:1155
+#: screens/sui_menu.lua:1156
 msgid ""
 "Height of the top status bar.\n"
 "100% is the default size."
@@ -1881,43 +1944,43 @@ msgstr ""
 "Высота верхней статусной панели.\n"
 "100% — размер по умолчанию."
 
-#: modules/module_collections.lua:1261 screens/sui_menu.lua:591
-#: screens/sui_menu.lua:650 screens/sui_menu.lua:3229 screens/sui_menu.lua:3236
-#: screens/sui_menu.lua:3263 screens/sui_menu.lua:3303
-#: screens/sui_menu.lua:3309 screens/sui_menu.lua:3320
-#: screens/sui_menu.lua:3357 screens/sui_menu.lua:3363
-#: screens/sui_menu.lua:3374 screens/sui_menu.lua:3595
-#: screens/sui_menu.lua:3626
+#: modules/module_collections.lua:1249 screens/sui_menu.lua:592
+#: screens/sui_menu.lua:651 screens/sui_menu.lua:3269 screens/sui_menu.lua:3276
+#: screens/sui_menu.lua:3303 screens/sui_menu.lua:3343
+#: screens/sui_menu.lua:3349 screens/sui_menu.lua:3360
+#: screens/sui_menu.lua:3397 screens/sui_menu.lua:3403
+#: screens/sui_menu.lua:3414 screens/sui_menu.lua:3592
+#: screens/sui_menu.lua:3603
 msgid "Hidden"
 msgstr "Скрыто"
 
-#: screens/sui_menu.lua:3838
+#: features/library/sui_finished_books.lua:65 screens/sui_menu.lua:3844
 msgid "Hide"
 msgstr ""
 
-#: modules/module_collections.lua:1250
+#: modules/module_collections.lua:1238
 msgid "Hide Book Stack"
 msgstr ""
 
-#: modules/module_recent.lua:70
+#: modules/module_recent.lua:66
 #, fuzzy
 msgid "Hide Currently Reading book"
 msgstr "Сейчас читаю"
 
 #: modules/module_quick_actions.lua:425 modules/module_quick_actions.lua:576
-#: screens/sui_menu.lua:2329 screens/sui_quicksettings_bar.lua:1255
+#: screens/sui_menu.lua:2326 screens/sui_quicksettings_bar.lua:1255
 msgid "Hide Label"
 msgstr "Скрыть подписи"
 
-#: screens/sui_menu.lua:3811
+#: screens/sui_menu.lua:3817
 msgid "Hide Selection Underline"
 msgstr "Скрывать выделения с подчёркиванием"
 
-#: screens/sui_menu.lua:1200
+#: screens/sui_menu.lua:1201
 msgid "Hide Wi-Fi Icon When Off"
 msgstr "Скрыть иконку Wi-Fi, если выкл."
 
-#: screens/sui_menu.lua:658
+#: screens/sui_menu.lua:659
 msgid ""
 "Hides the pagination bar on the homescreen.\n"
 "Not available when Navpager is active."
@@ -1925,16 +1988,16 @@ msgstr ""
 "Скрывает панель нумерации на домашнем экране.\n"
 "Недоступно, когда активна кнопочная навигация."
 
-#: screens/sui_menu.lua:2911
+#: screens/sui_menu.lua:2908
 msgid "High-Quality Cover"
 msgstr "Высококачественная обложка"
 
-#: screens/sui_stats_windows.lua:1150 screens/sui_stats_windows.lua:3683
+#: screens/sui_stats_windows.lua:1170 screens/sui_stats_windows.lua:3648
 msgid "Highlights"
 msgstr "Список выделений"
 
 #: features/sui_quickactions.lua:508 features/sui_quickactions.lua:782
-#: features/sui_quickactions.lua:2248 infra/sui_config.lua:122
+#: features/sui_quickactions.lua:2248 infra/sui_config.lua:123
 msgid "History"
 msgstr "История"
 
@@ -1942,13 +2005,13 @@ msgstr "История"
 msgid "History not available."
 msgstr "История недоступна."
 
-#: features/sui_quickactions.lua:723 infra/sui_config.lua:120
+#: features/sui_quickactions.lua:723 infra/sui_config.lua:121
 msgid "Home"
 msgstr "На главную"
 
 #: engines/sui_screen_engine.lua:1191 features/sui_backup.lua:111
-#: infra/sui_patches.lua:1190 infra/sui_patches.lua:1200
-#: screens/sui_menu.lua:2717 screens/sui_menu.lua:4932
+#: infra/sui_patches.lua:1191 infra/sui_patches.lua:1201
+#: screens/sui_menu.lua:2714 screens/sui_menu.lua:4938
 #: screens/sui_settings_window.lua:354 screens/sui_settings_window.lua:1146
 msgid "Home Screen"
 msgstr "Домашний экран"
@@ -1957,7 +2020,7 @@ msgstr "Домашний экран"
 msgid "Home Screen Presets"
 msgstr "Пресеты домашнего экрана"
 
-#: screens/sui_menu.lua:604
+#: screens/sui_menu.lua:605
 msgid "Home Screen Style"
 msgstr "Стиль домашнего экрана"
 
@@ -1969,7 +2032,7 @@ msgstr "Домашняя папка"
 msgid "Home folder + subfolders"
 msgstr "Домашняя папка + подпапки"
 
-#: screens/sui_menu.lua:2971
+#: screens/sui_menu.lua:2968
 #, fuzzy
 msgid "Home key opens Home Screen"
 msgstr "Кнопка Home PocketBook открывает домашний экран"
@@ -1978,7 +2041,7 @@ msgstr "Кнопка Home PocketBook открывает домашний экр�
 msgid "Homescreen not available."
 msgstr "Домашний экран недоступен."
 
-#: modules/module_currently.lua:1509
+#: modules/module_currently.lua:1485
 msgid ""
 "Horizontal space between the cover and the text.\n"
 "100% is the default spacing."
@@ -1986,28 +2049,36 @@ msgstr ""
 "Горизонтальный отступ между обложкой и текстом.\n"
 "100% — размер по умолчанию."
 
-#: infra/sui_goals.lua:55
+#: infra/sui_goals.lua:56
 msgid "Hours per month:"
 msgstr "Часов в месяц:"
 
-#: modules/module_heatmap.lua:300
-msgid "How many weeks of history to include, and (in Calendar view) how many weeks the grid shows — this count is unaffected by Scale, which only resizes the cells. In Time of day view, this only changes how much history feeds the shading — the grid itself always has one column per hour."
-msgstr "Сколько недель истории учитывать и (в режиме «Календарь») сколько недель показывает сетка — это число не зависит от Масштаба, который меняет только размер ячеек. В режиме «Время суток» это только меняет, сколько истории влияет на затенение — сама сетка всегда содержит один столбец на час."
+#: modules/module_heatmap.lua:282
+msgid ""
+"How many weeks of history to include, and (in Calendar view) how many weeks "
+"the grid shows — this count is unaffected by Scale, which only resizes the "
+"cells. In Time of day view, this only changes how much history feeds the "
+"shading — the grid itself always has one column per hour."
+msgstr ""
+"Сколько недель истории учитывать и (в режиме «Календарь») сколько недель "
+"показывает сетка — это число не зависит от Масштаба, который меняет только "
+"размер ячеек. В режиме «Время суток» это только меняет, сколько истории "
+"влияет на затенение — сама сетка всегда содержит один столбец на час."
 
 #: features/sui_quickactions.lua:2408 features/sui_quickactions.lua:2412
 msgid "Icon"
 msgstr "Иконка"
 
-#: screens/sui_menu.lua:4042
+#: screens/sui_menu.lua:4048
 msgid "Icon Packs"
 msgstr "Наборы иконок"
 
-#: screens/sui_menu.lua:4219
+#: screens/sui_menu.lua:4225
 msgid "Icon Presets"
 msgstr "Пресеты иконок"
 
-#: screens/sui_menu.lua:1223 screens/sui_menu.lua:1499
-#: screens/sui_menu.lua:1500 screens/sui_menu.lua:1567
+#: screens/sui_menu.lua:1224 screens/sui_menu.lua:1500
+#: screens/sui_menu.lua:1501 screens/sui_menu.lua:1568
 msgid "Icon Size"
 msgstr "Размер иконки"
 
@@ -2019,17 +2090,18 @@ msgstr ""
 msgid "Icon: Default"
 msgstr "Иконка: По умолчанию"
 
-#: screens/sui_menu.lua:319 screens/sui_menu.lua:3988
+#: screens/sui_menu.lua:320 screens/sui_menu.lua:3994
 msgid "Icons"
 msgstr "Иконки"
 
-#: screens/sui_menu.lua:320
+#: screens/sui_menu.lua:321
 msgid "Icons only"
 msgstr "Только иконки"
 
-#: screens/sui_menu.lua:4626
+#: screens/sui_menu.lua:4632
 msgid ""
-"Icons that contain color keep their original colors in night mode instead of being inverted.\n"
+"Icons that contain color keep their original colors in night mode instead of "
+"being inverted.\n"
 "Monochrome icons are not affected and keep following the interface colors.\n"
 "Requires a color screen."
 msgstr ""
@@ -2039,34 +2111,38 @@ msgid "Icons, fonts and appearance"
 msgstr "Иконки, шрифты и внешний вид"
 
 #: screens/sui_onboarding.lua:335
-msgid "If you selected the Momentum Preset, long press the Reading Goal module to choose and set your reading goals."
-msgstr "Если вы выбрали пресет \"Импульс\", долго нажмите на модуль «Цель чтения», чтобы выбрать и задать свои цели чтения."
+msgid ""
+"If you selected the Momentum Preset, long press the Reading Goal module to "
+"choose and set your reading goals."
+msgstr ""
+"Если вы выбрали пресет \"Импульс\", долго нажмите на модуль «Цель чтения», "
+"чтобы выбрать и задать свои цели чтения."
 
 #: features/sui_backup.lua:1144
 msgid "Import Backup…"
 msgstr ""
 
-#: features/sui_presets.lua:1082 screens/sui_menu.lua:4558
+#: features/sui_presets.lua:1082 screens/sui_menu.lua:4564
 msgid "Import preset"
 msgstr "Импортировать пресет"
 
-#: features/sui_manual_books.lua:181
-msgid "Include in All Time Books"
+#: features/sui_stats_menu.lua:102
+msgid "Include Manual Books in All Time Total"
 msgstr ""
 
 #: infra/sui_compat_check.lua:306
 msgid "Incompatible items have been disabled:"
 msgstr ""
 
-#: screens/sui_menu.lua:4127
+#: screens/sui_menu.lua:4133
 msgid "Install pack from ZIP"
 msgstr "Установить набор из ZIP"
 
-#: screens/sui_menu.lua:3561
+#: screens/sui_menu.lua:3077
 msgid "Intensity"
 msgstr "Насыщенность"
 
-#: screens/sui_menu.lua:1699
+#: screens/sui_menu.lua:1700
 msgid ""
 "Invalid arrangement.\n"
 "Keep items between the Left and Right separators."
@@ -2074,7 +2150,7 @@ msgstr ""
 "Неверный порядок.\n"
 "Оставьте элементы между левым и правым разделителями."
 
-#: screens/sui_menu.lua:853
+#: screens/sui_menu.lua:854
 msgid ""
 "Invalid arrangement.\n"
 "Keep the Left, Center and Right separators in order."
@@ -2094,96 +2170,92 @@ msgstr "Неверный ввод. Введите 1–6 шестнадцатер
 msgid "Invalid preset file"
 msgstr "Неверно указан файл с пресетом"
 
-#: screens/sui_menu.lua:2659
+#: screens/sui_menu.lua:2656
 msgid "Invert in Night Mode"
 msgstr "Инвертировать в ночном режиме"
 
-#: features/sui_style.lua:2158
+#: features/sui_style.lua:2083
 msgid "Italic"
 msgstr ""
 
-#: infra/sui_config.lua:1110 modules/module_clock.lua:1114
-#: modules/module_clock.lua:1123 modules/module_clock.lua:1161
+#: infra/sui_config.lua:1111 modules/module_clock.lua:1096
+#: modules/module_clock.lua:1105 modules/module_clock.lua:1132
 #: modules/module_coverdeck.lua:1553 modules/module_coverdeck.lua:1593
-#: modules/module_coverdeck.lua:1607 modules/module_currently.lua:1670
-#: modules/module_currently.lua:1675 modules/module_currently.lua:1698
-#: modules/module_reading_stats.lua:731 modules/module_reading_stats.lua:752
-#: modules/module_reading_stats.lua:774 screens/sui_menu.lua:978
-#: screens/sui_menu.lua:983 screens/sui_menu.lua:1072 screens/sui_menu.lua:1232
-#: screens/sui_menu.lua:2339 screens/sui_menu.lua:2344
-#: screens/sui_menu.lua:2370
+#: modules/module_coverdeck.lua:1607 modules/module_currently.lua:1646
+#: modules/module_currently.lua:1651 modules/module_currently.lua:1674
+#: modules/module_reading_stats.lua:699 modules/module_reading_stats.lua:720
+#: modules/module_reading_stats.lua:742 screens/sui_menu.lua:979
+#: screens/sui_menu.lua:984 screens/sui_menu.lua:1073 screens/sui_menu.lua:1233
+#: screens/sui_menu.lua:2336 screens/sui_menu.lua:2341
+#: screens/sui_menu.lua:2367
 msgid "Items"
 msgstr "Элементы"
 
-#: engines/sui_heatmap_widgets.lua:109
+#: infra/sui_datenames.lua:29
 msgid "Jan"
 msgstr "янв."
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
+#: infra/sui_datenames.lua:36
 msgid "January"
 msgstr "Январь"
 
-#: engines/sui_heatmap_widgets.lua:110
+#: infra/sui_datenames.lua:30
 msgid "Jul"
 msgstr "июл."
 
-#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2675
+#: infra/sui_datenames.lua:37
 msgid "July"
 msgstr "Июль"
 
-#: engines/sui_heatmap_widgets.lua:109
+#: infra/sui_datenames.lua:29
 msgid "Jun"
 msgstr "июн."
 
-#: modules/module_clock.lua:59 screens/sui_stats_windows.lua:2675
+#: infra/sui_datenames.lua:37
 msgid "June"
 msgstr "Июнь"
 
-#: infra/sui_config.lua:1852 modules/module_quick_actions.lua:644
+#: infra/sui_config.lua:1853 modules/module_quick_actions.lua:644
 msgid "Justified"
 msgstr "По ширине"
 
-#: screens/sui_menu.lua:628
+#: screens/sui_menu.lua:629
 msgid "KOReader"
 msgstr "KOReader"
 
-#: screens/sui_stats_windows.lua:2585
+#: screens/sui_stats_windows.lua:2579
 msgid "LAST 7 DAYS"
 msgstr "ПОСЛЕДНИЕ 7 ДНЕЙ"
 
-#: infra/sui_config.lua:1049 modules/module_action_list.lua:481
-#: modules/module_action_list.lua:496 modules/module_collections.lua:1341
-#: modules/module_quick_actions.lua:597 modules/module_reading_goals.lua:1160
-#: modules/module_reading_stats.lua:829 modules/module_reading_stats.lua:891
+#: infra/sui_config.lua:1050 modules/module_action_list.lua:481
+#: modules/module_action_list.lua:496 modules/module_collections.lua:1329
+#: modules/module_quick_actions.lua:597 modules/module_reading_goals.lua:1148
+#: modules/module_reading_stats.lua:797 modules/module_reading_stats.lua:859
 #: screens/sui_quicksettings_bar.lua:1238
 msgid "Label"
 msgstr "Подпись"
 
-#: screens/sui_menu.lua:1522
+#: screens/sui_menu.lua:1523
 #, fuzzy
 msgid "Label Font"
 msgstr "Подпись"
 
-#: screens/sui_menu.lua:2798
+#: screens/sui_menu.lua:2795
 msgid "Label Scale"
 msgstr "Масштаб подписи"
 
-#: screens/sui_menu.lua:1510 screens/sui_menu.lua:1511
-#: screens/sui_menu.lua:1568
+#: screens/sui_menu.lua:1511 screens/sui_menu.lua:1512
+#: screens/sui_menu.lua:1569
 msgid "Label Size"
 msgstr "Размер подписи"
 
-#: screens/sui_menu.lua:2787
+#: screens/sui_menu.lua:2784
 msgid "Labels"
 msgstr "Подписи"
 
-#: screens/sui_menu.lua:3952
+#: screens/sui_menu.lua:3958
 msgid "Landscape mosaic mode"
 msgstr ""
-
-#: screens/sui_menu.lua:2169
-msgid "Large"
-msgstr "Большой"
 
 #: features/sui_backup.lua:1040
 msgid "Last backup: %s%s"
@@ -2194,16 +2266,17 @@ msgid "Last backup: never"
 msgstr ""
 
 #: features/sui_backup.lua:1018 infra/sui_updater.lua:449
-#: screens/sui_menu.lua:555 screens/sui_menu.lua:968 screens/sui_menu.lua:1179
-#: screens/sui_menu.lua:1272 screens/sui_menu.lua:1488
-#: screens/sui_menu.lua:2101 screens/sui_menu.lua:3726
-#: screens/sui_menu.lua:3749 screens/sui_menu.lua:3771
-#: screens/sui_menu.lua:4718 screens/sui_menu.lua:4916
+#: screens/sui_menu.lua:556 screens/sui_menu.lua:969 screens/sui_menu.lua:1180
+#: screens/sui_menu.lua:1273 screens/sui_menu.lua:1489
+#: screens/sui_menu.lua:2089 screens/sui_menu.lua:3732
+#: screens/sui_menu.lua:3755 screens/sui_menu.lua:3777
+#: screens/sui_menu.lua:4724 screens/sui_menu.lua:4922
 #: screens/sui_quicksettings_bar.lua:1134
 msgid "Later"
 msgstr "Позже"
 
-#: modules/module_currently.lua:1528 modules/module_reading_goals.lua:1353
+#: modules/module_currently.lua:1504 modules/module_reading_goals.lua:1280
+#: screens/sui_menu.lua:3612
 msgid "Layout"
 msgstr "Раскладка"
 
@@ -2220,26 +2293,26 @@ msgstr "Своих экранов пока нет."
 msgid "Layout, wallpaper, presets and behaviour"
 msgstr "Раскладка, обои, пресеты и поведение"
 
-#: infra/sui_config.lua:1849 modules/module_quick_actions.lua:645
-#: screens/sui_menu.lua:824 screens/sui_menu.lua:1058 screens/sui_menu.lua:1666
-#: screens/sui_menu.lua:1873
+#: infra/sui_config.lua:1850 modules/module_quick_actions.lua:645
+#: screens/sui_menu.lua:825 screens/sui_menu.lua:1059 screens/sui_menu.lua:1667
+#: screens/sui_menu.lua:1874
 msgid "Left"
 msgstr "Слева"
 
-#: engines/sui_heatmap_widgets.lua:395 modules/module_heatmap.lua:179
+#: engines/sui_heatmap_widgets.lua:392 modules/module_heatmap.lua:170
 msgid "Less"
 msgstr "Меньше"
 
 #: features/library/sui_library_browse.lua:72 features/sui_backup.lua:121
-#: features/sui_quickactions.lua:694 infra/sui_config.lua:119
-#: infra/sui_config.lua:446 screens/sui_menu.lua:2718 screens/sui_menu.lua:4655
-#: screens/sui_menu.lua:4936 screens/sui_settings_window.lua:368
-#: screens/sui_settings_window.lua:1149 screens/sui_titlebar.lua:1109
-#: screens/sui_titlebar.lua:1154
+#: features/sui_quickactions.lua:694 infra/sui_config.lua:120
+#: infra/sui_config.lua:447 screens/sui_menu.lua:2715 screens/sui_menu.lua:4661
+#: screens/sui_menu.lua:4942 screens/sui_settings_window.lua:368
+#: screens/sui_settings_window.lua:1149 screens/sui_titlebar.lua:1121
+#: screens/sui_titlebar.lua:1166
 msgid "Library"
 msgstr "Библиотека"
 
-#: screens/sui_menu.lua:2150 screens/sui_menu.lua:2153
+#: screens/sui_menu.lua:2158 screens/sui_menu.lua:2161
 msgid "Library Buttons"
 msgstr "Кнопки библиотеки"
 
@@ -2247,38 +2320,40 @@ msgstr "Кнопки библиотеки"
 msgid "Library View"
 msgstr "Просмотр"
 
-#: engines/sui_book_grid.lua:1906 modules/module_collections.lua:1283
-#: modules/module_coverdeck.lua:1678 modules/module_currently.lua:2004
-#: screens/sui_menu.lua:3277 screens/sui_menu.lua:3289
-#: screens/sui_menu.lua:3331 screens/sui_menu.lua:3343
-#: screens/sui_menu.lua:3385 screens/sui_menu.lua:3397
-#: screens/sui_menu.lua:3452 screens/sui_menu.lua:3464
-#: screens/sui_menu.lua:3519 screens/sui_menu.lua:3531
-#: screens/sui_menu.lua:3673 screens/sui_menu.lua:3678
+#: engines/sui_book_grid.lua:1865 modules/module_collections.lua:1271
+#: modules/module_coverdeck.lua:1678 modules/module_currently.lua:1980
+#: screens/sui_menu.lua:3317 screens/sui_menu.lua:3329
+#: screens/sui_menu.lua:3371 screens/sui_menu.lua:3383
+#: screens/sui_menu.lua:3425 screens/sui_menu.lua:3437
+#: screens/sui_menu.lua:3492 screens/sui_menu.lua:3504
+#: screens/sui_menu.lua:3559 screens/sui_menu.lua:3571
+#: screens/sui_menu.lua:3670 screens/sui_menu.lua:3675
 msgid "Light"
 msgstr "Светлый"
 
-#: screens/sui_menu.lua:2662
+#: screens/sui_menu.lua:2659
 msgid "Lighten"
 msgstr "Осветлить"
 
-#: modules/module_reading_stats.lua:839
+#: modules/module_reading_stats.lua:807
 msgid "List"
 msgstr "Список"
 
-#: screens/sui_menu.lua:3126
-msgid "Lists books without an author, series or tag as a separate group in the Authors, Series and Tags views."
+#: screens/sui_menu.lua:3166
+msgid ""
+"Lists books without an author, series or tag as a separate group in the "
+"Authors, Series and Tags views."
 msgstr ""
 
-#: screens/sui_stats_windows.lua:2343
+#: screens/sui_stats_launcher.lua:47
 msgid "Loading statistics…"
 msgstr "Загрузка статистики…"
 
-#: screens/sui_menu.lua:2748
+#: screens/sui_menu.lua:2745
 msgid "Lock Scale"
 msgstr "Заблокировать масштаб"
 
-#: infra/sui_config.lua:1668
+#: infra/sui_config.lua:1669
 msgid "Long Press"
 msgstr "Долгое нажатие"
 
@@ -2296,35 +2371,41 @@ msgstr "Модуль LuaSettings недоступен"
 msgid "Make it yours"
 msgstr "Сделайте своим"
 
-#: screens/sui_menu.lua:2972
+#: screens/sui_menu.lua:2969
 #, fuzzy
-msgid "Makes the device's physical Home key open the SimpleUI Home Screen — while reading and while browsing files — instead of KOReader's native Home behaviour. The file browser title-bar home icon still goes to the home folder."
-msgstr "Делает так, чтобы физическая кнопка Home устройства всегда открывала домашний экран SimpleUI — как при чтении, так и при просмотре файлов — вместо стандартного поведения KOReader."
+msgid ""
+"Makes the device's physical Home key open the SimpleUI Home Screen — while "
+"reading and while browsing files — instead of KOReader's native Home "
+"behaviour. The file browser title-bar home icon still goes to the home "
+"folder."
+msgstr ""
+"Делает так, чтобы физическая кнопка Home устройства всегда открывала "
+"домашний экран SimpleUI — как при чтении, так и при просмотре файлов — "
+"вместо стандартного поведения KOReader."
 
 #: features/sui_presets.lua:907 features/sui_presets.lua:983
-#: features/sui_presets.lua:988 screens/sui_menu.lua:4386
-#: screens/sui_menu.lua:4460 screens/sui_menu.lua:4465
+#: features/sui_presets.lua:988 screens/sui_menu.lua:4392
+#: screens/sui_menu.lua:4466 screens/sui_menu.lua:4471
 msgid "Manage presets"
 msgstr "Настроить пресеты"
+
+#: features/sui_manual_books.lua:149 screens/sui_stats_windows.lua:782
+msgid "Manual Yearly Count"
+msgstr ""
+
+#: features/sui_manual_books.lua:132
+msgid "Manual Yearly Count — %d"
+msgstr ""
 
 #: modules/module_collections.lua:508
 msgid "Manual order"
 msgstr "Ручной порядок"
 
-#: features/sui_manual_books.lua:149 features/sui_manual_books.lua:165
-#: screens/sui_stats_windows.lua:751
-msgid "Manually Tracked Books"
-msgstr "Книги, отслеживаемые вручную"
-
-#: features/sui_manual_books.lua:132
-msgid "Manually Tracked Books — %d"
-msgstr ""
-
-#: engines/sui_heatmap_widgets.lua:109
+#: infra/sui_datenames.lua:29
 msgid "Mar"
 msgstr "март"
 
-#: modules/module_clock.lua:58 screens/sui_stats_windows.lua:2674
+#: infra/sui_datenames.lua:36
 msgid "March"
 msgstr "Март"
 
@@ -2332,20 +2413,19 @@ msgstr "Март"
 msgid "Max"
 msgstr "Максимум"
 
-#: engines/sui_heatmap_widgets.lua:109 modules/module_clock.lua:59
-#: screens/sui_stats_windows.lua:2675
+#: infra/sui_datenames.lua:29 infra/sui_datenames.lua:37
 msgid "May"
 msgstr "Май"
 
-#: screens/sui_titlebar.lua:117 screens/sui_titlebar.lua:122
+#: screens/sui_titlebar.lua:116 screens/sui_titlebar.lua:121
 msgid "Menu"
 msgstr "Меню"
 
-#: features/sui_style.lua:83
+#: features/sui_style.lua:80
 msgid "Menu Button"
 msgstr "Кнопка меню"
 
-#: modules/module_clock.lua:346
+#: modules/module_clock.lua:328
 msgid "Midnight"
 msgstr "Полночь"
 
@@ -2353,40 +2433,40 @@ msgstr "Полночь"
 msgid "Mindful Reading"
 msgstr "Осознанное чтение"
 
-#: screens/sui_menu.lua:483
+#: screens/sui_menu.lua:484
 msgid "Minimum 1 tab required in navpager mode."
 msgstr "Требуется минимум 1 вкладка в режиме листания."
 
-#: screens/sui_menu.lua:484
+#: screens/sui_menu.lua:485
 msgid "Minimum 2 tabs required. Select another tab first."
 msgstr "Требуется минимум 2 вкладки. Сначала выберите другую."
 
-#: infra/sui_goals.lua:66
+#: infra/sui_goals.lua:67
 msgid "Minutes per day:"
 msgstr "Минут в день:"
 
-#: screens/sui_menu.lua:567
+#: screens/sui_menu.lua:568
 msgid "Mode"
 msgstr "Режим"
 
-#: screens/sui_menu.lua:2766
+#: screens/sui_menu.lua:2763
 msgid "Module Scale"
 msgstr "Масштаб модулей"
 
-#: infra/sui_config.lua:1665 screens/sui_menu.lua:2546
+#: infra/sui_config.lua:1666 screens/sui_menu.lua:2543
 msgid "Module Settings"
 msgstr "Настройки модуля"
 
-#: screens/sui_menu.lua:4046
+#: screens/sui_menu.lua:4052
 msgid "Module unavailable"
 msgstr "Модуль недоступен"
 
-#: screens/sui_menu.lua:2759 screens/sui_menu.lua:2998
-#: screens/sui_menu.lua:4660
+#: screens/sui_menu.lua:2756 screens/sui_menu.lua:2995
+#: screens/sui_menu.lua:4666
 msgid "Modules"
 msgstr "Модули"
 
-#: screens/sui_menu.lua:2534
+#: screens/sui_menu.lua:2531
 msgid "Modules  (%d)"
 msgstr "Модули  (%d)"
 
@@ -2402,42 +2482,40 @@ msgstr ""
 msgid "Momentum"
 msgstr "Импульс"
 
-#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2664
+#: engines/sui_heatmap_widgets.lua:113 infra/sui_datenames.lua:43
 msgid "Mon"
 msgstr "Понедельник"
 
-#: modules/module_clock.lua:54
+#: infra/sui_datenames.lua:48
 msgid "Monday"
 msgstr "Понедельник"
 
-#: infra/sui_goals.lua:53 modules/module_reading_goals.lua:1206
-#: modules/module_reading_goals.lua:1253 modules/module_reading_goals.lua:1290
-#: modules/module_reading_goals.lua:1308
+#: infra/sui_goals.lua:54
 msgid "Monthly Goal"
 msgstr "Ежемесячная цель"
 
-#: infra/sui_goals.lua:54
+#: infra/sui_goals.lua:55
 msgid "Monthly Reading Goal"
 msgstr "Цель ежемесячного чтения"
 
-#: engines/sui_heatmap_widgets.lua:401
+#: engines/sui_heatmap_widgets.lua:398
 msgid "More"
 msgstr "Больше"
 
-#: main.lua:1112
+#: main.lua:1131
 msgid "More by %s (%d)"
 msgstr "Ещё от %s (%d)"
 
-#: engines/sui_window.lua:2990
+#: engines/sui_window.lua:3446
 msgid "Move down"
 msgstr "Переместить вниз"
 
-#: engines/sui_window.lua:2984 screens/sui_settings_window.lua:773
+#: engines/sui_window.lua:3440 screens/sui_settings_window.lua:773
 #: screens/sui_settings_window.lua:808
 msgid "Move to page"
 msgstr "Перейти на страницу"
 
-#: engines/sui_window.lua:2987
+#: engines/sui_window.lua:3443
 msgid "Move up"
 msgstr "Переместить вверх"
 
@@ -2461,25 +2539,25 @@ msgstr "Название (А-Я)"
 msgid "Name (Z–A)"
 msgstr "Название (Я-А)"
 
-#: features/library/sui_foldercovers.lua:299 screens/sui_menu.lua:3413
-#: screens/sui_menu.lua:3422 screens/sui_menu.lua:3434
+#: features/library/sui_foldercovers.lua:309 screens/sui_menu.lua:3453
+#: screens/sui_menu.lua:3462 screens/sui_menu.lua:3474
 msgid "Native"
 msgstr "Нативный"
 
-#: screens/sui_bottombar.lua:939 screens/sui_menu.lua:3040
+#: screens/sui_bottombar.lua:898 screens/sui_menu.lua:3037
 msgid "Navigation Bar"
 msgstr "Навигационная панель"
 
-#: screens/sui_menu.lua:2676
+#: screens/sui_menu.lua:2673
 #, fuzzy
 msgid "Navigation Bar Opacity"
 msgstr "Размер навигационной панели"
 
-#: screens/sui_menu.lua:1463
+#: screens/sui_menu.lua:1464
 msgid "Navigation Bar Size"
 msgstr "Размер навигационной панели"
 
-#: screens/sui_menu.lua:1271
+#: screens/sui_menu.lua:1272
 msgid ""
 "Navigation Bar will be %s after restart.\n"
 "\n"
@@ -2493,11 +2571,11 @@ msgstr ""
 msgid "Navigation, status, title and quick settings bars"
 msgstr ""
 
-#: features/sui_style.lua:1375 screens/sui_menu.lua:580
+#: features/sui_style.lua:1372 screens/sui_menu.lua:581
 msgid "Navpager"
 msgstr "Навигация кнопками"
 
-#: screens/sui_menu.lua:587
+#: screens/sui_menu.lua:588
 msgid ""
 "Navpager enabled.\n"
 "\n"
@@ -2507,11 +2585,11 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: features/sui_style.lua:164
+#: features/sui_style.lua:161
 msgid "Navpager: Next"
 msgstr "Навигация кнопками: Вперед"
 
-#: features/sui_style.lua:158
+#: features/sui_style.lua:155
 msgid "Navpager: Previous"
 msgstr "Навигация кнопками: Назад"
 
@@ -2527,29 +2605,29 @@ msgstr "Символ Nerd Font…"
 msgid "Network manager unavailable."
 msgstr "Менеджер сети недоступен."
 
-#: screens/sui_menu.lua:2867
+#: screens/sui_menu.lua:2864
 msgid "Never"
 msgstr "Никогда"
 
-#: engines/sui_book_grid.lua:552 features/library/sui_cover_widgets.lua:474
-#: features/library/sui_foldercovers.lua:1352
-#: features/library/sui_foldercovers.lua:1899 modules/module_new_books.lua:137
+#: engines/sui_book_grid.lua:536 features/library/sui_cover_widgets.lua:485
+#: features/library/sui_foldercovers.lua:1362
+#: features/library/sui_foldercovers.lua:1909 modules/module_new_books.lua:118
 msgid "New"
 msgstr "Новая"
 
-#: engines/sui_book_grid.lua:2056
+#: engines/sui_book_grid.lua:2015
 msgid "New Badge Color"
 msgstr "Цвет значка «новая книга»"
 
-#: screens/sui_menu.lua:3476
+#: screens/sui_menu.lua:3516
 msgid "New Book"
 msgstr "Новая книга"
 
-#: engines/sui_book_grid.lua:2048 engines/sui_book_grid.lua:2061
+#: engines/sui_book_grid.lua:2007 engines/sui_book_grid.lua:2020
 msgid "New Book Badge"
 msgstr "Значок «новая книга»"
 
-#: modules/module_new_books.lua:82 modules/module_new_books.lua:83
+#: modules/module_new_books.lua:83 modules/module_new_books.lua:84
 msgid "New Books"
 msgstr "Новые книги"
 
@@ -2561,23 +2639,23 @@ msgstr "Новое быстрое действие"
 msgid "New collection name"
 msgstr "Новое имя коллекции"
 
-#: features/sui_manual_books.lua:154 screens/sui_bottombar.lua:587
+#: features/sui_manual_books.lua:154 screens/sui_bottombar.lua:546
 msgid "Next"
 msgstr "Вперёд"
 
-#: features/sui_quickactions.lua:956 infra/sui_config.lua:131
+#: features/sui_quickactions.lua:956 infra/sui_config.lua:132
 msgid "Night Mode"
 msgstr "Ночной режим"
 
-#: modules/module_clock.lua:277
+#: modules/module_clock.lua:259
 msgid "Nine"
 msgstr "Девять"
 
-#: modules/module_clock.lua:281
+#: modules/module_clock.lua:263
 msgid "Nineteen"
 msgstr "Девятнадцать"
 
-#: screens/sui_stats_windows.lua:1157
+#: screens/sui_stats_windows.lua:1177
 msgid "No"
 msgstr "Нет"
 
@@ -2585,7 +2663,7 @@ msgstr "Нет"
 msgid "No .lua files found in sui_quotes/"
 msgstr "Файлов .lua в custom_quotes/ не найдено"
 
-#: screens/sui_menu.lua:4165
+#: screens/sui_menu.lua:4171
 msgid ""
 "No .zip files found.\n"
 "Place .zip files in:\n"
@@ -2601,13 +2679,13 @@ msgid "No actions active yet."
 msgstr "Активных действий пока нет."
 
 #: features/sui_quickactions.lua:1648 modules/module_action_list.lua:85
-#: modules/module_action_list.lua:104 modules/module_quick_actions.lua:150
+#: modules/module_action_list.lua:104 modules/module_quick_actions.lua:151
 #: screens/sui_settings_window.lua:726
 msgid "No actions configured"
 msgstr "Нет настроенных действий"
 
 #: modules/module_action_list.lua:84 modules/module_action_list.lua:103
-#: modules/module_quick_actions.lua:149
+#: modules/module_quick_actions.lua:150
 msgid "No actions configured  —  long press to configure"
 msgstr "Нет настроенных действий  —  удерживайте, чтобы настроить"
 
@@ -2628,16 +2706,16 @@ msgstr "Пока нет открытых книг"
 msgid "No book in history."
 msgstr "В истории нет книг."
 
-#: screens/sui_stats_windows.lua:679
+#: screens/sui_stats_windows.lua:689
 msgid "No books finished"
 msgstr ""
 
-#: screens/sui_stats_windows.lua:771
+#: screens/sui_stats_windows.lua:802
 msgid "No books finished in %s"
 msgstr "Нет прочитанных книг в %s"
 
-#: features/library/sui_foldercovers.lua:590
-#: features/library/sui_foldercovers.lua:693
+#: features/library/sui_foldercovers.lua:600
+#: features/library/sui_foldercovers.lua:703
 msgid "No books found in this folder."
 msgstr "В этой папке нет книг."
 
@@ -2667,7 +2745,7 @@ msgstr "В этой коллекции нет книг."
 msgid "No books opened yet"
 msgstr "Пока нет открытых книг"
 
-#: modules/module_coverdeck.lua:642 modules/module_currently.lua:538
+#: modules/module_coverdeck.lua:642 modules/module_currently.lua:528
 msgid "No books to show yet — open a book to see it here."
 msgstr ""
 
@@ -2683,22 +2761,26 @@ msgstr "Коллекция не выбрана — удерживайте, чт�
 msgid "No collections found"
 msgstr "Коллекции не найдены"
 
-#: modules/module_collections.lua:1184 modules/module_collections.lua:1301
+#: modules/module_collections.lua:1172 modules/module_collections.lua:1289
 #: modules/module_feat_coll.lua:123
 msgid "No collections found."
 msgstr "Коллекций не найдено."
 
-#: modules/module_collections.lua:1387
+#: modules/module_collections.lua:1375
 msgid "No collections selected"
 msgstr "Коллекции не выбраны"
 
-#: modules/module_collections.lua:1386
+#: modules/module_collections.lua:1374
 msgid "No collections selected  —  long press to configure"
 msgstr "Коллекции не выбраны  —  удерживайте, чтобы настроить"
 
 #: modules/module_quote.lua:965
-msgid "No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder and select it in Settings."
-msgstr "Своих цитат не найдено. Добавьте файл .lua в папку плагина sui_quotes/ и выберите его в настройках."
+msgid ""
+"No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder "
+"and select it in Settings."
+msgstr ""
+"Своих цитат не найдено. Добавьте файл .lua в папку плагина sui_quotes/ и "
+"выберите его в настройках."
 
 #: screens/sui_settings_window.lua:507
 msgid "No custom screens yet."
@@ -2718,7 +2800,7 @@ msgstr ""
 msgid "No export directory"
 msgstr "Нет директории экспорта"
 
-#: screens/sui_stats_windows.lua:52
+#: screens/sui_stats_windows.lua:53
 msgid "No filepath."
 msgstr "Нет пути фала."
 
@@ -2730,7 +2812,7 @@ msgstr ""
 "Папка, коллекция или плагин не настроены.\n"
 "Перейдите в Simple UI → Настройки → Быстрые действия, чтобы их задать."
 
-#: features/sui_style.lua:1989
+#: features/sui_style.lua:1914
 msgid "No fonts found."
 msgstr "Шрифтов не найдено."
 
@@ -2747,27 +2829,26 @@ msgstr "Домашняя папка"
 msgid "No icons found in:"
 msgstr "Нет иконок в:"
 
-#: engines/sui_window.lua:2658 engines/sui_window.lua:3307
+#: engines/sui_window.lua:3115 engines/sui_window.lua:3763
 msgid "No items available."
 msgstr "Нет доступных элементов."
 
-#: engines/sui_window.lua:3217 modules/module_action_list.lua:366
-#: modules/module_action_list.lua:391 modules/module_clock.lua:1126
+#: engines/sui_window.lua:3673 modules/module_action_list.lua:366
+#: modules/module_action_list.lua:391 modules/module_clock.lua:1108
 #: modules/module_collections.lua:1132 modules/module_coverdeck.lua:1601
-#: modules/module_coverdeck.lua:1609 modules/module_currently.lua:1692
-#: modules/module_currently.lua:1776 modules/module_currently.lua:1908
-#: modules/module_currently.lua:1951 modules/module_quick_actions.lua:443
-#: modules/module_quick_actions.lua:468 modules/module_reading_goals.lua:1256
-#: modules/module_reading_goals.lua:1263 modules/module_reading_stats.lua:755
-#: modules/module_reading_stats.lua:776 screens/sui_menu.lua:996
-#: screens/sui_menu.lua:1074 screens/sui_menu.lua:1298
-#: screens/sui_menu.lua:1349 screens/sui_menu.lua:1782
-#: screens/sui_menu.lua:1889 screens/sui_menu.lua:1992
-#: screens/sui_menu.lua:2347 screens/sui_menu.lua:2372
+#: modules/module_coverdeck.lua:1609 modules/module_currently.lua:1668
+#: modules/module_currently.lua:1752 modules/module_currently.lua:1884
+#: modules/module_currently.lua:1927 modules/module_quick_actions.lua:443
+#: modules/module_quick_actions.lua:468 modules/module_reading_goals.lua:1250
+#: modules/module_reading_stats.lua:723 modules/module_reading_stats.lua:744
+#: screens/sui_menu.lua:997 screens/sui_menu.lua:1075 screens/sui_menu.lua:1299
+#: screens/sui_menu.lua:1350 screens/sui_menu.lua:1783
+#: screens/sui_menu.lua:1890 screens/sui_menu.lua:1993
+#: screens/sui_menu.lua:2344 screens/sui_menu.lua:2369
 msgid "No items selected."
 msgstr "Элементы не выбраны."
 
-#: modules/module_clock.lua:1163
+#: modules/module_clock.lua:1134
 #, fuzzy
 msgid "No items."
 msgstr "Элементы не выбраны."
@@ -2780,7 +2861,7 @@ msgstr "Нет модулей"
 msgid "No other pages available."
 msgstr "Страниц больше нет."
 
-#: screens/sui_menu.lua:4186
+#: screens/sui_menu.lua:4192
 msgid "No packs found."
 msgstr "Наборов не найдено."
 
@@ -2788,7 +2869,7 @@ msgstr "Наборов не найдено."
 msgid "No plugins found."
 msgstr "Плагинов не найдено."
 
-#: features/sui_presets.lua:1089 screens/sui_menu.lua:4566
+#: features/sui_presets.lua:1089 screens/sui_menu.lua:4572
 msgid ""
 "No preset files found.\n"
 "Place .lua files in:\n"
@@ -2798,7 +2879,7 @@ msgstr ""
 "Поместите файлы .lua в:\n"
 "%1"
 
-#: features/sui_presets.lua:1066 screens/sui_menu.lua:4542
+#: features/sui_presets.lua:1066 screens/sui_menu.lua:4548
 msgid "No presets found."
 msgstr "Пресетов не найдено."
 
@@ -2815,8 +2896,8 @@ msgstr "Нет недавних книг."
 msgid "No results for: %1"
 msgstr "Пресетов не найдено."
 
-#: screens/sui_stats_windows.lua:61 screens/sui_stats_windows.lua:95
-#: screens/sui_stats_windows.lua:3364
+#: screens/sui_stats_windows.lua:62 screens/sui_stats_windows.lua:96
+#: screens/sui_stats_windows.lua:3329
 msgid "No statistics found for this book."
 msgstr "Нет статистики для этой книги."
 
@@ -2824,11 +2905,11 @@ msgstr "Нет статистики для этой книги."
 msgid "No statistics selected."
 msgstr "Статистика не выбрана."
 
-#: modules/module_reading_stats.lua:502
+#: modules/module_reading_stats.lua:470
 msgid "No stats selected"
 msgstr "Статистика не выбрана"
 
-#: modules/module_reading_stats.lua:501
+#: modules/module_reading_stats.lua:469
 msgid "No stats selected  —  long press to configure"
 msgstr "Статистика не выбрана  —  удерживайте, чтобы настроить"
 
@@ -2836,19 +2917,19 @@ msgstr "Статистика не выбрана  —  удерживайте, �
 msgid "No system actions found."
 msgstr "Системных действий не найдено."
 
-#: screens/sui_menu.lua:2619
+#: screens/sui_menu.lua:2616
 msgid "No wallpapers found."
 msgstr "Обоев не найдено."
 
-#: engines/sui_book_grid.lua:1929 engines/sui_book_grid.lua:2042
-#: features/library/sui_foldercovers.lua:304 features/sui_quickactions.lua:2492
-#: screens/sui_menu.lua:3414 screens/sui_menu.lua:3423
-#: screens/sui_menu.lua:3441 screens/sui_menu.lua:3481
-#: screens/sui_menu.lua:3490 screens/sui_menu.lua:3508
+#: engines/sui_book_grid.lua:1888 engines/sui_book_grid.lua:2001
+#: features/library/sui_foldercovers.lua:314 features/sui_quickactions.lua:2492
+#: screens/sui_menu.lua:3454 screens/sui_menu.lua:3463
+#: screens/sui_menu.lua:3481 screens/sui_menu.lua:3521
+#: screens/sui_menu.lua:3530 screens/sui_menu.lua:3548
 msgid "None"
 msgstr "Ничего"
 
-#: modules/module_clock.lua:349
+#: modules/module_clock.lua:331
 msgid "Noon"
 msgstr "Полдень"
 
@@ -2858,12 +2939,11 @@ msgstr "Полдень"
 msgid "Not a valid backup file."
 msgstr ""
 
-#: modules/module_reading_goals.lua:1305 modules/module_reading_goals.lua:1310
-#: modules/module_reading_goals.lua:1315
+#: modules/module_reading_goals.lua:1157
 msgid "Not set"
 msgstr "Не установлено"
 
-#: screens/sui_stats_windows.lua:1151 screens/sui_stats_windows.lua:3684
+#: screens/sui_stats_windows.lua:1171 screens/sui_stats_windows.lua:3649
 msgid "Notes"
 msgstr "Заметки"
 
@@ -2871,27 +2951,27 @@ msgstr "Заметки"
 msgid "Nothing selected to import."
 msgstr ""
 
-#: engines/sui_heatmap_widgets.lua:110
+#: infra/sui_datenames.lua:30
 msgid "Nov"
 msgstr "нояб."
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
+#: infra/sui_datenames.lua:38
 msgid "November"
 msgstr "Ноябрь"
 
-#: engines/sui_book_grid.lua:1830 engines/sui_book_grid.lua:1831
+#: engines/sui_book_grid.lua:1789 engines/sui_book_grid.lua:1790
 msgid "Number of Books"
 msgstr "Число книг"
 
-#: screens/sui_menu.lua:3227
+#: screens/sui_menu.lua:3267
 msgid "Number of Books in Folder"
 msgstr "Число книг в папке"
 
-#: screens/sui_menu.lua:3301
+#: screens/sui_menu.lua:3341
 msgid "Number of Pages"
 msgstr "Число страниц"
 
-#: modules/module_clock.lua:367
+#: modules/module_clock.lua:349
 msgid "O'Clock"
 msgstr "ч."
 
@@ -2899,30 +2979,29 @@ msgstr "ч."
 msgid "OK"
 msgstr "OK"
 
-#: engines/sui_heatmap_widgets.lua:110
+#: infra/sui_datenames.lua:30
 msgid "Oct"
 msgstr "окт."
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
+#: infra/sui_datenames.lua:38
 msgid "October"
 msgstr "Октябрь"
 
-#: engines/sui_book_grid.lua:2009 engines/sui_book_grid.lua:2035
-#: modules/module_coverdeck.lua:1723 modules/module_currently.lua:2046
-#: screens/sui_menu.lua:1630 screens/sui_menu.lua:1840
-#: screens/sui_menu.lua:3547 screens/sui_menu.lua:3712
-#: screens/sui_menu.lua:4900
+#: engines/sui_book_grid.lua:1968 engines/sui_book_grid.lua:1994
+#: modules/module_coverdeck.lua:1723 modules/module_currently.lua:2022
+#: screens/sui_menu.lua:1631 screens/sui_menu.lua:1841
+#: screens/sui_menu.lua:3718 screens/sui_menu.lua:4906
 msgid "Off"
 msgstr "Выключить"
 
-#: modules/module_clock.lua:312
+#: modules/module_clock.lua:294
 msgid "Oh"
 msgstr "Ноль"
 
-#: engines/sui_book_grid.lua:2009 engines/sui_book_grid.lua:2035
-#: modules/module_coverdeck.lua:1723 modules/module_currently.lua:2046
-#: screens/sui_menu.lua:1630 screens/sui_menu.lua:1840
-#: screens/sui_menu.lua:4900
+#: engines/sui_book_grid.lua:1968 engines/sui_book_grid.lua:1994
+#: modules/module_coverdeck.lua:1723 modules/module_currently.lua:2022
+#: screens/sui_menu.lua:1631 screens/sui_menu.lua:1841
+#: screens/sui_menu.lua:4906
 msgid "On"
 msgstr "Включить"
 
@@ -2930,14 +3009,14 @@ msgstr "Включить"
 msgid "On side covers too"
 msgstr ""
 
-#: modules/module_clock.lua:275
+#: modules/module_clock.lua:257
 msgid "One"
 msgstr "Один"
 
 #: engines/sui_screen_engine.lua:611 features/library/sui_library_search.lua:69
 #: features/library/sui_library_search.lua:142
 #: features/sui_quickactions.lua:3444 modules/module_quote.lua:1327
-#: screens/sui_stats_windows.lua:635
+#: screens/sui_stats_windows.lua:636
 msgid "Open"
 msgstr "Открыть"
 
@@ -2959,7 +3038,7 @@ msgstr "Настройки модуля"
 
 #: engines/sui_screen_engine.lua:610 features/library/sui_library_search.lua:68
 #: features/sui_quickactions.lua:3443 modules/module_quote.lua:1326
-#: screens/sui_stats_windows.lua:633
+#: screens/sui_stats_windows.lua:634
 msgid "Open this file?"
 msgstr "Открыть этот файл?"
 
@@ -2967,17 +3046,17 @@ msgstr "Открыть этот файл?"
 msgid "Open with…"
 msgstr "Открыть с помощью…"
 
-#: screens/sui_menu.lua:2937
+#: screens/sui_menu.lua:2934
 msgid "Overflow Warning"
 msgstr "Предупреждение о переполнении"
 
-#: screens/sui_menu.lua:3206
+#: screens/sui_menu.lua:3246
 msgid "Overlays"
 msgstr "Наложения"
 
 #: features/sui_presets.lua:888 features/sui_presets.lua:918
-#: features/sui_presets.lua:1050 screens/sui_menu.lua:4368
-#: screens/sui_menu.lua:4397 screens/sui_menu.lua:4526
+#: features/sui_presets.lua:1050 screens/sui_menu.lua:4374
+#: screens/sui_menu.lua:4403 screens/sui_menu.lua:4532
 msgid "Overwrite"
 msgstr "Заменить"
 
@@ -2985,11 +3064,11 @@ msgstr "Заменить"
 msgid "Overwrite preset \"%s\" with the current homescreen settings?"
 msgstr "Заменить пресет \"%s\" текущими настройками домашнего экрана?"
 
-#: screens/sui_menu.lua:4396 screens/sui_menu.lua:4525
+#: screens/sui_menu.lua:4402 screens/sui_menu.lua:4531
 msgid "Overwrite preset \"%s\" with the current icon settings?"
 msgstr "Заменить пресет \"%s\" текущими настройками иконок?"
 
-#: screens/sui_menu.lua:4201
+#: screens/sui_menu.lua:4207
 msgid ""
 "Pack \"%s\" applied.\n"
 "%d icons replaced."
@@ -2997,7 +3076,7 @@ msgstr ""
 "Набор \"%s\" установлен.\n"
 "%d иконки заменены."
 
-#: screens/sui_menu.lua:4119
+#: screens/sui_menu.lua:4125
 msgid ""
 "Pack \"%s\" installed.\n"
 "You can now apply it from the list."
@@ -3005,12 +3084,12 @@ msgstr ""
 "Набор \"%s\" установлен.\n"
 "Теперь вы можете применить его из списка."
 
-#: features/sui_style.lua:2386
+#: features/sui_style.lua:2311
 msgid "Pack folder not accessible: "
 msgstr "Папка набора недоступна: "
 
-#: engines/sui_screen_engine.lua:1869 engines/sui_window.lua:1473
-#: infra/sui_patches.lua:2304 infra/sui_patches.lua:3082
+#: engines/sui_screen_engine.lua:1869 engines/sui_window.lua:1558
+#: infra/sui_patches.lua:2305 infra/sui_patches.lua:3083
 msgid "Page %1 of %2"
 msgstr "Страница %1 из %2"
 
@@ -3024,36 +3103,36 @@ msgstr "Страница %d"
 msgid "Page 1 (Home)"
 msgstr "Страница 1 (Домашняя)"
 
-#: screens/sui_stats_windows.lua:887 screens/sui_stats_windows.lua:3449
+#: screens/sui_stats_windows.lua:907 screens/sui_stats_windows.lua:3414
 msgid "Pages"
 msgstr "Страницы"
 
-#: engines/sui_book_grid.lua:1991 engines/sui_book_grid.lua:2007
+#: engines/sui_book_grid.lua:1950 engines/sui_book_grid.lua:1966
 msgid "Pages Badge"
 msgstr "Значок страниц"
 
-#: engines/sui_book_grid.lua:2002
+#: engines/sui_book_grid.lua:1961
 msgid "Pages Badge Color"
 msgstr "Цвет значка страниц"
 
-#: screens/sui_stats_windows.lua:2264
+#: screens/sui_stats_windows.lua:2287
 msgid "Pages per day"
 msgstr "Страниц за день"
 
-#: screens/sui_stats_windows.lua:2281 screens/sui_stats_windows.lua:2297
+#: screens/sui_stats_windows.lua:2304 screens/sui_stats_windows.lua:2320
 msgid "Pages read"
 msgstr "Страниц прочитано"
 
-#: features/sui_style.lua:1374 screens/sui_menu.lua:3042
+#: features/sui_style.lua:1371 screens/sui_menu.lua:3039
 msgid "Pagination Bar"
 msgstr "Панель нумерации"
 
-#: screens/sui_menu.lua:2675
+#: screens/sui_menu.lua:2672
 #, fuzzy
 msgid "Pagination Bar Opacity"
 msgstr "Панель нумерации"
 
-#: screens/sui_menu.lua:597
+#: screens/sui_menu.lua:598
 msgid ""
 "Pagination bar hidden.\n"
 "\n"
@@ -3063,7 +3142,7 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: screens/sui_menu.lua:576
+#: screens/sui_menu.lua:577
 msgid ""
 "Pagination bar set to Default.\n"
 "\n"
@@ -3073,7 +3152,7 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: screens/sui_menu.lua:683 screens/sui_menu.lua:695 screens/sui_menu.lua:707
+#: screens/sui_menu.lua:684 screens/sui_menu.lua:696 screens/sui_menu.lua:708
 msgid ""
 "Pagination bar size will change after restart.\n"
 "\n"
@@ -3083,19 +3162,19 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: features/sui_style.lua:145
+#: features/sui_style.lua:142
 msgid "Pagination: First Page"
 msgstr "Нумерация: Первая страница"
 
-#: features/sui_style.lua:151
+#: features/sui_style.lua:148
 msgid "Pagination: Last Page"
 msgstr "Нумерация: Последняя страница"
 
-#: features/sui_style.lua:139
+#: features/sui_style.lua:136
 msgid "Pagination: Next Page"
 msgstr "Нумерация: Следующая страница"
 
-#: features/sui_style.lua:133
+#: features/sui_style.lua:130
 msgid "Pagination: Previous Page"
 msgstr "Нумерация: Предыдущая страница"
 
@@ -3103,17 +3182,17 @@ msgstr "Нумерация: Предыдущая страница"
 msgid "Path chooser not available."
 msgstr "Выбор пути недоступен."
 
-#: features/sui_style.lua:2375
+#: features/sui_style.lua:2300
 msgid "Path does not exist: "
 msgstr "Указанный путь не существует: "
 
-#: modules/module_reading_goals.lua:1160
+#: modules/module_reading_goals.lua:1148
 #, fuzzy
 msgid "Percentage"
 msgstr "Прочитано (%)"
 
-#: modules/module_coverdeck.lua:150 modules/module_currently.lua:330
-#: modules/module_currently.lua:1651
+#: modules/module_coverdeck.lua:150 modules/module_currently.lua:331
+#: modules/module_currently.lua:1627
 msgid "Percentage read"
 msgstr "Прочитано (%)"
 
@@ -3125,31 +3204,36 @@ msgstr ""
 msgid "Place .lua files in the plugin's sui_quotes/ folder"
 msgstr "Поместите файлы .lua в папку sui_quotes/ плагина"
 
-#: screens/sui_menu.lua:4187
+#: screens/sui_menu.lua:4193
 msgid "Place a folder or .zip in:"
 msgstr "Поместите папку или .zip в:"
 
-#: screens/sui_menu.lua:2621
+#: screens/sui_menu.lua:2618
 msgid "Place images in:"
 msgstr "Поместите изображения в:"
 
 #: screens/sui_onboarding.lua:339
-msgid "Place your files in koreader/settings/simpleui/sui_wallpapers or sui_icons."
-msgstr "Поместите ваши файлы в koreader/settings/simpleui/sui_wallpapers или sui_icons."
+msgid ""
+"Place your files in koreader/settings/simpleui/sui_wallpapers or sui_icons."
+msgstr ""
+"Поместите ваши файлы в koreader/settings/simpleui/sui_wallpapers или "
+"sui_icons."
 
-#: screens/sui_menu.lua:3859
+#: screens/sui_menu.lua:3865
 msgid "Placeholder Cover for Bookless Folders"
 msgstr "Заглушка обложки для пустых папок"
 
 #: infra/sui_compat_check.lua:235
-msgid "Please delete the Project: Title plugin from your plugins folder and restart KOReader."
+msgid ""
+"Please delete the Project: Title plugin from your plugins folder and restart "
+"KOReader."
 msgstr ""
 
-#: screens/sui_stats_windows.lua:534
+#: screens/sui_stats_windows.lua:535
 msgid "Please enter a date in YYYY-MM-DD format."
 msgstr "Пожалуйста, введите дату в формате ГГГГ-ММ-ДД."
 
-#: features/sui_presets.lua:870 screens/sui_menu.lua:4352
+#: features/sui_presets.lua:870 screens/sui_menu.lua:4358
 msgid "Please enter a name for the preset."
 msgstr "Пожалуйста, введите имя пресета."
 
@@ -3185,49 +3269,49 @@ msgstr "Ошибка плагина: %s"
 msgid "Plugin not available: %s"
 msgstr "Плагин недоступен: %s"
 
-#: screens/sui_menu.lua:3956
+#: screens/sui_menu.lua:3962
 msgid "Portrait list mode"
 msgstr ""
 
-#: screens/sui_menu.lua:3948
+#: screens/sui_menu.lua:3954
 msgid "Portrait mosaic mode"
 msgstr ""
 
-#: screens/sui_menu.lua:3234 screens/sui_menu.lua:3638
+#: screens/sui_menu.lua:3274 screens/sui_menu.lua:3635
 msgid "Position"
 msgstr "Позиция"
 
-#: features/sui_quickactions.lua:989 infra/sui_config.lua:133
+#: features/sui_quickactions.lua:989 infra/sui_config.lua:134
 msgid "Power"
 msgstr "Питание"
 
-#: screens/sui_menu.lua:2923
+#: screens/sui_menu.lua:2920
 msgid "Preserve Cover Proportions"
 msgstr "Сохранять пропорции обложки"
 
-#: features/sui_stats_menu.lua:88
+#: features/sui_stats_menu.lua:89
 msgid "Preserve Deleted Books in Statistics"
 msgstr "Сохранять статистику удалённых книг"
 
-#: features/sui_presets.lua:1102 screens/sui_menu.lua:4577
+#: features/sui_presets.lua:1102 screens/sui_menu.lua:4583
 msgid "Preset \"%s\" imported."
 msgstr "Пресет \"%s\" импортирован."
 
 #: features/sui_presets.lua:753 features/sui_presets.lua:831
-#: screens/sui_menu.lua:4315
+#: screens/sui_menu.lua:4321
 msgid "Preset \"%s\" not found."
 msgstr "Пресет \"%s\" не найден."
 
-#: features/sui_presets.lua:881 screens/sui_menu.lua:4359
+#: features/sui_presets.lua:881 screens/sui_menu.lua:4365
 msgid "Preset \"%s\" saved."
 msgstr "Пресет \"%s\" сохранен."
 
 #: features/sui_presets.lua:924 features/sui_presets.lua:1056
-#: screens/sui_menu.lua:4403 screens/sui_menu.lua:4532
+#: screens/sui_menu.lua:4409 screens/sui_menu.lua:4538
 msgid "Preset \"%s\" updated."
 msgstr "Пресет \"%s\" обновлен."
 
-#: features/sui_presets.lua:1129 screens/sui_menu.lua:4607
+#: features/sui_presets.lua:1129 screens/sui_menu.lua:4613
 msgid ""
 "Preset exported to:\n"
 "%s"
@@ -3235,7 +3319,7 @@ msgstr ""
 "Пресет экспортирован в:\n"
 "%s"
 
-#: features/sui_presets.lua:856 screens/sui_menu.lua:4338
+#: features/sui_presets.lua:856 screens/sui_menu.lua:4344
 msgid "Preset name"
 msgstr "Имя пресета"
 
@@ -3243,7 +3327,7 @@ msgstr "Имя пресета"
 msgid "Preset not found"
 msgstr "Пресет не найден"
 
-#: screens/sui_menu.lua:3010 screens/sui_settings_window.lua:468
+#: screens/sui_menu.lua:3007 screens/sui_settings_window.lua:468
 msgid "Presets"
 msgstr "Пресеты"
 
@@ -3252,57 +3336,61 @@ msgid "Presets module unavailable."
 msgstr "Модуль пресетов недоступен."
 
 #: screens/sui_onboarding.lua:327
-msgid "Press and hold any element on the screen (like modules or bars) to quickly customize its settings."
-msgstr "Нажмите и удерживайте любой элемент на экране (например, модули или панели), чтобы быстро настроить его параметры."
+msgid ""
+"Press and hold any element on the screen (like modules or bars) to quickly "
+"customize its settings."
+msgstr ""
+"Нажмите и удерживайте любой элемент на экране (например, модули или панели), "
+"чтобы быстро настроить его параметры."
 
-#: screens/sui_bottombar.lua:587
+#: screens/sui_bottombar.lua:546
 msgid "Prev"
 msgstr "Назад"
 
-#: screens/sui_menu.lua:3409
+#: screens/sui_menu.lua:3449
 msgid "Progress"
 msgstr "Прогресс"
 
 #: modules/module_coverdeck.lua:1653 modules/module_coverdeck.lua:1721
-#: modules/module_currently.lua:1990 modules/module_currently.lua:2044
+#: modules/module_currently.lua:1966 modules/module_currently.lua:2020
 msgid "Progress Badge"
 msgstr "Значок прогресса"
 
-#: engines/sui_book_grid.lua:1955 modules/module_coverdeck.lua:1673
-#: modules/module_currently.lua:1999
+#: engines/sui_book_grid.lua:1914 modules/module_coverdeck.lua:1673
+#: modules/module_currently.lua:1975
 msgid "Progress Badge Color"
 msgstr "Цвет значка прогресса"
 
-#: screens/sui_menu.lua:4729
+#: screens/sui_menu.lua:4735
 msgid "Progress Bar Type"
 msgstr "Тип полосы прогресса"
 
-#: engines/sui_book_grid.lua:1960
+#: engines/sui_book_grid.lua:1919
 msgid "Progress Indicator"
 msgstr "Индикатор прогресса"
 
-#: engines/sui_book_grid.lua:1947
+#: engines/sui_book_grid.lua:1906
 msgid "Progress Style"
 msgstr "Стиль полосы прогресса"
 
-#: engines/sui_book_grid.lua:2111 modules/module_currently.lua:1980
+#: engines/sui_book_grid.lua:2070 modules/module_currently.lua:1956
 #, fuzzy
 msgid "Progress Text"
 msgstr "Прогресс"
 
-#: infra/sui_config.lua:1139
+#: infra/sui_config.lua:1140
 msgid "Progress and Badges"
 msgstr "Прогресс и значки"
 
-#: modules/module_currently.lua:2021
+#: modules/module_currently.lua:1997
 msgid "Progress and Stats"
 msgstr "Прогресс и статистика"
 
-#: modules/module_coverdeck.lua:164 modules/module_currently.lua:329
+#: modules/module_coverdeck.lua:164 modules/module_currently.lua:330
 msgid "Progress bar"
 msgstr "Полоса прогресса"
 
-#: modules/module_currently.lua:2024
+#: modules/module_currently.lua:2000
 msgid "Progress bar style"
 msgstr "Стиль полосы прогресса"
 
@@ -3310,7 +3398,7 @@ msgstr "Стиль полосы прогресса"
 msgid "Project: Title is not compatible with Simple UI."
 msgstr ""
 
-#: infra/sui_config.lua:1122
+#: infra/sui_config.lua:1123
 #, fuzzy
 msgid "Proportions"
 msgstr "Позиция"
@@ -3320,7 +3408,7 @@ msgstr "Позиция"
 #: modules/module_action_list.lua:363 modules/module_action_list.lua:389
 #: modules/module_quick_actions.lua:435 modules/module_quick_actions.lua:440
 #: modules/module_quick_actions.lua:466 modules/module_quick_actions.lua:575
-#: screens/sui_menu.lua:2523 screens/sui_menu.lua:4953
+#: screens/sui_menu.lua:2520 screens/sui_menu.lua:4959
 #: screens/sui_quicksettings_bar.lua:1144
 #: screens/sui_quicksettings_bar.lua:1149
 #: screens/sui_quicksettings_bar.lua:1170
@@ -3328,29 +3416,25 @@ msgstr "Позиция"
 msgid "Quick Actions"
 msgstr "Быстрые действия"
 
-#: screens/sui_menu.lua:4957
+#: screens/sui_menu.lua:4963
 msgid "Quick Actions  (%d/%d — %d left)"
 msgstr "Быстрые действия  (%d/%d — осталось %d)"
 
-#: screens/sui_menu.lua:4955
+#: screens/sui_menu.lua:4961
 msgid "Quick Actions  (%d/%d — at limit)"
 msgstr "Быстрые действия  (%d/%d — лимит достигнут)"
 
 #: features/sui_quickactions.lua:1535 features/sui_quickactions.lua:1937
-#: screens/sui_menu.lua:4025
+#: screens/sui_menu.lua:4031
 msgid "Quick Actions Icons"
 msgstr "Иконки быстрых действий"
 
 #: modules/module_quick_actions.lua:290 modules/module_quick_actions.lua:347
-#: modules/module_quick_actions.lua:671 screens/sui_menu.lua:2273
+#: modules/module_quick_actions.lua:671 screens/sui_menu.lua:2270
 msgid "Quick Actions Row"
 msgstr "Строка быстрых действий"
 
-#: features/sui_manual_books.lua:175
-msgid "Quick Count"
-msgstr ""
-
-#: screens/sui_menu.lua:3044 screens/sui_quicksettings_bar.lua:993
+#: screens/sui_menu.lua:3041 screens/sui_quicksettings_bar.lua:993
 msgid "Quick Settings Bar"
 msgstr "Панель быстрых действий"
 
@@ -3384,32 +3468,32 @@ msgstr "Файлов .lua в custom_quotes/ не найдено"
 msgid "Quotes + My Highlights"
 msgstr "Цитаты + Мои выделения"
 
-#: infra/sui_config.lua:199
+#: infra/sui_config.lua:200
 msgid "RAM Usage"
 msgstr "Использование ОЗУ"
 
-#: features/sui_quickactions.lua:821 infra/sui_config.lua:125
-#: modules/module_library.lua:220
+#: features/sui_quickactions.lua:821 infra/sui_config.lua:126
+#: modules/module_library.lua:210
 msgid "Random"
 msgstr "Случайно"
 
 #: features/sui_presets.lua:175 features/sui_presets.lua:220
-#: features/sui_stats_menu.lua:121 modules/module_reading_goals.lua:793
-#: modules/module_reading_goals.lua:794
+#: features/sui_stats_menu.lua:138 modules/module_reading_goals.lua:800
+#: modules/module_reading_goals.lua:801
 msgid "Reading Goals"
 msgstr "Цели чтения"
 
-#: features/sui_stats_menu.lua:118 modules/module_heatmap.lua:208
-#: modules/module_heatmap.lua:209 screens/sui_heatmap_popup.lua:122
+#: features/sui_stats_menu.lua:135 modules/module_heatmap.lua:196
+#: modules/module_heatmap.lua:197 screens/sui_heatmap_popup.lua:122
 msgid "Reading Heatmap"
 msgstr "Тепловая карта чтения"
 
-#: features/sui_stats_menu.lua:115 screens/sui_stats_windows.lua:2599
+#: features/sui_stats_menu.lua:132 screens/sui_stats_windows.lua:2588
 msgid "Reading Insights"
 msgstr "Обзор прочитанного"
 
 #: features/sui_presets.lua:175 features/sui_presets.lua:220
-#: modules/module_reading_stats.lua:382
+#: modules/module_reading_stats.lua:350
 msgid "Reading Stats"
 msgstr "Статистика чтения"
 
@@ -3417,7 +3501,7 @@ msgstr "Статистика чтения"
 msgid "Reading goals, streak mode and freeze bank"
 msgstr ""
 
-#: features/sui_stats_menu.lua:64
+#: features/sui_stats_menu.lua:65
 msgid "Real streak only"
 msgstr "Только настоящая серия"
 
@@ -3426,17 +3510,17 @@ msgid "Reboot"
 msgstr "Перезагрузка"
 
 #: features/sui_quickactions.lua:794 features/sui_quickactions.lua:3550
-#: infra/sui_config.lua:123
+#: infra/sui_config.lua:124
 msgid "Recent"
 msgstr "Недавние"
 
 #: features/sui_presets.lua:143 features/sui_presets.lua:193
-#: modules/module_coverdeck.lua:1338 modules/module_recent.lua:15
-#: modules/module_recent.lua:16
+#: modules/module_coverdeck.lua:1338 modules/module_recent.lua:16
+#: modules/module_recent.lua:17
 msgid "Recent Books"
 msgstr "Недавние книги"
 
-#: features/sui_style.lua:2156
+#: features/sui_style.lua:2081
 msgid "Regular"
 msgstr ""
 
@@ -3448,15 +3532,15 @@ msgstr "Удалить из «Буду читать»"
 msgid "Remove from list when finished"
 msgstr "Удалить из списка по завершении"
 
-#: engines/sui_window.lua:1995 engines/sui_window.lua:2996
+#: engines/sui_window.lua:2068 engines/sui_window.lua:3452
 #: features/sui_presets.lua:930 features/sui_presets.lua:937
-#: features/sui_presets.lua:1023 screens/sui_menu.lua:4409
-#: screens/sui_menu.lua:4416 screens/sui_menu.lua:4501
+#: features/sui_presets.lua:1023 screens/sui_menu.lua:4415
+#: screens/sui_menu.lua:4422 screens/sui_menu.lua:4507
 msgid "Rename"
 msgstr "Переименовать"
 
 #: features/sui_presets.lua:933 features/sui_presets.lua:1019
-#: screens/sui_menu.lua:4412 screens/sui_menu.lua:4497
+#: screens/sui_menu.lua:4418 screens/sui_menu.lua:4503
 msgid "Rename \"%s\""
 msgstr "Переименовать \"%s\""
 
@@ -3464,26 +3548,32 @@ msgstr "Переименовать \"%s\""
 msgid "Rename screen"
 msgstr "Переименовать экран"
 
-#: screens/sui_menu.lua:2900
-msgid "Replaces the \"Closing book…\" notice above with the cover for that close, when a cover is available."
-msgstr "Заменяет уведомление «Закрытие книги…» выше обложкой книги при закрытии, если обложка доступна."
-
-#: screens/sui_menu.lua:583
+#: screens/sui_menu.lua:2897
 msgid ""
-"Replaces the pagination bar with Prev/Next arrows at the edges of the navigation bar.\n"
+"Replaces the \"Closing book…\" notice above with the cover for that close, "
+"when a cover is available."
+msgstr ""
+"Заменяет уведомление «Закрытие книги…» выше обложкой книги при закрытии, "
+"если обложка доступна."
+
+#: screens/sui_menu.lua:584
+msgid ""
+"Replaces the pagination bar with Prev/Next arrows at the edges of the "
+"navigation bar.\n"
 "The arrows dim when there is no previous or next page.\n"
 "With navpager active, as few as 1 tab and at most 4 tabs can be configured."
 msgstr ""
-"Заменяет панель нумерации стрелками Назад/Вперёд по краям навигационной панели.\n"
+"Заменяет панель нумерации стрелками Назад/Вперёд по краям навигационной "
+"панели.\n"
 "Стрелки становятся тусклыми, если нет предыдущей/следующей страницы.\n"
 "В этом режиме можно настроить от 1 до 4 вкладок."
 
-#: features/sui_quickactions.lua:1945 features/sui_style.lua:1390
-#: screens/sui_menu.lua:2823 screens/sui_stats_windows.lua:520
+#: features/sui_quickactions.lua:1945 features/sui_style.lua:1387
+#: screens/sui_menu.lua:2820 screens/sui_stats_windows.lua:521
 msgid "Reset"
 msgstr "Сброс"
 
-#: features/sui_quickactions.lua:1939 features/sui_style.lua:1384
+#: features/sui_quickactions.lua:1939 features/sui_style.lua:1381
 msgid "Reset All"
 msgstr "Сбросить всё"
 
@@ -3491,7 +3581,7 @@ msgstr "Сбросить всё"
 msgid "Reset All Quick Action Icons"
 msgstr "Сбросить все иконки быстрых действий"
 
-#: features/sui_style.lua:1156
+#: features/sui_style.lua:1153
 msgid "Reset All System Icons"
 msgstr "Сбросить все системные иконки"
 
@@ -3499,24 +3589,25 @@ msgstr "Сбросить все системные иконки"
 msgid "Reset all Quick Actions icons to default?"
 msgstr "Сбросить все иконки быстрых действий до стандартных?"
 
-#: screens/sui_menu.lua:2822
+#: screens/sui_menu.lua:2819
 msgid "Reset all scales to default (100%)? This cannot be undone."
-msgstr "Сбросить все масштабы до значения по умолчанию (100%)? Это нельзя отменить."
+msgstr ""
+"Сбросить все масштабы до значения по умолчанию (100%)? Это нельзя отменить."
 
-#: features/sui_style.lua:1389
+#: features/sui_style.lua:1386
 msgid "Reset all system icons to default?"
 msgstr "Сбросить все системные иконки до стандартных?"
 
-#: screens/sui_menu.lua:2817
+#: screens/sui_menu.lua:2814
 msgid "Reset to Default Scale"
 msgstr "Сбросить масштаб до значения по умолчанию"
 
 #: features/sui_quickactions.lua:600 infra/sui_updater.lua:448
-#: screens/sui_menu.lua:555 screens/sui_menu.lua:968 screens/sui_menu.lua:1178
-#: screens/sui_menu.lua:1272 screens/sui_menu.lua:1487
-#: screens/sui_menu.lua:2100 screens/sui_menu.lua:3726
-#: screens/sui_menu.lua:3749 screens/sui_menu.lua:3771
-#: screens/sui_menu.lua:4717 screens/sui_menu.lua:4916
+#: screens/sui_menu.lua:556 screens/sui_menu.lua:969 screens/sui_menu.lua:1179
+#: screens/sui_menu.lua:1273 screens/sui_menu.lua:1488
+#: screens/sui_menu.lua:2088 screens/sui_menu.lua:3732
+#: screens/sui_menu.lua:3755 screens/sui_menu.lua:3777
+#: screens/sui_menu.lua:4723 screens/sui_menu.lua:4922
 #: screens/sui_quicksettings_bar.lua:1134
 msgid "Restart"
 msgstr "Перезапуск"
@@ -3527,7 +3618,7 @@ msgstr "Перезапуск"
 msgid "Restart now"
 msgstr "Перезапуск"
 
-#: features/sui_style.lua:1981 features/sui_style.lua:2021
+#: features/sui_style.lua:1906 features/sui_style.lua:1946
 msgid "Restart to fully apply the UI font change."
 msgstr "Перезапустите для полного применения шрифта."
 
@@ -3554,35 +3645,37 @@ msgid "Restore failed. Your previous configuration was kept unchanged."
 msgstr ""
 
 #: features/sui_backup.lua:1002
-msgid "Restore this backup? Existing settings for these categories will be replaced. Saved presets are merged — yours are kept."
+msgid ""
+"Restore this backup? Existing settings for these categories will be "
+"replaced. Saved presets are merged — yours are kept."
 msgstr ""
 
-#: screens/sui_menu.lua:2732
+#: screens/sui_menu.lua:2729
 msgid "Return to Home Screen on Wakeup"
 msgstr "Возврат на домашний экран при пробуждении"
 
-#: engines/sui_book_grid.lua:2044 screens/sui_menu.lua:3480
-#: screens/sui_menu.lua:3489 screens/sui_menu.lua:3501
+#: engines/sui_book_grid.lua:2003 screens/sui_menu.lua:3520
+#: screens/sui_menu.lua:3529 screens/sui_menu.lua:3541
 msgid "Ribbon"
 msgstr "Лента"
 
-#: infra/sui_config.lua:1851 modules/module_quick_actions.lua:646
-#: screens/sui_menu.lua:836 screens/sui_menu.lua:1066 screens/sui_menu.lua:1681
-#: screens/sui_menu.lua:1879
+#: infra/sui_config.lua:1852 modules/module_quick_actions.lua:646
+#: screens/sui_menu.lua:837 screens/sui_menu.lua:1067 screens/sui_menu.lua:1682
+#: screens/sui_menu.lua:1880
 msgid "Right"
 msgstr "Справа"
 
-#: modules/module_reading_goals.lua:1376
+#: modules/module_reading_goals.lua:1303
 #, fuzzy
 msgid "Ring Alignment"
 msgstr "Выравнивание"
 
-#: modules/module_reading_goals.lua:1364
+#: modules/module_reading_goals.lua:1291
 #, fuzzy
 msgid "Ring Style"
 msgstr "Стиль"
 
-#: modules/module_reading_goals.lua:1357
+#: modules/module_reading_goals.lua:1284
 #, fuzzy
 msgid "Rings"
 msgstr "Настройки"
@@ -3591,7 +3684,7 @@ msgstr "Настройки"
 msgid "Round"
 msgstr "Круглый"
 
-#: engines/sui_book_grid.lua:1933
+#: engines/sui_book_grid.lua:1892
 msgid "Round Overlay"
 msgstr "Круглая накладка"
 
@@ -3599,26 +3692,26 @@ msgstr "Круглая накладка"
 msgid "Rounded Square"
 msgstr "Скругленный квадрат"
 
-#: engines/sui_book_grid.lua:1867
+#: engines/sui_book_grid.lua:1826
 msgid "Rows"
 msgstr "Строки"
 
-#: screens/sui_stats_windows.lua:2664
+#: infra/sui_datenames.lua:43
 msgid "Sat"
 msgstr "Суббота"
 
-#: modules/module_clock.lua:55
+#: infra/sui_datenames.lua:49
 msgid "Saturday"
 msgstr "Суббота"
 
 #: features/sui_manual_books.lua:85 features/sui_manual_books.lua:137
 #: features/sui_presets.lua:864 features/sui_quickactions.lua:2516
-#: infra/sui_goals.lua:111 screens/sui_menu.lua:4346
-#: screens/sui_settings_window.lua:554 screens/sui_stats_windows.lua:529
+#: infra/sui_goals.lua:116 screens/sui_menu.lua:4352
+#: screens/sui_settings_window.lua:554 screens/sui_stats_windows.lua:530
 msgid "Save"
 msgstr "Сохранить"
 
-#: features/sui_presets.lua:849 screens/sui_menu.lua:4331
+#: features/sui_presets.lua:849 screens/sui_menu.lua:4337
 msgid "Save as new preset"
 msgstr "Сохранить как новый пресет"
 
@@ -3626,7 +3719,7 @@ msgstr "Сохранить как новый пресет"
 msgid "Save backup as"
 msgstr ""
 
-#: screens/sui_menu.lua:4336
+#: screens/sui_menu.lua:4342
 msgid "Save icon preset"
 msgstr "Сохранить пресет иконки"
 
@@ -3634,36 +3727,39 @@ msgstr "Сохранить пресет иконки"
 msgid "Save preset"
 msgstr "Сохранить пресет"
 
-#: engines/sui_book_grid.lua:1803 engines/sui_book_grid.lua:1805
+#: engines/sui_book_grid.lua:1762 engines/sui_book_grid.lua:1764
 #: modules/module_action_list.lua:445 modules/module_action_list.lua:447
-#: modules/module_clock.lua:1078 modules/module_clock.lua:1080
+#: modules/module_clock.lua:1060 modules/module_clock.lua:1062
 #: modules/module_coverdeck.lua:1319 modules/module_coverdeck.lua:1321
-#: modules/module_currently.lua:1478 modules/module_currently.lua:1480
-#: modules/module_heatmap.lua:313 modules/module_heatmap.lua:315
+#: modules/module_currently.lua:1454 modules/module_currently.lua:1456
+#: modules/module_heatmap.lua:295 modules/module_heatmap.lua:297
 #: modules/module_quick_actions.lua:584 modules/module_quick_actions.lua:586
 #: modules/module_quote.lua:1380 modules/module_quote.lua:1384
-#: modules/module_quote.lua:1505 modules/module_reading_goals.lua:1141
-#: modules/module_reading_goals.lua:1143 modules/module_reading_stats.lua:692
-#: modules/module_reading_stats.lua:694 modules/module_reading_stats.lua:904
-#: screens/sui_menu.lua:2744
+#: modules/module_quote.lua:1505 modules/module_reading_goals.lua:1128
+#: modules/module_reading_goals.lua:1130 modules/module_reading_stats.lua:660
+#: modules/module_reading_stats.lua:662 modules/module_reading_stats.lua:872
+#: screens/sui_menu.lua:2741
 msgid "Scale"
 msgstr "Масштаб"
 
-#: modules/module_collections.lua:1292
+#: modules/module_collections.lua:1280
 msgid "Scale for the collection count badge."
 msgstr ""
 "Масштаб значка с числом книг в коллекции.\n"
 "100% — размер по умолчанию."
 
-#: modules/module_currently.lua:1494
+#: modules/module_currently.lua:1470
 msgid ""
 "Scale for the cover thumbnail only.\n"
 "100% is the default size.\n"
-"When Dynamic Cover Size is on, this scales the cover relative to its current dynamic size instead, and the cover never shrinks below its 100% size."
+"When Dynamic Cover Size is on, this scales the cover relative to its current "
+"dynamic size instead, and the cover never shrinks below its 100% size."
 msgstr ""
 "Масштаб только для миниатюры обложки.\n"
 "100% — размер по умолчанию.\n"
-"Если включён «Динамический размер обложки», масштаб применяется относительно текущего динамического размера, а обложка никогда не уменьшается менее 100% своего размера."
+"Если включён «Динамический размер обложки», масштаб применяется относительно "
+"текущего динамического размера, а обложка никогда не уменьшается менее 100% "
+"своего размера."
 
 #: modules/module_coverdeck.lua:1330
 msgid ""
@@ -3673,7 +3769,7 @@ msgstr ""
 "Масштаб только миниатюр обложек.\n"
 "100% — размер по умолчанию."
 
-#: engines/sui_book_grid.lua:1815
+#: engines/sui_book_grid.lua:1774
 msgid ""
 "Scale for the cover thumbnails only.\n"
 "Text and progress bar follow the module scale.\n"
@@ -3683,7 +3779,7 @@ msgstr ""
 "Текст и прогресс зависят от масштаба модуля.\n"
 "100% — размер по умолчанию."
 
-#: screens/sui_menu.lua:3699
+#: screens/sui_menu.lua:3705
 msgid ""
 "Scale for the folder name overlay text.\n"
 "100% is the default size."
@@ -3699,7 +3795,7 @@ msgstr ""
 "Масштаб текста подписи.\n"
 "100% — размер по умолчанию."
 
-#: screens/sui_menu.lua:3216
+#: screens/sui_menu.lua:3256
 msgid ""
 "Scale for the library badges (progress, pages, etc.).\n"
 "100% is the default size."
@@ -3707,12 +3803,13 @@ msgstr ""
 "Масштаб значков в библиотеке (прогресс, страницы и т.д.).\n"
 "100% — размер по умолчанию."
 
-#: modules/module_coverdeck.lua:1685 modules/module_currently.lua:2011
+#: modules/module_coverdeck.lua:1685 modules/module_currently.lua:1987
 msgid "Scale for the progress badge."
 msgstr ""
 
-#: engines/sui_book_grid.lua:1982
-msgid "Scale for this module's corner badges (progress, pages, series, new book)."
+#: engines/sui_book_grid.lua:1941
+msgid ""
+"Scale for this module's corner badges (progress, pages, series, new book)."
 msgstr ""
 "Масштаб угловых значков модуля (прогресс, страницы, серия, новая книга).\n"
 "100% — размер по умолчанию."
@@ -3721,10 +3818,10 @@ msgstr ""
 msgid "Scale for this module."
 msgstr "Масштаб для этого модуля."
 
-#: engines/sui_book_grid.lua:1806 modules/module_action_list.lua:448
-#: modules/module_clock.lua:1081 modules/module_currently.lua:1481
+#: engines/sui_book_grid.lua:1765 modules/module_action_list.lua:448
+#: modules/module_clock.lua:1063 modules/module_currently.lua:1457
 #: modules/module_quick_actions.lua:587 modules/module_quote.lua:1386
-#: modules/module_reading_goals.lua:1144 modules/module_reading_stats.lua:695
+#: modules/module_reading_goals.lua:1131 modules/module_reading_stats.lua:663
 msgid ""
 "Scale for this module.\n"
 "100% is the default size."
@@ -3732,15 +3829,21 @@ msgstr ""
 "Масштаб для этого модуля.\n"
 "100% — размер по умолчанию."
 
-#: modules/module_heatmap.lua:316
+#: modules/module_heatmap.lua:298
 msgid ""
 "Scale for this module.\n"
-"100% is the default size. Capped at 100% here: the grid always has as many columns as \"Weeks shown\" (or, in Time of day view, 24), so there's no room to grow the cells past their autofit size without the grid overflowing the card."
+"100% is the default size. Capped at 100% here: the grid always has as many "
+"columns as \"Weeks shown\" (or, in Time of day view, 24), so there's no room "
+"to grow the cells past their autofit size without the grid overflowing the "
+"card."
 msgstr ""
 "Масштаб для этого модуля.\n"
-"100% — размер по умолчанию. Здесь ограничен 100%: сетка всегда имеет столько столбцов, сколько задано в «Показано недель» (или 24 в режиме «Время суток»), поэтому ячейкам некуда расти сверх автоматического размера без переполнения карточки сеткой."
+"100% — размер по умолчанию. Здесь ограничен 100%: сетка всегда имеет столько "
+"столбцов, сколько задано в «Показано недель» (или 24 в режиме «Время "
+"суток»), поэтому ячейкам некуда расти сверх автоматического размера без "
+"переполнения карточки сеткой."
 
-#: screens/sui_menu.lua:2768
+#: screens/sui_menu.lua:2765
 msgid ""
 "Scales all modules and labels together.\n"
 "100% is the default size."
@@ -3748,7 +3851,7 @@ msgstr ""
 "Масштабирует все модули и подписи вместе.\n"
 "100% — размер по умолчанию."
 
-#: screens/sui_menu.lua:2799
+#: screens/sui_menu.lua:2796
 msgid ""
 "Scales the section label text above each module.\n"
 "100% is the default size."
@@ -3756,7 +3859,7 @@ msgstr ""
 "Масштабирует текст подписи секции над каждым модулем.\n"
 "100% — размер по умолчанию."
 
-#: screens/sui_menu.lua:3872
+#: screens/sui_menu.lua:3878
 msgid "Scan Subfolders for Covers"
 msgstr "Сканировать вложенные папки для обложек"
 
@@ -3764,17 +3867,19 @@ msgstr "Сканировать вложенные папки для обложе
 msgid "Screen name"
 msgstr "Имя экрана"
 
-#: screens/sui_menu.lua:2715
-msgid "Screen shown after closing a book. Gestures and quick actions that name a destination always open that destination."
+#: screens/sui_menu.lua:2712
+msgid ""
+"Screen shown after closing a book. Gestures and quick actions that name a "
+"destination always open that destination."
 msgstr ""
 
 #: features/library/sui_library_search.lua:208
-#: features/sui_quickactions.lua:906 infra/sui_config.lua:128
-#: screens/sui_titlebar.lua:119 screens/sui_titlebar.lua:1152
+#: features/sui_quickactions.lua:906 infra/sui_config.lua:129
+#: screens/sui_titlebar.lua:118 screens/sui_titlebar.lua:1164
 msgid "Search"
 msgstr "Поиск"
 
-#: features/sui_style.lua:89
+#: features/sui_style.lua:86
 msgid "Search Button"
 msgstr "Кнопка поиска"
 
@@ -3792,16 +3897,16 @@ msgstr "Просмотр библиотеки"
 msgid "Search results: %1"
 msgstr ""
 
-#: engines/sui_window.lua:1984 engines/sui_window.lua:2981
+#: engines/sui_window.lua:2057 engines/sui_window.lua:3437
 msgid "Select"
 msgstr "Выбрать"
 
 #: features/sui_presets.lua:760 features/sui_presets.lua:768
-#: features/sui_presets.lua:773 screens/sui_menu.lua:4322
+#: features/sui_presets.lua:773 screens/sui_menu.lua:4328
 msgid "Select Preset"
 msgstr "Выбрать пресет"
 
-#: screens/sui_menu.lua:2640
+#: screens/sui_menu.lua:2637
 msgid "Select Wallpaper"
 msgstr "Выбрать обои"
 
@@ -3809,37 +3914,37 @@ msgstr "Выбрать обои"
 msgid "Select at least 2 collections to arrange."
 msgstr "Выберите минимум 2 коллекции для сортировки."
 
-#: engines/sui_heatmap_widgets.lua:110
+#: infra/sui_datenames.lua:30
 msgid "Sep"
 msgstr "сент."
 
-#: modules/module_clock.lua:60 screens/sui_stats_windows.lua:2676
+#: infra/sui_datenames.lua:38
 msgid "September"
 msgstr "Сентябрь"
 
 #: features/library/sui_library_browse.lua:64
-#: features/sui_quickactions.lua:1022 infra/sui_config.lua:137
-#: modules/module_currently.lua:327 modules/module_currently.lua:1978
+#: features/sui_quickactions.lua:1022 infra/sui_config.lua:138
+#: modules/module_currently.lua:328 modules/module_currently.lua:1954
 msgid "Series"
 msgstr "Серия"
 
-#: engines/sui_book_grid.lua:2017 engines/sui_book_grid.lua:2033
+#: engines/sui_book_grid.lua:1976 engines/sui_book_grid.lua:1992
 msgid "Series Badge"
 msgstr "Значок серии"
 
-#: engines/sui_book_grid.lua:2028
+#: engines/sui_book_grid.lua:1987
 msgid "Series Badge Color"
 msgstr "Цвет значка серии"
 
-#: screens/sui_menu.lua:3355
+#: screens/sui_menu.lua:3395
 msgid "Series Index"
 msgstr "Номер в серии"
 
-#: screens/sui_menu.lua:775 screens/sui_menu.lua:1033
+#: screens/sui_menu.lua:776 screens/sui_menu.lua:1034
 msgid "Set"
 msgstr "Установить"
 
-#: modules/module_reading_goals.lua:1176
+#: modules/module_reading_goals.lua:1191
 msgid "Set Goal"
 msgstr "Задать цель"
 
@@ -3847,15 +3952,11 @@ msgstr "Задать цель"
 msgid "Set collection cover"
 msgstr "Задать обложку коллекции"
 
-#: features/library/sui_foldercovers.lua:623
+#: features/library/sui_foldercovers.lua:633
 #: features/library/sui_library_browse.lua:823
 #: features/library/sui_series_grouping.lua:381
 msgid "Set folder cover"
 msgstr "Задать обложку папки"
-
-#: features/sui_manual_books.lua:176
-msgid "Set how many books you read in a year, without entering their details."
-msgstr ""
 
 #: screens/sui_onboarding.lua:209 screens/sui_onboarding.lua:403
 msgid "Set the Home Folder"
@@ -3865,7 +3966,7 @@ msgstr ""
 msgid "Set your reading goal"
 msgstr "Задать цель чтения"
 
-#: features/sui_quickactions.lua:999 infra/sui_config.lua:134
+#: features/sui_quickactions.lua:999 infra/sui_config.lua:135
 msgid "Settings"
 msgstr "Настройки"
 
@@ -3873,36 +3974,41 @@ msgstr "Настройки"
 msgid "Settings not found."
 msgstr "Настройки не найдены."
 
-#: screens/sui_menu.lua:1209 screens/sui_menu.lua:1236
-#: screens/sui_menu.lua:1548 screens/sui_menu.lua:2949
+#: screens/sui_menu.lua:1210 screens/sui_menu.lua:1237
+#: screens/sui_menu.lua:1549 screens/sui_menu.lua:2946
 #: screens/sui_quicksettings_bar.lua:1340
 #: screens/sui_quicksettings_bar.lua:1364
 msgid "Settings on Long Tap"
 msgstr "Настройки по долгому нажатию"
 
-#: modules/module_clock.lua:277
+#: modules/module_clock.lua:259
 msgid "Seven"
 msgstr "Семь"
 
-#: modules/module_clock.lua:280
+#: modules/module_clock.lua:262
 msgid "Seventeen"
 msgstr "Семнадцать"
 
-#: infra/sui_config.lua:1542
+#: infra/sui_config.lua:1543
 msgid ""
 "Share of the row this module occupies.\n"
-"100% = full width. Modules under 100% share a row when their widths fit (bento grid)."
+"100% = full width. Modules under 100% share a row when their widths fit "
+"(bento grid)."
 msgstr ""
 
-#: modules/module_clock.lua:1195
+#: features/library/sui_finished_books.lua:59
+msgid "Show"
+msgstr ""
+
+#: modules/module_clock.lua:1166
 msgid "Show Battery"
 msgstr "Показать батарею"
 
-#: modules/module_clock.lua:1183
+#: modules/module_clock.lua:1154
 msgid "Show Clock"
 msgstr "Показать часы"
 
-#: modules/module_clock.lua:1189
+#: modules/module_clock.lua:1160
 msgid "Show Date"
 msgstr "Показать дату"
 
@@ -3910,50 +4016,59 @@ msgstr "Показать дату"
 msgid "Show Icon"
 msgstr "Показать иконку"
 
-#: screens/sui_menu.lua:720
+#: screens/sui_menu.lua:721
 msgid "Show Page Count in Title Bar"
 msgstr "Показывать количество страниц в строке заголовка"
 
-#: screens/sui_menu.lua:3125
+#: screens/sui_menu.lua:3165
 msgid "Show Uncategorized Items"
 msgstr ""
 
-#: screens/sui_menu.lua:2838
-msgid "Show a brief \"Closing book…\" notice when closing a book, preventing accidental double-taps while e-ink refreshes."
-msgstr "Показывать краткое уведомление «Закрытие книги…» при закрытии книги, чтобы предотвратить случайные двойные нажатия во время обновления экрана E-Ink."
+#: screens/sui_menu.lua:2835
+msgid ""
+"Show a brief \"Closing book…\" notice when closing a book, preventing "
+"accidental double-taps while e-ink refreshes."
+msgstr ""
+"Показывать краткое уведомление «Закрытие книги…» при закрытии книги, чтобы "
+"предотвратить случайные двойные нажатия во время обновления экрана E-Ink."
 
-#: features/sui_stats_menu.lua:101
-msgid "Show a brief \"Loading statistics…\" notice when opening a statistics window, preventing accidental double-taps while e-ink refreshes."
-msgstr "Показывать краткое уведомление «Загрузка статистики…» при открытии окна статистики, чтобы предотвратить случайные двойные нажатия во время обновления экрана E-Ink."
+#: features/sui_stats_menu.lua:118
+msgid ""
+"Show a brief \"Loading statistics…\" notice when opening a statistics "
+"window, preventing accidental double-taps while e-ink refreshes."
+msgstr ""
+"Показывать краткое уведомление «Загрузка статистики…» при открытии окна "
+"статистики, чтобы предотвратить случайные двойные нажатия во время "
+"обновления экрана E-Ink."
 
-#: modules/module_coverdeck.lua:1698 modules/module_library.lua:326
-#: modules/module_recent.lua:54
+#: modules/module_coverdeck.lua:1698 modules/module_recent.lua:50
 msgid "Show finished books"
 msgstr "Показывать прочитанные книги"
 
-#: modules/module_heatmap.lua:347
+#: modules/module_heatmap.lua:329
 msgid "Show legend"
 msgstr "Показать легенду"
 
-#: screens/sui_menu.lua:2899
+#: screens/sui_menu.lua:2896
 msgid "Show on Close"
 msgstr "Показывать при закрытии"
 
-#: screens/sui_menu.lua:2888
+#: screens/sui_menu.lua:2885
 msgid "Show on Open"
 msgstr "Показывать при открытии"
 
-#: infra/sui_config.lua:1871
+#: infra/sui_config.lua:1872
 msgid "Show section label"
 msgstr "Показывать подпись секции"
 
-#: screens/sui_menu.lua:2645
+#: screens/sui_menu.lua:2642
 msgid "Show wallpaper on all screens"
 msgstr "Показывать обои на всех экранах"
 
-#: screens/sui_menu.lua:724
+#: screens/sui_menu.lua:725
 msgid ""
-"Shows \"Page X of Y\" in the title bar subtitle when browsing the library, history or collections.\n"
+"Shows \"Page X of Y\" in the title bar subtitle when browsing the library, "
+"history or collections.\n"
 "Navpager enables this automatically.\n"
 "Not available when Navpager is active."
 msgstr ""
@@ -3961,7 +4076,7 @@ msgstr ""
 "Кнопочная навигация включает это автоматически.\n"
 "Недоступно, когда активна кнопочная навигация."
 
-#: screens/sui_menu.lua:615
+#: screens/sui_menu.lua:616
 msgid ""
 "Shows a row of dots at the bottom of the homescreen.\n"
 "The active page dot is filled; the others are dimmed.\n"
@@ -3971,20 +4086,20 @@ msgstr ""
 "Точка текущей страницы закрашена, остальные затемнены.\n"
 "Всегда активно при выборе кнопочной навигации."
 
-#: engines/sui_book_grid.lua:1539
+#: engines/sui_book_grid.lua:1498
 msgid "Shuffle"
 msgstr "Перемешать"
 
-#: modules/module_library.lua:254
+#: modules/module_library.lua:244
 msgid "Shuffle now"
 msgstr "Перемешать сейчас"
 
-#: modules/module_currently.lua:2026
+#: modules/module_currently.lua:2002
 msgid "Simple"
 msgstr "Простой"
 
-#: _meta.lua:5 main.lua:2361 main.lua:2374 screens/sui_menu.lua:4900
-#: screens/sui_menu.lua:4987
+#: _meta.lua:5 main.lua:2340 main.lua:2353 screens/sui_menu.lua:4906
+#: screens/sui_menu.lua:4993
 msgid "Simple UI"
 msgstr "Simple UI"
 
@@ -4011,8 +4126,12 @@ msgid "Simple UI Settings"
 msgstr "Настройки Simple UI"
 
 #: screens/sui_onboarding.lua:299
-msgid "Simple UI is designed to be simple and flexible. Here are a few tips to get the most out of it."
-msgstr "Simple UI разработан таким образом, чтобы быть простым и гибким. Вот несколько советов, как извлечь из него максимальную пользу."
+msgid ""
+"Simple UI is designed to be simple and flexible. Here are a few tips to get "
+"the most out of it."
+msgstr ""
+"Simple UI разработан таким образом, чтобы быть простым и гибким. Вот "
+"несколько советов, как извлечь из него максимальную пользу."
 
 #: infra/sui_updater.lua:486
 msgid "Simple UI is up to date (%s)."
@@ -4025,7 +4144,7 @@ msgid ""
 "A restart is recommended to apply all changes cleanly."
 msgstr ""
 
-#: screens/sui_menu.lua:4915
+#: screens/sui_menu.lua:4921
 msgid ""
 "Simple UI will be %s after restart.\n"
 "\n"
@@ -4035,50 +4154,51 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: main.lua:917
+#: main.lua:936
 msgid "Simple UI: Go to Homescreen"
 msgstr "Simple UI: На домашний экран"
 
-#: main.lua:923
+#: main.lua:942
 msgid "Simple UI: Go to Library"
 msgstr "Simple UI: В библиотеку"
 
-#: main.lua:947
+#: main.lua:966
 msgid "Simple UI: Navigation Bar"
 msgstr "Simple UI: Навигационная панель"
 
-#: main.lua:941
+#: main.lua:960
 msgid "Simple UI: Recent"
 msgstr "Simple UI: Недавние"
 
-#: main.lua:935
+#: main.lua:954
 msgid "Simple UI: Settings"
 msgstr "Simple UI: Настройки"
 
-#: main.lua:929
+#: main.lua:948
 msgid "Simple UI: Toggle Homescreen / Library"
 msgstr "Simple UI: Домашний экран / Библиотека"
 
-#: modules/module_collections.lua:1236 screens/sui_menu.lua:3170
+#: modules/module_collections.lua:1224 screens/sui_menu.lua:3210
 msgid "Single Cover"
 msgstr "Одиночная обложка"
 
-#: modules/module_clock.lua:276
+#: modules/module_clock.lua:258
 msgid "Six"
 msgstr "Шесть"
 
-#: modules/module_clock.lua:280
+#: modules/module_clock.lua:262
 msgid "Sixteen"
 msgstr "Шестнадцать"
 
-#: infra/sui_config.lua:995 modules/module_action_list.lua:442
-#: modules/module_action_list.lua:475 screens/sui_menu.lua:1147
-#: screens/sui_menu.lua:3214 screens/sui_quicksettings_bar.lua:1241
+#: infra/sui_config.lua:996 modules/module_action_list.lua:442
+#: modules/module_action_list.lua:475 screens/sui_menu.lua:1148
+#: screens/sui_menu.lua:2104 screens/sui_menu.lua:3254
+#: screens/sui_quicksettings_bar.lua:1241
 #: screens/sui_quicksettings_bar.lua:1242
 msgid "Size"
 msgstr "Размер"
 
-#: screens/sui_menu.lua:1501
+#: screens/sui_menu.lua:1502
 msgid ""
 "Size of the tab icons.\n"
 "100% is the default size."
@@ -4086,7 +4206,7 @@ msgstr ""
 "Размер иконок вкладок.\n"
 "100% — размер по умолчанию."
 
-#: screens/sui_menu.lua:1512
+#: screens/sui_menu.lua:1513
 msgid ""
 "Size of the tab label text.\n"
 "100% is the default size."
@@ -4094,11 +4214,17 @@ msgstr ""
 "Размер текста подписей вкладок.\n"
 "100% — размер по умолчанию."
 
-#: engines/sui_book_grid.lua:2113 modules/module_action_list.lua:497
-#: modules/module_clock.lua:1206 modules/module_coverdeck.lua:1646
-#: modules/module_currently.lua:1982 modules/module_quick_actions.lua:598
+#: screens/sui_menu.lua:2106
+msgid ""
+"Size of the title bar buttons and tabs.\n"
+"100% is the default size."
+msgstr ""
+
+#: engines/sui_book_grid.lua:2072 modules/module_action_list.lua:497
+#: modules/module_clock.lua:1177 modules/module_coverdeck.lua:1646
+#: modules/module_currently.lua:1958 modules/module_quick_actions.lua:598
 #: modules/module_quote.lua:1472 modules/module_quote.lua:1493
-#: modules/module_reading_goals.lua:1161 modules/module_reading_stats.lua:892
+#: modules/module_reading_goals.lua:1149 modules/module_reading_stats.lua:860
 #, fuzzy
 msgid ""
 "Size of this text.\n"
@@ -4111,21 +4237,16 @@ msgstr ""
 msgid "Sleep"
 msgstr "Спящий режим"
 
-#: screens/sui_menu.lua:687
+#: screens/sui_menu.lua:688
 msgid "Small"
 msgstr "Маленький"
 
-#: modules/module_quick_actions.lua:625 screens/sui_menu.lua:3596
-#: screens/sui_menu.lua:3600 screens/sui_quicksettings_bar.lua:1317
+#: modules/module_quick_actions.lua:625 screens/sui_quicksettings_bar.lua:1317
 msgid "Solid"
 msgstr "Сплошной"
 
-#: features/sui_module_chrome.lua:276
-msgid "Solid Background"
-msgstr "Сплошной фон"
-
-#: engines/sui_book_grid.lua:1552 modules/module_collections.lua:1222
-#: modules/module_library.lua:235
+#: engines/sui_book_grid.lua:1511 modules/module_collections.lua:1210
+#: modules/module_library.lua:225
 msgid "Sort"
 msgstr "Сортировка"
 
@@ -4133,7 +4254,7 @@ msgstr "Сортировка"
 msgid "Source"
 msgstr "Источник"
 
-#: screens/sui_menu.lua:1532
+#: screens/sui_menu.lua:1533
 msgid ""
 "Space below the bottom navigation bar.\n"
 "100% is the default spacing."
@@ -4149,7 +4270,7 @@ msgstr "Проставка"
 msgid "Spacer Size"
 msgstr "Размер проставки"
 
-#: modules/module_clock.lua:1253 modules/module_clock.lua:1260
+#: modules/module_clock.lua:1224 modules/module_clock.lua:1231
 msgid "Spacing"
 msgstr "Отступ"
 
@@ -4157,8 +4278,8 @@ msgstr "Отступ"
 msgid "Start using Simple UI"
 msgstr "Начните использовать Simple UI"
 
-#: infra/sui_patches.lua:1200 infra/sui_patches.lua:1202
-#: screens/sui_menu.lua:2704
+#: infra/sui_patches.lua:1201 infra/sui_patches.lua:1203
+#: screens/sui_menu.lua:2701
 msgid "Start with"
 msgstr "Начинать с"
 
@@ -4176,11 +4297,11 @@ msgstr ""
 msgid "Statistics"
 msgstr "Статистика"
 
-#: features/sui_stats_menu.lua:100
+#: features/sui_stats_menu.lua:117
 msgid "Statistics Loading Notice"
 msgstr "Уведомление о загрузке статистики"
 
-#: screens/sui_stats_windows.lua:56
+#: screens/sui_stats_windows.lua:57
 msgid "Statistics database library not available."
 msgstr "База данных статистики недоступна."
 
@@ -4188,36 +4309,36 @@ msgstr "База данных статистики недоступна."
 msgid "Statistics plugin not available."
 msgstr "Плагин статистики недоступен."
 
-#: features/sui_quickactions.lua:968 infra/sui_config.lua:132
-#: modules/module_currently.lua:1686 modules/module_currently.lua:1768
-#: modules/module_currently.lua:1829 screens/sui_menu.lua:3027
+#: features/sui_quickactions.lua:968 infra/sui_config.lua:133
+#: modules/module_currently.lua:1662 modules/module_currently.lua:1744
+#: modules/module_currently.lua:1805 screens/sui_menu.lua:3024
 #: screens/sui_settings_window.lua:409 screens/sui_settings_window.lua:474
 msgid "Stats"
 msgstr "Статистика"
 
-#: modules/module_currently.lua:2034
+#: modules/module_currently.lua:2010
 msgid "Stats layout"
 msgstr "Раскладка статистики"
 
-#: features/sui_stats_menu.lua:56 modules/module_coverdeck.lua:1747
-#: modules/module_currently.lua:2079 modules/module_reading_goals.lua:1403
+#: features/sui_stats_menu.lua:57 modules/module_coverdeck.lua:1747
+#: modules/module_currently.lua:2055 modules/module_reading_goals.lua:1330
 msgid "Stats updated successfully."
 msgstr "Статистика успешно обновлена."
 
-#: screens/sui_menu.lua:3039
+#: screens/sui_menu.lua:3036
 msgid "Status Bar"
 msgstr "Строка состояния"
 
-#: screens/sui_menu.lua:2673
+#: screens/sui_menu.lua:2670
 #, fuzzy
 msgid "Status Bar Opacity"
 msgstr "Размер строки состояния"
 
-#: screens/sui_menu.lua:1154
+#: screens/sui_menu.lua:1155
 msgid "Status Bar Size"
 msgstr "Размер строки состояния"
 
-#: screens/sui_menu.lua:967
+#: screens/sui_menu.lua:968
 msgid ""
 "Status Bar will be %s after restart.\n"
 "\n"
@@ -4227,15 +4348,15 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: modules/module_reading_stats.lua:141
+#: modules/module_reading_stats.lua:140
 msgid "Status — Abandoned"
 msgstr "Статус — Заброшено"
 
-#: modules/module_reading_stats.lua:140
+#: modules/module_reading_stats.lua:139
 msgid "Status — Reading"
 msgstr "Статус — Чтение"
 
-#: modules/module_reading_stats.lua:139
+#: modules/module_reading_stats.lua:138
 msgid "Status — Unread"
 msgstr "Статус — Не прочитано"
 
@@ -4243,39 +4364,39 @@ msgstr "Статус — Не прочитано"
 msgid "Status, title, navigation and pagination"
 msgstr "Статус, заглавие, навигация и нумерация"
 
-#: features/sui_stats_menu.lua:117 modules/module_reading_stats.lua:130
-#: screens/sui_stats_windows.lua:3294
+#: features/sui_stats_menu.lua:134 modules/module_reading_stats.lua:129
+#: screens/sui_stats_windows.lua:3259
 msgid "Streak"
 msgstr "Серия"
 
-#: features/sui_stats_menu.lua:61 modules/module_reading_stats.lua:910
+#: features/sui_stats_menu.lua:62 modules/module_reading_stats.lua:878
 msgid "Streak Mode"
 msgstr "Режим серии"
 
-#: screens/sui_menu.lua:2655
+#: screens/sui_menu.lua:2652
 msgid "Stretch to fill screen"
 msgstr "Растянуть на весь экран"
 
-#: infra/sui_config.lua:988 modules/module_reading_stats.lua:835
-#: modules/module_reading_stats.lua:908 screens/sui_menu.lua:2133
-#: screens/sui_menu.lua:3848 screens/sui_menu.lua:4944
+#: infra/sui_config.lua:989 modules/module_reading_stats.lua:803
+#: modules/module_reading_stats.lua:876 screens/sui_menu.lua:2141
+#: screens/sui_menu.lua:3854 screens/sui_menu.lua:4950
 #: screens/sui_settings_window.lua:375 screens/sui_settings_window.lua:1150
 msgid "Style"
 msgstr "Стиль"
 
-#: screens/sui_menu.lua:2156 screens/sui_menu.lua:2159
+#: screens/sui_menu.lua:2164 screens/sui_menu.lua:2167
 msgid "Sub-page Buttons"
 msgstr "Кнопки подстраниц"
 
-#: screens/sui_stats_windows.lua:2664
+#: infra/sui_datenames.lua:43
 msgid "Sun"
 msgstr "Воскресенье"
 
-#: modules/module_clock.lua:54
+#: infra/sui_datenames.lua:48
 msgid "Sunday"
 msgstr "Воскресенье"
 
-#: screens/sui_menu.lua:1190
+#: screens/sui_menu.lua:1191
 msgid "Swipe Indicator"
 msgstr "Индикатор свайпа"
 
@@ -4284,8 +4405,8 @@ msgstr "Индикатор свайпа"
 msgid "System Actions"
 msgstr "Системные действия"
 
-#: features/sui_style.lua:1382 screens/sui_menu.lua:3994
-#: screens/sui_menu.lua:4002
+#: features/sui_style.lua:1379 screens/sui_menu.lua:4000
+#: screens/sui_menu.lua:4008
 msgid "System Icons"
 msgstr "Системные иконки"
 
@@ -4293,11 +4414,11 @@ msgstr "Системные иконки"
 msgid "System action error: %s"
 msgstr "Ошибка системного действия: %s"
 
-#: screens/sui_stats_windows.lua:2587
+#: screens/sui_stats_windows.lua:2581
 msgid "THIS MONTH"
 msgstr "ЗА ЭТОТ МЕСЯЦ"
 
-#: screens/sui_stats_windows.lua:2586
+#: screens/sui_stats_windows.lua:2580
 msgid "THIS WEEK"
 msgstr "ЗА ЭТУ НЕДЕЛЮ"
 
@@ -4305,77 +4426,77 @@ msgstr "ЗА ЭТУ НЕДЕЛЮ"
 msgid "TIME OF DAY"
 msgstr "ВРЕМЯ СУТОК"
 
-#: screens/sui_stats_windows.lua:2582
+#: screens/sui_stats_windows.lua:2576
 msgid "TODAY'S SUMMARY"
 msgstr "СВОДКА ЗА СЕГОДНЯ"
 
-#: features/sui_style.lua:1377
+#: features/sui_style.lua:1374
 msgid "Tab Bar"
 msgstr "Панель вкладок"
 
-#: screens/sui_menu.lua:1410
+#: screens/sui_menu.lua:1411
 msgid "Tab Style"
 msgstr "Стиль вкладок"
 
-#: features/sui_style.lua:1333
+#: features/sui_style.lua:1330
 msgid "Tab bar icons must be PNG or SVG."
 msgstr "Иконки панели вкладок должны быть в формате PNG или SVG."
 
-#: features/sui_style.lua:266
+#: features/sui_style.lua:263
 msgid "Tab: Back to File Browser"
 msgstr "Вкладка: назад в файловый браузер"
 
-#: features/sui_style.lua:245
+#: features/sui_style.lua:242
 msgid "Tab: File Browser Settings"
 msgstr "Вкладка: настройки файлового браузера"
 
-#: features/sui_style.lua:217
+#: features/sui_style.lua:214
 msgid "Tab: Menu"
 msgstr "Вкладка: меню"
 
-#: features/sui_style.lua:252
+#: features/sui_style.lua:249
 msgid "Tab: Reader Navigation"
 msgstr "Вкладка: навигация в читалке"
 
-#: features/sui_style.lua:259
+#: features/sui_style.lua:256
 msgid "Tab: Reader Typeset"
 msgstr "Вкладка: вёрстка читалки"
 
-#: features/sui_style.lua:238
+#: features/sui_style.lua:235
 msgid "Tab: Search"
 msgstr "Вкладка: поиск"
 
-#: features/sui_style.lua:224
+#: features/sui_style.lua:221
 msgid "Tab: Settings"
 msgstr "Вкладка: настройки"
 
-#: features/sui_style.lua:273
+#: features/sui_style.lua:270
 msgid "Tab: SimpleUI Quick Settings"
 msgstr "Вкладка: быстрые настройки Simple UI"
 
-#: features/sui_style.lua:231
+#: features/sui_style.lua:228
 msgid "Tab: Tools"
 msgstr "Вкладка: инструменты"
 
-#: screens/sui_menu.lua:1295 screens/sui_menu.lua:1347
-#: screens/sui_menu.lua:2137
+#: screens/sui_menu.lua:1296 screens/sui_menu.lua:1348
+#: screens/sui_menu.lua:2145
 msgid "Tabs"
 msgstr "Вкладки"
 
-#: screens/sui_menu.lua:1289
+#: screens/sui_menu.lua:1290
 msgid "Tabs  (%d/%d — %d left)"
 msgstr "Вкладки  (%d/%d — осталось %d)"
 
-#: screens/sui_menu.lua:1287
+#: screens/sui_menu.lua:1288
 msgid "Tabs  (%d/%d — at limit)"
 msgstr "Вкладки  (%d/%d — лимит достигнут)"
 
-#: screens/sui_menu.lua:1958
+#: screens/sui_menu.lua:1959
 msgid "Tabs and Search"
 msgstr ""
 
 #: features/library/sui_library_browse.lua:65
-#: features/sui_quickactions.lua:1023 infra/sui_config.lua:139
+#: features/sui_quickactions.lua:1023 infra/sui_config.lua:140
 msgid "Tags"
 msgstr "Теги"
 
@@ -4383,21 +4504,21 @@ msgstr "Теги"
 msgid "Tap \"Create Screen\" below to add one."
 msgstr "Нажмите «Создать экран» ниже, чтобы добавить его."
 
-#: modules/module_clock.lua:278
+#: modules/module_clock.lua:260
 msgid "Ten"
 msgstr "Десять"
 
-#: engines/sui_book_grid.lua:1931 infra/sui_config.lua:1033
-#: modules/module_quote.lua:1507 modules/module_reading_stats.lua:906
-#: screens/sui_menu.lua:319
+#: engines/sui_book_grid.lua:1890 infra/sui_config.lua:1034
+#: modules/module_quote.lua:1507 modules/module_reading_stats.lua:874
+#: screens/sui_menu.lua:320
 msgid "Text"
 msgstr "Текст"
 
-#: screens/sui_menu.lua:3696
+#: screens/sui_menu.lua:3702
 msgid "Text Size"
 msgstr "Размер текста"
 
-#: screens/sui_menu.lua:321
+#: screens/sui_menu.lua:322
 msgid "Text only"
 msgstr "Только текст"
 
@@ -4411,11 +4532,26 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: screens/sui_menu.lua:2912
-msgid "The cover shown right as a book opens normally comes from the library's cached thumbnail, which can look soft on higher-resolution screens. When on, SimpleUI instead reads the cover straight from the book file for that moment (also covers books never opened before, which otherwise show no cover at all) — at the cost of a brief extra pause while opening, since the file has to be read twice. Cover on close is unaffected either way: it already reads the full-quality cover from the open book."
-msgstr "Обложка, показываемая при открытии книги, обычно берётся из кэшированной миниатюры библиотеки, которая может выглядеть нечёткой на экранах высокого разрешения. Если включено, SimpleUI вместо этого читает обложку прямо из файла книги в этот момент (это также касается книг, которые никогда не открывались и иначе вообще не показывают обложку) — ценой небольшой дополнительной паузы при открытии, так как файл приходится читать дважды. Обложка при закрытии в любом случае не затрагивается: она уже читает полнокачественную обложку из открытой книги."
+#: screens/sui_menu.lua:2909
+msgid ""
+"The cover shown right as a book opens normally comes from the library's "
+"cached thumbnail, which can look soft on higher-resolution screens. When on, "
+"SimpleUI instead reads the cover straight from the book file for that moment "
+"(also covers books never opened before, which otherwise show no cover at "
+"all) — at the cost of a brief extra pause while opening, since the file has "
+"to be read twice. Cover on close is unaffected either way: it already reads "
+"the full-quality cover from the open book."
+msgstr ""
+"Обложка, показываемая при открытии книги, обычно берётся из кэшированной "
+"миниатюры библиотеки, которая может выглядеть нечёткой на экранах высокого "
+"разрешения. Если включено, SimpleUI вместо этого читает обложку прямо из "
+"файла книги в этот момент (это также касается книг, которые никогда не "
+"открывались и иначе вообще не показывают обложку) — ценой небольшой "
+"дополнительной паузы при открытии, так как файл приходится читать дважды. "
+"Обложка при закрытии в любом случае не затрагивается: она уже читает "
+"полнокачественную обложку из открытой книги."
 
-#: main.lua:1360 screens/sui_bottombar.lua:1941
+#: main.lua:1341 screens/sui_bottombar.lua:1900
 msgid "The navigation bar is already available on this screen."
 msgstr "Навигационная панель уже доступна на этом экране."
 
@@ -4423,22 +4559,22 @@ msgstr "Навигационная панель уже доступна на э�
 msgid "The start date is after the finish date."
 msgstr ""
 
-#: screens/sui_menu.lua:2109
+#: screens/sui_menu.lua:2097
 msgid ""
 "The title bar style will change after restart.\n"
 "\n"
 "Restart now?"
 msgstr ""
 
-#: infra/sui_patches.lua:1342
+#: infra/sui_patches.lua:1343
 msgid "The «To Be Read» collection cannot be renamed."
 msgstr "Коллекцию «Буду читать» нельзя переименовать."
 
-#: modules/module_clock.lua:279
+#: modules/module_clock.lua:261
 msgid "Thirteen"
 msgstr "Тринадцать"
 
-#: modules/module_clock.lua:284
+#: modules/module_clock.lua:266
 msgid "Thirty"
 msgstr "Тридцать"
 
@@ -4451,7 +4587,8 @@ msgid ""
 "This book is marked as Finished, so it can't be added to To Be Read.\n"
 "Change its status to Reading or On Hold first."
 msgstr ""
-"Эта книга отмечена как «Завершена», поэтому её нельзя добавить в «Буду читать».\n"
+"Эта книга отмечена как «Завершена», поэтому её нельзя добавить в «Буду "
+"читать».\n"
 "Сначала измените её статус на «Чтение» или «Отложено»."
 
 #: features/sui_quickactions.lua:3293 features/sui_quickactions.lua:3371
@@ -4462,11 +4599,11 @@ msgstr ""
 "Эта группа пуста.\n"
 "Добавьте в неё действия через Настройки → Быстрые действия."
 
-#: modules/module_reading_stats.lua:127
+#: modules/module_reading_stats.lua:126
 msgid "This month — Pages"
 msgstr "За этот месяц — Страницы"
 
-#: modules/module_reading_stats.lua:126
+#: modules/module_reading_stats.lua:125
 msgid "This month — Time"
 msgstr "За этот месяц — Время"
 
@@ -4475,15 +4612,15 @@ msgstr "За этот месяц — Время"
 msgid "This name is reserved by a built-in preset."
 msgstr "Это имя зарезервировано встроенным пресетом."
 
-#: modules/module_reading_stats.lua:123
+#: modules/module_reading_stats.lua:122
 msgid "This week — Pages"
 msgstr "За эту неделю — Страницы"
 
-#: modules/module_reading_stats.lua:122
+#: modules/module_reading_stats.lua:121
 msgid "This week — Time"
 msgstr "За эту неделю — Время"
 
-#: screens/sui_menu.lua:4814
+#: screens/sui_menu.lua:4820
 msgid ""
 "This will delete all Simple UI settings and restart KOReader.\n"
 "Are you sure?"
@@ -4491,53 +4628,57 @@ msgstr ""
 "Это удалит все настройки Simple UI и перезапустит KOReader.\n"
 "Вы уверены?"
 
-#: modules/module_clock.lua:275
+#: modules/module_clock.lua:257
 msgid "Three"
 msgstr "Три"
 
-#: screens/sui_stats_windows.lua:2664
+#: infra/sui_datenames.lua:43
 msgid "Thu"
 msgstr "Четверг"
 
-#: modules/module_clock.lua:55
+#: infra/sui_datenames.lua:49
 msgid "Thursday"
 msgstr "Четверг"
 
-#: modules/module_heatmap.lua:223 modules/module_heatmap.lua:331
+#: modules/module_heatmap.lua:211 modules/module_heatmap.lua:313
 msgid "Time of day"
 msgstr "Время суток"
 
-#: modules/module_coverdeck.lua:152 modules/module_currently.lua:332
+#: modules/module_coverdeck.lua:152 modules/module_currently.lua:333
 msgid "Time read"
 msgstr "Время чтения"
 
-#: modules/module_coverdeck.lua:153 modules/module_currently.lua:333
+#: modules/module_coverdeck.lua:153 modules/module_currently.lua:334
 msgid "Time remaining"
 msgstr "Осталось времени"
 
 #: features/sui_manual_books.lua:118 modules/module_coverdeck.lua:162
-#: modules/module_coverdeck.lua:1645 modules/module_currently.lua:325
-#: modules/module_currently.lua:1976 screens/sui_titlebar.lua:121
+#: modules/module_coverdeck.lua:1645 modules/module_currently.lua:326
+#: modules/module_currently.lua:1952 screens/sui_titlebar.lua:120
 msgid "Title"
 msgstr "Заголовок"
 
-#: engines/sui_book_grid.lua:1534 modules/module_library.lua:213
+#: engines/sui_book_grid.lua:1493 modules/module_library.lua:203
 msgid "Title (A–Z)"
 msgstr "Заголовок (А-Я)"
 
-#: engines/sui_book_grid.lua:1535 modules/module_library.lua:214
+#: engines/sui_book_grid.lua:1494 modules/module_library.lua:204
 msgid "Title (Z–A)"
 msgstr "Заголовок (Я-А)"
 
-#: features/sui_style.lua:1372 screens/sui_menu.lua:3041
+#: features/sui_style.lua:1369 screens/sui_menu.lua:3038
 msgid "Title Bar"
 msgstr "Панель заголовка"
 
-#: screens/sui_menu.lua:2674
+#: screens/sui_menu.lua:2671
 msgid "Title Bar Opacity"
 msgstr ""
 
-#: screens/sui_menu.lua:2126
+#: screens/sui_menu.lua:2105
+msgid "Title Bar Size"
+msgstr ""
+
+#: screens/sui_menu.lua:2134
 msgid ""
 "Title Bar will be %s after restart.\n"
 "\n"
@@ -4547,15 +4688,15 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: screens/sui_menu.lua:3758
+#: screens/sui_menu.lua:3764
 msgid "Title and Author"
 msgstr "Заголовок и автор"
 
-#: screens/sui_menu.lua:3709
+#: screens/sui_menu.lua:3715
 msgid "Title and Author Below Covers"
 msgstr "Заголовок и автор под обложками"
 
-#: screens/sui_menu.lua:3770
+#: screens/sui_menu.lua:3776
 msgid ""
 "Title and author strip enabled.\n"
 "\n"
@@ -4565,11 +4706,11 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: screens/sui_menu.lua:3736
+#: screens/sui_menu.lua:3742
 msgid "Title only"
 msgstr "Только заголовок"
 
-#: screens/sui_menu.lua:3725
+#: screens/sui_menu.lua:3731
 msgid ""
 "Title strip disabled.\n"
 "\n"
@@ -4579,7 +4720,7 @@ msgstr ""
 "\n"
 "Перезапустить сейчас?"
 
-#: screens/sui_menu.lua:3748
+#: screens/sui_menu.lua:3754
 msgid ""
 "Title strip enabled.\n"
 "\n"
@@ -4598,43 +4739,43 @@ msgstr "Буду читать"
 msgid "To Be Read Books"
 msgstr "Книги «Буду читать»"
 
-#: modules/module_reading_goals.lua:879 modules/module_reading_goals.lua:957
-#: modules/module_reading_goals.lua:959 modules/module_reading_goals.lua:1007
-#: modules/module_reading_goals.lua:1010
+#: modules/module_reading_goals.lua:878 modules/module_reading_goals.lua:956
+#: modules/module_reading_goals.lua:958 modules/module_reading_goals.lua:1006
+#: modules/module_reading_goals.lua:1009
 msgid "Today"
 msgstr "Сегодня"
 
-#: modules/module_reading_stats.lua:121
+#: modules/module_reading_stats.lua:120
 msgid "Today — Pages"
 msgstr "Сегодня — Страницы"
 
-#: modules/module_reading_stats.lua:120
+#: modules/module_reading_stats.lua:119
 msgid "Today — Time"
 msgstr "Сегодня — Время"
 
-#: engines/sui_window.lua:2999
+#: engines/sui_window.lua:3455
 msgid "Toggle"
 msgstr "Переключить"
 
-#: modules/module_collections.lua:1273 screens/sui_menu.lua:3230
-#: screens/sui_menu.lua:3237 screens/sui_menu.lua:3241
-#: screens/sui_menu.lua:3641 screens/sui_menu.lua:3648
+#: modules/module_collections.lua:1261 screens/sui_menu.lua:3270
+#: screens/sui_menu.lua:3277 screens/sui_menu.lua:3281
+#: screens/sui_menu.lua:3638 screens/sui_menu.lua:3645
 msgid "Top"
 msgstr "Сверху"
 
-#: screens/sui_topbar.lua:652
+#: screens/sui_topbar.lua:650
 msgid "Top Bar"
 msgstr "Верхняя панель"
 
-#: infra/sui_config.lua:1594
+#: infra/sui_config.lua:1595
 msgid "Top Margin"
 msgstr "Верхний отступ"
 
-#: screens/sui_stats_windows.lua:883 screens/sui_stats_windows.lua:3445
+#: screens/sui_stats_windows.lua:903 screens/sui_stats_windows.lua:3410
 msgid "Total"
 msgstr "Всего"
 
-#: screens/sui_stats_windows.lua:2279 screens/sui_stats_windows.lua:2295
+#: screens/sui_stats_windows.lua:2302 screens/sui_stats_windows.lua:2318
 msgid "Total time"
 msgstr "Общее время"
 
@@ -4642,45 +4783,44 @@ msgstr "Общее время"
 msgid "Total: %d settings, %d files (%s)"
 msgstr ""
 
-#: screens/sui_menu.lua:3596 screens/sui_menu.lua:3613
 #: screens/sui_quicksettings_bar.lua:1307
 msgid "Transparent"
 msgstr "Прозрачный"
 
-#: screens/sui_stats_windows.lua:2664
+#: infra/sui_datenames.lua:43
 msgid "Tue"
 msgstr "Вторник"
 
-#: modules/module_clock.lua:54
+#: infra/sui_datenames.lua:48
 msgid "Tuesday"
 msgstr "Вторник"
 
-#: modules/module_clock.lua:278
+#: modules/module_clock.lua:260
 msgid "Twelve"
 msgstr "Двенадцать"
 
-#: modules/module_clock.lua:284
+#: modules/module_clock.lua:266
 msgid "Twenty"
 msgstr "Двадцать"
 
-#: modules/module_clock.lua:275
+#: modules/module_clock.lua:257
 msgid "Two"
 msgstr "Два"
 
-#: modules/module_heatmap.lua:328 screens/sui_menu.lua:3418
-#: screens/sui_menu.lua:3485
+#: modules/module_heatmap.lua:310 screens/sui_menu.lua:3458
+#: screens/sui_menu.lua:3525
 msgid "Type"
 msgstr "Тип"
 
-#: screens/sui_menu.lua:4666 screens/sui_menu.lua:4669
+#: screens/sui_menu.lua:4672 screens/sui_menu.lua:4675
 msgid "UI Font"
 msgstr "Шрифт интерфейса"
 
-#: screens/sui_menu.lua:4673
+#: screens/sui_menu.lua:4679
 msgid "UI Font  (default)"
 msgstr "Шрифт интерфейса (по умолчанию)"
 
-#: screens/sui_menu.lua:4675
+#: screens/sui_menu.lua:4681
 msgid "UI Font  [%s]"
 msgstr "Шрифт интерфейса  [%s]"
 
@@ -4688,7 +4828,7 @@ msgstr "Шрифт интерфейса  [%s]"
 msgid "Uncategorized"
 msgstr ""
 
-#: screens/sui_menu.lua:3802
+#: screens/sui_menu.lua:3808
 msgid "Uniformize Covers (2:3)"
 msgstr "Унифицировать обложки (2:3)"
 
@@ -4696,20 +4836,16 @@ msgstr "Унифицировать обложки (2:3)"
 msgid "Unknown"
 msgstr ""
 
-#: engines/sui_cover_placeholder.lua:146
-msgid "Unknown Author"
-msgstr "Неизвестный автор"
-
-#: screens/sui_stats_windows.lua:760
+#: screens/sui_stats_windows.lua:791
 msgid "Unknown error."
 msgstr "Неизвестная ошибка."
 
-#: features/sui_style.lua:2384
+#: features/sui_style.lua:2309
 msgid "Unsupported format (use a folder or a .zip file)"
 msgstr "Неподдерживаемый формат (используйте папку или .zip файл)"
 
 #: features/sui_quickactions.lua:107 features/sui_quickactions.lua:1849
-#: features/sui_style.lua:1139 features/sui_style.lua:1326
+#: features/sui_style.lua:1136 features/sui_style.lua:1323
 msgid ""
 "Unsupported icon format.\n"
 "Please use a PNG or SVG file."
@@ -4717,14 +4853,14 @@ msgstr ""
 "Неподдерживаемый формат иконки.\n"
 "Пожалуйста, используйте PNG или SVG файл."
 
-#: engines/sui_window.lua:1992 engines/sui_window.lua:2993
+#: engines/sui_window.lua:2065 engines/sui_window.lua:3449
 msgid "Update"
 msgstr "Обновить"
 
-#: features/sui_stats_menu.lua:128 modules/module_coverdeck.lua:1730
-#: modules/module_currently.lua:2061 modules/module_reading_goals.lua:1385
-#: modules/module_reading_goals.lua:1421 modules/module_reading_stats.lua:881
-#: modules/module_reading_stats.lua:912
+#: features/sui_stats_menu.lua:146 modules/module_coverdeck.lua:1730
+#: modules/module_currently.lua:2037 modules/module_reading_goals.lua:1312
+#: modules/module_reading_goals.lua:1348 modules/module_reading_stats.lua:849
+#: modules/module_reading_stats.lua:880
 msgid "Update Stats Now"
 msgstr "Обновить статистику"
 
@@ -4736,15 +4872,15 @@ msgstr "Обновление отменено."
 msgid "Update check cancelled."
 msgstr "Проверка обновлений отменена."
 
-#: features/sui_presets.lua:915 screens/sui_menu.lua:4394
+#: features/sui_presets.lua:915 screens/sui_menu.lua:4400
 msgid "Update with current settings"
 msgstr "Обновить с текущими настройками"
 
-#: screens/sui_menu.lua:4792
+#: screens/sui_menu.lua:4798
 msgid "Updater module not found."
 msgstr "Модуль обновления не найден."
 
-#: screens/sui_stats_windows.lua:2896
+#: screens/sui_stats_windows.lua:2866
 msgid "Use freeze"
 msgstr "Использовать заморозку"
 
@@ -4752,7 +4888,7 @@ msgstr "Использовать заморозку"
 msgid "Use this Nerd Font icon?"
 msgstr "Использовать эту иконку Nerd Font?"
 
-#: screens/sui_menu.lua:637
+#: screens/sui_menu.lua:638
 msgid ""
 "Uses the standard KOReader pagination bar on the homescreen.\n"
 "Not available when Navpager is active."
@@ -4760,7 +4896,7 @@ msgstr ""
 "Использует стандартную панель нумерации KOReader на домашнем экране.\n"
 "Недоступно, когда активна кнопочная навигация."
 
-#: modules/module_reading_stats.lua:829 modules/module_reading_stats.lua:891
+#: modules/module_reading_stats.lua:797 modules/module_reading_stats.lua:859
 msgid "Value"
 msgstr ""
 
@@ -4768,11 +4904,11 @@ msgstr ""
 msgid "Version, author and updates"
 msgstr "Версия, автор и обновления"
 
-#: screens/sui_menu.lua:4767
+#: screens/sui_menu.lua:4773
 msgid "Version: %s"
 msgstr "Версия: %s"
 
-#: infra/sui_config.lua:1596
+#: infra/sui_config.lua:1597
 msgid ""
 "Vertical space above this module.\n"
 "100% is the default spacing."
@@ -4780,7 +4916,7 @@ msgstr ""
 "Пространство над этим модулем.\n"
 "100% — интервал по умолчанию."
 
-#: modules/module_clock.lua:1261
+#: modules/module_clock.lua:1232
 #, fuzzy
 msgid ""
 "Vertical space between items.\n"
@@ -4789,26 +4925,27 @@ msgstr ""
 "Пространство над этим модулем.\n"
 "100% — интервал по умолчанию."
 
-#: screens/sui_menu.lua:3307 screens/sui_menu.lua:3361
-#: screens/sui_menu.lua:3593
+#: screens/sui_menu.lua:3347 screens/sui_menu.lua:3401
+#: screens/sui_menu.lua:3590
 msgid "Visibility"
 msgstr "Видимость"
 
-#: screens/sui_menu.lua:3303 screens/sui_menu.lua:3309
-#: screens/sui_menu.lua:3313 screens/sui_menu.lua:3357
-#: screens/sui_menu.lua:3363 screens/sui_menu.lua:3367
+#: screens/sui_menu.lua:3343 screens/sui_menu.lua:3349
+#: screens/sui_menu.lua:3353 screens/sui_menu.lua:3397
+#: screens/sui_menu.lua:3403 screens/sui_menu.lua:3407
+#: screens/sui_menu.lua:3592 screens/sui_menu.lua:3596
 msgid "Visible"
 msgstr "Видимый"
 
-#: screens/sui_stats_windows.lua:2584 screens/sui_stats_windows.lua:3163
+#: screens/sui_stats_windows.lua:2578 screens/sui_stats_windows.lua:3125
 msgid "WEEK STREAK"
 msgstr "НЕДЕЛЬ ПОДРЯД"
 
-#: modules/module_clock.lua:292
+#: modules/module_clock.lua:274
 msgid "WORD_CLOCK_TENS_SEP"
 msgstr ""
 
-#: features/sui_backup.lua:136 screens/sui_menu.lua:3004
+#: features/sui_backup.lua:136 screens/sui_menu.lua:3001
 #: screens/sui_settings_window.lua:452 screens/sui_settings_window.lua:458
 msgid "Wallpaper"
 msgstr "Обои"
@@ -4827,19 +4964,21 @@ msgstr "Температура"
 msgid "Warmth Slider"
 msgstr "Слайдер температуры"
 
-#: screens/sui_menu.lua:2938
+#: screens/sui_menu.lua:2935
 msgid "Warn when modules on a page exceed the available screen height."
-msgstr "Предупреждайте, если модули на странице выходят за пределы доступной высоты экрана."
+msgstr ""
+"Предупреждайте, если модули на странице выходят за пределы доступной высоты "
+"экрана."
 
-#: engines/sui_heatmap_widgets.lua:117 screens/sui_stats_windows.lua:2664
+#: engines/sui_heatmap_widgets.lua:113 infra/sui_datenames.lua:43
 msgid "Wed"
 msgstr "Среда"
 
-#: modules/module_clock.lua:54
+#: infra/sui_datenames.lua:48
 msgid "Wednesday"
 msgstr "Среда"
 
-#: modules/module_heatmap.lua:295 modules/module_heatmap.lua:299
+#: modules/module_heatmap.lua:277 modules/module_heatmap.lua:281
 msgid "Weeks shown"
 msgstr "Показано недель"
 
@@ -4851,23 +4990,29 @@ msgstr "Добро пожаловать в Simple UI"
 msgid "What's new:"
 msgstr "Что нового:"
 
-#: features/sui_stats_menu.lua:89
+#: features/sui_stats_menu.lua:90
 #, fuzzy
 msgid ""
-"When a finished book is deleted from the device (file or folder), keep it counted in the Books Read statistics on the Home Screen.\n"
+"When a finished book is deleted from the device (file or folder), keep it "
+"counted in the Books Read statistics on the Home Screen.\n"
 "\n"
-"Books changed back to Reading or Abandoned are automatically removed from this list."
+"Books changed back to Reading or Abandoned are automatically removed from "
+"this list."
 msgstr ""
-"Если дочитанную книгу удалить с устройства, она остаётся учтённой в статистике прочитанных книг на домашнем экране.\n"
+"Если дочитанную книгу удалить с устройства, она остаётся учтённой в "
+"статистике прочитанных книг на домашнем экране.\n"
 "\n"
-"Книги, у которых статус изменён на «Читаю» или «Отложено», автоматически удаляются из этого списка."
+"Книги, у которых статус изменён на «Читаю» или «Отложено», автоматически "
+"удаляются из этого списка."
 
-#: screens/sui_menu.lua:2950
+#: screens/sui_menu.lua:2947
 msgid ""
-"When enabled, long-pressing a module on the home screen opens its settings menu.\n"
+"When enabled, long-pressing a module on the home screen opens its settings "
+"menu.\n"
 "Disable this to prevent settings from appearing on long tap."
 msgstr ""
-"При включённой опции долгое нажатие на модуль на домашнем экране открывает меню его настроек.\n"
+"При включённой опции долгое нажатие на модуль на домашнем экране открывает "
+"меню его настроек.\n"
 "Отключите, чтобы убрать вызов настроек по долгому нажатию."
 
 #: screens/sui_quicksettings_bar.lua:1341
@@ -4875,30 +5020,37 @@ msgid ""
 "When enabled, long-pressing the Quick Settings Bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
-"При включённой опции долгое нажатие на панель быстрых настроек открывает меню её настроек.\n"
+"При включённой опции долгое нажатие на панель быстрых настроек открывает "
+"меню её настроек.\n"
 "Отключите, чтобы убрать вызов меню настроек по долгому нажатию."
 
-#: screens/sui_menu.lua:1549
+#: screens/sui_menu.lua:1550
 msgid ""
 "When enabled, long-pressing the navigation bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
-"При включённой опции долгое нажатие на навигационную панель открывает меню её настроек.\n"
+"При включённой опции долгое нажатие на навигационную панель открывает меню "
+"её настроек.\n"
 "Отключите, чтобы убрать вызов меню настроек по долгому нажатию."
 
-#: screens/sui_menu.lua:1210
+#: screens/sui_menu.lua:1211
 msgid ""
 "When enabled, long-pressing the top bar opens its settings menu.\n"
 "Disable this to prevent the settings menu from appearing on long tap."
 msgstr ""
-"При включённой опции долгое нажатие на верхнюю панель открывает меню её настроек.\n"
+"При включённой опции долгое нажатие на верхнюю панель открывает меню её "
+"настроек.\n"
 "Отключите, чтобы убрать вызов меню настроек по долгому нажатию."
 
-#: screens/sui_menu.lua:2733
-msgid "When waking the device from sleep/suspend, always return to the Home Screen — even if a book was open when it went to sleep."
-msgstr "При пробуждении устройства из сна/ожидания всегда возвращаться на домашний экран — даже если во время сна была открыта книга."
+#: screens/sui_menu.lua:2730
+msgid ""
+"When waking the device from sleep/suspend, always return to the Home Screen "
+"— even if a book was open when it went to sleep."
+msgstr ""
+"При пробуждении устройства из сна/ожидания всегда возвращаться на домашний "
+"экран — даже если во время сна была открыта книга."
 
-#: features/sui_quickactions.lua:931 infra/sui_config.lua:129
+#: features/sui_quickactions.lua:931 infra/sui_config.lua:130
 msgid "Wi-Fi"
 msgstr "Wi-Fi"
 
@@ -4906,7 +5058,7 @@ msgstr "Wi-Fi"
 msgid "Wi-Fi off"
 msgstr "Wi-Fi выкл."
 
-#: infra/sui_config.lua:194
+#: infra/sui_config.lua:195
 msgid "WiFi"
 msgstr "Wi-Fi"
 
@@ -4918,11 +5070,11 @@ msgstr "Wi-Fi недоступен на этом устройстве."
 msgid "Wikipedia Lookup"
 msgstr "Поиск в Википедии"
 
-#: modules/module_currently.lua:2027
+#: modules/module_currently.lua:2003
 msgid "With percentage"
 msgstr "С процентами"
 
-#: modules/module_clock.lua:1216 modules/module_clock.lua:1229
+#: modules/module_clock.lua:1187 modules/module_clock.lua:1200
 msgid "Word"
 msgstr "Слово"
 
@@ -4934,23 +5086,23 @@ msgstr ""
 msgid "Year:"
 msgstr ""
 
-#: screens/sui_stats_windows.lua:1157
+#: screens/sui_stats_windows.lua:1177
 msgid "Yes"
 msgstr "Да"
 
-#: screens/sui_stats_windows.lua:2885
+#: screens/sui_stats_windows.lua:2855
 msgid "Yesterday is already covered by a freeze."
 msgstr "Вчерашний день уже закрыт заморозкой."
 
-#: screens/sui_stats_windows.lua:2883
+#: screens/sui_stats_windows.lua:2853
 msgid "You already read yesterday — there's nothing to freeze."
 msgstr "Вы уже читали вчера — замораживать нечего."
 
-#: screens/sui_stats_windows.lua:2877
+#: screens/sui_stats_windows.lua:2847
 msgid "You don't have any freezes available yet."
 msgstr "У вас пока нет доступных заморозок."
 
-#: screens/sui_stats_windows.lua:2894
+#: screens/sui_stats_windows.lua:2864
 msgid ""
 "You have %d freeze(s) available.\n"
 "Use one to cover %s?"
@@ -4962,39 +5114,39 @@ msgstr ""
 msgid "Your highlights"
 msgstr "Ваши выделения"
 
-#: modules/module_reading_stats.lua:141
+#: modules/module_reading_stats.lua:140
 msgid "abandoned"
 msgstr "заброшено"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1366
 msgid "apr"
 msgstr "апр."
 
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:1370
 msgid "april"
 msgstr "апрель"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:311 screens/sui_stats_windows.lua:1367
 msgid "aug"
 msgstr "авг."
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1371
 msgid "august"
 msgstr "август"
 
-#: modules/module_reading_stats.lua:129 screens/sui_stats_windows.lua:2153
+#: modules/module_reading_stats.lua:128 screens/sui_stats_windows.lua:2176
 msgid "books finished"
 msgstr "книг прочитано"
 
-#: modules/module_reading_stats.lua:124
+#: modules/module_reading_stats.lua:123
 msgid "daily avg (7 days)"
 msgstr "в среднем за день (7 дней)"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:311 screens/sui_stats_windows.lua:1367
 msgid "dec"
 msgstr "дек."
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1371
 msgid "december"
 msgstr "декабрь"
 
@@ -5002,8 +5154,8 @@ msgstr "декабрь"
 msgid "default"
 msgstr "по умолчанию"
 
-#: screens/sui_menu.lua:967 screens/sui_menu.lua:1271 screens/sui_menu.lua:2127
-#: screens/sui_menu.lua:4915 screens/sui_quicksettings_bar.lua:1132
+#: screens/sui_menu.lua:968 screens/sui_menu.lua:1272 screens/sui_menu.lua:2135
+#: screens/sui_menu.lua:4921 screens/sui_quicksettings_bar.lua:1132
 msgid "disabled"
 msgstr "отключено"
 
@@ -5012,20 +5164,20 @@ msgstr "отключено"
 msgid "empty"
 msgstr "Пусто"
 
-#: screens/sui_menu.lua:967 screens/sui_menu.lua:1271 screens/sui_menu.lua:2127
-#: screens/sui_menu.lua:4915 screens/sui_quicksettings_bar.lua:1132
+#: screens/sui_menu.lua:968 screens/sui_menu.lua:1272 screens/sui_menu.lua:2135
+#: screens/sui_menu.lua:4921 screens/sui_quicksettings_bar.lua:1132
 msgid "enabled"
 msgstr "включено"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1366
 msgid "feb"
 msgstr "февр."
 
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:1370
 msgid "february"
 msgstr "февраль"
 
-#: features/sui_style.lua:2330
+#: features/sui_style.lua:2255
 msgid "ffi/archiver not available in this KOReader version"
 msgstr "ffi/archiver не доступен в этой версии KOReader"
 
@@ -5033,35 +5185,35 @@ msgstr "ffi/archiver не доступен в этой версии KOReader"
 msgid "hex code, e.g. E001"
 msgstr "hex-код, напр. E001"
 
-#: screens/sui_stats_windows.lua:1812 screens/sui_stats_windows.lua:2151
+#: screens/sui_stats_windows.lua:1835 screens/sui_stats_windows.lua:2174
 msgid "hours read"
 msgstr "часов чтения"
 
-#: modules/module_reading_stats.lua:140
+#: modules/module_reading_stats.lua:139
 msgid "in progress"
 msgstr "в процессе"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1366
 msgid "jan"
 msgstr "янв."
 
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:1370
 msgid "january"
 msgstr "январь"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:311 screens/sui_stats_windows.lua:1367
 msgid "jul"
 msgstr "июл."
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1371
 msgid "july"
 msgstr "июль"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1366
 msgid "jun"
 msgstr "июн."
 
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:1370
 msgid "june"
 msgstr "июнь"
 
@@ -5069,20 +5221,20 @@ msgstr "июнь"
 msgid "latest"
 msgstr "последняя"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1366
 msgid "mar"
 msgstr "март"
 
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:1370
 msgid "march"
 msgstr "март"
 
-#: screens/sui_stats_windows.lua:309 screens/sui_stats_windows.lua:1343
-#: screens/sui_stats_windows.lua:1347
+#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1366
+#: screens/sui_stats_windows.lua:1370
 msgid "may"
 msgstr "май"
 
-#: modules/module_reading_stats.lua:132
+#: modules/module_reading_stats.lua:131
 msgid "no streak"
 msgstr "нет серии"
 
@@ -5091,75 +5243,75 @@ msgstr "нет серии"
 msgid "not configured"
 msgstr "не настроено"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:311 screens/sui_stats_windows.lua:1367
 msgid "nov"
 msgstr "нояб."
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1371
 msgid "november"
 msgstr "ноябрь"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:311 screens/sui_stats_windows.lua:1367
 msgid "oct"
 msgstr "окт."
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1371
 msgid "october"
 msgstr "октябрь"
 
-#: modules/module_reading_stats.lua:126
+#: modules/module_reading_stats.lua:125
 msgid "of reading this month"
 msgstr "чтения в этом месяце"
 
-#: modules/module_reading_stats.lua:122
+#: modules/module_reading_stats.lua:121
 msgid "of reading this week"
 msgstr "чтения на этой неделе"
 
-#: modules/module_reading_stats.lua:120
+#: modules/module_reading_stats.lua:119
 msgid "of reading today"
 msgstr "чтения сегодня"
 
-#: modules/module_reading_stats.lua:128
+#: modules/module_reading_stats.lua:127
 msgid "of reading, all time"
 msgstr "чтения за все время"
 
-#: features/sui_style.lua:2373
+#: features/sui_style.lua:2298
 msgid "pack_path not provided"
 msgstr "pack_path не указан"
 
-#: screens/sui_stats_windows.lua:2152 screens/sui_stats_windows.lua:2467
+#: screens/sui_stats_windows.lua:2175 screens/sui_stats_windows.lua:2473
 msgid "pages read"
 msgstr "страниц прочитано"
 
-#: modules/module_reading_stats.lua:127
+#: modules/module_reading_stats.lua:126
 msgid "pages read this month"
 msgstr "страниц прочитано за месяц"
 
-#: modules/module_reading_stats.lua:123
+#: modules/module_reading_stats.lua:122
 msgid "pages read this week"
 msgstr "страниц прочитано за неделю"
 
-#: modules/module_reading_stats.lua:121
+#: modules/module_reading_stats.lua:120
 msgid "pages read today"
 msgstr "страниц прочитано сегодня"
 
-#: modules/module_reading_stats.lua:125
+#: modules/module_reading_stats.lua:124
 msgid "pages/day (7 days)"
 msgstr "страниц в день (за 7 дней)"
 
-#: screens/sui_stats_windows.lua:2465
+#: screens/sui_stats_windows.lua:2471
 msgid "reading time"
 msgstr "время чтения"
 
-#: screens/sui_stats_windows.lua:310 screens/sui_stats_windows.lua:1344
+#: screens/sui_stats_windows.lua:311 screens/sui_stats_windows.lua:1367
 msgid "sep"
 msgstr "сент."
 
-#: screens/sui_stats_windows.lua:1348
+#: screens/sui_stats_windows.lua:1371
 msgid "september"
 msgstr "сентябрь"
 
-#: modules/module_reading_stats.lua:139
+#: modules/module_reading_stats.lua:138
 msgid "unread"
 msgstr "не прочитано"
 
@@ -5168,58 +5320,58 @@ msgid "⬆ Update available: %s"
 msgstr "⬆ Доступно обновление: %s"
 
 #: modules/module_action_list.lua:347 modules/module_quick_actions.lua:415
-#: modules/module_reading_stats.lua:867 screens/sui_menu.lua:461
-#: screens/sui_menu.lua:2319
+#: modules/module_reading_stats.lua:835 screens/sui_menu.lua:462
+#: screens/sui_menu.lua:2316
 msgid "  (%d left)"
 msgid_plural "  (%d left)"
 msgstr[0] "  (осталась %d)"
 msgstr[1] "  (осталось %d)"
 msgstr[2] "  (осталось %d)"
 
-#: modules/module_reading_goals.lua:1198
+#: modules/module_reading_goals.lua:1210
 msgid "  Set Goal  (%d book in %s)"
 msgid_plural "  Set Goal  (%d books in %s)"
 msgstr[0] "  Задать цель  (%d книга в %s)"
 msgstr[1] "  Задать цель  (%d книги в %s)"
 msgstr[2] "  Задать цель  (%d книг в %s)"
 
-#: modules/module_reading_goals.lua:720 screens/sui_stats_windows.lua:752
+#: modules/module_reading_goals.lua:727 screens/sui_stats_windows.lua:783
 msgid "%d book"
 msgid_plural "%d books"
 msgstr[0] "%d книга"
 msgstr[1] "%d книги"
 msgstr[2] "%d книг"
 
-#: modules/module_reading_goals.lua:1304
+#: modules/module_reading_goals.lua:1159
 msgid "%d book in %s"
 msgid_plural "%d books in %s"
 msgstr[0] "%d книга в %s"
 msgstr[1] "%d книги в %s"
 msgstr[2] "%d книг в %s"
 
-#: screens/sui_stats_windows.lua:1215
+#: screens/sui_stats_windows.lua:1235
 msgid "%d book read"
 msgid_plural "%d books read"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: screens/sui_stats_windows.lua:2017 screens/sui_stats_windows.lua:2019
+#: screens/sui_stats_windows.lua:2040 screens/sui_stats_windows.lua:2042
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d день"
 msgstr[1] "%d дня"
 msgstr[2] "%d дней"
 
-#: modules/module_coverdeck.lua:1057 modules/module_currently.lua:945
-#: modules/module_currently.lua:946 modules/module_currently.lua:1026
+#: modules/module_coverdeck.lua:1057 modules/module_currently.lua:928
+#: modules/module_currently.lua:929 modules/module_currently.lua:1009
 msgid "%d day of reading"
 msgid_plural "%d days of reading"
 msgstr[0] "%d день чтения"
 msgstr[1] "%d дня чтения"
 msgstr[2] "%d дней чтения"
 
-#: screens/sui_stats_windows.lua:3209
+#: screens/sui_stats_windows.lua:3171
 msgid "%d freeze available"
 msgid_plural "%d freezes available"
 msgstr[0] "%d заморозка доступна"
@@ -5234,28 +5386,28 @@ msgstr[0] "%d элемент"
 msgstr[1] "%d элемента"
 msgstr[2] "%d элементов"
 
-#: screens/sui_stats_windows.lua:2037 screens/sui_stats_windows.lua:2039
+#: screens/sui_stats_windows.lua:2060 screens/sui_stats_windows.lua:2062
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] "%d неделя"
 msgstr[1] "%d недели"
 msgstr[2] "%d недель"
 
-#: modules/module_reading_goals.lua:718
+#: modules/module_reading_goals.lua:725
 msgid "%d/%d book"
 msgid_plural "%d/%d books"
 msgstr[0] "%d/%d кн."
 msgstr[1] "%d/%d кн."
 msgstr[2] "%d/%d кн."
 
-#: modules/module_collections.lua:1438
+#: modules/module_collections.lua:1426
 msgid "(%d collection)"
 msgid_plural "(%d collections)"
 msgstr[0] "(%d коллекция)"
 msgstr[1] "(%d коллекции)"
 msgstr[2] "(%d коллекций)"
 
-#: modules/module_quick_actions.lua:525 modules/module_reading_stats.lua:416
+#: modules/module_quick_actions.lua:525 modules/module_reading_stats.lua:384
 msgid "(%d/%d — %d left)"
 msgid_plural "(%d/%d — %d left)"
 msgstr[0] "(%d/%d — осталась %d)"
@@ -5277,7 +5429,7 @@ msgstr[0] "Достигнут лимит в %d слот. Сначала удал
 msgstr[1] "Достигнут лимит в %d слота. Сначала удалите один."
 msgstr[2] "Достигнут лимит в %d слотов. Сначала удалите один."
 
-#: screens/sui_menu.lua:764 screens/sui_menu.lua:1027
+#: screens/sui_menu.lua:765 screens/sui_menu.lua:1028
 msgid ""
 "Text shown in the top bar.\n"
 "Maximum %d character."
@@ -5296,54 +5448,72 @@ msgstr[2] ""
 
 #: modules/module_action_list.lua:290 modules/module_action_list.lua:417
 #: modules/module_quick_actions.lua:362 modules/module_quick_actions.lua:494
-#: screens/sui_menu.lua:2284 screens/sui_menu.lua:2398
+#: screens/sui_menu.lua:2281 screens/sui_menu.lua:2395
 msgid "The maximum of %d action per module has been reached. Remove one first."
-msgid_plural "The maximum of %d actions per module has been reached. Remove one first."
+msgid_plural ""
+"The maximum of %d actions per module has been reached. Remove one first."
 msgstr[0] "Достигнут лимит в %d действие на модуль. Сначала удалите одно."
 msgstr[1] "Достигнут лимит в %d действия на модуль. Сначала удалите одно."
 msgstr[2] "Достигнут лимит в %d действий на модуль. Сначала удалите одно."
 
 #: features/sui_quickactions.lua:1653 features/sui_quickactions.lua:2961
 msgid "The maximum of %d quick action has been reached. Delete one first."
-msgid_plural "The maximum of %d quick actions has been reached. Delete one first."
+msgid_plural ""
+"The maximum of %d quick actions has been reached. Delete one first."
 msgstr[0] "Достигнут лимит в %d быстрое действие. Сначала удалите одно."
 msgstr[1] "Достигнут лимит в %d быстрых действия. Сначала удалите одно."
 msgstr[2] "Достигнут лимит в %d быстрых действий. Сначала удалите одно."
 
-#: modules/module_reading_stats.lua:720 modules/module_reading_stats.lua:800
+#: modules/module_reading_stats.lua:688 modules/module_reading_stats.lua:768
 msgid "The maximum of %d stat per row has been reached. Remove one first."
-msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-msgstr[0] "Достигнут лимит в %d показатель статистики в строке. Сначала удалите один."
-msgstr[1] "Достигнут лимит в %d показателя статистики в строке. Сначала удалите один."
-msgstr[2] "Достигнут лимит в %d показателей статистики в строке. Сначала удалите один."
+msgid_plural ""
+"The maximum of %d stats per row has been reached. Remove one first."
+msgstr[0] ""
+"Достигнут лимит в %d показатель статистики в строке. Сначала удалите один."
+msgstr[1] ""
+"Достигнут лимит в %d показателя статистики в строке. Сначала удалите один."
+msgstr[2] ""
+"Достигнут лимит в %d показателей статистики в строке. Сначала удалите один."
 
-#: screens/sui_menu.lua:490 screens/sui_menu.lua:1382
+#: screens/sui_menu.lua:491 screens/sui_menu.lua:1383
 msgid "The maximum of %d tab has been reached. Remove one first."
 msgid_plural "The maximum of %d tabs has been reached. Remove one first."
 msgstr[0] "Достигнут лимит в %d вкладку. Сначала удалите один."
 msgstr[1] "Достигнут лимит в %d вкладки. Сначала удалите один."
 msgstr[2] "Достигнут лимит в %d вкладок. Сначала удалите один."
 
-#: screens/sui_stats_windows.lua:1815
+#: screens/sui_stats_windows.lua:1838
 msgid "day read"
 msgid_plural "days read"
 msgstr[0] "день чтения"
 msgstr[1] "дня чтения"
 msgstr[2] "дней чтения"
 
-#: modules/module_reading_stats.lua:133
+#: modules/module_reading_stats.lua:132
 msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "день подряд"
 msgstr[1] "дней подряд"
 msgstr[2] ""
 
-#: screens/sui_stats_windows.lua:1830
+#: screens/sui_stats_windows.lua:1853
 msgid "page read"
 msgid_plural "pages read"
 msgstr[0] "страница прочитана"
 msgstr[1] "страницы прочитано"
 msgstr[2] "страниц прочитано"
+
+#~ msgid "Button Size"
+#~ msgstr "Размер кнопки"
+
+#~ msgid "Fade Finished Books"
+#~ msgstr "Делать прочитанные книги бледнее"
+
+#~ msgid "Large"
+#~ msgstr "Большой"
+
+#~ msgid "Solid Background"
+#~ msgstr "Сплошной фон"
 
 #~ msgid "Manually Tracked Books  (%s)"
 #~ msgstr "Книги, отслеживаемые вручную  (%s)"
@@ -5390,8 +5560,12 @@ msgstr[2] "страниц прочитано"
 #~ msgid "Start with Home Screen"
 #~ msgstr "Начинать с домашнего экрана"
 
-#~ msgid "When closing a book from the Home Screen, go back to the folder where the book is located instead of the Library home folder."
-#~ msgstr "При закрытии книги с домашнего экрана возвращаться в папку с книгой, а не в корневую папку библиотеки."
+#~ msgid ""
+#~ "When closing a book from the Home Screen, go back to the folder where the "
+#~ "book is located instead of the Library home folder."
+#~ msgstr ""
+#~ "При закрытии книги с домашнего экрана возвращаться в папку с книгой, а не "
+#~ "в корневую папку библиотеки."
 
 #, fuzzy
 #~ msgid "Battery Size"
@@ -5516,8 +5690,12 @@ msgstr[2] "страниц прочитано"
 #~ msgid "Do something"
 #~ msgstr "Сделать что-нибудь"
 
-#~ msgid "Enter a hex color (#RRGGBB). On greyscale e-ink the perceived brightness is used."
-#~ msgstr "Введите цвет в формате hex (#RRGGBB). На экранах E-Ink с оттенками серого используется воспринимаемая яркость."
+#~ msgid ""
+#~ "Enter a hex color (#RRGGBB). On greyscale e-ink the perceived brightness "
+#~ "is used."
+#~ msgstr ""
+#~ "Введите цвет в формате hex (#RRGGBB). На экранах E-Ink с оттенками серого "
+#~ "используется воспринимаемая яркость."
 
 #~ msgid "Font weight"
 #~ msgstr "Толщина шрифта"
@@ -5642,5 +5820,6 @@ msgstr[2] "страниц прочитано"
 #~ "When enabled, long-pressing the bottom bar opens its settings menu.\n"
 #~ "Disable this to prevent the settings menu from appearing on long tap."
 #~ msgstr ""
-#~ "При включённой опции долгое нажатие на нижнюю панель открывает меню её настроек.\n"
+#~ "При включённой опции долгое нажатие на нижнюю панель открывает меню её "
+#~ "настроек.\n"
 #~ "Отключите, чтобы убрать вызов меню настроек по долгому нажатию."

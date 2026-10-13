@@ -49,6 +49,19 @@ function M.getPluginDir(level)
     return dir
 end
 
+-- Evicts every module this plugin has loaded from package.loaded, so the
+-- next require reads fresh code from disk. A loaded module belongs to the
+-- plugin when a matching "<name>.lua" file exists under the plugin root.
+function M.unloadModules()
+    local lfs = require("libs/libkoreader-lfs")
+    local dir = M.getPluginDir()
+    for name in pairs(package.loaded) do
+        if type(name) == "string" and lfs.attributes(dir .. name .. ".lua", "mode") == "file" then
+            package.loaded[name] = nil
+        end
+    end
+end
+
 -- Same as getPluginDir() but WITHOUT the trailing "/" (used by call sites
 -- that build paths as _plugin_dir .. "/_meta.lua" etc.).
 function M.getPluginDirNoSlash()

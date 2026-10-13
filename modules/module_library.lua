@@ -28,6 +28,8 @@ local Config       = require("infra/sui_config")
 local SUISettings  = require("infra/sui_store")
 local GridRenderer = require("engines/sui_book_grid")
 local LibraryScan  = require("engines/sui_library_scan")
+local Finished     = require("features/library/sui_finished_books")
+local SH           = require("modules/module_books_shared")
 
 local MAX_ITEMS = 5  -- default_cols for the grid — same convention as Collections/Featured Collection
 
@@ -39,12 +41,6 @@ local SORT_ORDER   = {
     "title_asc", "title_desc", "author_asc",
     "date_desc", "date_asc", "size_desc", "size_asc", "shuffle",
 }
-
--- Unlike Recent/New Books (where hiding finished books by default keeps the
--- "what should I pick up next" list short), the whole point of the flat
--- Library is to be the complete catalogue, so finished books are shown by
--- default here; the toggle just lets the person narrow it down.
-local SHOW_FINISHED_DEFAULT = true
 
 -- ---------------------------------------------------------------------------
 -- Sort setting accessors (namespaced by pfx, like every other per-instance
@@ -76,11 +72,6 @@ end
 local _title_cache  = {}
 local _author_cache = {}
 
-local function getSH()
-    local ok, m = pcall(require, "modules/module_books_shared")
-    return ok and m or nil
-end
-
 local function cachedTitle(fp)
     local t = _title_cache[fp]
     if t then return t end
@@ -101,8 +92,7 @@ local function cachedAuthor(fp)
     if row and row.authors and row.authors ~= "" then
         a = row.authors
     else
-        local SH = getSH()
-        a = (SH and SH.getBookData(fp).authors) or ""
+        a = SH.getBookData(fp).authors or ""
     end
     _author_cache[fp] = a
     return a
@@ -262,6 +252,8 @@ local function extraMenuItemsBefore(ctx_menu)
         end,
     }
 
+    items[#items + 1] = Finished.makeSubmenuItem(refresh)
+
     return items
 end
 
@@ -279,36 +271,11 @@ local mod = GridRenderer.makeModule{
 
     getFileList = function(ctx) return getFileList(ctx) end,
 
-    -- Excludes (unless the user opts in via "Show finished books") anything
-    -- already marked 100%/complete — same logic as module_recent.lua, minus
-    -- its currently-open-book exclusion: unlike Recent (a "what to pick up
-    -- next" list, where the book you're already reading is redundant), Flat
-    -- Library is meant to be the complete catalogue, so the open book stays
-    -- visible here like any other in-progress book.
+    -- Leaves out finished books while the library mode is "hide". Unlike
+    -- Recent, the open book stays listed: the Library is the complete
+    -- catalogue.
     filterItem = function(fp, ctx)
-        local pfx = (ctx and ctx.pfx) or ""
-        local show_finished_setting = SUISettings:readSetting(pfx .. "flat_library_show_finished")
-        local show_finished = show_finished_setting
-        if show_finished == nil then show_finished = SHOW_FINISHED_DEFAULT end
-        if show_finished then return true end
-        local pct, is_complete = 0, false
-        local pre = ctx.prefetched and ctx.prefetched[fp]
-        if pre and pre ~= false then
-            pct = pre.percent or 0
-            is_complete = type(pre.summary) == "table" and pre.summary.status == "complete"
-        else
-            local ok, DS = pcall(require, "docsettings")
-            if ok and DS then
-                local ok2, ds = pcall(DS.open, DS, fp)
-                if ok2 and ds then
-                    pct = ds:readSetting("percent_finished") or 0
-                    local summary = ds:readSetting("summary")
-                    is_complete = type(summary) == "table" and summary.status == "complete"
-                    pcall(function() ds:close() end)
-                end
-            end
-        end
-        return pct < 1.0 and not is_complete
+        return not Finished.isHidden() or not SH.isFinished(fp, ctx and ctx.prefetched)
     end,
 
     -- Same defaults as Recent Books: progress bar + "% Read" label, no overlay.
@@ -321,10 +288,6 @@ local mod = GridRenderer.makeModule{
     -- user-editable, never locked, but purely opt-in and consistent across
     -- every book-grid module (nothing pre-enabled by default).
     badges = { pages = "off", series = "off", new = "off" },
-
-    extra_settings = {
-        { key = "show_finished", label = _("Show finished books"), default = SHOW_FINISHED_DEFAULT },
-    },
 
     extra_menu_items_before = extraMenuItemsBefore,
 

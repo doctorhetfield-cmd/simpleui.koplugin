@@ -13,6 +13,7 @@ local Size      = require("ui/size")
 local UI        = require("infra/sui_core")
 local Bottombar = require("screens/sui_bottombar")
 local SUISettings = require("infra/sui_store")
+local Backdrop    = require("infra/sui_backdrop")
 local SUIStyle    = require("features/sui_style")
 
 -- Lazy: only needed on D-pad devices, inside gesture event handlers.
@@ -4838,7 +4839,7 @@ local function _applyPaginationScrim(menu_self)
             end
             -- Full-width scrim spanning the page bar's height.
             if h > 0 then
-                WP.paintBackdrop(bb, 0, y, Screen:getWidth(), h, strength)
+                Backdrop.paintBackdrop(bb, 0, y, Screen:getWidth(), h, strength)
             end
         end
         return orig_paint(self, bb, x, y)
@@ -5271,6 +5272,9 @@ function M.installAll(plugin)
     end
     -- Generated cover for books without one — independent of the toggle above.
     if ok_fc and FC then pcall(FC.installPlaceholder) end
+    -- Finished-books mode for the file browser — also independent of the toggle.
+    local ok_fb, FB = pcall(require, "features/library/sui_finished_books")
+    if ok_fb and FB then pcall(FB.install) end
     -- Series grouping (books grouped inline inside a real folder) is a
     -- separate module from folder covers now — installed unconditionally;
     -- it checks FC.getSeriesGrouping() internally before doing anything.
@@ -5526,6 +5530,9 @@ function M.teardownAll(plugin)
     local FC = package.loaded["features/library/sui_foldercovers"]
     if FC then pcall(FC.uninstall) end
     if FC then pcall(FC.uninstallPlaceholder) end
+
+    local FB = package.loaded["features/library/sui_finished_books"]
+    if FB then pcall(FB.uninstall) end
 
     local SG = package.loaded["features/library/sui_series_grouping"]
     if SG then pcall(SG.uninstall) end

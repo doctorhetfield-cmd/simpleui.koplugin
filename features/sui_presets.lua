@@ -698,7 +698,7 @@ function SUIPresets.makeMenuItems(opts)
     -- snapshot swap) runs, then closes it once the deferred homescreen
     -- rebuild (on_apply, scheduled via nextTick like every call site
     -- already does) has actually finished. Mirrors
-    -- screens/sui_stats_windows.lua's showLoadingNotice() for the same
+    -- the loading notice of screens/sui_stats_launcher.lua for the same
     -- "otherwise the screen just sits frozen for a few seconds" problem.
     --
     -- Thin wrapper around infra/sui_core.lua's applyPresetWithNotice(),

@@ -5,7 +5,8 @@
 -- switchItemTable — it stays "inside" the same real folder (scroll position,
 -- back-button target, and breadcrumb are all the real folder's), unlike the
 -- full author/series/tags browse mode in sui_library_browse.lua which
--- navigates to an actual virtual path.
+-- navigates to an actual virtual path. Lists of that virtual tree are not
+-- touched here: sui_library_browse sub-groups its own leaves.
 --
 -- The grouping algorithm below deliberately does NOT go through
 -- sui_metadata_source: it reuses the item_table FileChooser already built
@@ -43,6 +44,7 @@ local CoverOverrides = require("features/library/sui_cover_overrides")
 local GroupActions   = require("features/library/sui_group_actions")
 local FolderCovers   = require("features/library/sui_foldercovers")
 local FilterState    = require("features/library/sui_filter_state")
+local VirtualPath    = require("features/library/sui_virtual_path")
 local MetadataSource = require("features/library/sui_metadata_source")
 
 local SeriesGrouping = {}
@@ -137,6 +139,7 @@ local function sgProcessItemTable(item_table, file_chooser)
     if not file_chooser or not item_table     then return end
     if item_table._sg_is_series_view          then return end
     if file_chooser.show_current_dir_for_hold then return end
+    if VirtualPath.isVirtual(file_chooser.path) then return end
 
     -- Evict stale _sg_items_cache entries for the current directory.
     local current_path = file_chooser.path
@@ -152,11 +155,10 @@ local function sgProcessItemTable(item_table, file_chooser)
     local ok_bim, BookInfoManager = pcall(require, "bookinfomanager")
     if not ok_bim or not BookInfoManager then return end
 
-    local folder_cache    = {}
-    local series_map      = {}
-    local processed       = {}
-    local book_count      = 0
-    local no_series_count = 0
+    local folder_cache = {}
+    local series_map   = {}
+    local processed    = {}
+    local book_count   = 0
 
     for _, item in ipairs(item_table) do
         if item.is_go_up then
@@ -211,35 +213,28 @@ local function sgProcessItemTable(item_table, file_chooser)
                         si[#si + 1] = item
                     end
                     handled = true
-                else
-                    no_series_count = no_series_count + 1
                 end
             end
             if not handled then processed[#processed + 1] = item end
         end
     end
 
-    -- If every book is in the same single series the folder is already
-    -- organised — skip grouping to avoid a redundant nesting level.
-    local series_count = 0
-    for _ in pairs(series_map) do
-        series_count = series_count + 1
-        if series_count > 1 then break end
-    end
-    if series_count == 1 and no_series_count == 0 and book_count > 0 then return end
+    local sizes = {}
+    for skey, group in pairs(series_map) do sizes[skey] = #group.series_items end
+    local grouped = FilterState.selectGroups(sizes, book_count)
+    if next(grouped) == nil then return end
 
-    -- Ungroup singleton series; sort and cache multi-book groups.
-    for _, group in pairs(series_map) do
+    -- Sort and cache the groups kept; the others go back to loose books.
+    for skey, group in pairs(series_map) do
         local items = group.series_items
-        if #items == 1 then
-            local idx = group._sg_list_index
-            if idx and processed[idx] == group then processed[idx] = items[1] end
-        else
+        if grouped[skey] then
             table.sort(items, function(a, b)
                 return (a._sg_series_index or 0) < (b._sg_series_index or 0)
             end)
             group.mandatory             = tostring(#items) .. " \u{F016}"
             _sg_items_cache[group.path] = items
+        else
+            processed[group._sg_list_index] = items[1]
         end
     end
 

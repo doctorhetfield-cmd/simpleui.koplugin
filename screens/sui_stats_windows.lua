@@ -25,6 +25,7 @@ local Config          = require("infra/sui_config")
 local SUIStyle        = require("features/sui_style")
 local UI              = require("infra/sui_core")
 local SUIStreak       = require("infra/sui_streak")
+local DateNames       = require("infra/sui_datenames")
 
 -- Landscape-aware size multiplier for the few call sites in this file that
 -- run BEFORE any SUIWindow ctx exists — e.g. shared fonts computed once in
@@ -732,6 +733,22 @@ function StatsWindows.showFinishedBooksDialog(opts)
         end
     end
 
+    -- Returns a callback that re-reads the books and returns to the screen
+    -- below the current one.
+    local function reloaderAndPopFor(ctx)
+        return function()
+            loadBooks()
+            ctx.pop()
+        end
+    end
+
+    local function openAddBookMenu(ctx)
+        ctx.push("nested_menu", {
+            title = ManualBooks.menuTitle(),
+            items = ManualBooks.makeEntryItems(reloaderAndPopFor(ctx)),
+        })
+    end
+
     local function buildListScreen(ctx)
         local inner_w = ctx.inner_w
         local rows = {}
@@ -789,21 +806,23 @@ function StatsWindows.showFinishedBooksDialog(opts)
         return rows
     end
 
-    -- Year selector, fixed above the list on every page.
+    -- Year selector and the add-book button, fixed above the list on every page.
     local function buildListHeader(ctx)
-        local function setYear(year)
-            selected_year = year
-            ctx.repaint()
-        end
-        return VerticalGroup:new{ align = "left",
-            VerticalSpan:new{ width = ctx.SZ(Screen:scaleBySize(10)) },
-            SUIWindow.PeriodDropdown{
-                inner_w   = ctx.inner_w,
+        return SUIWindow.ToolbarRow{
+            inner_w = ctx.inner_w,
+            left    = SUIWindow.PeriodDropdown{
+                compact   = true,
                 options   = _yearOptions(min_year, max_year),
                 selected  = selected_year,
-                on_select = setYear,
+                on_select = function(year)
+                    selected_year = year
+                    ctx.repaint()
+                end,
             },
-            VerticalSpan:new{ width = ctx.SZ(Screen:scaleBySize(10)) },
+            right   = SUIWindow.SquareButton{
+                glyph  = SUIStyle.icon("add_book"),
+                on_tap = function() openAddBookMenu(ctx) end,
+            },
         }
     end
 
@@ -1216,23 +1235,22 @@ function StatsWindows.showFinishedBooksDialog(opts)
         return string.format(N_("%d book read", "%d books read", count), count)
     end
 
+    local screens = SUIWindow.makeSettingsScreens(buildListScreen)
+    screens.book_stats = buildStatsScreen
+
     local win = SUIWindow:new{
         name           = "sui_win_reading_history",
         on_back        = opts.on_back,
         title          = titleFn,
-        action_btn     = {
-            glyph  = SUIStyle.icon("add_book"),
-            on_tap = function(ctx) ManualBooks.showMenuDialog(reloaderFor(ctx)) end,
+        screen_titles  = {
+            nested_menu = function(ctx) return ctx.current().params.title end,
         },
         -- Matches the Settings window's height (SUIWindow's own default,
         -- 23/30 of portrait height), same as Reading Insights/Streak.
         height         = math.floor((select(2, UI.getPortraitDims())) * 23 / 30),
         position       = "bottom",
         navpager_mode  = require("infra/sui_config").isNavpagerEnabled(),
-        screens        = {
-            __root__   = buildListScreen,
-            book_stats = buildStatsScreen,
-        },
+        screens        = screens,
         screen_headers = {
             __root__   = buildListHeader,
         },
@@ -2333,23 +2351,6 @@ end
 -- remembered, but is not written to LuaSettings (ephemeral preference).
 local _ri_mode_key = "days"  -- "days" | "hours"
 
---- Shows a brief "Loading statistics…" toast and flushes it to the e-ink
---- screen immediately, so there is visible feedback before the (potentially
---- slow) SQLite queries run.
----
---- Controlled by the "simpleui_stats_loading_notice" setting (default on).
---- Callers must invoke this *before* any blocking work so the notice reaches
---- the screen while the homescreen/library dialog is still the background.
-function StatsWindows.showLoadingNotice()
-    local ok_ss, SUISettings = pcall(require, "infra/sui_store")
-    if ok_ss and SUISettings and not SUISettings:nilOrTrue("simpleui_stats_loading_notice") then
-        return nil
-    end
-    local notice = UI.Notify.sticky(_("Loading statistics…"), { timeout = 0.0 })
-    StatsWindows._loading_notice = notice
-    return notice
-end
-
 --- Opens the Reading Insights window.
 --- opts: { on_close = function, on_back = function }
 function StatsWindows.showReadingInsightsWindow(opts)
@@ -2621,7 +2622,7 @@ end
 -- mode simply never has that section to add).
 --
 -- Calendar layout: day_width from inner_w/7, filler cells for out-of-month
--- padding, chevron month navigation, Sunday-first week.
+-- padding, month dropdown selector, Sunday-first week.
 -- ===========================================================================
 
 -- Frozen-day badge glyph: nf-fa-snowflake-o (U+F2DC), rendered in place of
@@ -2634,38 +2635,16 @@ end
 local _SM_STREAK_ICON = "\u{F490}"  -- nf-fa-fire — same glyph/meaning as the homescreen card
 local _SM_FROZEN_ICON = "\u{F2DC}"  -- nf-fa-snowflake-o — frozen-day badge
 
+-- Calendar page sizing: the most week rows a month can span, and the
+-- smallest day-cell height (before scaling) the grid may be squeezed to.
+local CAL_MAX_WEEKS  = 6
+local CAL_MIN_CELL_H = 24
+
 -- Day-cell circle fill colours (see _smDayCell): a dark dot for
 -- unread/future/filler days, and a light fill for every day that
 -- counts toward the streak — whether that's a lone active day (plain
 -- circle, no icon) or a day within a run of 2+ (streak-fire or frozen-
 -- snowflake icon on the same light circle).
-
--- Sunday-first weekday abbreviations and full month names, translated via
--- this project's own _() i18n (mirrors the existing _monthAbbr() pattern in
--- this same file) rather than pulling locale tables from KOReader's
--- `datetime` module, so these strings land in simpleui.pot/pt_PT.po/pt_BR.po
--- like every other user-facing string in the plugin.
-local _SM_WEEKDAY_ABBR
-local function _smWeekdayAbbr()
-    if not _SM_WEEKDAY_ABBR then
-        _SM_WEEKDAY_ABBR = {
-            _("Sun"), _("Mon"), _("Tue"), _("Wed"), _("Thu"), _("Fri"), _("Sat"),
-        }
-    end
-    return _SM_WEEKDAY_ABBR
-end
-
-local _SM_MONTH_FULL
-local function _smMonthFull()
-    if not _SM_MONTH_FULL then
-        _SM_MONTH_FULL = {
-            _("January"), _("February"), _("March"), _("April"),
-            _("May"), _("June"), _("July"), _("August"),
-            _("September"), _("October"), _("November"), _("December"),
-        }
-    end
-    return _SM_MONTH_FULL
-end
 
 -- ---------------------------------------------------------------------------
 -- Data fetchers
@@ -2808,6 +2787,9 @@ function StatsWindows.showStreakManagerWindow(opts)
     local now_t = os.date("*t")
     local selected_year  = now_t.year
     local selected_month = now_t.month
+    -- Earliest year the month selector offers: the first year with any
+    -- recorded reading.
+    local first_year = math.min(_riGetYearRange().min_year, now_t.year)
 
     local function buildRootScreen(ctx)
         local inner_w    = ctx.inner_w
@@ -2896,48 +2878,26 @@ function StatsWindows.showStreakManagerWindow(opts)
             TextWidget:new{ text = _("CALENDAR"), face = face_section, fgcolor = CLR_BLACK, bold = true },
             VerticalSpan:new{ width = ctx.SZ(Screen:scaleBySize(8)) },
         }
+        -- Small breathing-room gap between the calendar and where page 2
+        -- starts (day_section, force_new_page).
+        local after_calendar_spacer = VerticalSpan:new{ width = ctx.SZ(Screen:scaleBySize(12)) }
 
         -- ── Month calendar ───────────────────────────────────────────────
-        local function goPrevMonth()
-            selected_month = selected_month - 1
-            if selected_month < 1 then
-                selected_month = 12
-                selected_year  = selected_year - 1
-            end
-            ctx.repaint()
-        end
-
-        local function goNextMonth()
-            -- Never browse past the current real month — there is nothing
-            -- meaningful to show beyond it, and "future days dimmed" only
-            -- needs to apply within the current month view.
-            if selected_year < now_t.year
-                    or (selected_year == now_t.year and selected_month < now_t.month) then
-                selected_month = selected_month + 1
-                if selected_month > 12 then
-                    selected_month = 1
-                    selected_year  = selected_year + 1
-                end
-                ctx.repaint()
-            end
-        end
-
-        local next_enabled = selected_year < now_t.year
-            or (selected_year == now_t.year and selected_month < now_t.month)
-
-        -- The calendar now sits inside a rounded bordered frame (see
-        -- calendar_frame below), so cal_w leaves room for that frame's
-        -- own left/right padding instead of spanning the full inner_w.
+        -- The calendar sits inside a rounded bordered frame (see
+        -- calendar_group below), so cal_w leaves room for that frame's own
+        -- left/right padding instead of spanning the full inner_w.
         local cal_pad = ctx.SZ(Screen:scaleBySize(16))
         local cal_w   = inner_w - 2 * cal_pad
 
-        local month_header = SUIWindow.PeriodHeader{
-            inner_w      = cal_w,
-            label        = _smMonthFull()[selected_month] .. " " .. tostring(selected_year),
-            prev_enabled = true,
-            next_enabled = next_enabled,
-            on_prev      = goPrevMonth,
-            on_next      = goNextMonth,
+        local month_header = SUIWindow.MonthDropdown{
+            inner_w   = cal_w,
+            selected  = { year = selected_year, month = selected_month },
+            first     = { year = first_year,    month = 1 },
+            last      = { year = now_t.year,    month = now_t.month },
+            on_select = function(year, month)
+                selected_year, selected_month = year, month
+                ctx.repaint()
+            end,
         }
 
         -- Weekday header row (Sunday-first).
@@ -2967,7 +2927,7 @@ function StatsWindows.showStreakManagerWindow(opts)
 
         local face_wd = Font:getFace(SUIStyle.FACE_REGULAR, ctx.SZ(SUIStyle.FS_CAPTION))
         local weekday_row = HorizontalGroup:new{ align = "center" }
-        for i, name in ipairs(_smWeekdayAbbr()) do
+        for i, name in ipairs(DateNames.weekdayShort()) do
             weekday_row[#weekday_row + 1] = _CenterContainer:new{
                 dimen = Geom:new{ w = cell_w, h = wd_h },
                 TextWidget:new{ text = name, face = face_wd, fgcolor = SUIStyle.COLOR.text_dim, bold = true },
@@ -2989,7 +2949,21 @@ function StatsWindows.showStreakManagerWindow(opts)
         local first_wday = os.date("*t", os.time{ year = selected_year, month = selected_month, day = 1 }).wday
         -- os.date's wday is already 1=Sunday..7=Saturday, matching the
         -- Sunday-first week this window uses — no remapping needed.
-        local cell_h = math.floor(cell_h_full * CAL_SCALE)
+
+        -- Cell height: the natural size, capped so that the tallest month
+        -- (CAL_MAX_WEEKS rows) still fits on the calendar page together
+        -- with everything above and around the grid. The cap is the same
+        -- for every month, so the dots keep one size while browsing; the
+        -- window itself still shrinks to the rows the month actually has.
+        local calendar_chrome_h = top_spacer:getSize().h + month_header:getSize().h
+            + ctx.SZ(Screen:scaleBySize(12))                     -- gap under the header
+            + 2 * (cal_pad + SUIStyle.BORDER_SZ)                  -- frame
+            + wd_h + span_full                                    -- weekday row
+            + after_calendar_spacer:getSize().h
+        local max_cell_h = math.floor((ctx.page_h - calendar_chrome_h
+            - (CAL_MAX_WEEKS - 1) * span_full) / CAL_MAX_WEEKS)
+        local cell_h = math.max(ctx.SZ(Screen:scaleBySize(CAL_MIN_CELL_H)),
+            math.min(math.floor(cell_h_full * CAL_SCALE), max_cell_h))
 
         -- Precompute, for every real day in the month, whether it counts
         -- toward the streak (real activity or — in freeze mode — a spent
@@ -3264,12 +3238,15 @@ function StatsWindows.showStreakManagerWindow(opts)
             }
         end
 
-        -- Small breathing-room gap between the calendar and where page 2
-        -- starts (day_section, force_new_page) — stays on page 1 since it's
-        -- ordered before the widget that forces the break.
-        local after_calendar_spacer = VerticalSpan:new{ width = ctx.SZ(Screen:scaleBySize(12)) }
+        -- The calendar page is one indivisible item, so pagination can never
+        -- separate the heading, the calendar and the gap below it.
+        local calendar_section = VerticalGroup:new{ align = "left",
+            top_spacer,
+            calendar_group,
+            after_calendar_spacer,
+        }
 
-        local items = { top_spacer, calendar_group, after_calendar_spacer, day_section, week_section }
+        local items = { calendar_section, day_section, week_section }
         if freeze_section then
             items[#items + 1] = freeze_section
         end
@@ -3725,10 +3702,6 @@ function StatsWindows.showBookStatsFromFile(opts)
         navpager_mode = require("infra/sui_config").isNavpagerEnabled(),
         screens  = { __root__ = buildStatsScreen },
     }
-    if StatsWindows._loading_notice then
-        UI.Notify.close(StatsWindows._loading_notice)
-        StatsWindows._loading_notice = nil
-    end
     win:show()
 end
 

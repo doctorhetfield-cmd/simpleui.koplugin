@@ -962,10 +962,10 @@ function ScreenWidget:init()
                     for mod_id, slot in pairs(self._book_mod_slots) do
                         if on_current_page[mod_id] then
                             -- Hit-test against the layout wrapper when present: the raw
-                            -- build() result sits inside wrapBox (FrameContainer /
-                            -- HorizontalGroup for the module frame & background) and
-                            -- may not carry absolute screen dimen. The pooled wrapper
-                            -- always does — it is what the body lays out and paints.
+                            -- build() result sits inside the module chrome (frame &
+                            -- background) and may not carry absolute screen dimen. The
+                            -- pooled wrapper always does — it is what the body lays out
+                            -- and paints.
                             local hit_dimen
                             if slot.has_menu and self._wrapper_pool then
                                 local wrap = self._wrapper_pool[mod_id]

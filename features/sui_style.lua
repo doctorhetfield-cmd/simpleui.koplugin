@@ -57,10 +57,7 @@ local logger          = require("logger")
 local _               = require("infra/sui_i18n").translate
 local Blitbuffer      = require("ffi/blitbuffer")
 local Device          = require("device")
-local FrameContainer   = require("ui/widget/container/framecontainer")
 local RenderText       = require("ui/rendertext")
-local HorizontalGroup  = require("ui/widget/horizontalgroup")
-local HorizontalSpan   = require("ui/widget/horizontalspan")
 local Screen          = Device.screen
 
 -- ---------------------------------------------------------------------------
@@ -1482,83 +1479,6 @@ M.COLOR = {
 -- Global border thickness for all frames and elements
 M.BORDER_SZ   = math.max(1, Screen:scaleBySize(1))
 
--- ---------------------------------------------------------------------------
--- computeBox(show_frame, solid_bg, scale, pad) — style and sizing for the
--- optional Frame/Background box offered by every homescreen card that has
--- one.
---
--- `outer_margin` keeps the box's own visible edge — border and/or solid
--- background — aligned with sectionLabel's own left/right text inset
--- (engines/sui_screen_engine.lua), instead of flush against the module's
--- true outer edges. `inner_pad` is the breathing room between that edge
--- and the content, reserved only while the box is actually shown; with no
--- frame and no background there's nothing to leave room between, so
--- content sits directly at outer_margin, matching the label above it.
---
--- inset_h always reserves outer_margin on both sides — the label's own
--- inset is unconditional too, so this keeps content aligned with it
--- whether or not the box is currently shown. inset_v has no outer_margin
--- term: there's no label edge to align against vertically.
--- ---------------------------------------------------------------------------
-function M.computeBox(show_frame, solid_bg, scale, pad, backdrop_strength)
-    -- backdrop_strength 0–100: 0 transparent, 1–99 scrim, 100 solid.
-    -- solid_bg remains supported: true ≡ strength 100.
-    local strength = require("features/sui_wallpaper").clampBackdropStrength(backdrop_strength)
-    if strength == nil then
-        strength = solid_bg and 100 or 0
-    end
-    local opaque    = strength >= 100
-    local has_scrim = strength > 0 and strength < 100
-    local has_box   = show_frame or opaque or has_scrim
-    local border_sz = show_frame and M.BORDER_SZ or 0
-    local inner_pad = has_box and pad or 0
-    return {
-        has_box           = has_box,
-        border_sz         = border_sz,
-        radius            = has_box and math.floor(Screen:scaleBySize(12) * (scale or 1)) or 0,
-        border_color      = M.COLOR.gray,
-        bg_color          = opaque and M.COLOR.surface or nil,
-        backdrop_strength = strength,
-        -- Outer margin is applied by module chrome (single source of truth
-        -- for label alignment). computeBox only contributes inner pad/border.
-        outer_margin      = 0,
-        inner_pad         = inner_pad,
-        inset_h = inner_pad * 2 + border_sz * 2,
-        inset_v = inner_pad * 2 + border_sz * 2,
-    }
-end
-
--- ---------------------------------------------------------------------------
--- wrapBox(content, box) — wraps `content` (already sized to fit within
--- box.inset_h/inset_v less than the module's own w) in the optional Frame/
--- Background box computed by computeBox(). The box's own edge sits inset
--- by box.outer_margin on the left and right, so it lines up with
--- sectionLabel's text above it instead of extending past it to the
--- column's true edges. The returned widget's total width is exactly the
--- w originally passed to computeBox.
--- ---------------------------------------------------------------------------
-function M.wrapBox(content, box)
-    local inner = FrameContainer:new{
-        bordersize     = box.border_sz,
-        radius         = box.radius,
-        color          = box.border_color,
-        background     = box.bg_color,
-        padding        = box.inner_pad,
-        padding_top    = box.has_box and box.inner_pad or 0,
-        padding_bottom = box.has_box and box.inner_pad or 0,
-        content,
-    }
-    -- Scrim / solid module backdrop is painted by the homescreen module
-    -- wrapper (screen engine) so every module type shares one path.
-    if box.outer_margin <= 0 then return inner end
-    return HorizontalGroup:new{
-        align = "top",
-        HorizontalSpan:new{ width = box.outer_margin },
-        inner,
-        HorizontalSpan:new{ width = box.outer_margin },
-    }
-end
-
 -- Thinner border and specific color for library badges and book covers
 M.BADGE_BORDER_SZ  = require("ui/size").border.thin
 M.BADGE_BORDER_CLR = M.COLOR.gray_soft
@@ -1617,6 +1537,7 @@ M.FACE_ICONS   = "symbols"
 M.ICON = {
     -- Navigation
     chevron  = "\u{F105}",   -- nf-fa-angle_right
+    chevron_left = "\u{F104}", -- nf-fa-angle_left
     chevron_down = "\u{F107}", -- nf-fa-angle_down
     back     = "\u{E5C4}",   -- arrow_back
     more     = "\u{E8D7}",   -- more_horiz / three dots (the card's "…" button)

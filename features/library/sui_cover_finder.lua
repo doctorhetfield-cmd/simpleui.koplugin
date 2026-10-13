@@ -1,7 +1,7 @@
 -- sui_cover_finder.lua — Simple UI
 -- On-disk discovery of "what cover should represent this folder": either an
--- explicit `.cover.*` file, or a collage of the folder's book covers (this
--- one recurses into subfolders when "recursive cover" is enabled).
+-- explicit `.cover.*` file, or the covers of the books the cell shows (the
+-- search recurses into subfolders up to a caller-given depth).
 --
 -- This is deliberately separate from sui_metadata_source: it answers "what
 -- image files/cached cover blitbuffers exist under this real directory",
@@ -18,17 +18,21 @@
 --   CoverFinder.findDotCover(dir_path) -> filepath | nil
 --   CoverFinder.getDirSummary(menu, dir_path) -> { books = {path, ...}, dirs = {path, ...} }
 --   CoverFinder.entriesWithNoFilter(menu, dir_path) -> entries | nil
---   CoverFinder.findFirstCover(menu, dir_path, BookInfoManager) -> {data,w,h} | nil, summary
---   CoverFinder.collectCovers(menu, dir_path, max_count, BookInfoManager, recursive_enabled) -> { {data,w,h}, ... }
---   CoverFinder.findCoverRecursive(menu, dir_path, depth, max_depth, BookInfoManager) -> {data,w,h} | nil
+--   CoverFinder.listCandidates(paths, lead) / .dirCandidates(menu, dir_path, max_depth, lead)
+--       -- iterators over the books a cover may be taken from, in cover order
+--   CoverFinder.countBooks(menu, dir_path, max_depth, limit) -> n
+--   CoverFinder.plan(nextCandidate, slots, BookInfoManager, cover_specs)
+--       -> { covers = {{data,w,h}...}, requests = {path...}, complete, seen }
+--   CoverFinder.planDir(menu, dir_path, slots, max_depth, BookInfoManager, lead) -> plan
 --   CoverFinder.listingSignature(fc) / CoverFinder.statusFilterSignature(fc)
 --       -- strings identifying the chooser state a listing depends on
---   CoverFinder.clearListings()  -- drops cached folder listings only
+--   CoverFinder.clearListings()  -- drops cached folder listings and the misses derived from them
 --   CoverFinder.clearCache()     -- call from M.invalidateCache()
 
 local lfs          = require("libs/libkoreader-lfs")
 local FileChooser  = require("ui/widget/filechooser")
 local BimStamp     = require("features/library/sui_bim_stamp")
+local Finished     = require("features/library/sui_finished_books")
 
 local CoverFinder = {}
 
@@ -63,6 +67,7 @@ local _misses     = newLru(_DIR_CACHE_MAX) -- [dir .. "\0" .. tag] = stamp
 
 function CoverFinder.clearListings()
     _summaries.clear()
+    _misses.clear()
 end
 
 function CoverFinder.clearCache()
@@ -75,6 +80,12 @@ end
 -- Chooser state signatures
 -- ---------------------------------------------------------------------------
 
+-- Key fragment for anything whose content depends on whether finished books
+-- are left out of listings.
+local function finishedKey()
+    return tostring(Finished.isHidden())
+end
+
 -- Settings that decide the order and content of a folder listing.
 function CoverFinder.listingSignature(fc)
     return table.concat({
@@ -85,16 +96,22 @@ function CoverFinder.listingSignature(fc)
     }, "\0")
 end
 
--- The book-status filter currently applied by the chooser.
+-- The book-status filter currently applied by the chooser: the selected
+-- statuses plus whether finished books are hidden.
 function CoverFinder.statusFilterSignature(fc)
     local raw = fc.show_filter and fc.show_filter.status
-    if type(raw) ~= "table" then return tostring(raw or "") end
-    local parts = {}
-    for status, enabled in pairs(raw) do
-        if enabled then parts[#parts + 1] = tostring(status) end
+    local selection
+    if type(raw) == "table" then
+        local parts = {}
+        for status, enabled in pairs(raw) do
+            if enabled then parts[#parts + 1] = tostring(status) end
+        end
+        table.sort(parts)
+        selection = table.concat(parts, "\1")
+    else
+        selection = tostring(raw or "")
     end
-    table.sort(parts)
-    return table.concat(parts, "\1")
+    return selection .. "\0" .. finishedKey()
 end
 
 -- ---------------------------------------------------------------------------
@@ -156,7 +173,8 @@ local function buildSummary(menu, dir_path)
 end
 
 -- Book and subfolder paths of dir_path, in chooser order, books never hidden
--- by the status filter. Cached per directory and validated by its mtime;
+-- by the status filter (finished books left out by the library mode are not
+-- listed). Cached per directory and validated by its mtime;
 -- paths with no mtime (virtual folders) and access-time ordering, which
 -- changes without touching the mtime, are listed afresh every call.
 -- The returned tables are shared — callers must not mutate them.
@@ -166,6 +184,7 @@ function CoverFinder.getDirSummary(menu, dir_path)
         return buildSummary(menu, dir_path)
     end
     local key    = mtime .. "\0" .. CoverFinder.listingSignature(menu)
+        .. "\0" .. finishedKey()
     local cached = _summaries.get(dir_path)
     if cached and cached.key == key then return cached end
 
@@ -176,115 +195,175 @@ function CoverFinder.getDirSummary(menu, dir_path)
 end
 
 -- ---------------------------------------------------------------------------
--- Cover lookup
+-- Cover state
 -- ---------------------------------------------------------------------------
 
--- The cached cover of the book at `path` as { data, w, h }, or nil when it is
--- not extracted (or, when cover_specs is given, no longer valid for them).
-local function cachedCover(BookInfoManager, path, cover_specs)
+-- State of the cover of the book at `path`: the cached cover as
+-- { data, w, h }, or nil plus whether the book still has to be extracted
+-- before its cover can be shown (no cached row yet, cover not fetched, or the
+-- cached thumbnail no longer fits cover_specs). Books without cover art never
+-- wait.
+local function coverState(BookInfoManager, path, cover_specs)
     local bi = BookInfoManager:getBookInfo(path, true)
-    if bi and bi.cover_bb and bi.has_cover and bi.cover_fetched
-            and not bi.ignore_cover
-            and not (cover_specs and BookInfoManager.isCachedCoverInvalid(bi, cover_specs))
-    then
-        return { data = bi.cover_bb, w = bi.cover_w, h = bi.cover_h }
+    if not (bi and bi.cover_fetched) then return nil, true end
+    if not bi.has_cover or bi.ignore_cover then return nil, false end
+    if cover_specs and BookInfoManager.isCachedCoverInvalid(bi, cover_specs) == true then
+        return nil, true
+    end
+    if bi.cover_bb then
+        return { data = bi.cover_bb, w = bi.cover_w, h = bi.cover_h }, false
+    end
+    return nil, false
+end
+
+-- ---------------------------------------------------------------------------
+-- Candidates
+-- ---------------------------------------------------------------------------
+
+-- A candidate source is an iterator returning the next book path, in cover
+-- order, or nil when exhausted. `lead` (optional) is tried before the rest.
+local function withLead(lead, nextPath)
+    if not lead then return nextPath end
+    return function()
+        local path = lead
+        lead = nil
+        return path or nextPath()
     end
 end
 
--- A lookup that found nothing is remembered per (directory, kind of lookup)
--- and skipped until the book-info database or the directory changes —
--- covers can only appear through one of those. Virtual folders have no
--- mtime to validate against and are never remembered.
-local function missStamp(dir_path)
-    local mtime = lfs.attributes(dir_path, "modification")
-    return mtime and (mtime .. "\0" .. (BimStamp.get() or ""))
+-- Candidates taken from an explicit array of book paths.
+function CoverFinder.listCandidates(paths, lead)
+    local index = 0
+    return withLead(lead, function()
+        index = index + 1
+        return paths[index]
+    end)
 end
 
-local function isKnownMiss(dir_path, kind)
-    local stamp = missStamp(dir_path)
-    return stamp ~= nil and _misses.get(dir_path .. "\0" .. kind) == stamp
-end
-
-local function recordMiss(dir_path, kind)
-    local stamp = missStamp(dir_path)
-    if stamp then _misses.set(dir_path .. "\0" .. kind, stamp) end
-end
-
--- First cached cover among the books of dir_path itself. Also returns the
--- folder summary so callers can tell an empty folder from one whose covers
--- are not extracted yet.
-function CoverFinder.findFirstCover(menu, dir_path, BookInfoManager)
-    local summary = CoverFinder.getDirSummary(menu, dir_path)
-    if isKnownMiss(dir_path, "first") then return nil, summary end
-    for _, path in ipairs(summary.books) do
-        local cover = cachedCover(BookInfoManager, path, menu.cover_specs)
-        if cover then return cover, summary end
+-- Candidates of a real directory: its own books first, then, down to
+-- `max_depth` levels, the books of its subfolders (depth-first). Listings are
+-- read lazily, so a consumer that stops early never lists the rest.
+function CoverFinder.dirCandidates(menu, dir_path, max_depth, lead)
+    local stack = {}
+    local function enter(path, depth)
+        stack[#stack + 1] = {
+            summary = CoverFinder.getDirSummary(menu, path),
+            depth = depth, book = 0, dir = 0,
+        }
     end
-    if #summary.books > 0 then recordMiss(dir_path, "first") end
-    return nil, summary
-end
+    enter(dir_path, 0)
 
--- Collect up to `needed` cached covers from dir_path recursively (files
--- first, then subdirs). Returns an array that may be shorter than needed.
-local function collectCoversRecursive(menu, dir_path, depth, max_depth, needed, BookInfoManager)
-    if depth > max_depth or needed <= 0 then return {} end
-    local summary = CoverFinder.getDirSummary(menu, dir_path)
-    local covers  = {}
-    for _, path in ipairs(summary.books) do
-        local cover = cachedCover(BookInfoManager, path, menu.cover_specs)
-        if cover then
-            covers[#covers + 1] = cover
-            if #covers >= needed then return covers end
-        end
-    end
-    for _, sub_path in ipairs(summary.dirs) do
-        if #covers >= needed then break end
-        local sub = collectCoversRecursive(
-            menu, sub_path, depth + 1, max_depth, needed - #covers, BookInfoManager)
-        for _, c in ipairs(sub) do
-            covers[#covers + 1] = c
-            if #covers >= needed then break end
-        end
-    end
-    return covers
-end
-CoverFinder._collectCoversRecursive = collectCoversRecursive -- exposed for style resolution (quad vs single)
-
--- Find exactly one cover recursively (used on the bookless-folder path).
-function CoverFinder.findCoverRecursive(menu, dir_path, depth, max_depth, BookInfoManager)
-    if isKnownMiss(dir_path, "recursive") then return nil end
-    local cover = collectCoversRecursive(menu, dir_path, depth, max_depth, 1, BookInfoManager)[1]
-    if not cover then recordMiss(dir_path, "recursive") end
-    return cover
-end
-
--- Collect up to `max_count` covers from dir_path, including subfolders when
--- `recursive_enabled` is true (kept as an explicit arg — this module has no
--- opinion on where that setting lives; sui_foldercovers passes it in).
-function CoverFinder.collectCovers(menu, dir_path, max_count, BookInfoManager, recursive_enabled)
-    local kind = recursive_enabled and "collage-recursive" or "collage"
-    if isKnownMiss(dir_path, kind) then return {} end
-
-    local covers  = {}
-    local summary = CoverFinder.getDirSummary(menu, dir_path)
-    for _, path in ipairs(summary.books) do
-        if #covers >= max_count then break end
-        local cover = cachedCover(BookInfoManager, path)
-        if cover then covers[#covers + 1] = cover end
-    end
-    if #covers < max_count and recursive_enabled then
-        for _, sub_path in ipairs(summary.dirs) do
-            if #covers >= max_count then break end
-            local sub = collectCoversRecursive(
-                menu, sub_path, 1, 3, max_count - #covers, BookInfoManager)
-            for _, c in ipairs(sub) do
-                covers[#covers + 1] = c
-                if #covers >= max_count then break end
+    return withLead(lead, function()
+        while #stack > 0 do
+            local frame = stack[#stack]
+            local summary = frame.summary
+            if frame.book < #summary.books then
+                frame.book = frame.book + 1
+                return summary.books[frame.book]
+            end
+            if frame.depth < max_depth and frame.dir < #summary.dirs then
+                frame.dir = frame.dir + 1
+                enter(summary.dirs[frame.dir], frame.depth + 1)
+            else
+                stack[#stack] = nil
             end
         end
+    end)
+end
+
+-- Number of books reachable through dirCandidates, counted up to `limit`.
+function CoverFinder.countBooks(menu, dir_path, max_depth, limit)
+    local count = 0
+    for _ in CoverFinder.dirCandidates(menu, dir_path, max_depth) do
+        count = count + 1
+        if count >= limit then break end
     end
-    if #covers == 0 then recordMiss(dir_path, kind) end
-    return covers
+    return count
+end
+
+-- ---------------------------------------------------------------------------
+-- Cover plan
+-- ---------------------------------------------------------------------------
+
+-- Candidates inspected past the cover window while it still waits for
+-- extraction, so a book that turns out to have no cover art is already
+-- covered by a pending request.
+local _LOOKAHEAD = 2
+
+-- Resolves the cover a cell shows. The window is the first `slots` candidates
+-- that have, or may still get, cover art; each one is either ready or pending.
+--   covers   ready covers { data, w, h }, in window order
+--   requests books to extract: the pending window plus the lookahead
+--   complete true when no window book is pending
+--   seen     candidates inspected (0 = nothing to take a cover from)
+function CoverFinder.plan(nextCandidate, slots, BookInfoManager, cover_specs)
+    local plan = { covers = {}, requests = {}, complete = true, seen = 0 }
+    local window, ahead = 0, 0
+    for path in nextCandidate do
+        plan.seen = plan.seen + 1
+        local cover, waits = coverState(BookInfoManager, path, cover_specs)
+        if window < slots then
+            if cover then
+                plan.covers[#plan.covers + 1] = cover
+                window = window + 1
+            elseif waits then
+                plan.requests[#plan.requests + 1] = path
+                plan.complete = false
+                window = window + 1
+            end
+        else
+            if plan.complete then break end
+            if waits then plan.requests[#plan.requests + 1] = path end
+            ahead = ahead + 1
+            if ahead >= _LOOKAHEAD then break end
+        end
+    end
+    return plan
+end
+
+-- A plan that found no cover anywhere is remembered per (directory, depth) and
+-- skipped until the book-info database, the directory or the finished-books
+-- mode changes, or the listings are cleared — covers can only appear through
+-- one of those. Virtual folders have no mtime to validate against and are
+-- never remembered.
+local function missStamp(dir_path)
+    local mtime = lfs.attributes(dir_path, "modification")
+    return mtime and (mtime .. "\0" .. (BimStamp.get() or "") .. "\0" .. finishedKey())
+end
+
+local function emptyKey(dir_path, max_depth)
+    return dir_path .. "\0" .. max_depth
+end
+
+local function knownEmpty(dir_path, max_depth)
+    local stamp = missStamp(dir_path)
+    local known = stamp and _misses.get(emptyKey(dir_path, max_depth))
+    if known and known.stamp == stamp then return known end
+end
+
+local function recordEmpty(dir_path, max_depth, seen)
+    local stamp = missStamp(dir_path)
+    if stamp then
+        _misses.set(emptyKey(dir_path, max_depth), { stamp = stamp, seen = seen })
+    end
+end
+
+-- Plan for a real directory. `lead` (a book path) is tried first and, being
+-- user-chosen, bypasses the remembered-empty shortcut.
+function CoverFinder.planDir(menu, dir_path, slots, max_depth, BookInfoManager, lead)
+    if not lead then
+        local known = knownEmpty(dir_path, max_depth)
+        if known then
+            return { covers = {}, requests = {}, complete = true, seen = known.seen }
+        end
+    end
+    local plan = CoverFinder.plan(
+        CoverFinder.dirCandidates(menu, dir_path, max_depth, lead),
+        slots, BookInfoManager, menu.cover_specs)
+    if not lead and plan.complete and #plan.covers == 0 then
+        recordEmpty(dir_path, max_depth, plan.seen)
+    end
+    return plan
 end
 
 return CoverFinder

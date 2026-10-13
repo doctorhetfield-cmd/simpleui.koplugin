@@ -13,6 +13,7 @@
 -- Public API:
 --   Goals.IDS                          ordered goal ids
 --   Goals.KEYS                         ordered persisted settings keys
+--   Goals.label(id)                    translated goal name
 --   Goals.get(id)                      stored value (books or seconds)
 --   Goals.getUnits(id)                 value in the edit unit
 --   Goals.setUnits(id, units)          persists, then refreshes dependents
@@ -81,6 +82,10 @@ local function _notifyChanged()
     if SP then SP.invalidate() end
     local HS = package.loaded["screens/sui_homescreen"]
     if HS then HS.refresh(false) end
+end
+
+function Goals.label(id)
+    return _spec(id).label()
 end
 
 function Goals.get(id)

@@ -34,6 +34,7 @@ local VerticalSpan    = require("ui/widget/verticalspan")
 local Widget          = require("ui/widget/widget")
 local Screen          = Device.screen
 local _ = require("infra/sui_i18n").translate
+local DateNames = require("infra/sui_datenames")
 
 local HW = {}
 
@@ -105,11 +106,6 @@ end
 -- ---------------------------------------------------------------------------
 -- Shared layout bits
 -- ---------------------------------------------------------------------------
-local MONTH_NAMES_SHORT = {
-    _("Jan"), _("Feb"), _("Mar"), _("Apr"), _("May"), _("Jun"),
-    _("Jul"), _("Aug"), _("Sep"), _("Oct"), _("Nov"), _("Dec"),
-}
-
 -- Mon/Wed/Fri row labels down the left side of both grids, three rows
 -- apart (in-between rows unlabeled), same convention as GitHub's own
 -- contribution graph. Row 1 is always Monday — see the file header note on
@@ -212,12 +208,13 @@ function HW.buildRangeHeatmap(daily_map, start_t, end_t, fonts, max_width, opts)
     -- One label per calendar month, on the column where that month starts.
     -- The year is prefixed onto January so a range spanning a year
     -- boundary still shows it somewhere ("2026 Jan").
+    local month_names = DateNames.monthShort()
     local month_label_col = {}
     local last_month = nil
     for col = 1, num_cols do
         for _, d in ipairs(cols[col]) do
             if d.in_range and d.is_month_start and d.month ~= last_month then
-                local text = MONTH_NAMES_SHORT[d.month]
+                local text = month_names[d.month]
                 if d.month == 1 then text = tostring(d.year) .. " " .. text end
                 month_label_col[col] = text
                 last_month = d.month

@@ -32,8 +32,9 @@
 --       -> rows matching the trail for which accept(row) is true (cached,
 --          read-only; `variant` identifies what accept depends on)
 --   MetadataSource.getValidFacetCounts(bim, base_dir, dimension, filter_state, variant, accept)
---       -> counts, reprs: per facet key, the number of accepted rows and the
---          path of the first one (cached, read-only)
+--       -> counts, firsts: per facet key, the number of accepted rows and the
+--          paths of the first MetadataSource.FIRST_PATHS of them (cached,
+--          read-only)
 --   MetadataSource.getFolderSeries(bim, dir)
 --       -> { [filename] = {series=, series_index=}, ... } | nil
 --   MetadataSource.sortFiles(files, active_dimension)  -- mutates in place
@@ -448,8 +449,13 @@ function MetadataSource.getValidRows(bim, base_dir, filter_state, variant, accep
     return valid
 end
 
+-- Books kept per facet: enough to fill a folder cover and look past books
+-- without cover art.
+MetadataSource.FIRST_PATHS = 8
+
 -- Per facet key (entry.key of getFacetValues): the number of accepted rows
--- and the path of the first one. Same caching contract as getValidRows.
+-- and the paths of the first FIRST_PATHS of them. Same caching contract as
+-- getValidRows.
 function MetadataSource.getValidFacetCounts(bim, base_dir, dimension, filter_state, variant, accept)
     if not FilterState.isDimension(dimension) then return {}, {} end
 
@@ -457,18 +463,23 @@ function MetadataSource.getValidFacetCounts(bim, base_dir, dimension, filter_sta
     local key = cacheKey(base_dir, filter_state) .. "\31" .. dimension .. "\29" .. variant
     local cached = _valid_facets_cache[key]
     if not cached then
-        local counts, reprs = {}, {}
+        local counts, firsts = {}, {}
         local current_path
         local function count(facet_key)
             counts[facet_key] = (counts[facet_key] or 0) + 1
-            if not reprs[facet_key] then reprs[facet_key] = current_path end
+            local first = firsts[facet_key]
+            if not first then
+                firsts[facet_key] = { current_path }
+            elseif #first < MetadataSource.FIRST_PATHS then
+                first[#first + 1] = current_path
+            end
         end
         local definition = FilterState.DIMENSIONS[dimension]
         for _, row in ipairs(rows) do
             current_path = row[1]
             FilterState.eachFacetValue(row, definition, count)
         end
-        cached = { counts, reprs }
+        cached = { counts, firsts }
         _valid_facets_cache[key] = cached
     end
     return cached[1], cached[2]

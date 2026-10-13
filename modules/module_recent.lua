@@ -9,6 +9,7 @@ local _ = require("infra/sui_i18n").translate
 
 local SUISettings  = require("infra/sui_store")
 local GridRenderer = require("engines/sui_book_grid")
+local SH           = require("modules/module_books_shared")
 
 local recent_module = GridRenderer.makeModule{
     id          = "recent",
@@ -35,12 +36,7 @@ local recent_module = GridRenderer.makeModule{
             return false
         end
         if SUISettings:readSetting(pfx .. "recent_show_finished") == true then return true end
-        local pd  = ctx.prefetched and ctx.prefetched[fp]
-        local pct = pd and pd.percent or 0
-        local is_done = (pct >= 1.0) or
-                        (type(pd) == "table" and type(pd.summary) == "table"
-                         and pd.summary.status == "complete")
-        return not is_done
+        return not SH.isFinished(fp, ctx.prefetched)
     end,
 
     progress_style = { default = "bar_text" },

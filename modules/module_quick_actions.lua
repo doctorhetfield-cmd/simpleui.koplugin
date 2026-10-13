@@ -20,6 +20,7 @@ local QARenderer      = require("engines/sui_quickactions_render")
 
 local UI  = require("infra/sui_core")
 local SUISettings = require("infra/sui_store")
+local Backdrop    = require("infra/sui_backdrop")
 local SUIStyle    = require("features/sui_style")
 local PAD = UI.PAD
 local LABEL_H = UI.LABEL_H
@@ -264,8 +265,7 @@ local function makeInstance(inst_id)
     end
 
     local function getBtnStrength(pfx)
-        local WP = require("features/sui_wallpaper")
-        local v = WP.readBackdropStrength(pfx .. STRENGTH_KEY)
+        local v = Backdrop.readBackdropStrength(pfx .. STRENGTH_KEY)
         if v ~= nil then return v end
         if SUISettings:readSetting(pfx .. BG_KEY) == "transparent" then
             return 0
@@ -274,7 +274,7 @@ local function makeInstance(inst_id)
     end
 
     local function setBtnStrength(pfx, n)
-        require("features/sui_wallpaper").saveBackdropStrength(pfx .. STRENGTH_KEY, n)
+        Backdrop.saveBackdropStrength(pfx .. STRENGTH_KEY, n)
     end
 
     -- "current" (default) = existing behaviour, icons spread across the full

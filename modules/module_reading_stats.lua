@@ -16,7 +16,6 @@ local OverlapGroup    = require("ui/widget/overlapgroup")
 local TextWidget      = require("ui/widget/textwidget")
 local UIManager       = require("ui/uimanager")
 local VerticalGroup   = require("ui/widget/verticalgroup")
-local Widget          = require("ui/widget/widget")
 local Screen          = Device.screen
 local _ = require("infra/sui_i18n").translate
 local N_ = require("infra/sui_i18n").ngettext
@@ -24,6 +23,7 @@ local Config          = require("infra/sui_config")
 
 local UI      = require("infra/sui_core")
 local SUISettings = require("infra/sui_store")
+local Backdrop    = require("infra/sui_backdrop")
 local SUIStyle    = require("features/sui_style")
 local CLR_TEXT_SUB = UI.CLR_TEXT_SUB
 local PAD     = UI.PAD
@@ -84,8 +84,7 @@ local function getAlign(pfx)
 end
 
 local function getCardStrength(pfx)
-    local WP = require("features/sui_wallpaper")
-    local v = WP.readBackdropStrength(pfx .. SETTING_CARD_STR)
+    local v = Backdrop.readBackdropStrength(pfx .. SETTING_CARD_STR)
     if v ~= nil then return v end
     -- Migrate legacy transparent style.
     if SUISettings:readSetting(pfx .. SETTING_TYPE) == "cards_transparent" then
@@ -95,7 +94,7 @@ local function getCardStrength(pfx)
 end
 
 local function setCardStrength(pfx, n)
-    require("features/sui_wallpaper").saveBackdropStrength(pfx .. SETTING_CARD_STR, n)
+    Backdrop.saveBackdropStrength(pfx .. SETTING_CARD_STR, n)
 end
 
 local function _getItems(pfx)
@@ -241,37 +240,6 @@ local function _buildCardInner(stat_id, stats, d, align, clr_blk, clr_sub, max_w
     }
 end
 
--- Fill layer for stat cards: strength 0–100 via shared backdrop painter.
--- Fill + optional border in a single widget, both driven by the shared
--- wallpaper backdrop painter so their rounded corners always match exactly
--- (mixing this fill with a native FrameContainer border, which rounds
--- corners with a different algorithm, leaves a sliver of wallpaper showing
--- through at the corners).
-local CardFill = Widget:extend{
-    width = 0,
-    height = 0,
-    strength = 100,
-    radius = 0,
-    color = nil,
-    show_frame = false,
-}
-
-function CardFill:getSize()
-    return Geom:new{ w = self.width, h = self.height }
-end
-
-function CardFill:paintTo(bb, x, y)
-    if self.width <= 0 or self.height <= 0 then return end
-    local ok, WP = pcall(require, "features/sui_wallpaper")
-    if not (ok and WP) then return end
-    if self.strength > 0 and WP.paintBackdrop then
-        WP.paintBackdrop(bb, x, y, self.width, self.height, self.strength, self.radius, self.color)
-    end
-    if self.show_frame and WP.paintFrame then
-        WP.paintFrame(bb, x, y, self.width, self.height, SUIStyle.BORDER_SZ, self.radius, SUIStyle.COLOR.gray)
-    end
-end
-
 -- Cards mode: optional border + strength-based fill.
 -- Flat mode: no border, surface_flat fill at the same strength.
 -- `d` is the scaled-dims table produced once per M.build() call.
@@ -290,13 +258,13 @@ local function buildStatCardWidget(card_w, stat_id, stats, d, align, colors, str
         padding    = 0,
         cc,
     }
-    local fill = CardFill:new{
+    local fill = Backdrop.BackdropFill:new{
         width = card_w,
         height = d.card_h,
         strength = strength or 100,
         radius = d.corner_r,
         color = fill_color,
-        show_frame = not flat,
+        border_sz = flat and 0 or SUIStyle.BORDER_SZ,
         dimen = Geom:new{ w = card_w, h = d.card_h },
     }
     local card = OverlapGroup:new{

@@ -37,6 +37,7 @@
 --   VirtualPath.buildDimList(base_dir, filter_state, dimension)
 --   VirtualPath.buildLeaf(base_dir, filter_state, dimension, value)
 --   VirtualPath.buildParent(base_dir, filter_state)   -- path one level up
+--   VirtualPath.parentOf(path)                  -- path one level up, from any virtual path
 --   VirtualPath.displayValue(value)             -- for titles/breadcrumbs
 
 local util        = require("util")
@@ -189,6 +190,19 @@ function VirtualPath.buildParent(base_dir, filter_state)
         FilterState.addFilter(parent_state, trail[i].dimension, trail[i].value)
     end
     return buildFromTrail(base_dir, parent_state, nil)
+end
+
+-- Path one level up from any virtual path: the base directory above the
+-- root, the root above a first-level dim_list, the last resolved leaf above
+-- a dim_list within a trail, and buildParent's path above a leaf. nil for a
+-- path that is not virtual.
+function VirtualPath.parentOf(path)
+    local base_dir, state, _dimension, level = VirtualPath.parse(path)
+    if not level then return nil end
+    if level == "root" then return base_dir end
+    if level == "file_list" then return VirtualPath.buildParent(base_dir, state) end
+    if #state.trail == 0 then return VirtualPath.buildRoot(base_dir) end
+    return buildFromTrail(base_dir, state, nil)
 end
 
 return VirtualPath

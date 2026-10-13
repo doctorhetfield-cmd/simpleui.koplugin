@@ -20,7 +20,7 @@
 --
 -- Used by modules/module_clock.lua (analogue clock face),
 -- modules/module_reading_goals.lua (goal progress rings),
--- features/sui_wallpaper.lua (rounded backdrops and frames),
+-- infra/sui_backdrop.lua (rounded backdrops and frames),
 -- and features/library/sui_cover_widgets.lua (progress pentagon badge).
 
 local Blitbuffer  = require("ffi/blitbuffer")

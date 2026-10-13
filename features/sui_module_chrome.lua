@@ -1,4 +1,4 @@
--- Per-module chrome: background + optional AA frame (Appearance).
+-- Per-module chrome: background + optional AA frame (Appearance ▸ Background).
 -- Always inset (aligned with section labels). Applied once by the homescreen.
 
 local Device = require("device")
@@ -8,9 +8,9 @@ local FrameContainer = require("ui/widget/container/framecontainer")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan = require("ui/widget/horizontalspan")
 local OverlapGroup = require("ui/widget/overlapgroup")
-local Widget = require("ui/widget/widget")
 
 local SUISettings = require("infra/sui_store")
+local Backdrop = require("infra/sui_backdrop")
 local UI = require("infra/sui_core")
 local SUIStyle = require("features/sui_style")
 local SUIWallpaper = require("features/sui_wallpaper")
@@ -30,35 +30,35 @@ function M.skipsModuleChrome(id)
     return false
 end
 
-function M.resolve(pfx, id)
-    pfx = pfx or "simpleui_hs_"
-    id = id or ""
-    if M.skipsModuleChrome(id) then
-        return {
-            strength = 0,
-            show_frame = false,
-            pfx = pfx,
-            id = id,
-        }
-    end
-    return {
-        strength = SUIWallpaper.getModuleBackdropStrength(pfx, id),
-        show_frame = SUISettings:isTrue(pfx .. id .. "_show_frame"),
-        pfx = pfx,
-        id = id,
-    }
-end
-
-function M.setStrength(pfx, id, n)
-    SUIWallpaper.setModuleBackdropStrength(n, pfx, id)
+-- Whether the module's frame is switched on (a stored per-module toggle).
+function M.isFrameOn(pfx, id)
+    return SUISettings:isTrue((pfx or "simpleui_hs_") .. (id or "") .. "_show_frame")
 end
 
 function M.setShowFrame(pfx, id, on)
     SUISettings:saveSetting(pfx .. id .. "_show_frame", on and true or false)
 end
 
+-- Resolved chrome of a module: backdrop `strength` (0-100) and the frame's
+-- `border_sz` in pixels (0 = no frame). Modules that skip chrome resolve to
+-- neither.
+function M.resolve(pfx, id)
+    pfx = pfx or "simpleui_hs_"
+    id = id or ""
+    local chrome = { strength = 0, border_sz = 0, pfx = pfx, id = id }
+    if not M.skipsModuleChrome(id) then
+        chrome.strength = SUIWallpaper.getModuleBackdropStrength(pfx, id)
+        chrome.border_sz = M.isFrameOn(pfx, id) and SUIStyle.BORDER_SZ or 0
+    end
+    return chrome
+end
+
+function M.setStrength(pfx, id, n)
+    SUIWallpaper.setModuleBackdropStrength(n, pfx, id)
+end
+
 function M.hasChrome(chrome)
-    return chrome.strength > 0 or chrome.show_frame
+    return chrome.strength > 0 or chrome.border_sz > 0
 end
 
 -- Lateral inset matching section labels (padding_left/right = PAD).
@@ -72,8 +72,10 @@ function M.innerPad(chrome)
     return M.hasChrome(chrome) and PAD or 0
 end
 
-function M.borderSz(chrome)
-    return chrome.show_frame and SUIStyle.BORDER_SZ or 0
+-- Size the box adds to its content on each axis: padding and border on both
+-- sides.
+function M.boxInset(chrome)
+    return (M.innerPad(chrome) + chrome.border_sz) * 2
 end
 
 function M.radius(chrome, scale)
@@ -82,36 +84,7 @@ function M.radius(chrome, scale)
 end
 
 function M.contentWidth(col_w, chrome)
-    local o = M.outerMargin(chrome)
-    local i = M.innerPad(chrome)
-    local b = M.borderSz(chrome)
-    return math.max(1, col_w - o * 2 - i * 2 - b * 2)
-end
-
--- Dedicated background layer. Owns its size so paint never depends on a
--- parent having assigned dimen first (the previous FrameContainer paintTo
--- override could be skipped when dimen was unset during some refresh paths).
-local ChromeBg = Widget:extend{
-    width = 0,
-    height = 0,
-    strength = 0,
-    radius = 0,
-    show_frame = false,
-}
-
-function ChromeBg:getSize()
-    return Geom:new{ w = self.width, h = self.height }
-end
-
-function ChromeBg:paintTo(bb, x, y)
-    local w, h = self.width, self.height
-    if w <= 0 or h <= 0 then return end
-    if self.strength > 0 then
-        SUIWallpaper.paintBackdrop(bb, x, y, w, h, self.strength, self.radius)
-    end
-    if self.show_frame then
-        SUIWallpaper.paintFrame(bb, x, y, w, h, SUIStyle.BORDER_SZ, self.radius, SUIStyle.COLOR.gray)
-    end
+    return math.max(1, col_w - M.outerMargin(chrome) * 2 - M.boxInset(chrome))
 end
 
 -- Space left of a box narrower than its column, for the given alignment.
@@ -129,12 +102,12 @@ function M.wrap(content, chrome, col_w, scale)
     if not content then return content end
 
     local outer_m = M.outerMargin(chrome)
-    local frame_pad = M.innerPad(chrome) + M.borderSz(chrome)
+    local frame_pad = M.innerPad(chrome) + chrome.border_sz
     local col_box_w = math.max(1, col_w - outer_m * 2)
 
     local box_w = col_box_w
     if content.fit_align then
-        box_w = math.min(col_box_w, content:getSize().w + frame_pad * 2)
+        box_w = math.min(col_box_w, content:getSize().w + M.boxInset(chrome))
     end
     local free_w = col_box_w - box_w
     local lead_w = leadingGap(free_w, content.fit_align)
@@ -174,12 +147,12 @@ function M.wrap(content, chrome, col_w, scale)
     local sz = fc:getSize()
     local box_h = math.max(1, sz.h)
 
-    local bg = ChromeBg:new{
+    local bg = Backdrop.BackdropFill:new{
         width = box_w,
         height = box_h,
         strength = chrome.strength,
         radius = radius,
-        show_frame = chrome.show_frame,
+        border_sz = chrome.border_sz,
     }
 
     fc.dimen = Geom:new{ w = box_w, h = box_h }
@@ -194,21 +167,20 @@ function M.wrap(content, chrome, col_w, scale)
     return withOuter(box)
 end
 
--- Frame + Background only (no full-width option). Background Opacity is
--- listed only while a wallpaper is active, since it has no effect otherwise.
--- Returns an empty list for modules that skip module-wide chrome.
-function M.makeAppearanceItems(pfx, id, refresh, _lc)
+-- "Background" submenu: Frame toggle and Background Opacity. The opacity item
+-- is listed only while a wallpaper is active, since it has no effect
+-- otherwise. Returns nil for modules that skip module-wide chrome.
+function M.makeBackgroundItem(pfx, id, refresh, _lc)
     _lc = _lc or _
-    if M.skipsModuleChrome(id) then return {} end
+    if M.skipsModuleChrome(id) then return nil end
     local Config = require("infra/sui_config")
     local items = {
         {
             text = _lc("Frame"),
-            checked_func = function() return M.resolve(pfx, id).show_frame end,
+            checked_func = function() return M.isFrameOn(pfx, id) end,
             keep_menu_open = true,
             callback = function()
-                local c = M.resolve(pfx, id)
-                M.setShowFrame(pfx, id, not c.show_frame)
+                M.setShowFrame(pfx, id, not M.isFrameOn(pfx, id))
                 if refresh then refresh() end
             end,
         },
@@ -219,73 +191,41 @@ function M.makeAppearanceItems(pfx, id, refresh, _lc)
             get           = function() return M.resolve(pfx, id).strength end,
             set           = function(v) M.setStrength(pfx, id, v) end,
             refresh       = function() if refresh then refresh() end end,
-            default_value = SUIWallpaper.BACKDROP_DEFAULT.module,
+            default_value = Backdrop.BACKDROP_DEFAULT.module,
             _lc           = _lc,
         })
     end
-    return items
+    return { text = _lc("Background"), sub_item_table = items }
 end
 
--- Merge chrome into an existing Appearance submenu, or append one.
+local function isAppearance(entry, _lc)
+    local label = entry.text
+    if type(entry.text_func) == "function" then
+        local ok, s = pcall(entry.text_func)
+        if ok then label = s end
+    end
+    return label == _lc("Appearance")
+end
+
+-- Adds the Background submenu first in the module's Appearance submenu,
+-- creating that submenu when the module has none.
 function M.mergeAppearanceIntoItems(items, pfx, id, refresh, _lc)
     _lc = _lc or _
-    local chrome_items = M.makeAppearanceItems(pfx, id, refresh, _lc)
-    if type(items) ~= "table" then return items end
-    if #chrome_items == 0 then return items end
-
-    local function is_appearance(entry)
-        if not entry then return false end
-        local t = entry.text
-        if type(t) == "string" and t == _lc("Appearance") then return true end
-        if type(entry.text_func) == "function" then
-            local ok, s = pcall(entry.text_func)
-            if ok and s == _lc("Appearance") then return true end
-        end
-        return false
-    end
+    local background = M.makeBackgroundItem(pfx, id, refresh, _lc)
+    if type(items) ~= "table" or not background then return items end
 
     for _, entry in ipairs(items) do
-        if is_appearance(entry) then
-            local sub = entry.sub_item_table
-            if type(sub) ~= "table" then
-                entry.sub_item_table = chrome_items
-                return items
+        if isAppearance(entry, _lc) then
+            if type(entry.sub_item_table) == "table" then
+                table.insert(entry.sub_item_table, 1, background)
+            else
+                entry.sub_item_table = { background }
             end
-            -- Prepend Frame + Background if not already present.
-            local has_frame, has_bg = false, false
-            for _, it in ipairs(sub) do
-                local label = it.text
-                if type(it.text_func) == "function" then
-                    local ok, s = pcall(it.text_func)
-                    if ok then label = s end
-                end
-                if label == _lc("Frame") then has_frame = true end
-                if label == _lc("Background Opacity") then has_bg = true end
-            end
-            local merged = {}
-            if not has_frame then merged[#merged + 1] = chrome_items[1] end
-            if chrome_items[2] and not has_bg then merged[#merged + 1] = chrome_items[2] end
-            for _, it in ipairs(sub) do
-                local label = it.text
-                if type(it.text_func) == "function" then
-                    local ok, s = pcall(it.text_func)
-                    if ok then label = s end
-                end
-                if label ~= _lc("Frame") and label ~= _lc("Background Opacity")
-                   and label ~= _lc("Background width")
-                   and label ~= _lc("Solid Background") then
-                    merged[#merged + 1] = it
-                end
-            end
-            entry.sub_item_table = merged
             return items
         end
     end
 
-    items[#items + 1] = {
-        text = _lc("Appearance"),
-        sub_item_table = chrome_items,
-    }
+    items[#items + 1] = { text = _lc("Appearance"), sub_item_table = { background } }
     return items
 end
 

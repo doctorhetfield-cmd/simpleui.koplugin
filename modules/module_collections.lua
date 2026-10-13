@@ -1152,30 +1152,18 @@ local function extraMenuItemsBefore(ctx_menu)
 
                     local sort_items = {}
                     for _, n in ipairs(getAllCollectionsOrdered()) do
-                        local _n   = n
-                        local item = {
-                            text        = displayNameFor(_n),
-                            orig_item   = _n,
-                            dim_row     = excluded_set[_n] or nil,
-                            -- The eye glyph reflects current state, not the
-                            -- tap action: open eye ("show") while visible,
-                            -- eye-off ("hide") once excluded.
-                            toggle_icon = excluded_set[_n] and "hide" or "show",
-                        }
-                        item.on_toggle = function()
-                            if excluded_set[_n] then
-                                unhideCollection(_n)
-                                excluded_set[_n] = nil
-                            else
-                                hideCollection(_n)
-                                excluded_set[_n] = true
-                            end
-                            item.dim_row     = excluded_set[_n] or nil
-                            item.toggle_icon = excluded_set[_n] and "hide" or "show"
-                            refresh()
-                            ctx.repaint()
-                        end
-                        sort_items[#sort_items + 1] = item
+                        sort_items[#sort_items + 1] = Config.applyVisibilityToggle({
+                            text      = displayNameFor(n),
+                            orig_item = n,
+                        }, {
+                            is_visible  = function() return not excluded_set[n] end,
+                            set_visible = function(visible)
+                                if visible then unhideCollection(n) else hideCollection(n) end
+                                excluded_set[n] = not visible or nil
+                            end,
+                            on_change   = refresh,
+                            repaint     = ctx.repaint,
+                        })
                     end
 
                     ctx.push("arrange", {

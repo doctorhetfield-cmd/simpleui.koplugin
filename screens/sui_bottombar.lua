@@ -28,6 +28,7 @@ local BD = require("ui/bidi")
 
 local Config = require("infra/sui_config")
 local SUISettings = require("infra/sui_store")
+local Backdrop = require("infra/sui_backdrop")
 
 -- Lazy reference to sui_style — used by _safeIconFile() to validate icon paths
 -- before passing them to ImageWidget. Loaded on first use to avoid a circular
@@ -180,52 +181,10 @@ local function _applyNavbarScrim(widget)
         -- Prefer measured height; fall back to TOTAL_H so TOP/BOT padding is
         -- never left as bare wallpaper when dimen is not yet assigned.
         local h = (dimen and dimen.h and dimen.h > 0) and dimen.h or M.TOTAL_H()
-        local ok, WP = pcall(require, "features/sui_wallpaper")
-        if ok and WP and WP.paintBackdrop then
-            WP.paintBackdrop(bb, 0, y, Screen:getWidth(), h, s)
-        end
+        Backdrop.paintBackdrop(bb, 0, y, Screen:getWidth(), h, s)
         return orig_paint(self, bb, x, y)
     end
     return widget
-end
-
--- Dedicated fill + border layer for the framed bar at partial opacity. Owns
--- width/height so paint never depends on a parent having assigned dimen
--- (paintTo overrides on FrameContainer were skipped after tab switches /
--- dithered refreshes). Paints both the scrim and the border through the
--- shared wallpaper backdrop painter so their rounded corners always match —
--- mixing this fill with a native FrameContainer border, which rounds
--- corners with a different algorithm, leaves a sliver of wallpaper showing
--- through at the corners.
-local _NavbarFill
-local function NavbarFill()
-    if _NavbarFill then return _NavbarFill end
-    local Widget = require("ui/widget/widget")
-    local Geom = require("ui/geometry")
-    _NavbarFill = Widget:extend{
-        width = 0,
-        height = 0,
-        strength = 0,
-        radius = 0,
-        border_sz = 0,
-        border_color = nil,
-    }
-    function _NavbarFill:getSize()
-        return Geom:new{ w = self.width, h = self.height }
-    end
-    function _NavbarFill:paintTo(bb, x, y)
-        local w, h = self.width, self.height
-        if w <= 0 or h <= 0 then return end
-        local ok, WP = pcall(require, "features/sui_wallpaper")
-        if not (ok and WP) then return end
-        if self.strength > 0 and WP.paintBackdrop then
-            WP.paintBackdrop(bb, x, y, w, h, self.strength, self.radius)
-        end
-        if self.border_sz > 0 and WP.paintFrame then
-            WP.paintFrame(bb, x, y, w, h, self.border_sz, self.radius, self.border_color)
-        end
-    end
-    return _NavbarFill
 end
 
 local function _getBarFg()
@@ -707,7 +666,7 @@ local function _buildBarContainer(hg_args, is_navpager)
 
         -- Content frame: native fill + border when strength is 0 or 100 (a
         -- single native draw keeps them consistent); at partial strength the
-        -- border moves into NavbarFill below so it shares the scrim's
+        -- border moves into the BackdropFill below so it shares the scrim's
         -- rounded-corner geometry.
         local partial = strength > 0 and strength < 100
         local fc = FrameContainer():new{
@@ -724,7 +683,7 @@ local function _buildBarContainer(hg_args, is_navpager)
             local sz = fc:getSize()
             local box_w = math.max(1, sz.w)
             local box_h = math.max(1, sz.h)
-            local fill = NavbarFill():new{
+            local fill = Backdrop.BackdropFill:new{
                 width = box_w,
                 height = box_h,
                 strength = strength,

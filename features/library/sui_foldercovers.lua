@@ -31,12 +31,16 @@ local VerticalSpan    = require("ui/widget/verticalspan")
 local Size            = require("ui/size")
 local TextBoxWidget   = require("ui/widget/textboxwidget")
 local TextWidget      = require("ui/widget/textwidget")
+local UIManager       = require("ui/uimanager")
 
 local CoverFinder    = require("features/library/sui_cover_finder")
+local Finished       = require("features/library/sui_finished_books")
 local CoverWidgets   = require("features/library/sui_cover_widgets")
 local RasterCache    = require("infra/sui_raster_cache")
 local CoverOverrides = require("features/library/sui_cover_overrides")
 local GroupActions   = require("features/library/sui_group_actions")
+local Backdrop       = require("infra/sui_backdrop")
+local SUIWallpaper   = require("features/sui_wallpaper")
 
 -- ---------------------------------------------------------------------------
 -- 2. Settings keys
@@ -46,7 +50,9 @@ local SK = {
     enabled           = "simpleui_fc_enabled",
     show_name         = "simpleui_fc_show_name",
     hide_underline    = "simpleui_fc_hide_underline",
-    label_style       = "simpleui_fc_label_style",
+    label_style       = "simpleui_fc_label_style",  -- former solid/transparent choice; seeds label_opacity
+    label_opacity     = "simpleui_fc_label_opacity",
+    label_layout      = "simpleui_fc_label_layout",
     label_position    = "simpleui_fc_label_position",
     label_color       = "simpleui_fc_label_color",
     badge_position    = "simpleui_fc_badge_position",
@@ -73,7 +79,6 @@ local SK = {
     new_mode             = "simpleui_fc_new_mode",
     badge_color_folder   = "simpleui_fc_badge_color_folder",
     badge_scale          = "simpleui_fc_badge_scale",
-    fade_finished        = "simpleui_fc_fade_finished",
     fade_amount          = "simpleui_fc_fade_amount",
 }
 
@@ -110,9 +115,19 @@ function M.setShowName(v)      _setFlag(SK.show_name, v)          end
 function M.getHideUnderline()  return _getFlag(SK.hide_underline) end
 function M.setHideUnderline(v) _setFlag(SK.hide_underline, v)     end
 
--- "alpha" = semitransparent white overlay; "frame" = solid grey border.
-function M.getLabelStyle()    return SUISettings:readSetting(SK.label_style)    or "alpha"   end
-function M.setLabelStyle(v)   SUISettings:saveSetting(SK.label_style, v)                     end
+-- Folder-name label background opacity, 0–100 (text stays solid). Until set,
+-- it follows the former solid/transparent choice.
+function M.getLabelOpacity()
+    local default = SUISettings:readSetting(SK.label_style) == "solid"
+        and 100 or Backdrop.BACKDROP_DEFAULT.folder_label
+    return Backdrop.readBackdropStrength(SK.label_opacity, default)
+end
+function M.setLabelOpacity(v) Backdrop.saveBackdropStrength(SK.label_opacity, v) end
+
+-- "floating" (default) = inset box clear of the cover edges; "band" = strap
+-- across the full cover width.
+function M.getLabelLayout()   return SUISettings:readSetting(SK.label_layout)   or "floating" end
+function M.setLabelLayout(v)  SUISettings:saveSetting(SK.label_layout, v)                     end
 
 -- "bottom" (default) | "center" | "top"
 function M.getLabelPosition()  return SUISettings:readSetting(SK.label_position) or "bottom" end
@@ -222,12 +237,8 @@ function M.setBadgeColorNew(v)      SUISettings:saveSetting(SK.badge_color_new, 
 function M.getBadgeColorFolder()    return SUISettings:readSetting(SK.badge_color_folder)   or "dark"  end
 function M.setBadgeColorFolder(v)   SUISettings:saveSetting(SK.badge_color_folder, v)                  end
 
--- Fade finished books: dim the cover of completed books in mosaic view.
--- Default ON — consistent with "~= false" pattern used by other default-true flags.
-function M.getFadeFinished()  return SUISettings:readSetting(SK.fade_finished) ~= false end
-function M.setFadeFinished(v) SUISettings:saveSetting(SK.fade_finished, v) end
-
--- Fade intensity: integer percentage 10–90, default 50.
+-- Fade intensity of finished book covers in mosaic view (the "fade" mode of
+-- sui_finished_books.lua): integer percentage 10–90, default 50.
 -- Stored and exposed as an integer % so SpinWidget needs no unit conversion.
 local _FADE_AMOUNT_MIN = 10
 local _FADE_AMOUNT_MAX = 90
@@ -462,9 +473,8 @@ end
 -- ---------------------------------------------------------------------------
 -- 6. Cover discovery — moved to features/library/sui_cover_finder.lua
 -- ---------------------------------------------------------------------------
--- findCover, _entriesWithNoFilter, _collectCovers(Recursive), _findCoverRecursive
--- are now CoverFinder.findDotCover / .entriesWithNoFilter / .collectCovers /
--- .findCoverRecursive. Call sites below updated accordingly.
+-- Dot-cover lookup, folder listings and the cover plan (which books make up
+-- the cover a cell shows) live in CoverFinder.
 
 -- ---------------------------------------------------------------------------
 -- 7. Folder logic — overrides, style resolution, pickers, file-dialog button
@@ -476,14 +486,52 @@ end
 -- replace _getCoverOverrides/_saveCoverOverride/_clearCoverOverride/
 -- _invalidateFolderItem below.
 
--- Queues a folder item whose cover is not extracted yet; the menu's periodic
--- update pass calls its update() again.
-local function _registerRetry(item)
+-- Books a quad folder cover is made of.
+local _QUAD_SLOTS = 4
+-- Levels of subfolders a folder cover may be taken from.
+local _MAX_COVER_DEPTH = 3
+
+-- Requests are gathered per menu pass and handed to the book info store
+-- together, so a page of folders starts a single extraction job.
+local function _queueCoverRequest(menu, BookInfoManager, path)
+    local batch = menu._fc_cover_batch
+    if not batch then
+        batch = {}
+        menu._fc_cover_batch = batch
+        UIManager:nextTick(function()
+            menu._fc_cover_batch = nil
+            BookInfoManager:extractInBackground(batch)
+        end)
+    end
+    batch[#batch + 1] = { filepath = path, cover_specs = menu.cover_specs }
+end
+
+local function _entryPaths(entries)
+    local paths = {}
+    for _, entry in ipairs(entries) do
+        if entry.path then paths[#paths + 1] = entry.path end
+    end
+    return paths
+end
+
+-- Makes a folder cell wait for the covers of `requests` (see CoverFinder.plan):
+-- the books not requested yet are queued for extraction, and the cell is
+-- queued for the menu's periodic update pass, which calls its update() again.
+local function _awaitCovers(item, BookInfoManager, requests)
     local menu = item.menu
-    if not (menu and menu.items_to_update) then return end
-    menu._fc_pending_set = menu._fc_pending_set or {}
-    if not menu._fc_pending_set[item] then
-        menu._fc_pending_set[item] = true
+    if not (menu and menu.items_to_update) or #requests == 0 then return end
+
+    local requested = item._fc_requested or {}
+    item._fc_requested = requested
+    for _, path in ipairs(requests) do
+        if not requested[path] then
+            requested[path] = true
+            _queueCoverRequest(menu, BookInfoManager, path)
+        end
+    end
+
+    if not item._fc_queued then
+        item._fc_queued = true
         table.insert(menu.items_to_update, item)
     end
 end
@@ -500,40 +548,78 @@ local function _seriesGrouping()
     return nil
 end
 
+-- Virtual entries (series groups, author/series/tag leaves) carry their own
+-- list of books; real folders are read from disk.
+local function _isRealFolder(entry)
+    return not (entry.is_series_group or entry.is_virtual_meta_leaf)
+end
+
+-- Ordered book paths a virtual entry takes its cover from, or nil for a real
+-- folder (`entry` may be nil for a bare path). The list is shared, read-only.
+local function _virtualCoverPaths(entry, dir_path)
+    if entry and entry.is_virtual_meta_leaf then return entry.cover_paths or {} end
+    local SG = _seriesGrouping()
+    local is_group = entry and entry.is_series_group
+        or (not entry and SG and SG.hasGroup(dir_path))
+    if is_group then
+        local items = (entry and entry.series_items) or (SG and SG.getGroupItems(dir_path))
+        return items and _entryPaths(items) or {}
+    end
+end
+
+-- Subfolder depth a cover of `style` is searched in.
+local function _coverDepth(style)
+    local recursive = M.getRecursiveCover()
+        and (style == "quad" or M.getSubfolderCover())
+    return recursive and _MAX_COVER_DEPTH or 0
+end
+
+-- Cover plan of a folder cell: the books that make up the cover it shows
+-- (`slots` of them), starting with `lead` when given.
+local function _planFolderCover(item, BookInfoManager, slots, depth, lead)
+    local entry, menu = item.entry, item.menu
+    local paths = _virtualCoverPaths(entry, entry.path)
+    if paths then
+        return CoverFinder.plan(CoverFinder.listCandidates(paths, lead),
+            slots, BookInfoManager, menu.cover_specs)
+    end
+    return CoverFinder.planDir(menu, entry.path, slots, depth, BookInfoManager, lead)
+end
+
+-- The static `.cover.*` image of a real folder as { file, w, h }, or nil.
+local function _dotCoverImage(dir_path)
+    local cover_file = CoverFinder.findDotCover(dir_path)
+    if not cover_file then return nil end
+    local ok, w, h = pcall(function()
+        local tmp = ImageWidget:new{ file = cover_file, scale_factor = 1 }
+        tmp:_render()
+        local ow = tmp:getOriginalWidth()
+        local oh = tmp:getOriginalHeight()
+        tmp:free()
+        return ow, oh
+    end)
+    if ok and w and h then return { file = cover_file, w = w, h = h } end
+end
+
 -- Resolve the effective folder style for dir_path.
--- "auto" counts books and returns "quad" (≥4) or "single" (<4).
+-- "auto" counts books and returns "quad" (>=4) or "single" (<4).
 -- The optional `entry` is used to identify virtual folder types.
-local _resolveStyle
-_resolveStyle = function(menu, dir_path, entry)
+local function _resolveStyle(menu, dir_path, entry)
     local style = M.getFolderStyle()
     if style ~= "auto" then return style end
     if not menu or not dir_path then return "single" end
 
-    -- Series-group virtual folders have a synthetic path that can't be scanned
-    -- via CoverFinder.getDirSummary, so count directly from the cache.
-    local SG = _seriesGrouping()
-    local is_sg = (entry and entry.is_series_group) or (SG and SG.hasGroup(dir_path))
-    if is_sg then
-        local items = (entry and entry.series_items) or (SG and SG.getGroupItems(dir_path))
-        if items and #items >= 4 then return "quad" end
-        return "single"
+    local book_count
+    local paths = entry and _virtualCoverPaths(entry, dir_path)
+    if entry and entry.is_virtual_meta_leaf then
+        book_count = entry.virtual_leaf_count or #paths
+    elseif paths then
+        book_count = #paths
+    else
+        book_count = CoverFinder.countBooks(
+            menu, dir_path, _coverDepth("quad"), _QUAD_SLOTS)
     end
-
-    local summary    = CoverFinder.getDirSummary(menu, dir_path)
-    local book_count = #summary.books
-    if book_count >= 4 then return "quad" end
-    if M.getRecursiveCover() then
-        local ok_bim, BookInfoManager = pcall(require, "bookinfomanager")
-        if ok_bim and BookInfoManager then
-            for _, sub_path in ipairs(summary.dirs) do
-                local sub = CoverFinder._collectCoversRecursive(
-                    menu, sub_path, 1, 3, 4 - book_count, BookInfoManager)
-                book_count = book_count + #sub
-                if book_count >= 4 then return "quad" end
-            end
-        end
-    end
-    return "single"
+    return book_count >= _QUAD_SLOTS and "quad" or "single"
 end
 
 -- Public wrapper used by other modules (sui_library_browse, sui_series_grouping).
@@ -842,7 +928,6 @@ local function _installStripPatch(MosaicMenuItem, BookInfoManager, _STRIP_H,
         local BD_s          = require("ui/bidi")
         local Screen_s      = require("device").screen
         local UI_core       = require("infra/sui_core")
-        local SUIWallpaper  = require("features/sui_wallpaper")
 
         local TITLE_FONT_S  = SUIStyle.FS_DETAIL    -- 15: cover title in size-probe context
         local AUTHOR_FONT_S = SUIStyle.FS_CAPTION   -- 12: cover author in size-probe context
@@ -995,7 +1080,7 @@ local function _installStripPatch(MosaicMenuItem, BookInfoManager, _STRIP_H,
                             Blitbuffer_s.new(self.width, _STRIP_H, Blitbuffer_s.TYPE_BB8)
                     end
                     local strip_y = y + self._simpleui_strip_top
-                    SUIWallpaper.paintBackdrop(bb, x + BACKDROP_MARGIN_X, strip_y,
+                    Backdrop.paintBackdrop(bb, x + BACKDROP_MARGIN_X, strip_y,
                         self.width - 2 * BACKDROP_MARGIN_X, _STRIP_H,
                         SUIWallpaper.getCoverStripBackdropStrength(), BACKDROP_RADIUS)
                     UI_core.paintWithAlphaMask(self, bb,
@@ -1157,12 +1242,13 @@ function M.install()
     -- Display settings every folder-cover builder consumes, read in one place.
     local function _readDisplay()
         local display = {
-            label_mode  = M.getLabelMode(),
-            show_name   = M.getShowName(),
-            label_style = M.getLabelStyle(),
-            label_pos   = M.getLabelPosition(),
-            label_color = M.getLabelColor(),
-            label_scale = M.getLabelScale(),
+            label_mode    = M.getLabelMode(),
+            show_name     = M.getShowName(),
+            label_opacity = M.getLabelOpacity(),
+            label_layout  = M.getLabelLayout(),
+            label_pos     = M.getLabelPosition(),
+            label_color   = M.getLabelColor(),
+            label_scale   = M.getLabelScale(),
             badge = {
                 hidden   = M.getBadgeHidden(),
                 scale    = M.getBadgeScale(),
@@ -1298,7 +1384,7 @@ function M.install()
 
             local badge_scale = M.getBadgeScale()
             self._fc_badge_scale = badge_scale
-            self._fc_fade = self.status == "complete" and M.getFadeFinished()
+            self._fc_fade = self.status == "complete" and Finished.isFaded()
                 and M.getFadeAmount() or nil
 
             if self._fc_overlay_pages and self.status ~= "complete" and self._fc_pages then
@@ -1401,175 +1487,33 @@ function M.install()
 
         local folder_style = _resolveStyle(self.menu, dir_path, self.entry)
 
-        -- ── Series group cover ────────────────────────────────────────────────
-        if self.entry.is_series_group then
-            if self._foldercover_processed then return end
+        local quad = folder_style == "quad"
 
-            -- User-chosen override (single mode only; ignored in quad).
-            local sg_override_fp = folder_style ~= "quad" and CoverOverrides.get(dir_path)
-            if sg_override_fp then
-                local bi = BookInfoManager:getBookInfo(sg_override_fp, true)
-                if bi and bi.cover_bb and bi.has_cover and bi.cover_fetched
-                        and not bi.ignore_cover
-                        and not BookInfoManager.isCachedCoverInvalid(bi, self.menu.cover_specs)
-                then
-                    self:_setFolderCover(
-                        { data = bi.cover_bb, w = bi.cover_w, h = bi.cover_h }, display)
-                    return
-                end
-            end
-
-            local SG_ref = _seriesGrouping()
-            local items = self.entry.series_items or (SG_ref and SG_ref.getGroupItems(dir_path))
-
-            -- Quad: 2×2 grid from series book covers.
-            if folder_style == "quad" and items then
-                local covers = {}
-                for _, book_entry in ipairs(items) do
-                    if book_entry.path then
-                        local bi = BookInfoManager:getBookInfo(book_entry.path, true)
-                        if bi and bi.cover_bb and bi.has_cover and bi.cover_fetched
-                                and not bi.ignore_cover
-                                and not BookInfoManager.isCachedCoverInvalid(bi, self.menu.cover_specs)
-                        then
-                            covers[#covers + 1] = { data = bi.cover_bb, w = bi.cover_w, h = bi.cover_h }
-                            if #covers >= 4 then break end
-                        end
-                    end
-                end
-                if #covers > 0 then
-                    local border, backing, max_img_w, max_img_h = CoverWidgets.computeCellGeometry(self, M.getHidePile())
-                    local widget = CoverWidgets.buildQuadCover(self, covers, border, backing, max_img_w, max_img_h, display)
-                    if widget then
-                        CoverWidgets.installWidget(self, widget)
-                        return
-                    end
-                end
-                -- No covers ready — register for async retry.
-                _registerRetry(self)
-                return
-            end
-
-            -- Single: first available cover from the series.
-            if items then
-                for _, book_entry in ipairs(items) do
-                    if book_entry.path then
-                        local bi = BookInfoManager:getBookInfo(book_entry.path, true)
-                        if bi and bi.cover_bb and bi.has_cover and bi.cover_fetched
-                                and not bi.ignore_cover
-                                and not BookInfoManager.isCachedCoverInvalid(bi, self.menu.cover_specs)
-                        then
-                            self:_setFolderCover(
-                                { data = bi.cover_bb, w = bi.cover_w, h = bi.cover_h }, display)
-                            return
-                        end
-                    end
-                end
-            end
-            return
-        end
-
-        -- ── Quad (2×2 grid) mode ──────────────────────────────────────────────
-        if folder_style == "quad" then
-            -- Static .cover.* file takes precedence even in quad mode.
-            local cover_file = CoverFinder.findDotCover(dir_path)
-            if cover_file then
-                local ok, w, h = pcall(function()
-                    local tmp = ImageWidget:new{ file = cover_file, scale_factor = 1 }
-                    tmp:_render()
-                    local ow = tmp:getOriginalWidth()
-                    local oh = tmp:getOriginalHeight()
-                    tmp:free()
-                    return ow, oh
-                end)
-                if ok and w and h then
-                    self:_setFolderCover({ file = cover_file, w = w, h = h }, display)
-                    return
-                end
-            end
-
-            local covers = CoverFinder.collectCovers(self.menu, dir_path, 4, BookInfoManager, M.getRecursiveCover())
-            if #covers > 0 then
-                local border, backing, max_img_w, max_img_h = CoverWidgets.computeCellGeometry(self, M.getHidePile())
-                local widget = CoverWidgets.buildQuadCover(self, covers, border, backing, max_img_w, max_img_h, display)
-                if widget then
-                    CoverWidgets.installWidget(self, widget)
-                    return
-                end
-            end
-            -- No covers yet — register for async retry.
-            _registerRetry(self)
-            return
-        end
-
-        -- ── Single-cover mode (default) ───────────────────────────────────────
-
-        -- 1. User-chosen override.
-        local override_fp = CoverOverrides.get(dir_path)
-        if override_fp then
-            local bi = BookInfoManager:getBookInfo(override_fp, true)
-            if bi and bi.cover_bb and bi.has_cover and bi.cover_fetched
-                    and not bi.ignore_cover
-                    and not BookInfoManager.isCachedCoverInvalid(bi, self.menu.cover_specs)
-            then
-                self:_setFolderCover(
-                    { data = bi.cover_bb, w = bi.cover_w, h = bi.cover_h }, display)
+        -- A user-picked book leads a single cover and takes precedence over a
+        -- static image; in quad the static image takes precedence.
+        local lead = not quad and CoverOverrides.get(dir_path, true) or nil
+        if not lead and _isRealFolder(self.entry) then
+            local image = _dotCoverImage(dir_path)
+            if image then
+                self:_setFolderCover(image, display)
                 return
             end
         end
 
-        -- 2. Static .cover.* image file.
-        local cover_file = CoverFinder.findDotCover(dir_path)
-        if cover_file then
-            local ok, w, h = pcall(function()
-                local tmp = ImageWidget:new{ file = cover_file, scale_factor = 1 }
-                tmp:_render()
-                local ow = tmp:getOriginalWidth()
-                local oh = tmp:getOriginalHeight()
-                tmp:free()
-                return ow, oh
-            end)
-            if ok and w and h then
-                self:_setFolderCover({ file = cover_file, w = w, h = h }, display)
-                return
-            end
-        end
-
-        -- 3. First cached book cover inside the folder.
-        local cover, summary = CoverFinder.findFirstCover(self.menu, dir_path, BookInfoManager)
-        if cover then
-            self:_setFolderCover(cover, display)
-            return
-        end
-        local has_files      = #summary.books > 0
-        local has_subfolders = #summary.dirs  > 0
-
-        -- 4. Bookless folder: recursive scan or placeholder.
-        if not has_files then
-            if has_subfolders and M.getSubfolderCover() and M.getRecursiveCover() then
-                local sub_cover = CoverFinder.findCoverRecursive(self.menu, dir_path, 1, 3, BookInfoManager)
-                if sub_cover then
-                    self:_setFolderCover(sub_cover, display)
-                    return
-                end
-            end
-            if M.getSubfolderCover() then self:_setEmptyFolderCover(display) end
-            return
-        end
-
-        -- 5. No cover found yet — register for async retry.
-        _registerRetry(self)
+        self:_applyCoverPlan(
+            _planFolderCover(self, BookInfoManager, quad and _QUAD_SLOTS or 1,
+                _coverDepth(folder_style), lead),
+            quad, display)
     end -- MosaicMenuItem:update
 
     -- Builds and installs a single-image cover widget.
     -- `img` = { file=path } or { data=blitbuffer, w=n, h=n }
-    function MosaicMenuItem:_setFolderCover(img, display)
+    function MosaicMenuItem:_setFolderCover(img, display, complete)
         -- `display` may be nil when called by third-party patches that pre-date
         -- this parameter (e.g. patches/2-automatic-book-series.lua).  Fall back
         -- to reading the settings directly so the rest of the pipeline never
         -- receives a nil table.
         display = display or _readDisplay()
-        self._foldercover_processed = true
         local border, backing, max_img_w, max_img_h = CoverWidgets.computeCellGeometry(self, M.getHidePile())
 
         local img_options = {}
@@ -1598,7 +1542,42 @@ function M.install()
         local image   = ImageWidget:new(img_options)
         local size    = image:getSize()
         local content = FrameContainer:new{ padding = 0, bordersize = border, image }
-        CoverWidgets.installWidget(self, CoverWidgets.assembleCoverWidget(self, content, size, border, backing, display))
+        CoverWidgets.installWidget(self,
+            CoverWidgets.assembleCoverWidget(self, content, size, border, backing, display), complete)
+    end
+
+    -- Paints the covers a plan has ready and keeps the cell waiting for the
+    -- rest: an incomplete cover is repainted, and refreshed on screen, as more
+    -- of its books are extracted. A folder with nothing to take a cover from
+    -- gets the placeholder.
+    function MosaicMenuItem:_applyCoverPlan(plan, quad, display)
+        local ready = #plan.covers
+        if ready > 0 then
+            if quad then
+                local border, backing, max_img_w, max_img_h =
+                    CoverWidgets.computeCellGeometry(self, M.getHidePile())
+                local widget = CoverWidgets.buildQuadCover(
+                    self, plan.covers, border, backing, max_img_w, max_img_h, display)
+                if widget then CoverWidgets.installWidget(self, widget, plan.complete) end
+            else
+                self:_setFolderCover(plan.covers[1], display, plan.complete)
+            end
+            -- Inside a periodic update pass the menu refreshes only completed
+            -- cells, so a cover that grew while incomplete requests its own.
+            if self._fc_queued and not plan.complete and ready > (self._fc_painted or 0) then
+                UIManager:setDirty(self.menu.show_parent, function()
+                    return "ui", self.refresh_dimen or self[1].dimen,
+                        self.menu.show_parent.dithered
+                end)
+            end
+            self._fc_painted = ready
+        elseif plan.complete and plan.seen == 0
+                and M.getSubfolderCover() and _isRealFolder(self.entry) then
+            self:_setEmptyFolderCover(display)
+        end
+        if not plan.complete then
+            _awaitCovers(self, BookInfoManager, plan.requests)
+        end
     end
 
     -- Placeholder cover for bookless folders (subfolders only or empty).
@@ -2004,105 +1983,41 @@ function M.install()
             local entry = self.entry
             if not entry or entry.is_file or entry.file then return end
 
-            local cover_specs = self.menu and self.menu.cover_specs
-            local dir_path    = entry.path
-            if not dir_path then return end
+            local dir_path = entry.path
+            if not (dir_path and self.menu) then return end
 
-            -- Virtual meta-leaf (browsemeta).
-            if entry.is_virtual_meta_leaf then
-                local repr_fp     = entry.representative_filepath
-                local override_fp = CoverOverrides.get(dir_path)
-                if override_fp then repr_fp = override_fp end
-                if not repr_fp then return end
-                local bi = BookInfoManager:getBookInfo(repr_fp, true)
-                if not bi then return end
-                if not (bi.has_cover and bi.cover_fetched
-                        and not bi.ignore_cover and bi.cover_bb) then return end
-                if cover_specs and BookInfoManager.isCachedCoverInvalid(bi, cover_specs) then return end
-                self:_setListFolderCover(bi)
-                return
-            end
-
-            -- Series group.
-            if entry.is_series_group then
-                local sg_override_fp = CoverOverrides.get(dir_path)
-                if sg_override_fp then
-                    local bi = BookInfoManager:getBookInfo(sg_override_fp, true)
-                    if bi and bi.cover_bb and bi.has_cover and bi.cover_fetched
-                            and not bi.ignore_cover
-                            and not (cover_specs and
-                                BookInfoManager.isCachedCoverInvalid(bi, cover_specs))
-                    then
-                        self:_setListFolderCover(bi)
+            -- A user-picked book leads and takes precedence over a static image.
+            local lead = CoverOverrides.get(dir_path, true)
+            if not lead and _isRealFolder(entry) then
+                local cover_file = CoverFinder.findDotCover(dir_path)
+                if cover_file then
+                    local ok, img = pcall(function()
+                        local iw = ImageWidget:new{ file = cover_file, scale_factor = 1 }
+                        iw:_render()
+                        local bb = iw._bb and iw._bb:copy()
+                        local ow = iw:getOriginalWidth()
+                        local oh = iw:getOriginalHeight()
+                        iw:free()
+                        return { cover_bb = bb, cover_w = ow, cover_h = oh,
+                                 has_cover = true, cover_fetched = true }
+                    end)
+                    if ok and img and img.cover_bb then
+                        self:_setListFolderCover(img)
                         return
                     end
                 end
-                local SG_ref2 = _seriesGrouping()
-                local items = entry.series_items or (SG_ref2 and SG_ref2.getGroupItems(dir_path))
-                if items then
-                    for _, book_entry in ipairs(items) do
-                        if book_entry.path then
-                            local bi = BookInfoManager:getBookInfo(book_entry.path, true)
-                            if bi and bi.has_cover and bi.cover_fetched
-                                    and not bi.ignore_cover and bi.cover_bb
-                                    and not (cover_specs and
-                                        BookInfoManager.isCachedCoverInvalid(bi, cover_specs))
-                            then
-                                self:_setListFolderCover(bi)
-                                return
-                            end
-                        end
-                    end
-                end
-                return
             end
 
-            -- Real folder.
-
-            -- 1. User-chosen override.
-            local override_fp = CoverOverrides.get(dir_path)
-            if override_fp then
-                local bi = BookInfoManager:getBookInfo(override_fp, true)
-                if bi and bi.cover_bb and bi.has_cover and bi.cover_fetched
-                        and not bi.ignore_cover
-                        and not (cover_specs and BookInfoManager.isCachedCoverInvalid(bi, cover_specs))
-                then
-                    self:_setListFolderCover(bi)
-                    return
-                end
-            end
-
-            -- 2. Static .cover.* image file.
-            local cover_file = CoverFinder.findDotCover(dir_path)
-            if cover_file then
-                local ok, img = pcall(function()
-                    local iw = ImageWidget:new{ file = cover_file, scale_factor = 1 }
-                    iw:_render()
-                    local bb = iw._bb and iw._bb:copy()
-                    local ow = iw:getOriginalWidth()
-                    local oh = iw:getOriginalHeight()
-                    iw:free()
-                    return { cover_bb = bb, cover_w = ow, cover_h = oh,
-                             has_cover = true, cover_fetched = true }
-                end)
-                if ok and img and img.cover_bb then
-                    self:_setListFolderCover(img)
-                    return
-                end
-            end
-
-            -- 3. First cached book cover inside the folder.
-            local cover = self.menu
-                and CoverFinder.findFirstCover(self.menu, dir_path, BookInfoManager)
+            local plan = _planFolderCover(
+                self, BookInfoManager, 1, _coverDepth("single"), lead)
+            local cover = plan.covers[1]
             if cover then
                 self:_setListFolderCover({
                     cover_bb = cover.data, cover_w = cover.w, cover_h = cover.h,
                 })
-                return
+            elseif not plan.complete then
+                _awaitCovers(self, BookInfoManager, plan.requests)
             end
-
-            -- 4. No cover — register for async retry.
-            _registerRetry(self)
         end -- updateFolderCover
 
         function ListMenuItem:update(...)
@@ -2114,6 +2029,7 @@ function M.install()
         -- Renders a cover thumbnail on the left, folder name + item count on the right.
         function ListMenuItem:_setListFolderCover(bookinfo)
             self._foldercover_processed = true
+            self.bookinfo_found = true -- see CoverWidgets.installWidget
 
             local underline_h = self.underline_h or 1
             local dimen = Geom:new{

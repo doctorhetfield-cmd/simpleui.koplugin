@@ -50,7 +50,7 @@
 --       -- The widget for that backing (nil when there is nothing to draw).
 --   CoverWidgets.buildFolderNameWidget(item, available_w, font_size, fgcolor, bgcolor)
 --   CoverWidgets.buildLabel(item, size, border, display)
---       -- display: { label_mode, show_name, label_style, label_pos, label_color, label_scale }
+--       -- display: { label_mode, show_name, label_opacity, label_layout, label_pos, label_color, label_scale }
 --   CoverWidgets.buildBadge(mandatory, cover_dimen, cv_scale, cell_dimen, opts)
 --       -- opts: { hidden, scale, dark, position }  ("bottom" | anything else = top)
 --   CoverWidgets.computeCellGeometry(item, hide_stack)
@@ -60,7 +60,7 @@
 --       -- outside the library's mosaic context (e.g. module_collections.lua).
 --   CoverWidgets.buildQuadCover(item, img_list, border, backing, max_img_w, max_img_h, display)
 --       -- Wraps buildQuadGrid with assembleCoverWidget (mosaic's pile/label/badge).
---   CoverWidgets.installWidget(item, widget)
+--   CoverWidgets.installWidget(item, widget, complete)
 --   CoverWidgets.clearLabelMetricsCache()
 
 local _  = require("infra/sui_i18n").translate
@@ -79,15 +79,16 @@ local Screen          = require("device").screen
 local TextBoxWidget   = require("ui/widget/textboxwidget")
 local TextWidget      = require("ui/widget/textwidget")
 local RenderText     = require("ui/rendertext")
-local AlphaContainer  = require("ui/widget/container/alphacontainer")
 local BottomContainer = require("ui/widget/container/bottomcontainer")
 local TopContainer    = require("ui/widget/container/topcontainer")
 local RightContainer  = require("ui/widget/container/rightcontainer")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
 local SUIStyle        = require("features/sui_style")
+local UI              = require("infra/sui_core")
 local AAPaint         = require("infra/sui_aa_paint")
 local RasterCache     = require("infra/sui_raster_cache")
+local Backdrop        = require("infra/sui_backdrop")
 
 local CoverWidgets = {}
 
@@ -105,10 +106,20 @@ local _BADGE_MARGIN_R_BASE = Screen:scaleBySize(4)
 
 -- Folder-name label band: at most two lines, never thinner than this
 -- fraction of the cover, and (at the bottom) lifted off the cover edge.
-local _LABEL_ALPHA      = 0.75
 local _LABEL_MAX_LINES  = 2
 local _LABEL_MIN_H_FRAC = 0.18
 local _LABEL_GAP_FRAC   = 0.07
+
+-- Label shapes (both framed like the cover):
+--   band     — strap across the full cover width, flush with the top edge.
+--   floating — square-cornered box inset from both sides and kept clear of
+--              every edge.
+-- inset_frac is the side margin as a fraction of the cover width.
+local _LABEL_LAYOUTS = {
+    band     = { inset_frac = 0,    lift_top = false },
+    floating = { inset_frac = 0.05, lift_top = true  },
+}
+local _DEFAULT_LABEL_LAYOUT = "floating"
 
 -- ── Progress pentagon badge ──────────────────────────────────────────────────
 -- Shape: downward-pointing pentagon (rectangle body + triangular tip).
@@ -794,6 +805,8 @@ end
 
 -- Folder name as centred bold text at a fixed `font_size`, capitalised per
 -- word. Names longer than _LABEL_MAX_LINES lines are cut with an ellipsis.
+-- Without a `bgcolor` the text is drawn over whatever is already painted;
+-- with one it sits on that opaque background.
 -- `item` needs only `.text` and a writable `._fc_display_text` cache slot
 -- (any table works — sui_foldercovers.lua passes the MosaicMenuItem instance
 -- so the capitalised/bidi-wrapped text is computed once per item, not once
@@ -813,66 +826,85 @@ function CoverWidgets.buildFolderNameWidget(item, available_w, font_size, fgcolo
         alignment = "center",
         bold      = true,
         fgcolor   = fgcolor or SUIStyle.COLOR.text_primary,
-        bgcolor   = bgcolor or SUIStyle.COLOR.surface,
+        bgcolor   = bgcolor,
     }
+    local function build()
+        if bgcolor then return TextBoxWidget:new(opts) end
+        return UI.makeAlphaTextBox(opts)
+    end
     local max_h = _LABEL_MAX_LINES * labelLineHeight(face, font_size)
-    local name  = TextBoxWidget:new(opts)
+    local name  = build()
     if name:getSize().h <= max_h then return name end
 
     name:free(true)
     opts.height                        = max_h
     opts.height_adjust                 = true
     opts.height_overflow_show_ellipsis = true
-    return TextBoxWidget:new(opts)
+    return build()
 end
 
--- Returns the label band laid over the cover (offset to its position), or nil
--- when disabled. The band spans the cover's width, centres the name in it and
--- is never thinner than _LABEL_MIN_H_FRAC of the cover; at the bottom it is
--- lifted off the edge so it reads as a strap around the book.
+-- Returns the label laid over the cover (offset to its position), or nil when
+-- disabled. The name is centred in a box that is never thinner than
+-- _LABEL_MIN_H_FRAC of the cover; its shape follows the layout (see
+-- _LABEL_LAYOUTS). At the bottom it is lifted off the edge so it reads as a
+-- strap around the book.
 -- `display` is the pre-read settings table:
---   { label_mode, show_name, label_style, label_pos, label_color, label_scale }
+--   { label_mode, show_name, label_opacity, label_layout, label_pos, label_color, label_scale }
 function CoverWidgets.buildLabel(item, size, border, display)
     if display.label_mode ~= "overlay" then return nil end
     if not display.show_name            then return nil end
+    local layout   = _LABEL_LAYOUTS[display.label_layout] or _LABEL_LAYOUTS[_DEFAULT_LABEL_LAYOUT]
     local dark     = display.label_color == "dark"
     local bg_color = dark and SUIStyle.COLOR.text_primary or SUIStyle.COLOR.surface
     local fg_color = dark and SUIStyle.COLOR.surface or SUIStyle.COLOR.text_primary
 
-    local font_size = math.max(8, math.floor(_BASE_DIR_FS * (display.label_scale or 1.0)))
-    local name      = CoverWidgets.buildFolderNameWidget(item, size.w - _LATERAL_PAD * 2,
-        font_size, fg_color, bg_color)
+    local cover_w  = size.w + border * 2
+    local cover_h  = size.h + border * 2
+    local inset    = math.floor(cover_w * layout.inset_frac)
+    local band_w   = cover_w - inset * 2
+    local inner_w  = band_w - border * 2
+    local strength = display.label_opacity
 
-    local cover_w = size.w + border * 2
-    local cover_h = size.h + border * 2
+    -- Text stays solid while only the background takes the opacity; a fully
+    -- opaque background lets the text paint its own.
+    local font_size = math.max(8, math.floor(_BASE_DIR_FS * (display.label_scale or 1.0)))
+    local name      = CoverWidgets.buildFolderNameWidget(item, inner_w - _LATERAL_PAD * 2,
+        font_size, fg_color, strength >= 100 and bg_color or nil)
+
     local band_h  = math.max(name:getSize().h + (_VERTICAL_PAD + border) * 2,
                              math.floor(cover_h * _LABEL_MIN_H_FRAC))
-    local band = FrameContainer:new{
-        width      = cover_w,
+    local inner_h = band_h - border * 2
+    local label = FrameContainer:new{
+        width      = band_w,
         height     = band_h,
         padding    = 0,
         bordersize = border,
-        background = bg_color,
-        CenterContainer:new{
-            dimen = Geom:new{ w = cover_w - border * 2, h = band_h - border * 2 },
-            name,
+        OverlapGroup:new{
+            dimen = Geom:new{ w = inner_w, h = inner_h },
+            Backdrop.BackdropFill:new{
+                width = inner_w, height = inner_h, strength = strength, color = bg_color,
+            },
+            CenterContainer:new{
+                dimen = Geom:new{ w = inner_w, h = inner_h },
+                name,
+            },
         },
     }
-    if display.label_style == "alpha" then
-        band = AlphaContainer:new{ alpha = _LABEL_ALPHA, band }
+    if inset > 0 then
+        label = FrameContainer:new{ padding = 0, bordersize = 0, padding_left = inset, label }
     end
 
+    local gap = math.max(Screen:scaleBySize(3), math.floor(cover_h * _LABEL_GAP_FRAC))
     local y
     if display.label_pos == "top" then
-        y = 0
+        y = layout.lift_top and gap or 0
     elseif display.label_pos == "center" then
         y = math.floor((cover_h - band_h) / 2)
     else
-        local gap = math.max(Screen:scaleBySize(3), math.floor(cover_h * _LABEL_GAP_FRAC))
         y = cover_h - band_h - gap
     end
-    band.overlap_offset = { 0, math.max(0, y) }
-    return band
+    label.overlap_offset = { 0, math.max(0, y) }
+    return label
 end
 
 -- ── Folder book-count badge (circle) ─────────────────────────────────────────
@@ -1015,9 +1047,13 @@ function CoverWidgets.assembleCoverWidget(item, content_widget, size, border, ba
     return OverlapGroup:new{ dimen = cell_dimen, overlap }
 end
 
--- Mark the cell as processed, free the previous widget, and assign the new one.
-function CoverWidgets.installWidget(item, widget)
-    item._foldercover_processed = true
+-- Free the previous widget and assign the new one. A cell is processed once
+-- its cover is `complete` (the default); an incomplete one stays in the menu's
+-- periodic update pass, which only drops items reporting their info as found.
+function CoverWidgets.installWidget(item, widget, complete)
+    complete = complete ~= false
+    item._foldercover_processed = complete
+    item.bookinfo_found = complete
     if item._underline_container[1] then item._underline_container[1]:free() end
     item._underline_container[1] = widget
 end

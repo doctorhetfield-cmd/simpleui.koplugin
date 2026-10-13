@@ -889,6 +889,25 @@ function SimpleUIPlugin:init()
         end
         -- -------------------------------------------------------------------
 
+        -- Settings migration v10:
+        -- Folds the finished-books fade toggle into the three-state mode
+        -- (show / fade / hide). An explicit "off" becomes "show"; any other
+        -- stored value keeps the previous behaviour, "fade".
+        if not SUISettings:isTrue("simpleui_settings_migrated_v10") then
+            pcall(function()
+                local legacy = SUISettings:get("simpleui_fc_fade_finished")
+                if legacy == nil then return end
+                if SUISettings:get("simpleui_fc_finished_mode") == nil then
+                    SUISettings:set("simpleui_fc_finished_mode", legacy == false and "show" or "fade")
+                end
+                SUISettings:del("simpleui_fc_fade_finished")
+                logger.info("simpleui: migration v10 — folded finished-books fade toggle into the mode")
+            end)
+            SUISettings:set("simpleui_settings_migrated_v10", true)
+            SUISettings:flush()
+        end
+        -- -------------------------------------------------------------------
+
         Config.applyFirstRunDefaults()
         Config.migrateOldCustomSlots()
         -- Always run sanitizeQASlots: it cleans both custom QA slot references
@@ -1239,44 +1258,6 @@ function SimpleUIPlugin:init()
 end
 
 -- ---------------------------------------------------------------------------
--- List of all plugin-owned Lua modules that must be evicted from
--- package.loaded on teardown so that a hot plugin update (replacing files
--- without restarting KOReader) always loads fresh code.
--- ---------------------------------------------------------------------------
-local _PLUGIN_MODULES = {
-    "infra/sui_i18n", "infra/sui_config", "infra/sui_core", "screens/sui_bottombar", "screens/sui_topbar",
-    "infra/sui_patches", "screens/sui_menu", "screens/sui_titlebar", "features/sui_quickactions",
-    "screens/sui_homescreen", "features/library/sui_foldercovers", "features/library/sui_library_browse", "infra/sui_updater",
-    "features/library/sui_series_grouping", "features/library/sui_cover_widgets",
-    "features/library/sui_filter_state", "features/library/sui_virtual_path",
-    "features/library/sui_metadata_source", "features/library/sui_cover_overrides",
-    "features/library/sui_group_actions", "features/library/sui_cover_finder",
-    "features/library/sui_metadata_providers",
-    "infra/sui_store", "features/sui_presets", "features/sui_style",
-    "screens/sui_settings_window",
-    "screens/sui_quicksettings_bar",
-    "modules/moduleregistry",
-    "modules/module_books_shared",
-    "modules/module_clock",
-    "modules/module_collections",
-    "modules/module_currently",
-    "modules/module_quick_actions",
-    "modules/module_quote",
-    "modules/module_reading_goals",
-    "modules/module_reading_stats",
-    "modules/module_stats_provider",
-    "engines/sui_book_grid",
-    "modules/module_recent",
-    "modules/module_new_books",
-    "modules/module_tbr",
-    "modules/module_feat_coll",
-    "modules/quotes",
-    "infra/sui_custom_screens",
-    "engines/sui_screen_engine",
-    "features/sui_wallpaper",
-}
-
--- ---------------------------------------------------------------------------
 -- Dispatcher gesture handlers
 -- ---------------------------------------------------------------------------
 
@@ -1577,9 +1558,7 @@ function SimpleUIPlugin:onTeardown()
     if ok_cfg and Cfg and Cfg.endStatsSyncGuard then
         Cfg.endStatsSyncGuard()
     end
-    for _, mod in ipairs(_PLUGIN_MODULES) do
-        package.loaded[mod] = nil
-    end
+    require("infra/sui_paths").unloadModules()
 end
 
 -- ---------------------------------------------------------------------------

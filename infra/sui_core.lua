@@ -1113,7 +1113,7 @@ end
 --
 -- Higher-level helpers built on Notify:
 --   applyPresetWithNotice  — sticky "Applying preset…" around a work fn
---   StatsWindows.showLoadingNotice — sticky loading toast (setting-gated)
+--   Launcher.open (screens/sui_stats_launcher) — sticky loading toast (setting-gated)
 -- ---------------------------------------------------------------------------
 
 M.Notify = {}

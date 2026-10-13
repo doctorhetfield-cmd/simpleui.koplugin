@@ -706,7 +706,7 @@ local function _invalidateCaches()
     local QA = package.loaded["features/sui_quickactions"]
     if QA and QA.invalidateCustomQACache then pcall(QA.invalidateCustomQACache) end
     local WP = package.loaded["features/sui_wallpaper"]
-    if WP and WP.invalidateCache then pcall(WP.invalidateCache) end
+    if WP and WP.freeCache then pcall(WP.freeCache) end
     local CC_ok, CC = pcall(require, "infra/sui_cover_cache")
     if CC_ok and CC and CC.clear then pcall(function() CC:clear() end) end
 end

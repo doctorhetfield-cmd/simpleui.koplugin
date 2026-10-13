@@ -45,7 +45,8 @@ local function Font()            _Font            = _Font            or require(
 local function GestureRange()    _GestureRange    = _GestureRange    or require("ui/gesturerange");                     return _GestureRange    end
 local function WidgetContainer() _WidgetContainer = _WidgetContainer or require("ui/widget/container/widgetcontainer"); return _WidgetContainer end
 
-local logger = require("logger")
+local logger   = require("logger")
+local Backdrop = require("infra/sui_backdrop")
 
 -- Marks `widget` dirty whenever KOReader's theme or night-mode state changes,
 -- so its next paint reflects updated colors. Needed by any widget in this
@@ -222,13 +223,12 @@ end
 -- rounded-rect fill (`bg_color`, when given) and/or border stroke
 -- (`border_color`, `border_sz` thick, when > 0) that sits behind a cell's
 -- content. Both go through the shared backdrop painter in
--- features/sui_wallpaper.lua: native rectangles plus cached anti-aliased
+-- infra/sui_backdrop.lua: native rectangles plus cached anti-aliased
 -- corner masks, so the cost depends on the corner radius only. The border is
 -- drawn over the fill, and with no fill the wallpaper shows through.
 -- strength: 0 skip fill, 1–99 scrim, 100 solid fill.
 local function _buildRoundedBackdrop(size, corner_r, border_sz, bg_color, border_color, strength)
-    local Wallpaper = require("features/sui_wallpaper")
-    strength = Wallpaper.clampBackdropStrength(strength) or 100
+    strength = Backdrop.clampBackdropStrength(strength) or 100
     local widget = WidgetContainer():new{}
     widget.dimen = Geom():new{ w = size, h = size }
 
@@ -241,10 +241,10 @@ local function _buildRoundedBackdrop(size, corner_r, border_sz, bg_color, border
         if size <= 0 then return end
 
         if bg_color and strength > 0 then
-            Wallpaper.paintBackdrop(bb, x, y, size, size, strength, corner_r, bg_color)
+            Backdrop.paintBackdrop(bb, x, y, size, size, strength, corner_r, bg_color)
         end
         if border_sz > 0 then
-            Wallpaper.paintFrame(bb, x, y, size, size, border_sz, corner_r, border_color)
+            Backdrop.paintFrame(bb, x, y, size, size, border_sz, corner_r, border_color)
         end
     end
 
@@ -284,7 +284,7 @@ function QARenderer.buildFrame(inner_widget, size, opts)
     local is_bare = (shape == "bare")
 
     -- Fill opacity: explicit opts.strength, else transparent → 0, solid/flat → 100.
-    local strength = require("features/sui_wallpaper").clampBackdropStrength(opts.strength)
+    local strength = Backdrop.clampBackdropStrength(opts.strength)
     if strength == nil then
         strength = (bg == "transparent") and 0 or 100
     end
