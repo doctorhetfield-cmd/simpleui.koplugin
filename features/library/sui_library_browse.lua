@@ -535,7 +535,7 @@ local function _getVirtualList(fc, path, collate)
 
     if level == "root" then
         for i, dimension in ipairs(FilterState.ORDERED_DIMENSIONS) do
-            local text  = _("Browse by") .. " " .. DIM_LABELS[dimension]
+            local text  = string.format(_("Browse by %s"), DIM_LABELS[dimension])
             local vpath = VirtualPath.buildDimList(base_dir, nil, dimension)
             if collate then
                 local item = fc:getListItem(nil, text, vpath, _fakeAttr(i), collate)
