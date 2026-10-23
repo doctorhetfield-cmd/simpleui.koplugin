@@ -943,6 +943,9 @@ local function _registerBuiltins()
             id    = "night_mode",
             label = _("Night Mode"),
             icon  = Config.ICON.night,
+            get_icon = function(_id)
+                return Screen.night_mode and Config.ICON.day or Config.ICON.night
+            end,
             is_active = function(_id)
                 return Screen.night_mode and true or false
             end,

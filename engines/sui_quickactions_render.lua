@@ -159,8 +159,29 @@ QARenderer.buildTapContainer = _buildTapContainer
 --     in a CenterContainer(container_w, container_h) instead of returning it
 --     bare (module_action_list does this so a narrow icon still gets a
 --     full-row-height hitbox; the others return the ImageWidget directly).
-function QARenderer.buildIcon(entry, size, fgcolor, opts)
+-- `action_id` lets Night Mode refresh its icon and dim state on each paint.
+function QARenderer.buildIcon(entry, size, fgcolor, opts, action_id)
     opts = opts or {}
+    if action_id == "night_mode" then
+        local icon, dim = entry.icon, entry.dim
+        local widget = WidgetContainer():new{
+            QARenderer.buildIcon(entry, size, fgcolor, opts),
+        }
+        local paint = widget.paintTo
+        function widget:paintTo(bb, x, y)
+            -- Resolve at paint time: night-mode events may reach children
+            -- before the screen has applied the new state.
+            local current = QA().getEntry(action_id)
+            if current.icon ~= icon or current.dim ~= dim then
+                local replacement = QARenderer.buildIcon(current, size, fgcolor, opts)
+                self[1]:free()
+                self[1] = replacement
+                icon, dim = current.icon, current.dim
+            end
+            return paint(self, bb, x, y)
+        end
+        return _attachThemeHandlers(widget)
+    end
     local style = SUIStyle()
     local ui    = UI()
 
@@ -466,7 +487,7 @@ function QARenderer.buildCell(action_id, spec)
     local frame_sz = spec.frame_sz or spec.icon_sz
     local fgcolor  = spec.fgcolor or style.COLOR.text_primary
 
-    local icon_widget = QARenderer.buildIcon(entry, spec.icon_sz, fgcolor, spec.icon_opts)
+    local icon_widget = QARenderer.buildIcon(entry, spec.icon_sz, fgcolor, spec.icon_opts, action_id)
     local frame_widget = QARenderer.buildFrame(icon_widget, frame_sz, {
         shape      = spec.shape,
         surface    = spec.surface,
@@ -525,7 +546,7 @@ function QARenderer.buildListRow(action_id, spec)
     local icon_widget
     local text_w = spec.inner_w
     if spec.show_icon then
-        icon_widget = QARenderer.buildIcon(entry, spec.icon_sz, fgcolor, spec.icon_opts)
+        icon_widget = QARenderer.buildIcon(entry, spec.icon_sz, fgcolor, spec.icon_opts, action_id)
         text_w = spec.inner_w - spec.icon_sz - spec.icon_gap
     end
 
@@ -588,7 +609,7 @@ function QARenderer.buildTabCell(action_id, active, spec)
         local icon_widget = QARenderer.buildIcon(entry, spec.icon_sz, item_fg, {
             container_w = spec.tab_w,
             container_h = spec.icon_sz,
-        })
+        }, action_id)
         if icon_widget then vg[#vg + 1] = icon_widget end
     end
 

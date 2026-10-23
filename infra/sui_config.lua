@@ -73,6 +73,7 @@ M.ICON = {
     continue_      = _P .. "continue.svg",       -- trailing _ avoids clash with Lua keyword
     frontlight     = _P .. "frontlight.svg",
     night          = _P .. "night.svg",
+    day            = _P .. "day.svg",
     stats          = _P .. "stats.svg",
     power          = _P .. "power.svg",
     plus_alt       = _P .. "plus_alt.svg",
