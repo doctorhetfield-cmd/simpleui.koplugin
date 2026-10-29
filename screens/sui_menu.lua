@@ -3103,6 +3103,28 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             },
             -- ── Group by Book Series ──────────────────────────────────────────
             makeSeriesGroupingItem(FC),
+            -- ── Search Bar ────────────────────────────────────────────────────
+            {
+                text           = _("Search Bar"),
+                help_text      = _("Shows a search field at the top of the library that filters the books and folders on screen as you type, by title, author, series or file name. Clear it to see the whole list again."),
+                keep_menu_open = true,
+                checked_func   = function()
+                    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+                    return ok_ls and LS and LS.isEnabled()
+                end,
+                callback       = function()
+                    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+                    if not (ok_ls and LS) then return end
+                    local enabling = not LS.isEnabled()
+                    LS.setEnabled(enabling)
+                    if enabling then
+                        pcall(LS.install, plugin)
+                        _refreshFC()
+                    else
+                        pcall(LS.uninstall, plugin)
+                    end
+                end,
+            },
             -- ── Cover Settings ───────────────────────────────────
             {
                 text         = _("Cover Settings"),

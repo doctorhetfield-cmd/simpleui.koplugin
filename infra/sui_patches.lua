@@ -204,6 +204,11 @@ local function _releaseHooks(target, state_key, owner)
     return true
 end
 
+-- Shared with the feature modules that install their own hooks.
+M._acquireHooks = _acquireHooks
+M._addHook      = _addHook
+M._releaseHooks = _releaseHooks
+
 -- Ensure the goal-tap callback is initialised. Called before any HS.show()
 -- that may need it. Idempotent: addToMainMenu is a no-op once
 -- _goalTapCallback has been set.
@@ -5246,6 +5251,10 @@ function M.installAll(plugin)
     -- other code that customises the same widget can run unobstructed.
     local ok_bm, BM = pcall(require, "features/library/sui_library_browse")
     if ok_bm and BM and BM.isEnabled() then pcall(BM.install) end
+    -- Live search bar on top of the library — opt-in, so FileChooser stays
+    -- unpatched by it unless the user turned it on.
+    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+    if ok_ls and LS and LS.isEnabled() then pcall(LS.install, plugin) end
     -- Wallpaper in FM and fullscreen overlay surfaces.
     M.patchWallpaperFM(plugin)
 
@@ -5427,6 +5436,12 @@ function M.teardownAll(plugin)
         pcall(BM.uninstall)
         pcall(BM.reset)
     end
+
+    -- Released last: the series grouping restores switchItemTable by plain
+    -- assignment, which drops any wrapper above it, so releasing after it
+    -- leaves no wrapper behind whichever of the two was installed first.
+    local LS = package.loaded["features/library/sui_live_search"]
+    if LS then pcall(LS.uninstall, plugin) end
 end
 
 -- ---------------------------------------------------------------------------

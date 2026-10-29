@@ -10,6 +10,10 @@ Browse your library by **Author**, **Series** or **Tags**, from a Quick Action, 
 
 A fast search across the whole library by title, author, series or filename, using the plugin's own cache instead of walking the filesystem on every query (unlike KOReader's filename-only File Search).
 
+## Search bar
+
+An optional search field pinned at the top of the library (*Library › Search Bar*, off by default). Typing filters the books and folders on screen as you go, by title, author, series or filename, using the same cache as the library search; a folder stays when it holds a matching book. It works in folders, series groups and the Authors, Series and Tags views. Clearing the field, or opening another folder, brings back the whole list with its sort and filters.
+
 ## Series groups
 
 Consecutive books of a series in a real folder are shown as one folder-like entry, so "Hainish Cycle" appears once instead of as five loose books. Opening it stays inside the same real folder, so scroll position and the back button behave as usual.
