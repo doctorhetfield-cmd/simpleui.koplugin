@@ -2370,7 +2370,7 @@ local function _doShowHS(fm, plugin, screen_id)
                 w._sui_displaced_screen = w._sui_displaced_screen or screen_id or "hs"
                 return
             end
-            if not _isTransientToast(w) then return end
+            if not (w.toast or _isTransientToast(w)) then return end
         end
     end
 
@@ -5446,10 +5446,11 @@ end
 
 -- ---------------------------------------------------------------------------
 -- Dispatcher:execute patch
--- When the homescreen is active, UIManager:sendEvent delivers only to the top
--- widget. Since the HS sits on top, events like ShowColl / ShowCollList are
--- never received by the FM. Fix: temporarily sink the HS to the bottom of the
--- window stack so the FM's plugins receive sendEvent normally, then restore.
+-- When a screen (Homescreen or Custom Screen) is active, UIManager:sendEvent
+-- delivers only to the top widget. Since the screen sits on top, events like
+-- ShowColl / ShowCollList / ProfileExecute are never received by the FM. Fix:
+-- temporarily sink the screen to the bottom of the window stack so the FM's
+-- plugins receive sendEvent normally, then restore.
 -- ---------------------------------------------------------------------------
 
 do
@@ -5460,17 +5461,25 @@ do
 
         Dispatcher.execute = function(self, settings, exec_props)
             local HS = liveHS()
-            if not (HS and HS._instance) then
-                return orig_execute(self, settings, exec_props)
-            end
+            if not HS then return orig_execute(self, settings, exec_props) end
 
-            -- Sink the HS to the bottom of the stack.
+            -- Topmost live screen (built-in Homescreen or Custom Screen).
             local stack   = UIManager._window_stack
-            local hs_inst = HS._instance
-            local hs_idx  = nil
-            for i, entry in ipairs(stack) do
-                if entry.widget == hs_inst then hs_idx = i; break end
+            local hs_inst, hs_idx
+            local live = {}
+            for _, id in ipairs(HS.liveScreenIds()) do
+                local inst = HS.getInstance(id)
+                if inst then live[inst] = true end
             end
+            for i = #stack, 1, -1 do
+                if live[stack[i].widget] then
+                    hs_inst, hs_idx = stack[i].widget, i
+                    break
+                end
+            end
+            if not hs_inst then return orig_execute(self, settings, exec_props) end
+
+            -- Sink the screen to the bottom of the stack.
             if hs_idx and hs_idx > 1 then
                 -- The action may act on the file list.
                 _materializeLazyListing()

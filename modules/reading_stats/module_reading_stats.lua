@@ -435,7 +435,8 @@ local HEAT_DAYS = 12 * 7
 -- Per stat: `display_label` names it in menus; `value` and `label` (or
 -- `label_fn`) are the number and its description. Detailed cards also use
 -- `title` (card heading), `icon` (a SUIStyle.ICON name) and the optional
--- `unit_fn`, a unit drawn small beside the value, and `value_pct`, the size of
+-- `unit_fn`, a unit drawn small beside the value, `detail_value`, a value that
+-- replaces `value` on detailed cards, and `value_pct`, the size of
 -- the value relative to the regular one (for text wider than a number). `detail_title` and
 -- `detail_label` override `title` and `label` on detailed cards, where the
 -- heading already carries part of the description.
@@ -449,6 +450,8 @@ local STAT_MAP = {
     avg_pages   = { title = _("Daily average"), icon = "page", display_label = _("Pages per day, last 7 days"), value = function(s) return tostring(s.avg_pages) end,   label = _("pages/day (7 days)"), detail_title = _("Pages per day"), detail_label = _("last 7 days") },
     month_time  = { title = _("This month"), icon = "clock", display_label = _("Reading time this month"), value = function(s) return fmtTime(s.month_secs) end,   label = _("of reading this month"), detail_label = _("of reading") },
     month_pages = { title = _("This month"), icon = "page", display_label = _("Pages read this month"),value = function(s) return tostring(s.month_pages) end, label = _("pages read this month"), detail_label = _("pages read") },
+    pages_total = { title = _("Pages turned"), icon = "page", display_label = _("Total pages turned"), value = function(s) return tostring(s.total_turns) end, label = _("total pages turned"),
+                    detail_value = function(s) return "+" .. s.today_turns end, unit_fn = function() return _("today") end },
     total_time  = { title = _("All time"), icon = "clock", display_label = _("Total reading time"),   value = function(s) return fmtTime(s.total_secs) end,   label = _("of reading, all time"), detail_label = _("of reading") },
     total_books = { title = _("All time"), icon = "book", display_label = _("Books finished"),  value = function(s) return tostring(s.total_books) end, label = _("books finished") },
     streak      = { title = _("Streak"), icon = "streak", display_label = _("Reading streak"),            value = function(s) return s.streak > 0 and tostring(s.streak) or "—" end,
@@ -626,6 +629,7 @@ local STAT_CHANGED_CAT = {
     month_time  = "timeseries",
     month_pages = "timeseries",
     total_time  = "timeseries",
+    pages_total = "timeseries",
     year_time   = "timeseries",
     streak      = "streak",
     status_unread    = "status",
@@ -722,6 +726,8 @@ local function _collectStats(ctx)
         month_secs  = sp.month_secs  or 0,
         month_pages = sp.month_pages or 0,
         total_secs  = sp.total_secs  or 0,
+        total_turns = sp.total_turns or 0,
+        today_turns = sp.today_turns or 0,
         year_secs   = sp.year_secs   or 0,
         total_books = sp.books_total or 0,
         streak      = sp.streak      or 0,
@@ -894,9 +900,22 @@ local function _buildDayParts(stats, d, max_w, free_h, clr_blk, clr_sub)
     }
 end
 
+-- Drums showing the page turns of all time (at least six digits), the last one
+-- turning when pages were turned today. The drums take `clr_fill`, the digits the
+-- colour that reads on it.
+local function _buildOdometer(stats, d, max_w, free_h, clr_fill, on_accent)
+    local COLOR = SUIStyle.COLOR
+    local digit_color = on_accent and SUIStyle.accentFg()
+        or (SUIStyle.isSurface(clr_fill) and COLOR.text_primary or COLOR.surface)
+    return Charts.odometer{
+        digits = string.format("%06d", stats.total_turns), rolling = stats.today_turns > 0,
+        w = max_w, avail_h = free_h, max_w = d.bar_max, color = clr_fill, digit_color = digit_color,
+    }
+end
+
 -- Chart drawn under the value of a detailed card (the stat's `chart` kind), or
 -- nil when the stat has none or it does not fit in `free_h` x `max_w`.
-local function _buildCardExtra(stat_id, stats, d, max_w, free_h, clr_blk, clr_sub)
+local function _buildCardExtra(stat_id, stats, d, max_w, free_h, clr_blk, clr_sub, on_accent)
     local kind = STAT_MAP[stat_id].chart
     if kind == "month" then
         return _buildMonthBars(stats, d, max_w, free_h, clr_blk)
@@ -906,6 +925,8 @@ local function _buildCardExtra(stat_id, stats, d, max_w, free_h, clr_blk, clr_su
         return _buildWeekCompare(stats, d, max_w, free_h, clr_blk)
     elseif kind == "dayparts" then
         return _buildDayParts(stats, d, max_w, free_h, clr_blk, clr_sub)
+    elseif kind == "odometer" then
+        return _buildOdometer(stats, d, max_w, free_h, clr_blk, on_accent)
     elseif kind == "streak_dots" then
         return _buildStreakDots(stats.streak_week, d, max_w, free_h, clr_blk)
     elseif kind == "week" then
@@ -988,7 +1009,7 @@ local function _buildDetailedInner(stat_id, stats, d, clr_blk, clr_sub, card_w, 
     local unit_w = unit and UI.makeColoredText{
         text = unit, face = d.face_lbl, bold = d.bold_lbl, fgcolor = clr_sub,
     }
-    local val_w = _makeValueWidget(stat_id, entry.value(stats), stats, d, clr_blk, clr_icon,
+    local val_w = _makeValueWidget(stat_id, (entry.detail_value or entry.value)(stats), stats, d, clr_blk, clr_icon,
         math.max(1, inner_w - (unit_w and unit_w:getSize().w + d.dots_gap or 0)))
     -- The unit shares the value's baseline: its box is raised by the difference
     -- between the descents of the two sizes.
@@ -1007,7 +1028,7 @@ local function _buildDetailedInner(stat_id, stats, d, clr_blk, clr_sub, card_w, 
     -- height: the chart sits at the bottom, the description right under the value.
     local body_h = math.max(0, card_h - 2 * d.pad - header:getSize().h - value_row:getSize().h
         - d.dots_gap - d.body_gap)
-    local body_content = _buildCardExtra(stat_id, stats, d, inner_w, body_h, clr_head, clr_sub)
+    local body_content = _buildCardExtra(stat_id, stats, d, inner_w, body_h, clr_head, clr_sub, clr_accent and true or false)
         or UI.makeColoredText{
             text = entry.detail_label or (entry.label_fn and entry.label_fn(stats) or entry.label),
             face = d.face_lbl, bold = d.bold_lbl, fgcolor = clr_sub,

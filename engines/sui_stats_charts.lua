@@ -19,11 +19,15 @@
 --   local share = Charts.share{ values = {...}, w = avail_w, avail_h = h, bar_h = max_h, color = c }
 --   local h = Charts.shareHeight(bar_h, label_h)   -- height of a share bar with labels
 --
+--   local drums = Charts.odometer{ digits = "001234", rolling = true, w = avail_w,
+--                                  avail_h = h, max_w = bar_max, color = c, digit_color = d }
+--
 -- Dot states: "read" (filled), "frozen" (ring) and anything else (faint).
 -- Heatmap levels: 0 (no reading) to 4, or false for a cell that does not exist.
 
 local AAPaint         = require("infra/sui_aa_paint")
 local Geom            = require("ui/geometry")
+local SUIStyle        = require("features/sui_style")
 local UI              = require("infra/sui_core")
 local WidgetContainer = require("ui/widget/container/widgetcontainer")
 
@@ -49,6 +53,14 @@ local MIN_CELL        = 4     -- px; smaller heatmap cells are not legible
 local CELL_GAP_RATIO  = 0.25  -- gap between heatmap cells, relative to the cell size
 local CELL_RADIUS_PCT = 0.25  -- corner radius of a heatmap cell, relative to its size
 local LEVEL_ALPHA     = { [0] = 55, 105, 150, 205, 255 }  -- 0-255 ink per heatmap level
+
+local MIN_DRUM_W     = 8     -- px; narrower drums are not legible
+local DRUM_RATIO     = 1.4   -- drum height, relative to its width
+local DRUM_GAP_RATIO = 0.12  -- gap between drums, relative to the drum width
+local DRUM_RADIUS_PCT = 0.22 -- corner radius of a drum, relative to its width
+local DRUM_DIGIT_PCT = 0.62  -- digit size, relative to the drum height
+local DRUM_PITCH_PCT = 0.8   -- distance between two digits on a turning drum, relative to its height
+local DRUM_ROLL_PCT  = 0.3   -- how far the turning drum has moved to its next digit, relative to the pitch
 
 local MIN_SEGMENT_W = 3     -- px; narrowest share segment drawn for a non-zero value
 local SEGMENT_GAP   = 2     -- space between share segments (px)
@@ -392,6 +404,90 @@ function Charts.share(opts)
 
     function widget:free()
         freeLabels(labels)
+    end
+
+    return widget
+end
+
+-- Odometer: a row of drums, each holding one digit of `opts.digits`. The drums
+-- are filled with `opts.color` and their digits drawn in `opts.digit_color`; the
+-- last one is only outlined, and with `opts.rolling` it is caught between its
+-- digit and the next one. Drums are as wide as `opts.w` allows, up to
+-- `opts.max_w`, and keep their proportions within `opts.avail_h`.
+-- opts: digits (string), rolling (optional), w, avail_h, max_w (px), color,
+--       digit_color (the colour that reads on `color`).
+-- Returns nil when `opts.w` or `opts.avail_h` cannot hold legible drums.
+function Charts.odometer(opts)
+    local digits, count = opts.digits, #opts.digits
+    local drum_w = math.min(opts.max_w, math.floor(opts.w / (count + (count - 1) * DRUM_GAP_RATIO)))
+    local drum_h = math.min(opts.avail_h, math.floor(drum_w * DRUM_RATIO))
+    drum_w = math.min(drum_w, math.floor(drum_h / DRUM_RATIO))
+    if drum_w < MIN_DRUM_W then return nil end
+    local gap = math.max(1, math.floor(drum_w * DRUM_GAP_RATIO))
+    local border = math.max(1, math.floor(drum_w / 12))
+    local face = SUIStyle.pxFace(SUIStyle.FACE_BOLD, drum_h * DRUM_DIGIT_PCT)
+    local pitch = math.floor(drum_h * DRUM_PITCH_PCT)
+    local roll = opts.rolling and math.floor(pitch * DRUM_ROLL_PCT) or 0
+
+    local color, digit_color = opts.color, opts.digit_color
+    local radius = math.floor(drum_w * DRUM_RADIUS_PCT)
+    local widget = WidgetContainer:new{}
+    widget.dimen = Geom:new{ w = count * drum_w + (count - 1) * gap, h = drum_h }
+    -- Digit text widgets, built when first drawn: light ones for the filled
+    -- drums, outline ones for the last drum.
+    local filled_texts, outline_texts = {}, {}
+
+    function widget:getSize()
+        return self.dimen
+    end
+
+    local function digitText(cache, digit, ink)
+        local text = cache[digit]
+        if not text then
+            text = UI.makeColoredText{ text = tostring(digit), face = face, fgcolor = ink, padding = 0 }
+            cache[digit] = text
+        end
+        return text
+    end
+
+    -- Paints `digit` centred in the drum at `view`, `shift` px below centre.
+    local function paintDigit(view, text, shift)
+        local size = text:getSize()
+        text:paintTo(view, math.floor((view:getWidth() - size.w) / 2),
+            math.floor((view:getHeight() - size.h) / 2) + shift)
+    end
+
+    function widget:paintTo(bb, x, y)
+        self.dimen.x, self.dimen.y = x, y
+        for i = 1, count do
+            local dx = x + (i - 1) * (drum_w + gap)
+            local last = i == count
+            if last then
+                if not AAPaint.strokeRoundedRect(bb, dx, y, drum_w, drum_h, radius, border, color) then
+                    bb:paintBorder(dx, y, drum_w, drum_h, border, color)
+                end
+            elseif not AAPaint.fillRoundedRect(bb, dx, y, drum_w, drum_h, radius, color, FULL_ALPHA) then
+                AAPaint.fillRect(bb, dx, y, drum_w, drum_h, color, FULL_ALPHA)
+            end
+            -- The digit is clipped to the drum by painting it into a view of its inside.
+            local view = bb:viewport(dx + border, y + border, drum_w - 2 * border, drum_h - 2 * border)
+            local digit = tonumber(digits:sub(i, i))
+            if last then
+                paintDigit(view, digitText(outline_texts, digit, color), -roll)
+                if roll > 0 then
+                    paintDigit(view, digitText(outline_texts, (digit + 1) % 10, color), pitch - roll)
+                end
+            else
+                paintDigit(view, digitText(filled_texts, digit, digit_color), 0)
+            end
+        end
+    end
+
+    function widget:free()
+        for _, cache in ipairs{ filled_texts, outline_texts } do
+            for _, text in pairs(cache) do text:free() end
+        end
+        filled_texts, outline_texts = {}, {}
     end
 
     return widget

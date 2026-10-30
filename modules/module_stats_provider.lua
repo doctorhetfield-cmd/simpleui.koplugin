@@ -12,7 +12,8 @@
 -- DB roundtrips per cold-cache call: 3
 --   Query 1a — per-day buckets over the last ~month: today/week/rolling-7-day/
 --     month, seconds and pages.
---   Query 1b — duration sums for the year and all-time windows.
+--   Query 1b — duration sums for the year and all-time windows, and the page
+--     turns of all time and of today.
 --   Query 2  — streak (recent distinct active dates + freeze-aware walk); the
 --     same dates give the last-7-days dots, so they cost no extra query.
 -- Reading sessions (see SP.getSessionRecords), the chart data (see
@@ -95,6 +96,8 @@ local function _persistStaleStats(state)
         month_pages   = state.month_pages,
         year_secs     = state.year_secs,
         total_secs    = state.total_secs,
+        total_turns   = state.total_turns,
+        today_turns   = state.today_turns,
         streak        = state.streak,
         streak_week   = state.streak_week,
         longest_streak = state.longest_streak,
@@ -149,7 +152,7 @@ end
 --     true trailing window, independent of week_date, to match the Reading
 --     Stats window's own rolling average.
 -- ---------------------------------------------------------------------------
-local function fetchTimeSeries(conn, window_since, year_start,
+local function fetchTimeSeries(conn, window_since, year_start, today_start,
                                today_str, week_date, month_date, rolling7_date)
     local r = {
         today_secs     = 0,
@@ -164,6 +167,8 @@ local function fetchTimeSeries(conn, window_since, year_start,
         month_pages    = 0,
         year_secs      = 0,
         total_secs     = 0,
+        total_turns    = 0,
+        today_turns    = 0,
     }
 
     local ok, err = pcall(function()
@@ -209,13 +214,17 @@ local function fetchTimeSeries(conn, window_since, year_start,
         local rl = conn:exec(string.format([[
             SELECT
                 COALESCE(sum(CASE WHEN start_time >= %d THEN duration ELSE 0 END), 0),
-                COALESCE(sum(duration), 0)
+                COALESCE(sum(duration), 0),
+                count(*),
+                COALESCE(sum(CASE WHEN start_time >= %d THEN 1 ELSE 0 END), 0)
             FROM page_stat_data
             WHERE duration > 0;
-        ]], year_start))
+        ]], year_start, today_start))
         if rl and rl[1] and rl[1][1] then
             r.year_secs  = rownum(rl[1][1])
             r.total_secs = rownum(rl[2] and rl[2][1])
+            r.total_turns = rownum(rl[3] and rl[3][1])
+            r.today_turns = rownum(rl[4] and rl[4][1])
         end
         Perf.mark("stats: year/total query done")
     end)
@@ -1240,6 +1249,8 @@ function SP.get(db_conn, year_str, needs_books)
             month_pages   = _cache.month_pages,
             year_secs     = _cache.year_secs,
             total_secs    = _cache.total_secs,
+            total_turns   = _cache.total_turns,
+            today_turns   = _cache.today_turns,
             streak        = _cache.streak,
             streak_week   = _cache.streak_week,
             longest_streak = _cache.longest_streak,
@@ -1298,6 +1309,8 @@ function SP.get(db_conn, year_str, needs_books)
         month_pages   = 0,
         year_secs     = 0,
         total_secs    = 0,
+        total_turns   = 0,
+        today_turns   = 0,
         streak        = 0,
         books_year    = 0,
         books_total   = 0,
@@ -1311,7 +1324,7 @@ function SP.get(db_conn, year_str, needs_books)
     local db_stamp = Config.getStatsDbStamp()
     local queries_ok = false
     if db_conn then
-        local ts, ts_err = fetchTimeSeries(db_conn, window_since, year_start,
+        local ts, ts_err = fetchTimeSeries(db_conn, window_since, year_start, start_today,
                                            today_str, week_date, month_date, rolling7_date)
         queries_ok = not ts_err
         result.today_secs  = ts.today_secs
@@ -1324,6 +1337,8 @@ function SP.get(db_conn, year_str, needs_books)
         result.month_pages = ts.month_pages
         result.year_secs   = ts.year_secs
         result.total_secs  = ts.total_secs
+        result.total_turns = ts.total_turns
+        result.today_turns = ts.today_turns
         if ts_err and Config.isFatalDbError(ts_err) then
             result.db_conn_fatal = true
         end
