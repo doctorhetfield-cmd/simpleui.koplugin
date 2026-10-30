@@ -3125,6 +3125,24 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     end
                 end,
             },
+            -- ── Typo-tolerant search ──────────────────────────────────────────
+            {
+                text           = _("Typo-tolerant search"),
+                help_text      = _("The search bar also finds close matches: accents and punctuation are ignored (bronte finds Brontë) and small typos are forgiven (harry poter finds Harry Potter). Exact matches stay at the top."),
+                keep_menu_open = true,
+                enabled_func   = function()
+                    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+                    return ok_ls and LS and LS.isEnabled()
+                end,
+                checked_func   = function()
+                    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+                    return ok_ls and LS and LS.isFuzzy()
+                end,
+                callback       = function()
+                    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+                    if ok_ls and LS then LS.setFuzzy(not LS.isFuzzy()) end
+                end,
+            },
             -- ── Cover Settings ───────────────────────────────────
             {
                 text         = _("Cover Settings"),
