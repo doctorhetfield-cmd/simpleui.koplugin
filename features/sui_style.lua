@@ -1421,6 +1421,14 @@ function M.secondary(fallback)
     return Accent.secondaryColor() or fallback or M.COLOR.surface_flat
 end
 
+-- `color` mixed into the surface colour: `strength` 0..1 is the share of `color`
+-- kept, so 1 is `color` itself and 0 the surface.
+function M.shade(color, strength)
+    local c, surface = color:getColorRGB32(), M.COLOR.surface:getColorRGB32()
+    local function mix(cv, sv) return math.floor(sv + (cv - sv) * strength + 0.5) end
+    return Blitbuffer.ColorRGB32(mix(c.r, surface.r), mix(c.g, surface.g), mix(c.b, surface.b), 0xFF)
+end
+
 -- True when `color` is the plain surface colour. Safe on nil and non-colours:
 -- any `==`/`~=` involving a colour calls its `__eq`, which raises on nil, so
 -- the type is tested first.

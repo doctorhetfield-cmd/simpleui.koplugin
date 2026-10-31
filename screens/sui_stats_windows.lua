@@ -1289,6 +1289,7 @@ end
 -- Insights and Streak windows read their daily history from, taken once per
 -- window session.
 local _ri_cache   = {}
+local _ri_activity = {}   -- year -> books and pages per month (SP.getYearActivity), false when unreadable
 local _ri_streaks = nil
 local _ledger     = nil
 
@@ -1754,8 +1755,27 @@ end
 
 local function _riClearCache()
     _ri_cache   = {}
+    _ri_activity = {}
     _ri_streaks = nil
     _ledger     = nil
+end
+
+-- Books finished and pages read per month of `year`, nil when the statistics
+-- cannot be read.
+local function _riGetActivity(year)
+    if _ri_activity[year] == nil then
+        _ri_activity[year] = _withStatsDb(nil, function(conn)
+            return require("modules/module_stats_provider").getYearActivity(conn, year)
+        end) or false
+    end
+    return _ri_activity[year] or nil
+end
+
+-- Years the books and pages picker offers: those of the recorded reading and
+-- those books were finished in.
+local function _riGetActivityYears(year_range)
+    local first, last = require("modules/module_stats_provider").getFinishedYears()
+    return math.min(year_range.min_year, first), math.max(year_range.max_year, last)
 end
 
 local function _riGetOrFetchYear(year)
@@ -1793,6 +1813,9 @@ function StatsWindows.showReadingInsightsWindow(opts)
     local year_range = _riGetYearRange()
     -- Start at the most recent year with data.
     local selected_year = year_range.max_year
+    -- The year of the books and pages chart, picked apart from the one above.
+    local activity_year = selected_year
+    local activity_min, activity_max = _riGetActivityYears(year_range)
 
     -- Pre-load the initial year's data before opening so there is no blank
     -- flash on first render.
@@ -1939,6 +1962,25 @@ function StatsWindows.showReadingInsightsWindow(opts)
         end
         -- The dropdown picks the year of the tiles and the chart: they stay on one page.
         category(_("By year"), { Frames.stack{ SZ = SZ, children = year } })
+
+        -- Its own year dropdown, kept on a page with the card.
+        local activity = InsightsCharts.yearActivity{
+            inner_w = content_w, avail_h = avail_h, SZ = SZ, activity = _riGetActivity(activity_year),
+        }
+        category(_("Books and pages"), { Frames.stack{ SZ = SZ, children = {
+            SUIWindow.PeriodDropdown{
+                inner_w   = card_w,
+                options   = _yearOptions(activity_min, activity_max),
+                selected  = activity_year,
+                on_select = function(year)
+                    activity_year = year
+                    ctx.repaint()
+                end,
+            },
+            Frames.card{
+                w = card_w, SZ = SZ, title = activity.title, icon = activity.icon, content = activity.content,
+            },
+        } } })
 
         return Frames.flow{ inner_w = inner_w, SZ = SZ, max_h = avail_h, categories = categories }
     end

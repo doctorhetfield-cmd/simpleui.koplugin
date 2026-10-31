@@ -33,6 +33,13 @@ DateNames.monthShort = lazyList(function()
     }
 end)
 
+-- First letter of each short month name.
+DateNames.monthInitials = lazyList(function()
+    local initials = {}
+    for i, name in ipairs(DateNames.monthShort()) do initials[i] = require("util").splitToChars(name)[1] end
+    return initials
+end)
+
 DateNames.monthFull = lazyList(function()
     return {
         _("January"), _("February"), _("March"),     _("April"),

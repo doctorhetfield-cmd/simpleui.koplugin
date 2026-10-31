@@ -1203,6 +1203,89 @@ function SP.getYearData(db_conn)
     return _year or nil
 end
 
+-- ---------------------------------------------------------------------------
+-- Year activity — books finished and pages read per month of a year. Computed
+-- on demand, only when the Reading Insights window is open. Cached per year and
+-- per day; dropped by SP.invalidate() / SP.invalidateTimeSeries() /
+-- SP.invalidateBooks().
+-- ---------------------------------------------------------------------------
+local _activity     = {}    -- year -> the activity table, or false when the query failed
+local _activity_day = nil   -- "YYYY-MM-DD" when _activity was built
+
+-- Pages read per month of a year, with the month the next fetch queries from.
+-- The months before the current one never change, so a partial invalidation
+-- queries only the rest; SP.invalidate() drops them all.
+local _pages_cache = {}   -- year -> { pages = count[1..12], from = first month to query again (13: none) }
+
+-- Pages read per month of `year` (January first), or nil when the query failed.
+local function fetchYearPages(conn, year)
+    local kept = _pages_cache[year]
+    local from = kept and kept.from or 1
+    local pages = {}
+    for m = 1, 12 do pages[m] = kept and m < from and kept.pages[m] or 0 end
+
+    local ok, err = true, nil
+    if from <= 12 then ok, err = pcall(function()
+        -- Pages are counted as in fetchTimeSeries: distinct pages per day, summed.
+        local rw = conn:exec(string.format([[
+            WITH day_buckets AS (
+                SELECT strftime('%%Y-%%m-%%d', start_time, 'unixepoch', 'localtime') AS d,
+                       count(DISTINCT page || '@' || id_book)                       AS pg
+                FROM page_stat_data
+                WHERE start_time >= %d AND start_time < %d AND duration > 0
+                GROUP BY d
+            )
+            SELECT substr(d, 6, 2), sum(pg) FROM day_buckets GROUP BY 1;
+        ]], os.time{ year = year, month = from, day = 1, hour = 0 }, os.time{ year = year + 1, month = 1, day = 1, hour = 0 }))
+        for i = 1, rw and rw[1] and #rw[1] or 0 do
+            local m = tonumber(rw[1][i])
+            if pages[m] then pages[m] = rownum(rw[2][i]) end
+        end
+    end) end
+    if not ok then
+        logger.warn("simpleui: stats_provider: fetchYearPages failed: " .. tostring(err))
+        return nil
+    end
+    _pages_cache[year] = { pages = pages, from = year == tonumber(os.date("%Y")) and tonumber(os.date("%m")) or 13 }
+    return pages
+end
+
+local function fetchYearActivity(conn, year)
+    local pages = fetchYearPages(conn, year)
+    if not pages then return false end
+    local books = {}
+    for m = 1, 12 do books[m] = 0 end
+
+    local total_books, total_pages = 0, 0
+    for _, book in ipairs(SP.getFinishedBooks(year)) do
+        local _, m = SP.parseStamp(book.date_finished)
+        if m and not book.exclude_from_goals then books[m] = books[m] + (book.count or 1) end
+    end
+    for m = 1, 12 do
+        total_books, total_pages = total_books + books[m], total_pages + pages[m]
+    end
+    local current = os.date("*t")
+    return { books = books, pages = pages, month = year == current.year and current.month or 12,
+             total_books = total_books, total_pages = total_pages }
+end
+
+--- Year activity of `year` (default: the current one): { books = count[1..12],
+--- pages = count[1..12] (January first), month = last month with data to draw
+--- (1-12; 12 for a past year), total_books, total_pages }. Returns nil without a
+--- DB connection or when the query failed. The same table is returned until the
+--- cache is invalidated.
+function SP.getYearActivity(db_conn, year)
+    if not db_conn then return nil end
+    local today = os.date("%Y-%m-%d")
+    if _activity_day ~= today then
+        _activity     = {}
+        _activity_day = today
+    end
+    year = year or tonumber(os.date("%Y"))
+    if _activity[year] == nil then _activity[year] = fetchYearActivity(db_conn, year) end
+    return _activity[year] or nil
+end
+
 -- Partial-invalidation flag, declared here so SP.get(), SP.invalidate() and
 -- SP.invalidateTimeSeries() all close over the same local.
 --   _streak_cache_valid: set when the streak is known-unchanged; consumed and
@@ -1417,6 +1500,8 @@ function SP.invalidate(keep_status_counts)
     _cache_day          = nil
     _records_day        = nil
     _year_day           = nil
+    _activity_day       = nil
+    _pages_cache        = {}
     dropChartData()
     dropChartHistory()
     _streak_cache_valid = false
@@ -1434,8 +1519,9 @@ end
 -- day, so any later close that day is a safe no-op to skip.
 -- ---------------------------------------------------------------------------
 function SP.invalidateTimeSeries()
-    _records_day = nil
-    _year_day    = nil
+    _records_day  = nil
+    _year_day     = nil
+    _activity_day = nil
     dropChartData()
     if not _cache then return end
     _streak_cache_valid = _cache_day == os.date("%Y-%m-%d") and _cache.today_secs > 0
@@ -1473,7 +1559,8 @@ end
 -- the ledger changed or the way gone books are counted did.
 -- ---------------------------------------------------------------------------
 function SP.invalidateBooks()
-    _books_dirty = true
+    _books_dirty  = true
+    _activity_day = nil
 end
 
 -- ---------------------------------------------------------------------------

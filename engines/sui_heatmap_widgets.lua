@@ -56,13 +56,6 @@ function HW.classify(seconds, max_seconds)
     return 4
 end
 
--- The accent colour mixed into the surface colour, `strength` 0..1.
-local function accentShade(accent, strength)
-    local a, s = accent:getColorRGB32(), SUIStyle.COLOR.surface:getColorRGB32()
-    local function mix(av, sv) return math.floor(sv + (av - sv) * strength + 0.5) end
-    return Blitbuffer.ColorRGB32(mix(a.r, s.r), mix(a.g, s.g), mix(a.b, s.b), 0xFF)
-end
-
 -- Level 0 (no reading at all) is always pure white, regardless of the
 -- gray scale used for levels 1-4 — an empty cell should read as blank,
 -- not as a shade of activity. Levels 1-4 are shades of the accent colour when
@@ -77,7 +70,7 @@ function HW.levelColor(level)
     local color = _level_colors[level]
     if not color then
         local strength = _LEVEL_GRAY[level + 1] or _LEVEL_GRAY[1]
-        color = accent and accentShade(accent, strength) or Blitbuffer.gray(strength)
+        color = accent and SUIStyle.shade(accent, strength) or Blitbuffer.gray(strength)
         _level_colors[level] = color
     end
     return color

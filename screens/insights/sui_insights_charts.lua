@@ -4,7 +4,8 @@
 -- reading days and, as separate sections, the hour of the day, the day of the
 -- week and the part of the day of the reading.
 -- Built from the chart data of the stats provider (SP.getChartData) with the
--- shared bar, heatmap and share-bar charts.
+-- shared bar, heatmap and share-bar charts. A year's books and pages by month
+-- (SP.getYearActivity) have their own card, built by InsightsCharts.yearActivity.
 --
 -- Usage:
 --   local sections = InsightsCharts.sections{
@@ -13,8 +14,11 @@
 --   }
 --   -- sections.week / .month / .activity / .hours / .weekdays / .dayparts:
 --   -- { title =, icon =, content = } or nil; `inner_w` is the width of a card's content
+--   local card = InsightsCharts.yearActivity{ inner_w = w, avail_h = h, SZ = ctx.SZ,
+--       activity = SP.getYearActivity(conn, 2025) }  -- always a card
 
 local CenterContainer = require("ui/widget/container/centercontainer")
+local AAPaint         = require("infra/sui_aa_paint")
 local Charts          = require("engines/sui_stats_charts")
 local DateNames       = require("infra/sui_datenames")
 local Device          = require("device")
@@ -22,10 +26,12 @@ local Font            = require("ui/font")
 local Geom            = require("ui/geometry")
 local HD              = require("engines/sui_heatmap_data")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
+local HorizontalSpan  = require("ui/widget/horizontalspan")
 local SUIStyle        = require("features/sui_style")
 local UI              = require("infra/sui_core")
 local VerticalGroup   = require("ui/widget/verticalgroup")
 local VerticalSpan    = require("ui/widget/verticalspan")
+local WidgetContainer = require("ui/widget/container/widgetcontainer")
 local Screen          = Device.screen
 local _               = require("infra/sui_i18n").translate
 local N_              = require("infra/sui_i18n").ngettext
@@ -34,6 +40,7 @@ local InsightsCharts = {}
 
 local BAR_H_PCT   = 0.16  -- height of a bar chart, relative to the content height
 local HEAT_H_PCT  = 0.32  -- height of the calendar, relative to the content height
+local LINES_H_PCT = 0.2   -- height of the books and pages lines, relative to the content height
 
 -- Short weekday names, Monday first.
 local function weekdayLabels()
@@ -191,6 +198,74 @@ function InsightsCharts.sections(opts)
     end
 
     return result
+end
+
+-- Card of the books finished and the pages read month by month of a year: a
+-- legend with the year's totals over the two lines. A year without reading, or
+-- statistics that cannot be read (`opts.activity` nil), show a message, so the
+-- card is always returned. `opts.activity` is SP.getYearActivity's table.
+function InsightsCharts.yearActivity(opts)
+    local activity, inner_w, avail_h, SZ = opts.activity, opts.inner_w, opts.avail_h, opts.SZ
+
+    local color      = SUIStyle.COLOR.text_primary
+    local books_clr  = SUIStyle.accent(color)
+    local pages_clr  = Charts.fade(books_clr)
+    local face_lbl   = Font:getFace(SUIStyle.FACE_REGULAR, SZ(SUIStyle.FS_CAPTION - 2))
+    local face_cap   = Font:getFace(SUIStyle.FACE_REGULAR, SZ(SUIStyle.FS_DETAIL))
+    local lbl_h      = face_lbl.size + SZ(Screen:scaleBySize(2))
+    local line_h     = math.max(SZ(Screen:scaleBySize(60)),
+                           math.min(SZ(Screen:scaleBySize(110)), math.floor(avail_h * LINES_H_PCT)))
+    local function space(px)
+        return VerticalSpan:new{ width = SZ(Screen:scaleBySize(px)) }
+    end
+
+    local content = VerticalGroup:new{ align = "left" }
+    if not (activity and (activity.total_books > 0 or activity.total_pages > 0)) then
+        content[#content + 1] = UI.makeColoredText{
+            text = activity and _("No reading in this year") or _("The statistics could not be read"), face = face_cap, fgcolor = UI.CLR_TEXT_SUB,
+            max_width = inner_w, truncate_with_ellipsis = true,
+        }
+        return { title = _("By month"), icon = "chart", content = content }
+    end
+
+    -- A rounded stroke of `color`, drawn on the buffer so the colour is kept.
+    local function stroke(w, h, clr)
+        local widget = WidgetContainer:new{ dimen = Geom:new{ w = w, h = h } }
+        function widget:getSize() return self.dimen end
+        function widget:paintTo(bb, x, y)
+            self.dimen.x, self.dimen.y = x, y
+            AAPaint.fillPill(bb, x, y, w, h, clr, 255)
+        end
+        return widget
+    end
+
+    -- The legend: a short stroke in each line's colour beside its total.
+    local stroke_w, stroke_h = SZ(Screen:scaleBySize(18)), SZ(Screen:scaleBySize(3))
+    local function legendItem(clr, text)
+        local label = UI.makeColoredText{ text = text, face = face_cap, fgcolor = clr, bold = true, max_width = inner_w }
+        return HorizontalGroup:new{ align = "center",
+            stroke(stroke_w, stroke_h, clr),
+            HorizontalSpan:new{ width = SZ(Screen:scaleBySize(6)) },
+            label,
+        }
+    end
+    content[#content + 1] = HorizontalGroup:new{ align = "center",
+        legendItem(books_clr, string.format(N_("%d book", "%d books", activity.total_books), activity.total_books)),
+        HorizontalSpan:new{ width = SZ(Screen:scaleBySize(16)) },
+        legendItem(pages_clr, string.format(N_("%d page", "%d pages", activity.total_pages), activity.total_pages)),
+    }
+
+    local chart = Charts.lines{
+        series = { { values = activity.pages, color = pages_clr }, { values = activity.books, color = books_clr } },
+        n = 12, count = activity.month, w = inner_w, avail_h = line_h + lbl_h,
+        line_w = SZ(Screen:scaleBySize(2)), dot_r = SZ(Screen:scaleBySize(3)),
+        labels = DateNames.monthInitials(), label_face = face_lbl, label_color = color,
+    }
+    if chart then
+        content[#content + 1] = space(8)
+        content[#content + 1] = chart
+    end
+    return { title = _("By month"), icon = "chart", content = content }
 end
 
 return InsightsCharts

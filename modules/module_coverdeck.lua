@@ -537,8 +537,21 @@ local function tiltEntry(slot, key, source, revision, render)
         return nil
     end
 
+    -- The inverted blit of night mode only accepts buffers of the screen's type.
+    local screen_type = Screen.bb and Screen.bb:getType()
+    if screen_type and warped.bb:getType() ~= screen_type then
+        local ok_nt, native = pcall(Blitbuffer.new, w, h, screen_type)
+        if not (ok_nt and native) then
+            pcall(warped.bb.free, warped.bb)
+            return nil
+        end
+        native:blitFrom(warped.bb, 0, 0, 0, 0, w, h)
+        pcall(warped.bb.free, warped.bb)
+        warped.bb = native
+    end
+
     warped.revision = revision
-    _tilt_cache:put(key, warped, Memory.bbBytes(warped))
+    _tilt_cache:put(key, warped, Memory.bbBytes(warped.bb))
     return warped
 end
 

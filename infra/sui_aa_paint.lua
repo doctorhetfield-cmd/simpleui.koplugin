@@ -53,6 +53,15 @@ function M.buildMask(w, h, paint)
     return mask
 end
 
+-- Coverage in [0,1+] of pixel (px,py) by the capsule of half-width `half`
+-- along (ax,ay)-(ax+dx,ay+dy); len2 = dx^2 + dy^2.
+local function _capsuleCoverage(px, py, ax, ay, dx, dy, len2, half)
+    local t = len2 > 0 and ((px - ax) * dx + (py - ay) * dy) / len2 or 0
+    if t < 0 then t = 0 elseif t > 1 then t = 1 end
+    local ddx, ddy = px - (ax + t * dx), py - (ay + t * dy)
+    return half + 0.5 - math.sqrt(ddx * ddx + ddy * ddy)
+end
+
 -- Paints an anti-aliased capsule (a straight stroke of full width `width`,
 -- rounded at both ends) from (ax,ay) to (bx,by) onto `bb`. For every
 -- candidate pixel, projects it onto the segment to find the nearest point
@@ -70,12 +79,34 @@ function M.paintCapsule(bb, ax, ay, bx, by, width, x0, y0, x1, y1)
     local maxy = math.floor(math.max(ay, by) + half + 1)
     for py = miny, maxy do
         for px = minx, maxx do
-            local t = len2 > 0 and ((px - ax) * dx + (py - ay) * dy) / len2 or 0
-            if t < 0 then t = 0 elseif t > 1 then t = 1 end
-            local qx, qy = ax + t * dx, ay + t * dy
-            local ddx, ddy = px - qx, py - qy
-            local dist = math.sqrt(ddx * ddx + ddy * ddy)
-            M.blendPixel(bb, px, py, half + 0.5 - dist, x0, y0, x1, y1)
+            M.blendPixel(bb, px, py, _capsuleCoverage(px, py, ax, ay, dx, dy, len2, half), x0, y0, x1, y1)
+        end
+    end
+end
+
+-- Paints a capsule like paintCapsule, in `color`, onto a screen buffer: each
+-- pixel is blended over what is already there. The stroke is clipped to
+-- [x0,x1] x [y0,y1] and to the buffer.
+function M.strokeCapsule(bb, ax, ay, bx, by, width, color, x0, y0, x1, y1)
+    local half = width / 2
+    local dx, dy = bx - ax, by - ay
+    local len2 = dx * dx + dy * dy
+    local ink = color:getColorRGB32()
+    local minx = math.max(x0, 0, math.floor(math.min(ax, bx) - half - 1))
+    local maxx = math.min(x1, bb:getWidth() - 1, math.floor(math.max(ax, bx) + half + 1))
+    local miny = math.max(y0, 0, math.floor(math.min(ay, by) - half - 1))
+    local maxy = math.min(y1, bb:getHeight() - 1, math.floor(math.max(ay, by) + half + 1))
+    for py = miny, maxy do
+        for px = minx, maxx do
+            local cov = _capsuleCoverage(px, py, ax, ay, dx, dy, len2, half)
+            if cov > 0 then
+                if cov > 1 then cov = 1 end
+                local old = bb:getPixel(px, py):getColorRGB32()
+                bb:setPixel(px, py, Blitbuffer.ColorRGB32(
+                    math.floor(old.r + (ink.r - old.r) * cov + 0.5),
+                    math.floor(old.g + (ink.g - old.g) * cov + 0.5),
+                    math.floor(old.b + (ink.b - old.b) * cov + 0.5), 0xFF))
+            end
         end
     end
 end
