@@ -3103,6 +3103,46 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             },
             -- ── Group by Book Series ──────────────────────────────────────────
             makeSeriesGroupingItem(FC),
+            -- ── Search Bar ────────────────────────────────────────────────────
+            {
+                text           = _("Search Bar"),
+                help_text      = _("Shows a search field at the top of the library that filters the books and folders on screen as you type, by title, author, series or file name. Clear it to see the whole list again."),
+                keep_menu_open = true,
+                checked_func   = function()
+                    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+                    return ok_ls and LS and LS.isEnabled()
+                end,
+                callback       = function()
+                    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+                    if not (ok_ls and LS) then return end
+                    local enabling = not LS.isEnabled()
+                    LS.setEnabled(enabling)
+                    if enabling then
+                        pcall(LS.install, plugin)
+                        _refreshFC()
+                    else
+                        pcall(LS.uninstall, plugin)
+                    end
+                end,
+            },
+            -- ── Typo-tolerant search ──────────────────────────────────────────
+            {
+                text           = _("Typo-tolerant search"),
+                help_text      = _("The search bar also finds close matches: accents and punctuation are ignored (bronte finds Brontë) and small typos are forgiven (harry poter finds Harry Potter). Exact matches stay at the top."),
+                keep_menu_open = true,
+                enabled_func   = function()
+                    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+                    return ok_ls and LS and LS.isEnabled()
+                end,
+                checked_func   = function()
+                    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+                    return ok_ls and LS and LS.isFuzzy()
+                end,
+                callback       = function()
+                    local ok_ls, LS = pcall(require, "features/library/sui_live_search")
+                    if ok_ls and LS then LS.setFuzzy(not LS.isFuzzy()) end
+                end,
+            },
             -- ── Cover Settings ───────────────────────────────────
             {
                 text         = _("Cover Settings"),
