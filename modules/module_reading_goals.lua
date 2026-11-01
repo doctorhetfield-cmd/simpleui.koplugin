@@ -266,18 +266,31 @@ local function _measureLblW(labels, face, bold, floor_w)
     return math.max(max_w, floor_w)
 end
 
-local function _buildInnerCompact(inner_w, lbl_w, pct_w, detail_w, label_str, pct, pct_str, detail_str, cd, ink)
+-- Re-measures the widest visible percentage and updates the shared column.
+local function _remeasurePctW(group, face, bold, floor_w)
+    local pct_strs = {}
+    for _, r in ipairs(group.rows) do
+        local pct_str = r.state.pct_str
+        pct_strs[#pct_strs + 1] = pct_str ~= "" and pct_str or NO_GOAL_TEXT
+    end
+    local w = _measureLblW(pct_strs, face, bold, floor_w)
+    if w == group.pct_w then return false end
+    group.pct_w = w
+    return true
+end
+
+local function _buildInnerCompact(inner_w, lbl_w, group, label_str, pct, pct_str, detail_str, cd, ink)
     local ROW_H          = cd.row_h
     local LBL_BAR_GAP    = cd.col_gap
     local BAR_PCT_GAP    = cd.col_gap
     local PCT_DETAIL_GAP = cd.col_gap
-    local PCT_W          = pct_w
+    local PCT_W          = group.pct_w
     -- The detail column is as wide as its measured text; the bar takes the rest.
     local fixed     = lbl_w + LBL_BAR_GAP + BAR_PCT_GAP + PCT_W + PCT_DETAIL_GAP
     local min_bar_w = Screen:scaleBySize(40)
-    local bar_w     = math.max(min_bar_w, inner_w - fixed - detail_w)
+    local bar_w     = math.max(min_bar_w, inner_w - fixed - group.detail_w)
     -- When the bar is at its minimum the detail text is ellipsized to what is left.
-    local DETAIL_W  = math.max(0, math.min(detail_w, inner_w - fixed - bar_w))
+    local DETAIL_W  = math.max(0, math.min(group.detail_w, inner_w - fixed - bar_w))
 
     local function vcenter_left(child, col_w)
         return LeftContainer:new{ dimen = Geom:new{ w = col_w, h = ROW_H }, child }
@@ -341,30 +354,31 @@ end
 -- Builds a single inline row: Label [bar] XX%  detail
 -- Used by the Compact layout. All elements are horizontally laid out and vertically centred.
 -- lbl_w is pre-computed by _measureLblW so both rows share the same column width.
-local function buildCompactGoalRow(inner_w, lbl_w, pct_w, group, label_str, pct, pct_str, detail_str, on_tap, cd, ink)
+local function buildCompactGoalRow(inner_w, lbl_w, group, label_str, pct, pct_str, detail_str, on_tap, cd, ink)
     local state = { pct = pct, pct_str = pct_str, detail = detail_str }
     local frame = FrameContainer:new{
         bordersize = 0, padding = 0,
         dimen      = Geom:new{ w = inner_w, h = cd.row_h },
     }
     local function rebuild()
-        frame[1] = _buildInnerCompact(inner_w, lbl_w, pct_w, group.detail_w, label_str,
+        frame[1] = _buildInnerCompact(inner_w, lbl_w, group, label_str,
             state.pct, state.pct_str, state.detail, cd, ink)
     end
     rebuild()
     group.rows[#group.rows + 1] = { state = state, rebuild = rebuild }
 
-    -- The detail column is shared: when the widest detail changes, every row
-    -- is rebuilt so the bars stay aligned.
+    -- Shared width changes rebuild every row so both bar ends stay aligned.
     local update_fn = function(new_pct, new_pct_str, new_detail_str)
         state.pct, state.pct_str, state.detail = new_pct, new_pct_str, new_detail_str
+        local pct_changed = _remeasurePctW(group, cd.face_pct, cd.bold_pct, group.pct_floor_w)
         local details = {}
         for _, r in ipairs(group.rows) do
             if r.state.detail ~= "" then details[#details + 1] = r.state.detail end
         end
         local w = _measureLblW(details, cd.face_det, cd.bold_det, 0)
-        if w ~= group.detail_w then
-            group.detail_w = w
+        local detail_changed = w ~= group.detail_w
+        if detail_changed then group.detail_w = w end
+        if pct_changed or detail_changed then
             for _, r in ipairs(group.rows) do r.rebuild() end
         else
             rebuild()
@@ -375,9 +389,7 @@ local function buildCompactGoalRow(inner_w, lbl_w, pct_w, group, label_str, pct,
 end
 
 local function _buildInnerDefault(inner_w, label_str, pct, pct_str, detail_str, d, ink)
-    -- One percentage column for every row: the width of the widest
-    -- percentage (or placeholder) among the visible goals. Sharing it
-    -- keeps every bar the same length, so their right ends line up.
+    -- Every row shares the width of the widest visible percentage.
     local PCT_W       = d.pct_w
     local LBL_BAR_GAP = d.col_gap
     local BAR_PCT_GAP = d.col_gap
@@ -416,11 +428,8 @@ local function _buildInnerDefault(inner_w, label_str, pct, pct_str, detail_str, 
         UI.progressBar(bar_w, pct, d.bar_h, ink.bar_fg, ink.bar_bg),
             HorizontalSpan:new{ width = BAR_PCT_GAP },
             RightContainer:new{
-                -- The column is the shared PCT_W wide, but never narrower
-                -- than the text it holds: a live update can widen a
-                -- percentage ("9%" -> "100%"), and a container narrower
-                -- than its child paints it on top of the bar. The bar
-                -- sits before this column, so its geometry is unaffected.
+                -- The minimum bar width can shrink PCT_W on narrow rows;
+                -- keep the container wide enough to avoid clipping its text.
                 dimen = Geom:new{ w = math.max(PCT_W, pct_widget:getSize().w),
                                   h = pct_widget:getSize().h },
                 pct_widget,
@@ -440,16 +449,26 @@ end
 -- Builds a two-line goal row: label + bar + pct on the first line, detail text below.
 -- Used by the Default layout. Accepts a pre-computed dims table from _scaledDims.
 local function buildGoalRow(inner_w, label_str, pct, pct_str, detail_str, on_tap, d, ink)
-    local block = _buildInnerDefault(inner_w, label_str, pct, pct_str, detail_str, d, ink)
-
+    local state = { pct = pct, pct_str = pct_str, detail = detail_str }
     local frame = FrameContainer:new{
         bordersize     = 0,
         padding        = 0,
         padding_bottom = d.bot_pad,
-        block,
     }
+    local function rebuild()
+        frame[1] = _buildInnerDefault(inner_w, label_str,
+            state.pct, state.pct_str, state.detail, d, ink)
+    end
+    rebuild()
+    d.rows[#d.rows + 1] = { state = state, rebuild = rebuild }
+
     local update_fn = function(new_pct, new_pct_str, new_detail_str)
-        frame[1] = _buildInnerDefault(inner_w, label_str, new_pct, new_pct_str, new_detail_str, d, ink)
+        state.pct, state.pct_str, state.detail = new_pct, new_pct_str, new_detail_str
+        if _remeasurePctW(d, d.face_pct, d.bold_pct, d.pct_floor_w) then
+            for _, r in ipairs(d.rows) do r.rebuild() end
+        else
+            rebuild()
+        end
     end
 
     return _wrapTappable(frame, inner_w, d.goal_row_h, on_tap), update_fn
@@ -958,11 +977,15 @@ function M.build(w, ctx)
         -- Capture year/month strings once — avoids repeated os.date calls.
         local year_str  = _getYearStr()
         local month_str = _getMonthStr()
+        local pct_floor_w = Screen:scaleBySize(28)
         local rows, pct_w = _collectRowData(show_rows, books_read, month_secs, today_secs,
-            cd.face_pct, cd.bold_pct, Screen:scaleBySize(28))
+            cd.face_pct, cd.bold_pct, pct_floor_w)
         local details = {}
         for _id, r in pairs(rows) do if r.detail ~= "" then details[#details+1] = r.detail end end
-        local group = { detail_w = _measureLblW(details, cd.face_det, cd.bold_det, 0), rows = {} }
+        local group = {
+            pct_w = pct_w, pct_floor_w = pct_floor_w,
+            detail_w = _measureLblW(details, cd.face_det, cd.bold_det, 0), rows = {},
+        }
         -- All rows share one label column — see the default layout below.
         local lbl_labels = {}
         if show_ann then lbl_labels[#lbl_labels + 1] = year_str end
@@ -974,7 +997,7 @@ function M.build(w, ctx)
             if k == "annual" and show_ann then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = cd.row_gap } end
                 local row_widget, row_update_fn = buildCompactGoalRow(
-                    inner_w, cd.lbl_w, pct_w, group, year_str, rows.annual.pct, rows.annual.pct_str, rows.annual.detail,
+                    inner_w, cd.lbl_w, group, year_str, rows.annual.pct, rows.annual.pct_str, rows.annual.detail,
                     _openFinishedBooks, cd, ink)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "books", fn = function(books_r, _today_s, _month_s)
@@ -985,7 +1008,7 @@ function M.build(w, ctx)
             elseif k == "monthly" and show_mon then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = cd.row_gap } end
                 local row_widget, row_update_fn = buildCompactGoalRow(
-                    inner_w, cd.lbl_w, pct_w, group, month_str, rows.monthly.pct, rows.monthly.pct_str, rows.monthly.detail,
+                    inner_w, cd.lbl_w, group, month_str, rows.monthly.pct, rows.monthly.pct_str, rows.monthly.detail,
                     function() Goals.showDialog("monthly") end, cd, ink)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "timeseries", fn = function(_books_r, _today_s, month_s)
@@ -996,7 +1019,7 @@ function M.build(w, ctx)
             elseif k == "daily" and show_day then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = cd.row_gap } end
                 local row_widget, row_update_fn = buildCompactGoalRow(
-                    inner_w, cd.lbl_w, pct_w, group, _("Today"), rows.daily.pct, rows.daily.pct_str, rows.daily.detail,
+                    inner_w, cd.lbl_w, group, _("Today"), rows.daily.pct, rows.daily.pct_str, rows.daily.detail,
                     function() Goals.showDialog("daily") end, cd, ink)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "timeseries", fn = function(_books_r, today_s, _month_s)
@@ -1011,9 +1034,11 @@ function M.build(w, ctx)
         -- Capture year/month strings once — avoids repeated os.date calls.
         local year_str  = _getYearStr()
         local month_str = _getMonthStr()
+        d.pct_floor_w = d.pct_w
         local rows, pct_w = _collectRowData(show_rows, books_read, month_secs, today_secs,
-            d.face_pct, d.bold_pct, d.pct_w)
+            d.face_pct, d.bold_pct, d.pct_floor_w)
         d.pct_w = pct_w
+        d.rows = {}
         -- All rows share one label column: the width of the widest visible
         -- label, measured from the final translated text, so the bars of
         -- every row start at the same x. Measured once, before the rows are
