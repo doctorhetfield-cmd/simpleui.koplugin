@@ -347,9 +347,15 @@ local function _fmtDateRange(start_ts, finish_str)
     end
 end
 
+-- The shared formatter has no zero-padded form, so only the seconds band delegates.
 local function _fmtDuration(secs)
     if not (secs and secs >= 1) then return _("0s") end
-    return Text.formatDuration(secs)
+    if secs < 60 then return Text.formatDuration(secs) end
+    local whole = math.floor(secs)
+    if whole < 3600 then
+        return string.format(_("%dm %02ds"), math.floor(whole / 60), whole % 60)
+    end
+    return string.format(_("%dh %02dm"), math.floor(whole / 3600), math.floor((whole % 3600) / 60))
 end
 
 -- Formats a "YYYY-MM-DD" stamp as a short date, and a "YYYY" stamp as is.
@@ -1629,11 +1635,10 @@ end
 -- ---------------------------------------------------------------------------
 
 -- Returns a formatted string for a duration in seconds: "0h" under a minute,
--- otherwise deferred to a shared function - "Xs" / "Xm" / "Xh"; note that
--- exactly 60 seconds still falls in the seconds band.
+-- otherwise the shared whole hours and minutes form - "Xh Ym" / "Xh" / "Ym".
 local function _riFmtHours(secs)
     if not (secs and secs >= 60) then return _("0h") end
-    return Text.formatDuration(secs)
+    return Text.formatDurationInteger(secs)
 end
 
 -- Formats a timestamp (unix) into a short locale-independent date string.
@@ -1841,7 +1846,7 @@ function StatsWindows.showReadingInsightsWindow(opts)
         -- Same as _riFmtHours but with minutes as its zero.
         local function timeStr(secs)
             if not (secs and secs >= 60) then return _("0m") end
-            return Text.formatDuration(secs)
+            return _riFmtHours(secs)
         end
 
         local function setYear(year)
