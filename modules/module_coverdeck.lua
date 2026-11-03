@@ -73,11 +73,12 @@ local _CENTER_W_MIN  = Screen:scaleBySize(60)  -- floor so covers never collapse
 local _AVG_CHAR_WIDTH_RATIO = 0.55  -- rough glyph-advance-to-font-size ratio
 local _NONLATIN_CHAR_WIDTH_RATIO = 0.8 -- rough glyph-advance-to-font-size ratio for non-Latin scripts (CJK, Greek, Cyrillic, etc.)
 
-
+-- True for wide scripts (Greek, Cyrillic, CJK, Arabic, ...).
+-- Latin accents, Vietnamese and general punctuation count as Latin.
 local function hasNonLatin(s)
-    return s:match("[\128-\255]") ~= nil
+    return s:find("[\205-\224\227-\255]") ~= nil
+        or s:find("\225[\128-\183\188-\191]") ~= nil
 end
-
 
 local function truncateToWidth(s, face, max_px)
     if not s or s == "" then return s end
