@@ -71,9 +71,18 @@ local _CENTER_W_MIN  = Screen:scaleBySize(60)  -- floor so covers never collapse
 -- truncate_with_ellipsis, which remeasures glyph-by-glyph against the
 -- font on every call.
 local _AVG_CHAR_WIDTH_RATIO = 0.55  -- rough glyph-advance-to-font-size ratio
+local _NONLATIN_CHAR_WIDTH_RATIO = 0.8 -- wider ratio for non-Latin scripts
+
+-- True for wide scripts (Greek, Cyrillic, CJK, Arabic, ...).
+-- Latin accents, Vietnamese and general punctuation count as Latin.
+local function hasNonLatin(s)
+    return s:find("[\205-\224\227-\255]") ~= nil
+        or s:find("\225[\128-\183\188-\191]") ~= nil
+end
 
 local function truncateToWidth(s, face, max_px)
-    return Text.truncate(s, math.floor(max_px / (face.size * _AVG_CHAR_WIDTH_RATIO)))
+    local ratio = hasNonLatin(s or "") and _NONLATIN_CHAR_WIDTH_RATIO or _AVG_CHAR_WIDTH_RATIO
+    return Text.truncate(s, math.floor(max_px / (face.size * ratio)))
 end
 
 -- ---------------------------------------------------------------------------
