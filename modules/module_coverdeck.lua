@@ -70,19 +70,24 @@ local _CENTER_W_MIN  = Screen:scaleBySize(60)  -- floor so covers never collapse
 -- character budget rather than TextWidget's max_width +
 -- truncate_with_ellipsis, which remeasures glyph-by-glyph against the
 -- font on every call.
-local _AVG_CHAR_WIDTH_RATIO = 0.55  -- rough glyph-advance-to-font-size ratio
-local _NONLATIN_CHAR_WIDTH_RATIO = 0.8 -- wider ratio for non-Latin scripts
+local _AVG_CHAR_WIDTH_RATIO = 0.55 -- rough glyph-advance-to-font-size ratio
+local _ALPHA_CHAR_WIDTH_RATIO = 0.65 -- Greek, Cyrillic, Arabic, Indic, ...
+local _WIDE_CHAR_WIDTH_RATIO  = 1.0  -- CJK, kana, hangul, fullwidth
 
--- True for wide scripts (Greek, Cyrillic, CJK, Arabic, ...).
--- Latin accents, Vietnamese and general punctuation count as Latin.
-local function hasNonLatin(s)
-    return s:find("[\205-\224\227-\255]") ~= nil
-        or s:find("\225[\128-\183\188-\191]") ~= nil
+-- Width ratio from UTF-8 lead bytes. Latin accents (C3-CC), Vietnamese
+-- (E1 B8-BB) and general punctuation (E2) keep the Latin ratio.
+local function charWidthRatio(s)
+    if not s then return _AVG_CHAR_WIDTH_RATIO end
+    if s:find("[\227-\255]") then return _WIDE_CHAR_WIDTH_RATIO end
+    if s:find("[\205-\224]")
+        or s:find("\225[\128-\183\188-\191]") then
+        return _ALPHA_CHAR_WIDTH_RATIO
+    end
+    return _AVG_CHAR_WIDTH_RATIO
 end
 
 local function truncateToWidth(s, face, max_px)
-    local ratio = hasNonLatin(s or "") and _NONLATIN_CHAR_WIDTH_RATIO or _AVG_CHAR_WIDTH_RATIO
-    return Text.truncate(s, math.floor(max_px / (face.size * ratio)))
+    return Text.truncate(s, math.floor(max_px / (face.size * charWidthRatio(s))))
 end
 
 -- ---------------------------------------------------------------------------

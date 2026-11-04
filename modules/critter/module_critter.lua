@@ -506,7 +506,7 @@ function M.build(w, ctx)
     local function sprite(mood, max_w)
         local path = critter and Assets.imagePath(critter, mood)
         if not path then return nil end
-        local image = Sprite:new{ path = path, max_w = max_w, max_h = height }
+        local image = Sprite:new{ path = path, max_w = max_w, max_h = height, shadow = true }
         return image.dimen.w > 0 and image or nil
     end
 

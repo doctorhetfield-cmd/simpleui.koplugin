@@ -9,7 +9,8 @@
 -- background. In the "smooth" style the outline, the corners and the tail are
 -- anti-aliased; in the "pixel" style (see pixel_shapes.lua) they are stepped
 -- blocks of one `unit`, painted as plain rectangles. A bubble too small for its
--- unit is built smooth. It is laid out physically (left stays left in
+-- unit is built smooth. The pixel style also casts a one-unit shadow of ink to
+-- the bottom right, inside the size it is given. It is laid out physically (left stays left in
 -- right-to-left interfaces), because the tail has to face the critter.
 
 local Device         = require("device")
@@ -120,16 +121,17 @@ end
 Bubble.paintRects = paintRects
 
 -- Box with stepped corners (a Shapes.box `shape`) around one widget. The shape
--- is snapped to whole units and centred in the box_w x box_h it stands for.
+-- is snapped to whole units and, with its `shadow`, centred in the box_w x box_h
+-- it stands for.
 local PixelBody = Widget:extend{
-    content = nil, pad = 0, unit = 1, shape = nil, box_w = 0, box_h = 0,
+    content = nil, pad = 0, unit = 1, shape = nil, box_w = 0, box_h = 0, shadow = 0,
     border_color = nil, fill_color = nil,
 }
 
 function PixelBody:init()
     self.dimen = Geom:new{ w = self.box_w, h = self.box_h }
-    self.off_x = math.floor((self.box_w - self.shape.w) / 2)
-    self.off_y = math.floor((self.box_h - self.shape.h) / 2)
+    self.off_x = math.floor((self.box_w - self.shape.w - self.shadow) / 2)
+    self.off_y = math.floor((self.box_h - self.shape.h - self.shadow) / 2)
 end
 
 function PixelBody:getSize() return self.dimen end
@@ -137,6 +139,10 @@ function PixelBody:getSize() return self.dimen end
 function PixelBody:paintTo(bb, x, y)
     self.dimen.x, self.dimen.y = x, y
     local sx, sy = x + self.off_x, y + self.off_y
+    if self.shadow > 0 then
+        paintRects(bb, self.shape.fill, sx + self.shadow, sy + self.shadow, self.border_color)
+        paintRects(bb, self.shape.border, sx + self.shadow, sy + self.shadow, self.border_color)
+    end
     paintRects(bb, self.shape.fill, sx, sy, self.fill_color)
     paintRects(bb, self.shape.border, sx, sy, self.border_color)
     local inset = self.unit + self.pad
@@ -227,7 +233,7 @@ end
 --- Bubble.build.
 function Bubble.minWidth(scale, with_tail, style, unit)
     local _border, _pad, reach, frame = metrics(scale, with_tail, style, unit)
-    return reach + frame + Screen:scaleBySize(MIN_TEXT_DP)
+    return reach + frame + (isPixel(style, unit) and unit or 0) + Screen:scaleBySize(MIN_TEXT_DP)
 end
 
 -- Smooth tail for a bubble `height` tall (not counting its tail), or nil when
@@ -254,7 +260,7 @@ Bubble.smoothTail = smoothTail
 -- Group of a pixel `body` and its staircase tail, which points at the critter.
 local function pixelGroup(body, shape, o, reach, size)
     local unit = o.unit
-    local steps, tail_y = Shapes.tailRows(size.h, reach, unit)
+    local steps, tail_y = Shapes.tailRows(size.h - body.shadow, reach, unit)
     if not steps then return body end
 
     local tail = PixelTail:new{
@@ -294,13 +300,14 @@ function Bubble.build(o)
     local gap    = math.floor(Screen:scaleBySize(LINE_GAP_DP) * o.scale)
     local radius = math.floor(Screen:scaleBySize(RADIUS_DP) * o.scale)
 
-    local text_w = o.w - reach - frame
+    local shadow = pixel and o.unit or 0
+    local text_w = o.w - reach - frame - shadow
     if text_w < Screen:scaleBySize(MIN_TEXT_DP) then return nil end
 
     -- Two lines of the main text and two of the secondary text.
     local full_h = 2 * lineHeight(o.msg_face, o.msg_bold, text_w) + gap
                  + 2 * lineHeight(o.det_face, o.det_bold, text_w)
-    local box_h  = math.min(o.h, full_h + frame)
+    local box_h  = math.min(o.h, full_h + frame + shadow)
 
     -- Text blocks from the fullest to the barest as { main lines, secondary
     -- lines }, the first that fits wins.
@@ -323,7 +330,7 @@ function Bubble.build(o)
             group[#group + 1] = VerticalSpan:new{ width = gap }
             group[#group + 1] = textBox(o.detail, o.det_face, o.det_bold, text_w, detail_lines, UI.CLR_TEXT_SUB)
         end
-        if group:getSize().h + frame <= o.h then
+        if group:getSize().h + frame + shadow <= o.h then
             content = group
             break
         end
@@ -332,7 +339,7 @@ function Bubble.build(o)
     if not content then return nil end
 
     -- A bubble too small for its unit is built smooth.
-    local shape = pixel and Shapes.box(o.w - reach, box_h, o.unit) or nil
+    local shape = pixel and Shapes.box(o.w - reach - shadow, box_h - shadow, o.unit) or nil
     if pixel and not shape then
         content:free()
         local smooth = {}
@@ -349,6 +356,7 @@ function Bubble.build(o)
             box_h        = box_h,
             pad          = pad,
             unit         = o.unit,
+            shadow       = shadow,
             shape        = shape,
             border_color = ink,
             fill_color   = SUIStyle.COLOR.surface,

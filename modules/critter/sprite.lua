@@ -22,12 +22,16 @@ local Widget      = require("ui/widget/widget")
 local lfs         = require("libs/libkoreader-lfs")
 local logger      = require("logger")
 
+local AAPaint     = require("infra/sui_aa_paint")
 local RasterCache = require("infra/sui_raster_cache")
+local SUIStyle    = require("features/sui_style")
 
 local Screen = Device.screen
 
 local KIND           = "critter"
 local PIXEL_ART_MAX  = 64
+local SHADOW_FRAC    = 0.7   -- shadow width as a fraction of the image width
+local SHADOW_ROWS    = 3     -- shadow height in pixel units
 
 -- Blit method by [straight alpha][software dithering].
 local BLIT = {
@@ -118,6 +122,7 @@ local Sprite = Widget:extend{
     max_h     = 0,
     max_pixel = nil,   -- largest pixel factor of a pixel-art image
     pixel     = nil,   -- pixel factor in use (nil unless the image is pixel art)
+    shadow    = false, -- paint a ground shadow behind the image
 }
 
 function Sprite:init()
@@ -132,6 +137,21 @@ function Sprite:_entry()
     return RasterCache.get(KIND, self.key, buildEntry, self.path, self.max_w, self.max_h, self.max_pixel)
 end
 
+-- Paints the shadow: SHADOW_ROWS bars of one pixel unit, centred on the box
+-- and widest in the middle, with their bottom on the bottom of the box.
+function Sprite:_paintShadow(bb, x, y, w, h)
+    local unit = self.pixel or math.max(1, Screen:scaleBySize(2))
+    local full = math.floor(w * SHADOW_FRAC / (2 * unit)) * 2 * unit
+    if full < 2 * unit then return end
+    local color = SUIStyle.COLOR.gray
+    local top = y + h - SHADOW_ROWS * unit
+    for row = 0, SHADOW_ROWS - 1 do
+        local dy = (row + 0.5) / SHADOW_ROWS * 2 - 1
+        local bar = math.max(2 * unit, math.floor(full * math.sqrt(1 - dy * dy) / (2 * unit) + 0.5) * 2 * unit)
+        AAPaint.fillRect(bb, x + math.floor((w - bar) / 2), top + row * unit, bar, unit, color, 255)
+    end
+end
+
 function Sprite:paintTo(bb, x, y)
     self.dimen.x, self.dimen.y = x, y
     local entry = self:_entry()
@@ -139,6 +159,7 @@ function Sprite:paintTo(bb, x, y)
     if not src then return end
 
     local w, h = entry.w, entry.h - entry.foot
+    if self.shadow then self:_paintShadow(bb, x, y, w, h) end
     local src_type = src:getType()
     -- The night-mode inversion of the screen is undone for the sprite alone:
     -- opaque pixels are inverted after the blit, and with an alpha channel the
