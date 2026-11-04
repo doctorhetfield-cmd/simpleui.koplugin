@@ -54,7 +54,7 @@ local function catalog()
             reason = _("Draws on the book covers without supporting Simple UI"),
             files  = {
                 "2-pages-badge_estimate.lua", "2-finished-badge.lua", "2-reading-percentage.lua",
-                "2-real-books.lua", "2-percent-badge.lua",
+                "2-real-books.lua", "2-percent-badge.lua", "2-mosaicmenu-hide-bookstatusicons.lua",
             },
         },
         {
