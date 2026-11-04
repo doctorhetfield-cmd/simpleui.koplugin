@@ -3010,6 +3010,17 @@ function M.patchMenuForNavpager(plugin)
                 menu_self.page_info.dimen)
         end
 
+        -- Only the file chooser and the widgets that carry the bar get the page
+        -- subtitle and drive the bar arrows. Menus owned by anything else keep
+        -- their own title bar and must not trigger a bar refresh that overlaps
+        -- their own full-screen refresh.
+        local live_plugin = _live_plugin
+        local live_fm = live_plugin and live_plugin.ui
+        if not (menu_self._navbar_injected
+                or (live_fm and live_fm.file_chooser == menu_self)) then
+            return
+        end
+
         if not _subtitleEnabled() then return end
 
         -- Read page state synchronously, exactly as the native bar does:
