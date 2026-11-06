@@ -730,6 +730,16 @@ local function _installPatches()
                 return t
             end
 
+            -- Books follow the collate chosen in the file browser. A series
+            -- keeps its reading order (series index), set by sortFiles.
+            local _b, filter_state, _d, level = VirtualPath.parse(path)
+            local trail = filter_state and filter_state.trail or {}
+            local leaf  = trail[#trail] and trail[#trail].dimension
+            if level == "file_list" and leaf ~= "series" and #fls > 1 then
+                local collate = fc:getCollate()
+                table.sort(fls, fc:getSortingFunction(collate, G_reader_settings:isTrue("reverse_collate")))
+            end
+
             local item_table = {}
             for _, d in ipairs(dirs) do item_table[#item_table + 1] = d end
             for _, f in ipairs(fls)  do item_table[#item_table + 1] = f end

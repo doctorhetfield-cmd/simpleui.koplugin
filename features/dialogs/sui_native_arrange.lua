@@ -10,8 +10,11 @@
 -- Public API
 --   NativeArrange.interceptShow(widget) -> boolean   show step (consumes the call)
 
-local logger     = require("logger")
-local SortWidget = require("ui/widget/sortwidget")
+local ButtonDialog = require("ui/widget/buttondialog")
+local logger       = require("logger")
+local SortWidget   = require("ui/widget/sortwidget")
+local UIManager    = require("ui/uimanager")
+local _            = require("gettext")
 
 local SUIWindow = require("engines/sui_window")
 
@@ -29,6 +32,19 @@ local function isManagerTable(item_table)
         or (books ~= nil and books.item_table == item_table)
 end
 
+local SORT_CHOICES = {
+    { _("Sort A to Z"),             "strcoll", false },
+    { _("Sort Z to A"),             "strcoll", true  },
+    { _("Sort A to Z (natural)"),   "natural", false },
+    { _("Sort Z to A (natural)"),   "natural", true  },
+}
+
+-- Sorts `items` in place by `text` with the file chooser collate `collate_id`.
+local function sortItems(items, collate_id, reverse)
+    local FileChooser = require("ui/widget/filechooser")
+    table.sort(items, FileChooser:getSortingFunction(FileChooser.collates[collate_id], reverse))
+end
+
 local function present(sort_widget)
     local source = sort_widget.item_table
     local items  = {}
@@ -36,13 +52,36 @@ local function present(sort_widget)
         items[#items + 1] = { text = entry.text, orig_item = entry }
     end
 
+    local function applyChange(arranged)
+        for i, item in ipairs(arranged) do source[i] = item.orig_item end
+        sort_widget.callback()
+    end
+
     SUIWindow.showArrange{
         title     = sort_widget.title,
         items     = items,
-        on_change = function(arranged)
-            for i, item in ipairs(arranged) do source[i] = item.orig_item end
-            sort_widget.callback()
-        end,
+        footer    = {
+            text   = _("Sort"),
+            on_tap = function(ctx)
+                local dialog
+                local buttons = {}
+                for _i, choice in ipairs(SORT_CHOICES) do
+                    buttons[#buttons + 1] = {{
+                        text     = choice[1],
+                        align    = "left",
+                        callback = function()
+                            UIManager:close(dialog)
+                            sortItems(items, choice[2], choice[3])
+                            applyChange(items)
+                            ctx.repaint()
+                        end,
+                    }}
+                end
+                dialog = ButtonDialog:new{ shrink_unneeded_width = true, buttons = buttons }
+                UIManager:show(dialog)
+            end,
+        },
+        on_change = applyChange,
     }
 end
 

@@ -4457,13 +4457,23 @@ end
 --- ctx.push("arrange", ...) plus
 ---   title     string          window title
 ---   on_close  function|nil    runs when the window closes
+---   footer    table|nil       footer button { text, on_tap(ctx) }
 --- @return SUIWindow
 function SUIWindow.showArrange(opts)
+    local footer = opts.footer
     local win = SUIWindow:new{
         name     = "sui_win_arrange",
         icon     = "arrange",
         title    = opts.title,
         on_close = opts.on_close,
+        screen_footers = footer and {
+            __root__ = function(ctx)
+                return SUIWindow.CenteredButtonFooter(ctx, {
+                    text   = footer.text,
+                    on_tap = function() footer.on_tap(ctx) end,
+                })
+            end,
+        } or nil,
         screens  = {
             __root__ = function(ctx) return buildArrangeScreen(ctx, opts) end,
         },
