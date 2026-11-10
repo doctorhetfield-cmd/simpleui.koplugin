@@ -406,11 +406,11 @@ end
 -- ---------------------------------------------------------------------------
 local function fmtTime(secs)
     secs = math.floor(secs or 0)
-    if secs <= 0 then return string.format(_("%dm"), 0) end
+    if secs <= 0 then return string.format("%dm", 0) end
     local h = math.floor(secs / 3600); local m = math.floor((secs % 3600) / 60)
-    if h > 0 and m > 0 then return string.format(_("%dh %dm"), h, m)
-    elseif h > 0        then return string.format(_("%dh"), h)
-    else                     return string.format(_("%dm"), m) end
+    if h > 0 and m > 0 then return string.format("%dh %dm", h, m)
+    elseif h > 0        then return string.format("%dh", h)
+    else                     return string.format("%dm", m) end
 end
 
 -- Hour of the day (0-23) as the clock range it covers, following the device's
