@@ -88,15 +88,18 @@ local QARenderer = {}
 -- Wraps `content` in an InputContainer of size w×h that dispatches taps to
 -- spec.on_tap_fn(action_id) via a dedicated gesture event — spec.tap_event_name
 -- when given, else `default_event`. Shared by buildCell and buildListRow,
--- whose tap-dispatch wiring was otherwise identical. With spec.focusable the
--- container is also a D-pad focus stop (see UI.makeFocusable).
+-- whose tap-dispatch wiring was otherwise identical. With spec.on_hold_fn a
+-- long press calls spec.on_hold_fn(action_id); the hold keys of a D-pad
+-- device reach it too, as FocusManager sends them as a hold gesture. With
+-- spec.focusable the container is also a D-pad focus stop (see UI.makeFocusable).
 local function _buildTapContainer(content, w, h, action_id, spec, default_event)
     local event_name = spec.tap_event_name or default_event
     local tappable = InputContainer():new{
-        dimen      = Geom():new{ w = w, h = h },
-        [1]        = content,
-        _on_tap_fn = spec.on_tap_fn,
-        _action_id = action_id,
+        dimen       = Geom():new{ w = w, h = h },
+        [1]         = content,
+        _on_tap_fn  = spec.on_tap_fn,
+        _on_hold_fn = spec.on_hold_fn,
+        _action_id  = action_id,
     }
     tappable.ges_events = {
         [event_name] = {
@@ -109,6 +112,19 @@ local function _buildTapContainer(content, w, h, action_id, spec, default_event)
     tappable["on" .. event_name] = function(self)
         if self._on_tap_fn then self._on_tap_fn(self._action_id) end
         return true
+    end
+    if spec.on_hold_fn then
+        local hold_name = event_name .. "Hold"
+        tappable.ges_events[hold_name] = {
+            GestureRange():new{
+                ges   = "hold",
+                range = function() return tappable.dimen end,
+            },
+        }
+        tappable["on" .. hold_name] = function(self)
+            self._on_hold_fn(self._action_id)
+            return true
+        end
     end
     -- spec.focusable: the container also takes part in D-pad navigation.
     if spec.focusable then UI().makeFocusable(tappable, tappable["on" .. event_name]) end

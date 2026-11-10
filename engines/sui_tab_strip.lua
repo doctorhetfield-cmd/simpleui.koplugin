@@ -17,6 +17,8 @@
 --                   -- { id = "x", spacer_w = px } reserves a blank cell for an
 --                   -- external widget; it is never selectable (underline style only)
 --       on_select = function(id) end,
+--       on_hold   = optional function(id) end, called on a long press of a tab
+--                   (or a hold key while it has the D-pad focus)
 --       fgcolor   = optional color (defaults to the primary text color),
 --       ink_fn    = optional function returning the text colour (nil: the
 --                   plain one), read on every render; replaces fgcolor and
@@ -104,6 +106,7 @@ local TabStrip = WidgetContainer:extend{
     face          = nil,
     tabs          = nil,
     on_select     = nil,
+    on_hold       = nil,
     fgcolor       = nil,
     ink_fn        = nil,
     indicator     = nil,
@@ -118,10 +121,10 @@ local TabStrip = WidgetContainer:extend{
 }
 
 -- Tap container shared with the other SimpleUI tab/cell renderers.
-local function _tapContainer(content, w, h, id, on_tap)
+local function _tapContainer(content, w, h, id, on_tap, on_hold)
     local QARenderer = require("engines/sui_quickactions_render")
     return QARenderer.buildTapContainer(content, w, h, id,
-        { on_tap_fn = on_tap, tap_event_name = "TapSUITab", focusable = true }, "TapSUITab")
+        { on_tap_fn = on_tap, on_hold_fn = on_hold, tap_event_name = "TapSUITab", focusable = true }, "TapSUITab")
 end
 
 -- Builds the label widget for one tab. The widest of the regular and bold
@@ -169,7 +172,7 @@ function TabStrip:_buildTextCell(e, lead_pad, cell_w)
         underline.overlap_offset = { lead_pad, self.height - underline_h }
         cell[#cell + 1] = underline
     end
-    return _tapContainer(cell, cell_w, self.height, e.tab.id, self.on_select)
+    return _tapContainer(cell, cell_w, self.height, e.tab.id, self.on_select, self.on_hold)
 end
 
 function TabStrip:_buildUnderlineTabs()
@@ -324,7 +327,7 @@ function TabStrip:_buildPillCell(tab, cell_w, cell_h, gap, pill_radius)
     end
     local cell_dim = Geom:new{ w = cell_w, h = cell_h }
     return _tapContainer(CenterContainer:new{ dimen = cell_dim, content },
-        cell_w, cell_h, tab.id, self.on_select)
+        cell_w, cell_h, tab.id, self.on_select, self.on_hold)
 end
 
 -- Builds the pill style: a rounded box holding the visible window of tabs.
@@ -490,6 +493,7 @@ function M.new(opts)
         face          = opts.face,
         tabs          = opts.tabs or {},
         on_select     = opts.on_select,
+        on_hold       = opts.on_hold,
         fgcolor       = opts.fgcolor or SUIStyle.COLOR.text_primary,
         ink_fn        = opts.ink_fn,
         indicator     = opts.indicator,

@@ -59,6 +59,7 @@ local GroupActions     = require("features/library/sui_group_actions")
 local RuleCollections  = require("features/library/sui_rule_collections")
 local CoverFinder      = require("features/library/sui_cover_finder")
 local FolderCovers     = require("features/library/sui_foldercovers")
+local SortSheet        = require("features/library/sui_sort_sheet")
 
 local M = {}
 
@@ -735,7 +736,7 @@ local function _installPatches()
             -- index), set by sortFiles.
             local _b, filter_state, _d, level = VirtualPath.parse(path)
             if level == "dim_list" or level == "file_list" then
-                local collate = fc:getCollate()
+                local collate, collate_id = fc:getCollate()
                 local reverse = G_reader_settings:isTrue("reverse_collate")
                 local trail   = filter_state and filter_state.trail or {}
                 local leaf    = trail[#trail] and trail[#trail].dimension
@@ -743,8 +744,8 @@ local function _installPatches()
                     table.sort(fls, fc:getSortingFunction(collate, reverse))
                 end
                 if #dirs > 1 then
-                    -- A collate that cannot sort folders keeps them by name.
-                    table.sort(dirs, collate.can_collate_mixed
+                    -- A collate that cannot sort metadata folders keeps them by name.
+                    table.sort(dirs, SortSheet.sortsFacetFolders(collate_id)
                         and fc:getSortingFunction(collate, reverse)
                         or fc:getSortingFunction(fc.collates.strcoll))
                 end
@@ -1074,6 +1075,7 @@ function M.install()
         _installPatches()
         _installFMSafetyPatches()
         _installTitleBarPathPatch()
+        SortSheet.install()
     end)
     if not ok then
         logger.warn("sui_library_browse: install error:", tostring(err))
@@ -1084,6 +1086,7 @@ function M.uninstall()
     pcall(_removePatches)
     pcall(_removeFMSafetyPatches)
     pcall(_removeTitleBarPathPatch)
+    pcall(SortSheet.uninstall)
     MetadataSource.clearCache()
     _last_base_dir = nil
     _FM_cache   = nil

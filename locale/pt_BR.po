@@ -98,19 +98,6 @@ msgstr "Só restam %d%%. Vou ter coragem."
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d dias · %d/%d min para o próximo congelamento"
 
-#: modules/reading_stats/module_reading_stats.lua:412
-msgid "%dh"
-msgstr "%dh"
-
-#: modules/reading_stats/module_reading_stats.lua:411
-msgid "%dh %dm"
-msgstr "%dh %dmin"
-
-#: modules/reading_stats/module_reading_stats.lua:409
-#: modules/reading_stats/module_reading_stats.lua:413
-msgid "%dm"
-msgstr "%dmin"
-
 #: screens/insights/sui_insights_charts.lua:128
 msgid "%s a day on average"
 msgstr "%s por dia, em média"
@@ -839,6 +826,11 @@ msgstr "Quase o tempo todo!"
 msgid "Almost."
 msgstr "Quase."
 
+#: features/library/sui_sort_sheet.lua:75
+#: features/library/sui_sort_sheet.lua:93
+msgid "Alphabetical"
+msgstr "Alfabética"
+
 #: screens/sui_menu.lua:2389
 msgid "Always"
 msgstr "Sempre"
@@ -1282,6 +1274,10 @@ msgstr "Estilo da Pilha de Livros"
 #: screens/sui_stats_windows.lua:2955
 msgid "Book Statistics"
 msgstr "Estatísticas do Livro"
+
+#: features/library/sui_sort_sheet.lua:93
+msgid "Book count"
+msgstr "Nº de livros"
 
 #: modules/critter/reaction_lines.lua:84
 msgid "Book finished!"
@@ -2933,6 +2929,10 @@ msgstr "Concluído"
 msgid "Finished Books"
 msgstr "Livros Concluídos"
 
+#: features/library/sui_sort_sheet.lua:81
+msgid "Finished last"
+msgstr "Concluídos no fim"
+
 #: modules/module_clock.lua:254
 msgid "Five"
 msgstr "Cinco"
@@ -4496,6 +4496,10 @@ msgstr "Último backup: %s%s"
 msgid "Last backup: never"
 msgstr "Último backup: nunca"
 
+#: features/library/sui_sort_sheet.lua:77
+msgid "Last read"
+msgstr "Última leitura"
+
 #: features/dialogs/sui_dialogs.lua:218
 msgid "Later"
 msgstr "Depois"
@@ -4854,6 +4858,10 @@ msgstr "Botão de menu"
 msgid "Message"
 msgstr "Mensagem"
 
+#: features/library/sui_sort_sheet.lua:84
+msgid "Metadata"
+msgstr "Metadados"
+
 #: modules/module_clock.lua:324
 msgid "Midnight"
 msgstr "Meia-noite"
@@ -4913,6 +4921,10 @@ msgstr "Senti saudade. Em cada remendo."
 #: screens/sui_menu.lua:437
 msgid "Mode"
 msgstr "Modo"
+
+#: features/library/sui_sort_sheet.lua:77
+msgid "Modified"
+msgstr "Modificação"
 
 #: screens/sui_menu.lua:3408 screens/sui_menu.lua:4068
 msgid "Module Labels"
@@ -5150,6 +5162,11 @@ msgstr "Nome (Z–A)"
 #: features/sui_cover_elements.lua:68
 msgid "Native"
 msgstr "Nativo"
+
+#: features/library/sui_sort_sheet.lua:75
+#: features/library/sui_sort_sheet.lua:93
+msgid "Natural"
+msgstr "Natural"
 
 #: screens/sui_bottombar.lua:790 screens/sui_menu.lua:2735
 msgid "Navigation Bar"
@@ -6600,6 +6617,10 @@ msgstr "Aleatório"
 #: modules/critter/voice_phrases.lua:308
 msgid "Rarely. Enjoy it."
 msgstr "Raramente. Aproveite."
+
+#: features/library/sui_sort_sheet.lua:86
+msgid "Rating"
+msgstr "Avaliação"
 
 #: modules/critter/menu.lua:166
 msgid "React to events"
@@ -8832,6 +8853,14 @@ msgstr "Desconhecido"
 msgid "Unknown error."
 msgstr "Erro desconhecido."
 
+#: features/library/sui_sort_sheet.lua:79
+msgid "Unopened first"
+msgstr "Não abertos primeiro"
+
+#: features/library/sui_sort_sheet.lua:80
+msgid "Unopened last"
+msgstr "Não abertos no fim"
+
 #: features/sui_style.lua:2756
 msgid "Unsupported format (use a folder or a .zip file)"
 msgstr "Formato não suportado (use uma pasta ou um arquivo .zip)"
@@ -9787,6 +9816,10 @@ msgstr "nov"
 #: screens/sui_stats_windows.lua:1331
 msgid "november"
 msgstr "novembro"
+
+#: features/library/sui_sort_sheet.lua:29
+msgid "number of books"
+msgstr "número de livros"
 
 #: screens/sui_stats_windows.lua:314 screens/sui_stats_windows.lua:1327
 msgid "oct"

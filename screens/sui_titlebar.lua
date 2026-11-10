@@ -1373,6 +1373,15 @@ local function _applyTabs(fm_self, tb)
             local BM = _BrowseMeta()
             if BM then BM.activateMode(fm_self, mode) end
         end,
+        -- Long press: switch to the tab, then show its sort options.
+        on_hold = function(mode)
+            local BM = _BrowseMeta()
+            if not BM then return end
+            if BM.getCurrentMode(fm_self.file_chooser) ~= mode then
+                BM.activateMode(fm_self, mode)
+            end
+            require("features/library/sui_sort_sheet").show(fm_self, mode)
+        end,
     }
     strip.overlap_align = nil
     strip:setSpan(strip_x_flush, menu_x - strip_x_flush)
