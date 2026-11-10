@@ -31,6 +31,7 @@ local AAPaint         = require("infra/sui_aa_paint")
 local UI           = require("infra/sui_core")
 local SUISettings  = require("infra/sui_store")
 local Goals        = require("infra/sui_goals")
+local DateNames    = require("infra/sui_datenames")
 local ManualBooks  = require("features/sui_manual_books")
 local SUIStyle     = require("features/sui_style")
 local Chrome       = require("features/sui_module_chrome")
@@ -107,7 +108,10 @@ local function _compactDims(scale, styles)
 end
 
 local function _getYearStr()  return os.date("%Y") end
-local function _getMonthStr() return os.date("%b") end
+local function _getMonthStr()
+    local t = os.date("*t")
+    return DateNames.monthShort()[t.month] or os.date("%b")
+end
 
 -- Settings keys
 local SHOW_KEYS = {
@@ -291,17 +295,15 @@ local function _buildInnerCompact(inner_w, lbl_w, pct_w, detail_w, label_str, pc
             face    = cd.face_lbl,
             bold    = cd.bold_lbl,
             fgcolor = ink.blk,
-            width   = lbl_w,
         }, lbl_w),
         HorizontalSpan:new{ width = LBL_BAR_GAP },
         vcenter_left(UI.progressBar(bar_w, pct, cd.bar_h, ink.bar_fg, ink.bar_bg), bar_w),
         HorizontalSpan:new{ width = BAR_PCT_GAP },
         vcenter_left(UI.makeColoredText{
-            text    = pct_str,
+            text    = pct_str ~= "" and pct_str or "—",
             face    = cd.face_pct,
             bold    = cd.bold_pct,
             fgcolor = ink.blk,
-            width   = PCT_W,
         }, PCT_W),
         HorizontalSpan:new{ width = PCT_DETAIL_GAP },
         DETAIL_W > 0 and vcenter_right(UI.makeColoredText{
@@ -373,7 +375,7 @@ local function buildCompactGoalRow(inner_w, lbl_w, pct_w, group, label_str, pct,
 end
 
 local function _buildInnerDefault(inner_w, label_str, pct, pct_str, detail_str, d, ink)
-    local PCT_W       = _measureLblW({ pct_str }, d.face_pct, d.bold_pct, d.pct_w)
+    local PCT_W       = d.pct_w
     local LBL_BAR_GAP = d.col_gap
     local BAR_PCT_GAP = d.col_gap
     local available   = inner_w - d.lbl_w - LBL_BAR_GAP - BAR_PCT_GAP - PCT_W
@@ -382,27 +384,28 @@ local function _buildInnerDefault(inner_w, label_str, pct, pct_str, detail_str, 
         PCT_W = math.max(0, inner_w - d.lbl_w - LBL_BAR_GAP - BAR_PCT_GAP - available)
     end
     local bar_w = available
+    local label_widget = UI.makeColoredText{
+        text    = label_str,
+        face    = d.face_lbl,
+        bold    = d.bold_lbl,
+        fgcolor = ink.blk,
+    }
     return VerticalGroup:new{
         align = "left",
         HorizontalGroup:new{
             align = "center",
-            UI.makeColoredText{
-                text    = label_str,
-                face    = d.face_lbl,
-                bold    = d.bold_lbl,
-                fgcolor = ink.blk,
-                width   = d.lbl_w,
+            LeftContainer:new{
+                dimen = Geom:new{ w = d.lbl_w, h = label_widget:getSize().h },
+                label_widget,
             },
             HorizontalSpan:new{ width = LBL_BAR_GAP },
         UI.progressBar(bar_w, pct, d.bar_h, ink.bar_fg, ink.bar_bg),
             HorizontalSpan:new{ width = BAR_PCT_GAP },
             UI.makeColoredText{
-                text      = pct_str,
-                face      = d.face_pct,
-                bold      = d.bold_pct,
-                fgcolor   = ink.blk,
-                width     = PCT_W,
-                alignment = "right",
+                text    = pct_str ~= "" and pct_str or "—",
+                face    = d.face_pct,
+                bold    = d.bold_pct,
+                fgcolor = ink.blk,
             },
         },
         VerticalSpan:new{ width = d.sub_gap },
@@ -411,7 +414,6 @@ local function _buildInnerDefault(inner_w, label_str, pct, pct_str, detail_str, 
             face    = d.face_det,
             bold    = d.bold_det,
             fgcolor = ink.sub,
-            width   = inner_w,
         },
     }
 end
@@ -791,7 +793,7 @@ local function _collectRowData(show, books_read, month_secs, today_secs, face, b
         if show[id] then
             local pct, pct_str, detail = fetch()
             data[id] = { pct = pct, pct_str = pct_str, detail = detail }
-            if pct_str ~= "" then pct_strs[#pct_strs + 1] = pct_str end
+            pct_strs[#pct_strs + 1] = pct_str ~= "" and pct_str or "—"
         end
     end
     return data, _measureLblW(pct_strs, face, bold, floor_w)
@@ -858,6 +860,15 @@ function M.build(w, ctx)
     -- Content colours over the module fill.
     local ink = ctx.ink or Chrome.PLAIN_INK
 
+    -- Capture year/month strings once — avoids repeated os.date calls.
+    local year_str  = _getYearStr()
+    local month_str = _getMonthStr()
+    -- Only visible labels are measured; the widest one sets the shared column width.
+    local lbl_labels = {}
+    if show_ann then lbl_labels[#lbl_labels + 1] = year_str end
+    if show_mon then lbl_labels[#lbl_labels + 1] = month_str end
+    if show_day then lbl_labels[#lbl_labels + 1] = _("Today") end
+
     if layout == "rings" then
         local active = {}
         for _, k in ipairs(_getElemOrder(ctx.pfx)) do
@@ -872,8 +883,6 @@ function M.build(w, ctx)
         local ring_content = getRingContent(ctx.pfx)
         local ring_align   = getRingAlign(ctx.pfx)
         local card_h = _ringCardApproxHeight(card_w, cd, ring_content)
-        local year_str  = _getYearStr()
-        local month_str = _getMonthStr()
         local row = HorizontalGroup:new{ align = "center" }
         for i, k in ipairs(active) do
             if i > 1 then row[#row + 1] = HorizontalSpan:new{ width = gap } end
@@ -932,22 +941,18 @@ function M.build(w, ctx)
     elseif layout == "compact" then
         -- scale already includes ctx.landscape_factor.
         local cd = _compactDims(scale, styles)
-        -- Capture year/month strings once — avoids repeated os.date calls.
-        local year_str  = _getYearStr()
-        local month_str = _getMonthStr()
         local rows, pct_w = _collectRowData(show_rows, books_read, month_secs, today_secs,
             cd.face_pct, cd.bold_pct, Screen:scaleBySize(28))
         local details = {}
         for _id, r in pairs(rows) do if r.detail ~= "" then details[#details+1] = r.detail end end
         local group = { detail_w = _measureLblW(details, cd.face_det, cd.bold_det, 0), rows = {} }
+        cd.lbl_w = _measureLblW(lbl_labels, cd.face_lbl, cd.bold_lbl, cd.lbl_w)
         local rendered_count = 0
         for _i, k in ipairs(_getElemOrder(ctx.pfx)) do
             if k == "annual" and show_ann then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = cd.row_gap } end
-                local lbl_w = _measureLblW({ year_str }, cd.face_lbl, cd.bold_lbl, cd.lbl_w)
-                cd.lbl_w = lbl_w
                 local row_widget, row_update_fn = buildCompactGoalRow(
-                    inner_w, lbl_w, pct_w, group, year_str, rows.annual.pct, rows.annual.pct_str, rows.annual.detail,
+                    inner_w, cd.lbl_w, pct_w, group, year_str, rows.annual.pct, rows.annual.pct_str, rows.annual.detail,
                     _openFinishedBooks, cd, ink)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "books", fn = function(books_r, _today_s, _month_s)
@@ -957,10 +962,8 @@ function M.build(w, ctx)
                 rendered_count = rendered_count + 1
             elseif k == "monthly" and show_mon then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = cd.row_gap } end
-                local lbl_w = _measureLblW({ month_str }, cd.face_lbl, cd.bold_lbl, cd.lbl_w)
-                cd.lbl_w = lbl_w
                 local row_widget, row_update_fn = buildCompactGoalRow(
-                    inner_w, lbl_w, pct_w, group, month_str, rows.monthly.pct, rows.monthly.pct_str, rows.monthly.detail,
+                    inner_w, cd.lbl_w, pct_w, group, month_str, rows.monthly.pct, rows.monthly.pct_str, rows.monthly.detail,
                     function() Goals.showDialog("monthly") end, cd, ink)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "timeseries", fn = function(_books_r, _today_s, month_s)
@@ -970,9 +973,8 @@ function M.build(w, ctx)
                 rendered_count = rendered_count + 1
             elseif k == "daily" and show_day then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = cd.row_gap } end
-                local lbl_w = _measureLblW({ _("Today") }, cd.face_lbl, cd.bold_lbl, cd.lbl_w)
                 local row_widget, row_update_fn = buildCompactGoalRow(
-                    inner_w, lbl_w, pct_w, group, _("Today"), rows.daily.pct, rows.daily.pct_str, rows.daily.detail,
+                    inner_w, cd.lbl_w, pct_w, group, _("Today"), rows.daily.pct, rows.daily.pct_str, rows.daily.detail,
                     function() Goals.showDialog("daily") end, cd, ink)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "timeseries", fn = function(_books_r, today_s, _month_s)
@@ -984,18 +986,14 @@ function M.build(w, ctx)
         end
     else
         local d        = _scaledDims(scale, styles)
-        -- Capture year/month strings once — avoids repeated os.date calls.
-        local year_str  = _getYearStr()
-        local month_str = _getMonthStr()
         local rows, pct_w = _collectRowData(show_rows, books_read, month_secs, today_secs,
             d.face_pct, d.bold_pct, d.pct_w)
         d.pct_w = pct_w
+        d.lbl_w = _measureLblW(lbl_labels, d.face_lbl, d.bold_lbl, d.lbl_w)
         local rendered_count = 0
         for _i, k in ipairs(_getElemOrder(ctx.pfx)) do
             if k == "annual" and show_ann then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = d.row_gap } end
-                local ann_lbl_w = _measureLblW({ year_str }, d.face_lbl, d.bold_lbl, d.lbl_w)
-                d.lbl_w = ann_lbl_w
                 local row_widget, row_update_fn = buildGoalRow(
                     inner_w, year_str, rows.annual.pct, rows.annual.pct_str, rows.annual.detail,
                     _openFinishedBooks, d, ink)
@@ -1007,8 +1005,6 @@ function M.build(w, ctx)
                 rendered_count = rendered_count + 1
             elseif k == "monthly" and show_mon then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = d.row_gap } end
-                local mon_lbl_w = _measureLblW({ month_str }, d.face_lbl, d.bold_lbl, d.lbl_w)
-                d.lbl_w = mon_lbl_w
                 local row_widget, row_update_fn = buildGoalRow(
                     inner_w, month_str, rows.monthly.pct, rows.monthly.pct_str, rows.monthly.detail,
                     function() Goals.showDialog("monthly") end, d, ink)
@@ -1020,8 +1016,6 @@ function M.build(w, ctx)
                 rendered_count = rendered_count + 1
             elseif k == "daily" and show_day then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = d.row_gap } end
-                local day_lbl_w = _measureLblW({ _("Today") }, d.face_lbl, d.bold_lbl, d.lbl_w)
-                d.lbl_w = day_lbl_w
                 local row_widget, row_update_fn = buildGoalRow(
                     inner_w, _("Today"), rows.daily.pct, rows.daily.pct_str, rows.daily.detail,
                     function() Goals.showDialog("daily") end, d, ink)
