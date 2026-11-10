@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-11-06 17:27+0000\n"
+"POT-Creation-Date: 2026-11-10 16:33+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,7 +31,7 @@ msgid " et al."
 msgstr ""
 
 #: engines/sui_book_grid.lua:464
-#: features/library/sui_foldercovers.lua:1253
+#: features/library/sui_foldercovers.lua:1252
 msgid " p."
 msgstr ""
 
@@ -356,6 +356,10 @@ msgstr ""
 
 #: modules/critter/voice_phrases.lua:567
 msgid "A cold case."
+msgstr ""
+
+#: features/library/sui_group_actions.lua:149
+msgid "A connected collection adds and removes books as they change in the folder. A fixed collection keeps only the books found now."
 msgstr ""
 
 #: modules/critter/dialog.lua:236
@@ -1078,7 +1082,7 @@ msgstr ""
 msgid "Author: %s"
 msgstr ""
 
-#: features/library/sui_library_browse.lua:67
+#: features/library/sui_library_browse.lua:68
 #: features/sui_quickactions.lua:1004
 #: infra/sui_config.lua:141
 msgid "Authors"
@@ -1089,7 +1093,7 @@ msgstr ""
 msgid "Auto (Single ↔ 4-Cover Grid)"
 msgstr ""
 
-#: features/library/sui_group_actions.lua:63
+#: features/library/sui_group_actions.lua:64
 msgid "Auto (first book)"
 msgstr ""
 
@@ -1808,11 +1812,7 @@ msgstr ""
 msgid "Collection Menu"
 msgstr ""
 
-#: features/library/sui_group_actions.lua:137
-msgid "Collection \"%1\" created with %2 books."
-msgstr ""
-
-#: features/library/sui_group_actions.lua:110
+#: features/library/sui_group_actions.lua:135
 msgid "Collection already exists: %1"
 msgstr ""
 
@@ -1838,7 +1838,7 @@ msgstr ""
 msgid "Collections"
 msgstr ""
 
-#: infra/sui_patches.lua:1369
+#: infra/sui_patches.lua:1533
 msgid "Collections (%1)"
 msgstr ""
 
@@ -1879,6 +1879,14 @@ msgstr ""
 
 #: features/sui_quickactions.lua:2068
 msgid "Confirm"
+msgstr ""
+
+#: features/library/sui_group_actions.lua:152
+msgid "Connected"
+msgstr ""
+
+#: infra/sui_patches.lua:1385
+msgid "Connected folders: %1"
 msgstr ""
 
 #: infra/sui_config.lua:1214
@@ -2011,7 +2019,7 @@ msgstr ""
 msgid "Covers"
 msgstr ""
 
-#: features/library/sui_group_actions.lua:105
+#: features/library/sui_group_actions.lua:130
 #: screens/sui_settings_window.lua:993
 msgid "Create"
 msgstr ""
@@ -2029,11 +2037,12 @@ msgstr ""
 msgid "Create a \"Books\" folder"
 msgstr ""
 
-#: features/library/sui_facet_groups.lua:139
+#: features/library/sui_facet_groups.lua:134
 #: features/library/sui_foldercovers.lua:624
 #: features/library/sui_foldercovers.lua:639
-#: features/library/sui_library_browse.lua:898
-#: features/library/sui_series_grouping.lua:402
+#: features/library/sui_group_actions.lua:147
+#: features/library/sui_library_browse.lua:908
+#: features/library/sui_series_grouping.lua:404
 msgid "Create collection"
 msgstr ""
 
@@ -2427,6 +2436,14 @@ msgstr ""
 msgid "Disable and restart"
 msgstr ""
 
+#: infra/sui_patches.lua:1423
+msgid "Disconnect folder"
+msgstr ""
+
+#: infra/sui_patches.lua:1470
+msgid "Disconnect folders"
+msgstr ""
+
 #: infra/sui_config.lua:204
 msgid "Disk Usage"
 msgstr ""
@@ -2604,7 +2621,7 @@ msgstr ""
 msgid "Empty"
 msgstr ""
 
-#: features/library/sui_foldercovers.lua:1448
+#: features/library/sui_foldercovers.lua:1447
 msgid "Empty folder"
 msgstr ""
 
@@ -3055,6 +3072,10 @@ msgstr ""
 msgid "Five"
 msgstr ""
 
+#: features/library/sui_group_actions.lua:158
+msgid "Fixed"
+msgstr ""
+
 #: modules/module_quote.lua:1468
 #: modules/module_quote.lua:1499
 msgid "Fixed Height"
@@ -3114,9 +3135,9 @@ msgid "Folder Shortcuts"
 msgstr ""
 
 #: features/library/sui_foldercovers.lua:541
-#: features/library/sui_group_actions.lua:80
-#: features/library/sui_library_browse.lua:443
-#: features/library/sui_series_grouping.lua:103
+#: features/library/sui_group_actions.lua:81
+#: features/library/sui_library_browse.lua:448
+#: features/library/sui_series_grouping.lua:104
 msgid "Folder cover"
 msgstr ""
 
@@ -4267,6 +4288,10 @@ msgstr ""
 msgid "Include Manual Books in All Time Total"
 msgstr ""
 
+#: infra/sui_patches.lua:1440
+msgid "Include subfolders"
+msgstr ""
+
 #: modules/critter/menu.lua:133
 msgid "Included"
 msgstr ""
@@ -4705,7 +4730,7 @@ msgstr ""
 msgid "Letter Spacing"
 msgstr ""
 
-#: features/library/sui_library_browse.lua:76
+#: features/library/sui_library_browse.lua:77
 #: features/sui_backup.lua:127
 #: features/sui_quickactions.lua:677
 #: infra/sui_config.lua:125
@@ -5361,8 +5386,8 @@ msgstr ""
 #: engines/sui_book_grid.lua:520
 #: engines/sui_book_sources.lua:336
 #: features/library/sui_cover_widgets.lua:509
-#: features/library/sui_foldercovers.lua:1295
-#: features/library/sui_foldercovers.lua:1666
+#: features/library/sui_foldercovers.lua:1294
+#: features/library/sui_foldercovers.lua:1665
 msgid "New"
 msgstr ""
 
@@ -5388,7 +5413,7 @@ msgstr ""
 msgid "New Quick Action"
 msgstr ""
 
-#: features/library/sui_group_actions.lua:103
+#: features/library/sui_group_actions.lua:128
 msgid "New collection name"
 msgstr ""
 
@@ -5549,21 +5574,16 @@ msgid "No books finished in %s"
 msgstr ""
 
 #: features/library/sui_foldercovers.lua:545
-#: features/library/sui_foldercovers.lua:648
 msgid "No books found in this folder."
 msgstr ""
 
-#: features/library/sui_series_grouping.lua:107
-#: features/library/sui_series_grouping.lua:122
+#: features/library/sui_series_grouping.lua:108
 msgid "No books found in this series."
 msgstr ""
 
 #: engines/sui_group_cell.lua:594
-#: features/library/sui_facet_groups.lua:146
-#: features/library/sui_group_actions.lua:45
-#: features/library/sui_group_actions.lua:97
-#: features/library/sui_library_browse.lua:447
-#: features/library/sui_library_browse.lua:471
+#: features/library/sui_group_actions.lua:46
+#: features/library/sui_library_browse.lua:452
 msgid "No books found."
 msgstr ""
 
@@ -6224,8 +6244,8 @@ msgstr ""
 
 #: engines/sui_screen_engine.lua:1931
 #: engines/sui_window.lua:1823
-#: infra/sui_patches.lua:2129
-#: infra/sui_patches.lua:2969
+#: infra/sui_patches.lua:2293
+#: infra/sui_patches.lua:3133
 msgid "Page %1 of %2"
 msgstr ""
 
@@ -7384,6 +7404,10 @@ msgstr ""
 msgid "Scan Subfolders for Covers"
 msgstr ""
 
+#: infra/sui_patches.lua:1432
+msgid "Scan folder on showing collection"
+msgstr ""
+
 #: modules/critter/voice_phrases.lua:410
 msgid "Science can't explain it."
 msgstr ""
@@ -7472,7 +7496,7 @@ msgstr ""
 msgid "September"
 msgstr ""
 
-#: features/library/sui_library_browse.lua:68
+#: features/library/sui_library_browse.lua:69
 #: features/sui_quickactions.lua:1005
 #: infra/sui_config.lua:143
 #: modules/module_currently.lua:270
@@ -7514,8 +7538,8 @@ msgid "Set cover"
 msgstr ""
 
 #: features/library/sui_foldercovers.lua:578
-#: features/library/sui_library_browse.lua:890
-#: features/library/sui_series_grouping.lua:387
+#: features/library/sui_library_browse.lua:900
+#: features/library/sui_series_grouping.lua:389
 msgid "Set folder cover"
 msgstr ""
 
@@ -8300,7 +8324,7 @@ msgstr ""
 msgid "Tabs and Search"
 msgstr ""
 
-#: features/library/sui_library_browse.lua:69
+#: features/library/sui_library_browse.lua:70
 #: features/sui_quickactions.lua:1006
 #: infra/sui_config.lua:145
 msgid "Tags"
@@ -10412,6 +10436,12 @@ msgstr[1] ""
 #: modules/module_quick_actions.lua:447
 msgid "(%d/%d — %d left)"
 msgid_plural "(%d/%d — %d left)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: features/library/sui_group_actions.lua:140
+msgid "Collection \"%1\" created with %2 book."
+msgid_plural "Collection \"%1\" created with %2 books."
 msgstr[0] ""
 msgstr[1] ""
 

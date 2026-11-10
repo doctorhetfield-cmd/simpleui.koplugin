@@ -56,6 +56,7 @@ local VirtualPath      = require("features/library/sui_virtual_path")
 local MetadataSource   = require("features/library/sui_metadata_source")
 local CoverOverrides   = require("features/library/sui_cover_overrides")
 local GroupActions     = require("features/library/sui_group_actions")
+local RuleCollections  = require("features/library/sui_rule_collections")
 local CoverFinder      = require("features/library/sui_cover_finder")
 local FolderCovers     = require("features/library/sui_foldercovers")
 
@@ -360,6 +361,7 @@ end
 --                leaf returns to the real folder, scrolled to that book
 --   return_fn    called when going back from the leaf, instead of returning
 --                to a real folder, for a navigation that started elsewhere
+--   filter_state trail the leaf is added to; none by default
 --
 -- Preconditions: browse mode must be installed (M.install() called).
 function M.navigateToLeaf(fm, dimension, value, opts)
@@ -369,7 +371,10 @@ function M.navigateToLeaf(fm, dimension, value, opts)
 
     local fc_base = VirtualPath.getBaseDir(fc.path)
     local base    = opts.base_dir or fc_base
-    local target  = VirtualPath.buildLeaf(base, nil, dimension, value)
+    local prefix  = opts.filter_state
+    local target  = VirtualPath.buildLeaf(base, prefix, dimension, value)
+    local first   = prefix and prefix.trail[1]
+    local mode    = first and first.dimension or dimension
 
     -- The origin lives on the file chooser, not in a module upvalue, so it
     -- survives module reloads. It is bound to the leaf it was set for.
@@ -384,7 +389,7 @@ function M.navigateToLeaf(fm, dimension, value, opts)
         fc._sui_leaf_origin = nil
     end
 
-    fc._browse_by_meta_entry_path = VirtualPath.buildDimList(base, nil, dimension)
+    fc._browse_by_meta_entry_path = VirtualPath.buildDimList(base, nil, mode)
     fm._navbar_suppress_path_change = true
     fc:changeToPath(target)
     fm._navbar_suppress_path_change = nil
@@ -395,7 +400,7 @@ function M.navigateToLeaf(fm, dimension, value, opts)
         pcall(function() fc:onGotoPage(1) end)
     end
     -- Persist the mode so the next session restores the virtual tree.
-    M.setSavedMode(dimension)
+    M.setSavedMode(mode)
 end
 
 -- ---------------------------------------------------------------------------
@@ -450,7 +455,7 @@ function M.openVirtualCoverPicker(vpath, fc, sheet)
 end
 
 -- `sheet`: optional flow sheet to show the name prompt on, as a page.
-local function _createCollectionFromVirtualFolder(vpath, fc, sheet)
+local function _createCollectionFromVirtualFolder(vpath, sheet)
     local base_dir, filter_state, _dim, level = VirtualPath.parse(vpath)
     if level ~= "file_list" then return _closeSheet(sheet) end
 
@@ -461,14 +466,9 @@ local function _createCollectionFromVirtualFolder(vpath, fc, sheet)
     -- identity — same guard the original had.
     if not last or last.value == false then return _closeSheet(sheet) end
 
-    local books = _resolveLeafBooks(fc, base_dir, filter_state)
-    local paths = {}
-    for _, item in ipairs(books) do paths[#paths + 1] = item.path end
-
     GroupActions.createCollection{
         suggested_name = last.value,
-        paths          = paths,
-        empty_message  = _("No books found."),
+        connect_rule   = RuleCollections.new(base_dir, trail, true),
         parent         = sheet,
     }
 end
@@ -862,7 +862,7 @@ local function _installPatches()
                     local last  = trail[#trail]
                     -- "no value" leaf: long-press disabled (no meaningful name).
                     if not last or last.value == false then return true end
-                    _createCollectionFromVirtualFolder(item.path, fc)
+                    _createCollectionFromVirtualFolder(item.path)
                 end
                 -- Non-leaf virtual items (dim-root folders such as "Authors")
                 -- still return true silently — no sensible action to offer.
@@ -909,7 +909,7 @@ local function _installPatches()
                     sui_icon  = "collections",
                     keep_open = true,
                     chevron   = true,
-                    callback  = function() _createCollectionFromVirtualFolder(item.path, fc, sheet) end,
+                    callback  = function() _createCollectionFromVirtualFolder(item.path, sheet) end,
                 }
 
                 local ActionSheet = require("engines/sui_action_sheet")

@@ -47,6 +47,7 @@ local FolderCovers   = require("features/library/sui_foldercovers")
 local FilterState    = require("features/library/sui_filter_state")
 local VirtualPath    = require("features/library/sui_virtual_path")
 local MetadataSource = require("features/library/sui_metadata_source")
+local RuleCollections = require("features/library/sui_rule_collections")
 
 local SeriesGrouping = {}
 
@@ -110,16 +111,17 @@ function SeriesGrouping.openCoverPicker(vpath, fc, BookInfoManager, sheet)
 end
 
 -- `sheet` (optional): flow sheet to show the name prompt on, as a page.
+-- The collection follows the series in the group's folder, subfolders excluded.
 function SeriesGrouping.createCollection(vpath, series_name, sheet)
-    local series_items = _sg_items_cache[vpath]
-    local paths = {}
-    for _, item in ipairs(series_items or {}) do
-        if item.path then paths[#paths + 1] = item.path end
+    local folder = vpath:match("^(.*)/[^/]+$")
+    if not (folder and series_name and series_name ~= "") then
+        if sheet then sheet:close() end
+        return
     end
     GroupActions.createCollection{
-        suggested_name = series_name or "",
-        paths          = paths,
-        empty_message  = _("No books found in this series."),
+        suggested_name = series_name,
+        connect_rule   = RuleCollections.new(folder,
+            { { dimension = "series", value = series_name } }, false),
         parent         = sheet,
     }
 end

@@ -1330,6 +1330,170 @@ function M.patchCollections(plugin)
         end)
     end
 
+    -- Collections connected to a metadata rule (sui_rule_collections) behave
+    -- like collections with connected folders: rescanned with them, marked
+    -- like them and listed among them.
+    local RuleCollections = require("features/library/sui_rule_collections")
+    local RULE_KEY = RuleCollections.KEY
+
+    if type(RC.updateCollectionFromFolder) == "function" then
+        local orig_update_from_folder = RC.updateCollectionFromFolder
+        _addHook(state, RC, "updateCollectionFromFolder", function(rc_self, coll_name, folders, is_showing, ...)
+            local count = orig_update_from_folder(rc_self, coll_name, folders, is_showing, ...)
+            -- Explicit folders are a one-off import, not a rescan.
+            if folders ~= nil then return count end
+            local ok2, added, removed = pcall(RuleCollections.sync, rc_self, coll_name, is_showing)
+            if not ok2 then
+                logger.warn("simpleui: rule collection rescan:", tostring(added))
+            elseif added + removed > 0 then
+                rc_self:write({ [coll_name] = true })
+                count = count + added
+            end
+            return count
+        end)
+    end
+
+    if type(FMColl.getCollMarker) == "function" then
+        local orig_marker = FMColl.getCollMarker
+        local folder_mark = Config.nerdIconChar("nerd:F114")
+        local default_mark = "★"
+        _addHook(state, FMColl, "getCollMarker", function(coll_name, ...)
+            local marker = orig_marker(coll_name, ...)
+            local settings = RC.coll_settings[coll_name]
+            if not (settings and settings[RULE_KEY]) or settings.folders then return marker end
+            if not marker then return folder_mark end
+            if marker:sub(1, #default_mark) == default_mark then
+                return default_mark .. " " .. folder_mark .. marker:sub(#default_mark + 1)
+            end
+            return folder_mark .. " " .. marker
+        end)
+    end
+
+    if type(FMColl.updateCollFolderListItemTable) == "function" then
+        local orig_folder_list = FMColl.updateCollFolderListItemTable
+        _addHook(state, FMColl, "updateCollFolderListItemTable", function(fmc_self, ...)
+            orig_folder_list(fmc_self, ...)
+            local list = fmc_self.coll_folder_list
+            local rule = list and list.item_table and RuleCollections.get(list.path)
+            if not rule then return end
+            local items = list.item_table
+            items[#items + 1] = {
+                text      = RuleCollections.label(rule),
+                mandatory = RuleCollections.flags(rule),
+                sui_rule  = true,
+            }
+            list:switchItemTable(nil, items, -1, nil, T(_("Connected folders: %1"), #items))
+        end)
+    end
+
+    if type(FMColl.onCollFolderListChoice) == "function" then
+        local orig_folder_choice = FMColl.onCollFolderListChoice
+        _addHook(state, FMColl, "onCollFolderListChoice", function(list, item, ...)
+            if not (item and item.sui_rule) then return orig_folder_choice(list, item, ...) end
+            local rule = RuleCollections.get(list.path)
+            if not rule then return true end
+            list._manager.update_files = nil
+            list.close_callback()
+            list._manager.coll_list.close_callback()
+            RuleCollections.open(rule, list.ui)
+            return true
+        end)
+    end
+
+    if type(FMColl.onCollFolderListHold) == "function" then
+        local orig_folder_hold = FMColl.onCollFolderListHold
+        _addHook(state, FMColl, "onCollFolderListHold", function(list, item, ...)
+            if not (item and item.sui_rule) then return orig_folder_hold(list, item, ...) end
+            local coll_name = list.path
+            local manager   = list._manager
+            local settings  = RC.coll_settings[coll_name]
+            local rule      = settings and settings[RULE_KEY]
+            if not rule then return true end
+            local function changed(rescan)
+                manager.updated_collections[coll_name] = true
+                if rescan then RC:updateCollectionFromFolder(coll_name) end
+                manager:updateCollFolderListItemTable()
+            end
+            local dialog
+            dialog = require("ui/widget/buttondialog"):new{
+                title       = item.text,
+                title_align = "center",
+                buttons     = {
+                    {{
+                        text     = _("Disconnect folder"),
+                        callback = function()
+                            UIManager:close(dialog)
+                            settings[RULE_KEY] = nil
+                            changed()
+                        end,
+                    }},
+                    {}, -- separator
+                    {{
+                        text         = _("Scan folder on showing collection"),
+                        checked_func = function() return rule.scan_on_show end,
+                        callback     = function()
+                            rule.scan_on_show = not rule.scan_on_show
+                            changed()
+                        end,
+                    }},
+                    {{
+                        text         = _("Include subfolders"),
+                        checked_func = function() return rule.subfolders end,
+                        callback     = function()
+                            rule.subfolders = not rule.subfolders
+                            changed(true)
+                        end,
+                    }},
+                },
+            }
+            UIManager:show(dialog)
+            return true
+        end)
+    end
+
+    -- The hold dialog of a connected collection gets a row that disconnects
+    -- it from its folders and rule, keeping its current books.
+    if type(FMColl.onCollListHold) == "function" then
+        local ButtonDialog = require("ui/widget/buttondialog")
+        local orig_coll_hold = FMColl.onCollListHold
+        local orig_dialog_new = ButtonDialog.new
+        local hold_ctx -- the list and item while their hold dialog is built
+        _addHook(state, ButtonDialog, "new", function(class, o, ...)
+            local ctx = hold_ctx
+            hold_ctx = nil
+            local settings = ctx and o and o.buttons and RC.coll_settings[ctx.item.name]
+            if not (settings and (settings.folders or settings[RULE_KEY])) then
+                return orig_dialog_new(class, o, ...)
+            end
+            local dialog
+            table.insert(o.buttons, 2, {{
+                text     = _("Disconnect folders"),
+                callback = function()
+                    UIManager:close(dialog)
+                    settings.folders = nil
+                    settings[RULE_KEY] = nil
+                    ctx.list._manager:refreshCollList(ctx.item)
+                end,
+            }})
+            dialog = orig_dialog_new(class, o, ...)
+            return dialog
+        end)
+        _addHook(state, FMColl, "onCollListHold", function(list, item, ...)
+            hold_ctx = item and { list = list, item = item }
+            local ok2, result = pcall(orig_coll_hold, list, item, ...)
+            hold_ctx = nil
+            if not ok2 then error(result) end
+            return result
+        end)
+    end
+
+    -- KOReader rescans connected folders when it first reads the collections,
+    -- before these hooks exist; rules get that rescan once the UI is up.
+    UIManager:nextTick(function()
+        local ok2, err = pcall(RuleCollections.syncAll, RC)
+        if not ok2 then logger.warn("simpleui: rule collections startup rescan:", tostring(err)) end
+    end)
+
     -- Patch FMColl.updateCollListItemTable to:
     --   1. Hide the TBR collection when it is empty (no books).
     --   2. Show the localised display name instead of the raw RC key.
