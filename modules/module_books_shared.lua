@@ -1,6 +1,6 @@
 -- module_books_shared.lua — Simple UI
 -- Helpers shared by the Currently Reading and Recent Books modules:
--- cover loading, book data, progress bar, prefetch, formatTimeLeft.
+-- cover loading, book data, progress bar, prefetch.
 -- Not a module — no id or build(). Pure shared utilities.
 
 local Device          = require("device")
@@ -374,22 +374,6 @@ function SH.applyProgressBadge(cover_widget, bd, cw, ch, opts)
     }
     overlap[#overlap + 1] = wg
     return overlap
-end
-
--- ---------------------------------------------------------------------------
--- formatTimeLeft
--- ---------------------------------------------------------------------------
-function SH.formatTimeLeft(pct, pages, avg_time)
-    if not avg_time or avg_time <= 0 or not pct or pct < 0 or not pages then return nil end
-    local remaining = math_floor(pages * (1.0 - pct))
-    if remaining <= 0 then return nil end
-    local secs = math_floor(remaining * avg_time)
-    if secs <= 0 then return nil end
-    local h = math_floor(secs / 3600)
-    local m = math_floor((secs % 3600) / 60)
-    if h > 0 and m > 0 then return string.format("%dh %dm", h, m)
-    elseif h > 0        then return string.format("%dh", h)
-    else                     return string.format("%dm", m) end
 end
 
 -- ---------------------------------------------------------------------------

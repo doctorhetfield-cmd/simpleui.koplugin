@@ -14,6 +14,8 @@
 --       newline-separated field, trimmed; nil when there is none
 --   Text.formatAuthors(s)            -> nil when the field holds no name, the
 --       name when it holds one, "Name et al." when it holds several
+--   Text.formatDuration(secs, opts)  -> "3h 5m" / "3h" / "12m" / "0m"; with
+--       opts.seconds, "3h 05m" / "1m 05s" / "45s" / "0s"
 --
 -- Nil and empty strings are returned unchanged by the length helpers.
 
@@ -96,6 +98,31 @@ function Text.formatAuthors(s)
     local first = nextName()
     if first and nextName() then return first .. _(" et al.") end
     return first
+end
+
+-- Formats with the translated pattern, or with the original one when the
+-- translation does not match the arguments.
+local function formatUnits(pattern, translated, ...)
+    local ok, s = pcall(string.format, translated, ...)
+    if ok then return s end
+    return string.format(pattern, ...)
+end
+
+-- Nil, negative and NaN durations count as zero; fractions are dropped.
+function Text.formatDuration(secs, opts)
+    secs = tonumber(secs) or 0
+    if secs ~= secs or secs < 0 then secs = 0 end
+    secs = math.floor(secs)
+    local h = math.floor(secs / 3600)
+    local m = math.floor((secs % 3600) / 60)
+    if opts and opts.seconds then
+        if h > 0 then return formatUnits("%dh %02dm", _("%dh %02dm"), h, m) end
+        if m > 0 then return formatUnits("%dm %02ds", _("%dm %02ds"), m, secs % 60) end
+        return formatUnits("%ds", _("%ds"), secs)
+    end
+    if h > 0 and m > 0 then return formatUnits("%dh %dm", _("%dh %dm"), h, m) end
+    if h > 0 then return formatUnits("%dh", _("%dh"), h) end
+    return formatUnits("%dm", _("%dm"), m)
 end
 
 return Text

@@ -25,6 +25,7 @@ local _ = require("infra/sui_i18n").translate
 local N_ = require("infra/sui_i18n").ngettext
 local logger          = require("logger")
 local Config          = require("infra/sui_config")
+local Text            = require("infra/sui_text")
 local SectionLabel    = require("engines/sui_section_label")
 local AAPaint         = require("infra/sui_aa_paint")
 
@@ -52,6 +53,9 @@ local _BASE_BAR_H   = SUIStyle.PROGRESS_BAR_H
 local _BASE_LBL_W   = Screen:scaleBySize(44)
 local _BASE_COL_GAP = Screen:scaleBySize(8)
 local _BASE_BOT_PAD = Screen:scaleBySize(18)
+
+-- Shown in place of a percentage when no goal is set.
+local NO_GOAL_TEXT  = "—"
 
 -- Compact layout reuses the same _BASE_* constants as the default layout —
 -- _compactDims(scale) just applies them at a different scale. Callers
@@ -178,17 +182,6 @@ local function _saveElemOrder(pfx, order)
     SUISettings:saveSetting(pfx .. ELEM_ORDER_KEY, order)
 end
 
--- Formats seconds as "Xh Ym" / "Xh" / "Ym"
-local function formatDuration(secs)
-    secs = math.floor(secs or 0)
-    if secs <= 0 then return "0m" end
-    local h = math.floor(secs / 3600)
-    local m = math.floor((secs % 3600) / 60)
-    if h > 0 and m > 0 then return string.format("%dh %dm", h, m)
-    elseif h > 0        then return string.format("%dh", h)
-    else                     return string.format("%dm", m) end
-end
-
 -- Stats cache and per-module fetch logic have been moved to
 -- modules/module_stats_provider.lua (SP). The provider runs one
 -- consolidated DB query covering today, 7-day avg, year total, and all-time
@@ -268,12 +261,27 @@ local function _measureLblW(labels, face, bold, floor_w)
     return math.max(max_w, floor_w)
 end
 
-local function _buildInnerCompact(inner_w, lbl_w, pct_w, detail_w, label_str, pct, pct_str, detail_str, cd, ink)
+-- Re-measures the widest visible percentage across group.rows and stores it in
+-- group.pct_w. Returns true when the shared column width changed.
+local function _remeasurePctW(group, face, bold)
+    local pct_strs = {}
+    for _, r in ipairs(group.rows) do
+        local pct_str = r.state.pct_str
+        pct_strs[#pct_strs + 1] = pct_str ~= "" and pct_str or NO_GOAL_TEXT
+    end
+    local w = _measureLblW(pct_strs, face, bold, group.pct_floor_w)
+    if w == group.pct_w then return false end
+    group.pct_w = w
+    return true
+end
+
+local function _buildInnerCompact(inner_w, lbl_w, group, label_str, pct, pct_str, detail_str, cd, ink)
     local ROW_H          = cd.row_h
     local LBL_BAR_GAP    = cd.col_gap
     local BAR_PCT_GAP    = cd.col_gap
     local PCT_DETAIL_GAP = cd.col_gap
-    local PCT_W          = pct_w
+    local PCT_W          = group.pct_w
+    local detail_w       = group.detail_w
     -- The detail column is as wide as its measured text; the bar takes the rest.
     local fixed     = lbl_w + LBL_BAR_GAP + BAR_PCT_GAP + PCT_W + PCT_DETAIL_GAP
     local min_bar_w = Screen:scaleBySize(40)
@@ -299,12 +307,16 @@ local function _buildInnerCompact(inner_w, lbl_w, pct_w, detail_w, label_str, pc
         HorizontalSpan:new{ width = LBL_BAR_GAP },
         vcenter_left(UI.progressBar(bar_w, pct, cd.bar_h, ink.bar_fg, ink.bar_bg), bar_w),
         HorizontalSpan:new{ width = BAR_PCT_GAP },
-        vcenter_left(UI.makeColoredText{
-            text    = pct_str ~= "" and pct_str or "—",
-            face    = cd.face_pct,
-            bold    = cd.bold_pct,
-            fgcolor = ink.blk,
-        }, PCT_W),
+        -- Values are right-aligned; the no-goal placeholder is centred.
+        (pct_str ~= "" and RightContainer or CenterContainer):new{
+            dimen = Geom:new{ w = PCT_W, h = ROW_H },
+            UI.makeColoredText{
+                text    = pct_str ~= "" and pct_str or NO_GOAL_TEXT,
+                face    = cd.face_pct,
+                bold    = cd.bold_pct,
+                fgcolor = ink.blk,
+            },
+        },
         HorizontalSpan:new{ width = PCT_DETAIL_GAP },
         DETAIL_W > 0 and vcenter_right(UI.makeColoredText{
             text      = detail_str,
@@ -341,30 +353,32 @@ end
 -- Builds a single inline row: Label [bar] XX%  detail
 -- Used by the Compact layout. All elements are horizontally laid out and vertically centred.
 -- lbl_w is pre-computed by _measureLblW so both rows share the same column width.
-local function buildCompactGoalRow(inner_w, lbl_w, pct_w, group, label_str, pct, pct_str, detail_str, on_tap, cd, ink)
+local function buildCompactGoalRow(inner_w, lbl_w, group, label_str, pct, pct_str, detail_str, on_tap, cd, ink)
     local state = { pct = pct, pct_str = pct_str, detail = detail_str }
     local frame = FrameContainer:new{
         bordersize = 0, padding = 0,
         dimen      = Geom:new{ w = inner_w, h = cd.row_h },
     }
     local function rebuild()
-        frame[1] = _buildInnerCompact(inner_w, lbl_w, pct_w, group.detail_w, label_str,
+        frame[1] = _buildInnerCompact(inner_w, lbl_w, group, label_str,
             state.pct, state.pct_str, state.detail, cd, ink)
     end
     rebuild()
     group.rows[#group.rows + 1] = { state = state, rebuild = rebuild }
 
-    -- The detail column is shared: when the widest detail changes, every row
-    -- is rebuilt so the bars stay aligned.
+    -- The percentage and detail columns are shared: when either widest text
+    -- changes, every row is rebuilt so the bars stay aligned.
     local update_fn = function(new_pct, new_pct_str, new_detail_str)
         state.pct, state.pct_str, state.detail = new_pct, new_pct_str, new_detail_str
+        local pct_changed = _remeasurePctW(group, cd.face_pct, cd.bold_pct)
         local details = {}
         for _, r in ipairs(group.rows) do
             if r.state.detail ~= "" then details[#details + 1] = r.state.detail end
         end
         local w = _measureLblW(details, cd.face_det, cd.bold_det, 0)
-        if w ~= group.detail_w then
-            group.detail_w = w
+        local detail_changed = w ~= group.detail_w
+        group.detail_w = w
+        if pct_changed or detail_changed then
             for _, r in ipairs(group.rows) do r.rebuild() end
         else
             rebuild()
@@ -390,6 +404,13 @@ local function _buildInnerDefault(inner_w, label_str, pct, pct_str, detail_str, 
         bold    = d.bold_lbl,
         fgcolor = ink.blk,
     }
+    local pct_widget = UI.makeColoredText{
+        text    = pct_str ~= "" and pct_str or NO_GOAL_TEXT,
+        face    = d.face_pct,
+        bold    = d.bold_pct,
+        fgcolor = ink.blk,
+    }
+    local pct_size = pct_widget:getSize()
     return VerticalGroup:new{
         align = "left",
         HorizontalGroup:new{
@@ -401,11 +422,11 @@ local function _buildInnerDefault(inner_w, label_str, pct, pct_str, detail_str, 
             HorizontalSpan:new{ width = LBL_BAR_GAP },
         UI.progressBar(bar_w, pct, d.bar_h, ink.bar_fg, ink.bar_bg),
             HorizontalSpan:new{ width = BAR_PCT_GAP },
-            UI.makeColoredText{
-                text    = pct_str ~= "" and pct_str or "—",
-                face    = d.face_pct,
-                bold    = d.bold_pct,
-                fgcolor = ink.blk,
+            -- Shared column, never narrower than its text: values are
+            -- right-aligned, the no-goal placeholder is centred.
+            (pct_str ~= "" and RightContainer or CenterContainer):new{
+                dimen = Geom:new{ w = math.max(PCT_W, pct_size.w), h = pct_size.h },
+                pct_widget,
             },
         },
         VerticalSpan:new{ width = d.sub_gap },
@@ -421,16 +442,28 @@ end
 -- Builds a two-line goal row: label + bar + pct on the first line, detail text below.
 -- Used by the Default layout. Accepts a pre-computed dims table from _scaledDims.
 local function buildGoalRow(inner_w, label_str, pct, pct_str, detail_str, on_tap, d, ink)
-    local block = _buildInnerDefault(inner_w, label_str, pct, pct_str, detail_str, d, ink)
-
+    local state = { pct = pct, pct_str = pct_str, detail = detail_str }
     local frame = FrameContainer:new{
         bordersize     = 0,
         padding        = 0,
         padding_bottom = d.bot_pad,
-        block,
     }
+    local function rebuild()
+        frame[1] = _buildInnerDefault(inner_w, label_str,
+            state.pct, state.pct_str, state.detail, d, ink)
+    end
+    rebuild()
+    d.rows[#d.rows + 1] = { state = state, rebuild = rebuild }
+
+    -- The percentage column is shared: when the widest percentage changes,
+    -- every row is rebuilt so the bars stay aligned.
     local update_fn = function(new_pct, new_pct_str, new_detail_str)
-        frame[1] = _buildInnerDefault(inner_w, label_str, new_pct, new_pct_str, new_detail_str, d, ink)
+        state.pct, state.pct_str, state.detail = new_pct, new_pct_str, new_detail_str
+        if _remeasurePctW(d, d.face_pct, d.bold_pct) then
+            for _, r in ipairs(d.rows) do r.rebuild() end
+        else
+            rebuild()
+        end
     end
 
     return _wrapTappable(frame, inner_w, d.goal_row_h, on_tap), update_fn
@@ -569,7 +602,7 @@ local function _buildGoalCardInner(card_w, _card_h, label_str, pct, pct_str, det
     local ring = _buildRingWidget(ring_d, ring_frac, thick, ink)
 
     local center_txt = pct_str
-    if not center_txt or center_txt == "" then center_txt = "—" end
+    if not center_txt or center_txt == "" then center_txt = NO_GOAL_TEXT end
     local hole = math.max(12, ring_d - thick * 2 - 2)
     -- Inscribed content box: keep a margin so glyphs never touch the stroke.
     local content_w = math.max(8, math.floor(hole * 0.78))
@@ -713,10 +746,10 @@ local function _safeDetail(context_label, fmt_fn, fallback_fn)
     return fallback_fn()
 end
 
--- Returns pct, pct_str for a value against a goal; pct is 100% (empty label)
+-- Returns pct, pct_str for a value against a goal; pct is 0 (empty label)
 -- when no goal is set, since there's nothing to measure progress against.
 local function _goalPct(value, goal)
-    if goal <= 0 then return 1.0, "" end
+    if goal <= 0 then return 0, "" end
     local pct = value / goal
     return pct, _pctStr(pct)
 end
@@ -746,15 +779,15 @@ local function _monthlyData(month_secs)
     local detail_text = _safeDetail("monthly",
         function()
             if goal_secs <= 0 then
-                return string.format(_("%s read"), formatDuration(month_secs))
+                return string.format(_("%s read"), Text.formatDuration(month_secs))
             else
-                return string.format("%s/%s", formatDuration(month_secs), formatDuration(goal_secs))
+                return string.format("%s/%s", Text.formatDuration(month_secs), Text.formatDuration(goal_secs))
             end
         end,
         function()
             return (goal_secs <= 0)
-                and (formatDuration(month_secs) .. " read")
-                or  (formatDuration(month_secs) .. "/" .. formatDuration(goal_secs))
+                and (Text.formatDuration(month_secs) .. " read")
+                or  (Text.formatDuration(month_secs) .. "/" .. Text.formatDuration(goal_secs))
         end)
     return pct, pct_str, detail_text
 end
@@ -766,15 +799,15 @@ local function _dailyData(today_secs)
     local detail_text = _safeDetail("daily",
         function()
             if goal_secs <= 0 then
-                return string.format(_("%s read"), formatDuration(today_secs))
+                return string.format(_("%s read"), Text.formatDuration(today_secs))
             else
-                return string.format("%s/%s", formatDuration(today_secs), formatDuration(goal_secs))
+                return string.format("%s/%s", Text.formatDuration(today_secs), Text.formatDuration(goal_secs))
             end
         end,
         function()
             return (goal_secs <= 0)
-                and (formatDuration(today_secs) .. " read")
-                or  (formatDuration(today_secs) .. "/" .. formatDuration(goal_secs))
+                and (Text.formatDuration(today_secs) .. " read")
+                or  (Text.formatDuration(today_secs) .. "/" .. Text.formatDuration(goal_secs))
         end)
     return pct, pct_str, detail_text
 end
@@ -793,7 +826,7 @@ local function _collectRowData(show, books_read, month_secs, today_secs, face, b
         if show[id] then
             local pct, pct_str, detail = fetch()
             data[id] = { pct = pct, pct_str = pct_str, detail = detail }
-            pct_strs[#pct_strs + 1] = pct_str ~= "" and pct_str or "—"
+            pct_strs[#pct_strs + 1] = pct_str ~= "" and pct_str or NO_GOAL_TEXT
         end
     end
     return data, _measureLblW(pct_strs, face, bold, floor_w)
@@ -941,18 +974,22 @@ function M.build(w, ctx)
     elseif layout == "compact" then
         -- scale already includes ctx.landscape_factor.
         local cd = _compactDims(scale, styles)
+        local pct_floor_w = Screen:scaleBySize(28)
         local rows, pct_w = _collectRowData(show_rows, books_read, month_secs, today_secs,
-            cd.face_pct, cd.bold_pct, Screen:scaleBySize(28))
+            cd.face_pct, cd.bold_pct, pct_floor_w)
         local details = {}
         for _id, r in pairs(rows) do if r.detail ~= "" then details[#details+1] = r.detail end end
-        local group = { detail_w = _measureLblW(details, cd.face_det, cd.bold_det, 0), rows = {} }
+        local group = {
+            pct_w = pct_w, pct_floor_w = pct_floor_w,
+            detail_w = _measureLblW(details, cd.face_det, cd.bold_det, 0), rows = {},
+        }
         cd.lbl_w = _measureLblW(lbl_labels, cd.face_lbl, cd.bold_lbl, cd.lbl_w)
         local rendered_count = 0
         for _i, k in ipairs(_getElemOrder(ctx.pfx)) do
             if k == "annual" and show_ann then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = cd.row_gap } end
                 local row_widget, row_update_fn = buildCompactGoalRow(
-                    inner_w, cd.lbl_w, pct_w, group, year_str, rows.annual.pct, rows.annual.pct_str, rows.annual.detail,
+                    inner_w, cd.lbl_w, group, year_str, rows.annual.pct, rows.annual.pct_str, rows.annual.detail,
                     _openFinishedBooks, cd, ink)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "books", fn = function(books_r, _today_s, _month_s)
@@ -963,7 +1000,7 @@ function M.build(w, ctx)
             elseif k == "monthly" and show_mon then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = cd.row_gap } end
                 local row_widget, row_update_fn = buildCompactGoalRow(
-                    inner_w, cd.lbl_w, pct_w, group, month_str, rows.monthly.pct, rows.monthly.pct_str, rows.monthly.detail,
+                    inner_w, cd.lbl_w, group, month_str, rows.monthly.pct, rows.monthly.pct_str, rows.monthly.detail,
                     function() Goals.showDialog("monthly") end, cd, ink)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "timeseries", fn = function(_books_r, _today_s, month_s)
@@ -974,7 +1011,7 @@ function M.build(w, ctx)
             elseif k == "daily" and show_day then
                 if rendered_count > 0 then rows_children[#rows_children+1] = VerticalSpan:new{ width = cd.row_gap } end
                 local row_widget, row_update_fn = buildCompactGoalRow(
-                    inner_w, cd.lbl_w, pct_w, group, _("Today"), rows.daily.pct, rows.daily.pct_str, rows.daily.detail,
+                    inner_w, cd.lbl_w, group, _("Today"), rows.daily.pct, rows.daily.pct_str, rows.daily.detail,
                     function() Goals.showDialog("daily") end, cd, ink)
                 rows_children[#rows_children+1] = row_widget
                 table.insert(rg_update_funcs, { cat = "timeseries", fn = function(_books_r, today_s, _month_s)
@@ -986,9 +1023,11 @@ function M.build(w, ctx)
         end
     else
         local d        = _scaledDims(scale, styles)
+        d.pct_floor_w = d.pct_w
         local rows, pct_w = _collectRowData(show_rows, books_read, month_secs, today_secs,
-            d.face_pct, d.bold_pct, d.pct_w)
+            d.face_pct, d.bold_pct, d.pct_floor_w)
         d.pct_w = pct_w
+        d.rows  = {}
         d.lbl_w = _measureLblW(lbl_labels, d.face_lbl, d.bold_lbl, d.lbl_w)
         local rendered_count = 0
         for _i, k in ipairs(_getElemOrder(ctx.pfx)) do

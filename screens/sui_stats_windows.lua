@@ -22,6 +22,7 @@ local _               = require("infra/sui_i18n").translate
 local N_              = require("infra/sui_i18n").ngettext
 local logger          = require("logger")
 local Config          = require("infra/sui_config")
+local Text            = require("infra/sui_text")
 local SUIStyle        = require("features/sui_style")
 local UI              = require("infra/sui_core")
 local SUIStreak       = require("infra/sui_streak")
@@ -347,18 +348,7 @@ local function _fmtDateRange(start_ts, finish_str)
 end
 
 local function _fmtDuration(secs)
-    secs = math.floor(secs or 0)
-    if secs <= 0 then return "0s" end
-    local h = math.floor(secs / 3600)
-    local m = math.floor((secs % 3600) / 60)
-    local s = secs % 60
-    if h > 0 then
-        return string.format("%dh %02dm", h, m)
-    elseif m > 0 then
-        return string.format("%dm %02ds", m, s)
-    else
-        return string.format("%ds", s)
-    end
+    return Text.formatDuration(secs, { seconds = true })
 end
 
 -- Formats a "YYYY-MM-DD" stamp as a short date, and a "YYYY" stamp as is.
@@ -1639,13 +1629,8 @@ end
 
 -- Returns a formatted string for a duration in seconds: "Xh Ym" / "Xm" / "0h"
 local function _riFmtHours(secs)
-    secs = math.floor(secs or 0)
-    if secs < 60 then return "0h" end
-    local h = math.floor(secs / 3600)
-    local m = math.floor((secs % 3600) / 60)
-    if h > 0 and m > 0 then return string.format("%dh %dm", h, m)
-    elseif h > 0          then return string.format("%dh", h)
-    else                       return string.format("%dm", m) end
+    if (secs or 0) < 60 then return string.format(_("%dh"), 0) end
+    return Text.formatDuration(secs)
 end
 
 -- Formats a timestamp (unix) into a short locale-independent date string.
@@ -1850,9 +1835,7 @@ function StatsWindows.showReadingInsightsWindow(opts)
         local card_w    = Frames.cardWidth(inner_w)
         local content_w = Frames.contentWidth(inner_w, SZ)
 
-        local function timeStr(secs)
-            return secs < 60 and "0m" or _riFmtHours(secs)
-        end
+        local timeStr = Text.formatDuration
 
         local function setYear(year)
             selected_year = year

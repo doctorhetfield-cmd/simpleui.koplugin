@@ -27,6 +27,7 @@ local N_ = require("infra/sui_i18n").ngettext
 local T  = require("ffi/util").template
 local Arrange         = require("features/sui_arrange")
 local Config          = require("infra/sui_config")
+local Text            = require("infra/sui_text")
 local GridRenderer    = require("engines/sui_book_grid")
 local PageNav         = require("engines/sui_page_nav")
 local PageState       = require("engines/sui_section_label").PageState
@@ -404,15 +405,6 @@ end
 -- ---------------------------------------------------------------------------
 -- Stat map
 -- ---------------------------------------------------------------------------
-local function fmtTime(secs)
-    secs = math.floor(secs or 0)
-    if secs <= 0 then return string.format("%dm", 0) end
-    local h = math.floor(secs / 3600); local m = math.floor((secs % 3600) / 60)
-    if h > 0 and m > 0 then return string.format("%dh %dm", h, m)
-    elseif h > 0        then return string.format("%dh", h)
-    else                     return string.format("%dm", m) end
-end
-
 -- Hour of the day (0-23) as the clock range it covers, following the device's
 -- 12/24 h setting.
 local function fmtHourRange(hour)
@@ -441,18 +433,18 @@ local HEAT_DAYS = 12 * 7
 -- `detail_label` override `title` and `label` on detailed cards, where the
 -- heading already carries part of the description.
 local STAT_MAP = {
-    today_time  = { title = _("Today"), icon = "clock", display_label = _("Reading time today"),      value = function(s) return fmtTime(s.today_secs) end,   label = _("of reading today"), detail_label = _("of reading") },
+    today_time  = { title = _("Today"), icon = "clock", display_label = _("Reading time today"),      value = function(s) return Text.formatDuration(s.today_secs) end,   label = _("of reading today"), detail_label = _("of reading") },
     today_pages = { title = _("Today"), icon = "page", display_label = _("Pages read today"),     value = function(s) return tostring(s.today_pages) end, label = _("pages read today"), detail_label = _("pages read") },
-    week_time   = { title = _("This week"), icon = "clock", display_label = _("Reading time this week"),  value = function(s) return fmtTime(s.week_secs) end,    label = _("of reading this week"), detail_label = _("of reading") },
+    week_time   = { title = _("This week"), icon = "clock", display_label = _("Reading time this week"),  value = function(s) return Text.formatDuration(s.week_secs) end,    label = _("of reading this week"), detail_label = _("of reading") },
     week_pages  = { title = _("This week"), icon = "page", display_label = _("Pages read this week"), value = function(s) return tostring(s.week_pages) end,  label = _("pages read this week"), detail_label = _("pages read") },
-    year_time   = { title = _("This year"), icon = "clock", display_label = _("Reading time this year"), value = function(s) return fmtTime(s.year_secs) end,   label = _("of reading this year"), detail_label = _("of reading") },
-    avg_time    = { title = _("Daily average"), icon = "clock", display_label = _("Daily average, last 7 days"),  value = function(s) return fmtTime(s.avg_secs) end,     label = _("daily avg (7 days)"), detail_label = _("last 7 days") },
+    year_time   = { title = _("This year"), icon = "clock", display_label = _("Reading time this year"), value = function(s) return Text.formatDuration(s.year_secs) end,   label = _("of reading this year"), detail_label = _("of reading") },
+    avg_time    = { title = _("Daily average"), icon = "clock", display_label = _("Daily average, last 7 days"),  value = function(s) return Text.formatDuration(s.avg_secs) end,     label = _("daily avg (7 days)"), detail_label = _("last 7 days") },
     avg_pages   = { title = _("Daily average"), icon = "page", display_label = _("Pages per day, last 7 days"), value = function(s) return tostring(s.avg_pages) end,   label = _("pages/day (7 days)"), detail_title = _("Pages per day"), detail_label = _("last 7 days") },
-    month_time  = { title = _("This month"), icon = "clock", display_label = _("Reading time this month"), value = function(s) return fmtTime(s.month_secs) end,   label = _("of reading this month"), detail_label = _("of reading") },
+    month_time  = { title = _("This month"), icon = "clock", display_label = _("Reading time this month"), value = function(s) return Text.formatDuration(s.month_secs) end,   label = _("of reading this month"), detail_label = _("of reading") },
     month_pages = { title = _("This month"), icon = "page", display_label = _("Pages read this month"),value = function(s) return tostring(s.month_pages) end, label = _("pages read this month"), detail_label = _("pages read") },
     pages_total = { title = _("Pages turned"), icon = "page", display_label = _("Total pages turned"), value = function(s) return tostring(s.total_turns) end, label = _("total pages turned"),
                     detail_value = function(s) return "+" .. s.today_turns end, unit_fn = function() return _("today") end },
-    total_time  = { title = _("All time"), icon = "clock", display_label = _("Total reading time"),   value = function(s) return fmtTime(s.total_secs) end,   label = _("of reading, all time"), detail_label = _("of reading") },
+    total_time  = { title = _("All time"), icon = "clock", display_label = _("Total reading time"),   value = function(s) return Text.formatDuration(s.total_secs) end,   label = _("of reading, all time"), detail_label = _("of reading") },
     total_books = { title = _("All time"), icon = "book", display_label = _("Books finished"),  value = function(s) return tostring(s.total_books) end, label = _("books finished") },
     streak      = { title = _("Streak"), icon = "streak", display_label = _("Reading streak"),            value = function(s) return s.streak > 0 and tostring(s.streak) or "—" end,
                     label_fn = function(s)
@@ -462,10 +454,10 @@ local STAT_MAP = {
                     unit_fn = function(s) return s.streak > 0 and N_("day", "days", s.streak) or nil end },
     session_longest = { title = _("Records"), icon = "clock", display_label = _("Longest session, 90 days"), label = _("longest session (90 days)"),
                         detail_title = _("Longest session"), detail_label = _("last 90 days"),
-                        value = function(s) return s.rec_sessions > 0 and fmtTime(s.rec_longest_secs) or "—" end },
+                        value = function(s) return s.rec_sessions > 0 and Text.formatDuration(s.rec_longest_secs) or "—" end },
     session_avg     = { title = _("Records"), icon = "clock", display_label = _("Average session, 90 days"), label = _("average session (90 days)"),
                         detail_title = _("Average session"), detail_label = _("last 90 days"),
-                        value = function(s) return s.rec_sessions > 0 and fmtTime(s.rec_avg_secs) or "—" end },
+                        value = function(s) return s.rec_sessions > 0 and Text.formatDuration(s.rec_avg_secs) or "—" end },
     pages_per_hour  = { title = _("Records"), icon = "page", display_label = _("Reading speed, 90 days"),      label = _("pages/hour (90 days)"),
                         detail_title = _("Pages per hour"), detail_label = _("last 90 days"),
                         value = function(s)
