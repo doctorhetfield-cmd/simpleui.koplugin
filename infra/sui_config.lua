@@ -2426,11 +2426,13 @@ local function _hookBookInfoChanges(bim)
     return bim
 end
 
--- The store forgetting a book (cover or metadata changes, manual refresh), or
--- the cover being ignored or restored, invalidates the cover state cached here.
+-- The store forgetting a book (cover or metadata changes, manual refresh), the
+-- cover being ignored or restored, or its cover columns being reset for a new
+-- extraction, invalidates the cover state cached here.
 M.onBookInfoChanged(function(filepath, method, props)
     if method == "deleteBookInfo"
-            or (method == "setBookInfoProperties" and props and props.ignore_cover ~= nil) then
+            or (method == "setBookInfoProperties" and props
+                and (props.ignore_cover ~= nil or props.cover_fetched ~= nil)) then
         M.dropCoverCaches(filepath)
     end
 end)
