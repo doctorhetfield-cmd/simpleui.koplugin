@@ -12,6 +12,10 @@
 -- The decoded bitmap lives in the shared RasterCache (kind "critter") and is
 -- looked up on every paint, so the widget keeps no bitmap of its own. The
 -- transparent rows at the bottom of an image are not part of the widget.
+--
+-- A sprite with `shadow` stands on the floor: a flat oval of light gray is
+-- painted under its base, reaching SHADOW_BELOW pixel units below it. The
+-- widget is that much taller when the box has room for it.
 
 local Blitbuffer  = require("ffi/blitbuffer")
 local ffi         = require("ffi")
@@ -30,8 +34,10 @@ local Screen = Device.screen
 
 local KIND           = "critter"
 local PIXEL_ART_MAX  = 64
-local SHADOW_FRAC    = 0.7   -- shadow width as a fraction of the image width
 local SHADOW_ROWS    = 3     -- shadow height in pixel units
+local SHADOW_BELOW   = 1     -- shadow rows below the base of the image
+local SHADOW_PAD     = 2     -- shadow reach beyond the base on each side, in pixel units
+local BASE_ROWS      = 2     -- bottom rows, in pixel units, that make up the base
 
 -- Blit method by [straight alpha][software dithering].
 local BLIT = {
@@ -71,20 +77,20 @@ local function decode(path, max_w, max_h, max_pixel)
     return RenderImage:renderImageFile(path, false, max_w, max_h)
 end
 
+-- Bytes per pixel of `bb` and offset of the alpha byte in it; nil for a
+-- bitmap without alpha.
+local function alphaLayout(bb)
+    local bb_type = bb:getType()
+    if bb_type == Blitbuffer.TYPE_BB8A then return 2, 1 end
+    if bb_type == Blitbuffer.TYPE_BBRGB32 then return 4, 3 end
+end
+
 -- Number of fully transparent rows at the bottom of `bb`, 0 for a bitmap
 -- without alpha. The widget leaves them out, so the lowest opaque row of the
 -- image stands on the bottom of its box.
 local function transparentFoot(bb)
-    local bb_type = bb:getType()
-    -- Bytes per pixel and offset of the alpha byte in it.
-    local step, alpha_at
-    if bb_type == Blitbuffer.TYPE_BB8A then
-        step, alpha_at = 2, 1
-    elseif bb_type == Blitbuffer.TYPE_BBRGB32 then
-        step, alpha_at = 4, 3
-    else
-        return 0
-    end
+    local step, alpha_at = alphaLayout(bb)
+    if not step then return 0 end
     local w, h = bb:getWidth(), bb:getHeight()
     local data, stride = ffi.cast("uint8_t *", bb.data), bb.stride
     for py = h - 1, 0, -1 do
@@ -96,6 +102,34 @@ local function transparentFoot(bb)
     return h
 end
 
+-- Horizontal span [left, right) of the opaque pixels in the `rows` rows above
+-- the `foot` transparent ones: the base the image stands on. The full width
+-- for a bitmap without alpha.
+local function baseSpan(bb, foot, rows)
+    local w, h = bb:getWidth(), bb:getHeight()
+    local step, alpha_at = alphaLayout(bb)
+    if not step then return 0, w end
+    local data, stride = ffi.cast("uint8_t *", bb.data), bb.stride
+    local left, right = w, 0
+    for py = math.max(0, h - foot - rows), h - foot - 1 do
+        local row = data + py * stride + alpha_at
+        for px = 0, w - 1 do
+            if row[px * step] > 0 then
+                if px < left then left = px end
+                if px >= right then right = px + 1 end
+            end
+        end
+    end
+    if right <= left then return 0, w end
+    return left, right
+end
+
+-- Pixel unit of an image: its pixel factor, or a small fixed size for one
+-- that is not pixel art.
+local function unitOf(pixel)
+    return pixel or math.max(1, Screen:scaleBySize(2))
+end
+
 -- RasterCache entry of `path`; an entry without bitmap when it cannot be
 -- decoded, so a broken file is not retried on every paint.
 local function buildEntry(path, max_w, max_h, max_pixel)
@@ -105,14 +139,16 @@ local function buildEntry(path, max_w, max_h, max_pixel)
         return { w = 0, h = 0, foot = 0 }
     end
     local foot_ok, foot = pcall(transparentFoot, bb)
-    if not foot_ok then
+    local base_ok, base_l, base_r
+    if foot_ok then base_ok, base_l, base_r = pcall(baseSpan, bb, foot, BASE_ROWS * unitOf(pixel)) end
+    if not (foot_ok and base_ok) then
         bb:free()
         logger.warn("simpleui: critter: cannot read " .. path)
         return { w = 0, h = 0, foot = 0 }
     end
     return {
         bb = bb, w = bb:getWidth(), h = bb:getHeight(), foot = foot,
-        straight = straight == true, pixel = pixel,
+        base_l = base_l, base_r = base_r, straight = straight == true, pixel = pixel,
     }
 end
 
@@ -122,33 +158,43 @@ local Sprite = Widget:extend{
     max_h     = 0,
     max_pixel = nil,   -- largest pixel factor of a pixel-art image
     pixel     = nil,   -- pixel factor in use (nil unless the image is pixel art)
-    shadow    = false, -- paint a ground shadow behind the image
+    shadow    = false, -- paint a ground shadow under the image
 }
 
 function Sprite:init()
     local mtime = lfs.attributes(self.path, "modification") or 0
     self.key = table.concat({ self.path, mtime, self.max_w, self.max_h, self.max_pixel or "" }, "|")
     local entry = self:_entry()
-    self.dimen = Geom:new{ w = entry.w, h = entry.h - entry.foot }
     self.pixel = entry.pixel
+    local h = entry.h - entry.foot
+    -- Rows below the image that the shadow takes, when the box has room.
+    self.ground = 0
+    if self.shadow and entry.bb then
+        local below = SHADOW_BELOW * unitOf(self.pixel)
+        if h + below <= self.max_h then self.ground = below end
+    end
+    self.dimen = Geom:new{ w = entry.w, h = h + self.ground }
 end
 
 function Sprite:_entry()
     return RasterCache.get(KIND, self.key, buildEntry, self.path, self.max_w, self.max_h, self.max_pixel)
 end
 
--- Paints the shadow: SHADOW_ROWS bars of one pixel unit, centred on the box
--- and widest in the middle, with their bottom on the bottom of the box.
-function Sprite:_paintShadow(bb, x, y, w, h)
-    local unit = self.pixel or math.max(1, Screen:scaleBySize(2))
-    local full = math.floor(w * SHADOW_FRAC / (2 * unit)) * 2 * unit
-    if full < 2 * unit then return end
-    local color = SUIStyle.COLOR.gray
-    local top = y + h - SHADOW_ROWS * unit
+-- Paints the shadow: an oval of SHADOW_ROWS bars of one pixel unit, as wide
+-- as the base of the image plus SHADOW_PAD units on each side (within the
+-- widget), with its bottom on the bottom of the widget.
+function Sprite:_paintShadow(bb, x, y, entry)
+    local unit = unitOf(self.pixel)
+    local left  = math.max(0, entry.base_l - SHADOW_PAD * unit)
+    local right = math.min(entry.w, entry.base_r + SHADOW_PAD * unit)
+    local half  = (right - left) / 2
+    if half < unit then return end
+    local color = SUIStyle.COLOR.gray_soft
+    local top = y + self.dimen.h - SHADOW_ROWS * unit
     for row = 0, SHADOW_ROWS - 1 do
         local dy = (row + 0.5) / SHADOW_ROWS * 2 - 1
-        local bar = math.max(2 * unit, math.floor(full * math.sqrt(1 - dy * dy) / (2 * unit) + 0.5) * 2 * unit)
-        AAPaint.fillRect(bb, x + math.floor((w - bar) / 2), top + row * unit, bar, unit, color, 255)
+        local inset = math.floor(half * (1 - math.sqrt(1 - dy * dy)) / unit + 0.5) * unit
+        AAPaint.fillRect(bb, x + left + inset, top + row * unit, right - left - 2 * inset, unit, color, 255)
     end
 end
 
@@ -159,7 +205,7 @@ function Sprite:paintTo(bb, x, y)
     if not src then return end
 
     local w, h = entry.w, entry.h - entry.foot
-    if self.shadow then self:_paintShadow(bb, x, y, w, h) end
+    if self.shadow then self:_paintShadow(bb, x, y, entry) end
     local src_type = src:getType()
     -- The night-mode inversion of the screen is undone for the sprite alone:
     -- opaque pixels are inverted after the blit, and with an alpha channel the

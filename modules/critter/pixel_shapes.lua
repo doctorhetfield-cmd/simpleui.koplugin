@@ -60,29 +60,31 @@ function Shapes.box(w, h, unit)
     }
 end
 
---- Staircase tail of `steps` columns (2 or more) and 2 * steps - 1 rows, its
---- widest row in the middle. The tip is on the `side` ("left" | "right") and the
---- base column, which joins the box, on the other. `border` is the whole
---- silhouette; `fill` the cells whose neighbours towards the tip, above and below
---- are in it, so only the edges and the tip show the contour.
+--- Hooked tail of `steps` columns and `steps` rows (2 or more). The top edge
+--- slants down to the tip, which sits one row above the bottom; the bottom
+--- edge is flat. The tip is on the `side` ("left" | "right") and the base
+--- column, which joins the box, on the other and is filled whole, so the tail
+--- opens into the box. `border` is the whole silhouette; `fill` the base column
+--- and the cells whose neighbours towards the tip, above and below are in it.
 function Shapes.tail(steps, unit, side)
-    local rows, mid = 2 * steps - 1, steps - 1
+    local base = steps - 1
     -- Cell (col, row) of the silhouette pointing left.
     local function inside(col, row)
-        if row < 0 or row >= rows or col < 0 or col >= steps then return false end
-        return col >= math.abs(row - mid)
+        if row < 0 or row >= steps or col < 0 or col >= steps then return false end
+        return col == base or (row >= base - 1 - col and row <= base - 1 + col)
     end
-    local function flip(col) return side == "right" and steps - 1 - col or col end
+    local function flip(col) return side == "right" and base - col or col end
     local function isBorder(col, row) return inside(flip(col), row) end
     local function isFill(col, row)
         local c = flip(col)
+        if c == base then return true end
         return inside(c, row) and inside(c - 1, row) and inside(c, row - 1) and inside(c, row + 1)
     end
     return {
         w      = steps * unit,
-        h      = rows * unit,
-        border = rectsOf(steps, rows, unit, isBorder),
-        fill   = rectsOf(steps, rows, unit, isFill),
+        h      = steps * unit,
+        border = rectsOf(steps, steps, unit, isBorder),
+        fill   = rectsOf(steps, steps, unit, isFill),
     }
 end
 
@@ -112,10 +114,10 @@ end
 --- straight part of its edge and is centred on it.
 function Shapes.tailRows(box_h, reach, unit)
     local rows = math.floor(box_h / unit)
-    local steps = math.min(reach / unit + 1, math.floor((rows - 3) / 2))
+    local steps = math.min(reach / unit + 1, rows - 4)
     if steps < 2 then return nil end
     local shape_top = math.floor((box_h - rows * unit) / 2)
-    return steps, shape_top + math.floor((rows - (2 * steps - 1)) / 2) * unit
+    return steps, shape_top + math.floor((rows - steps) / 2) * unit
 end
 
 --- Top of a panel of `panel_h` px next to an anchor spanning anchor_y ..

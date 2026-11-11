@@ -401,7 +401,10 @@ local ANCHOR_CONTAINERS = { floor = BottomContainer, wall = CenterContainer, cei
 -- returns it and its width, or nil and 0 when there is none or no room (`budget`).
 local function decorCell(entry, height, pixel, budget)
     if not entry or budget <= 0 then return nil, 0 end
-    local image = Sprite:new{ path = entry.path, max_w = budget, max_h = height, max_pixel = pixel }
+    local image = Sprite:new{
+        path = entry.path, max_w = budget, max_h = height, max_pixel = pixel,
+        shadow = entry.anchor == "floor",
+    }
     local width = image.dimen.w
     if width <= 0 then return nil, 0 end
     return ANCHOR_CONTAINERS[entry.anchor]:new{ dimen = Geom:new{ w = width, h = height }, image }, width
