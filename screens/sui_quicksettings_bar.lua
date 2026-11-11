@@ -862,6 +862,20 @@ local function bookMetrics(panel_w)
     }
 end
 
+-- Reading time for `pages` as the statistics plugin formats it; nil when the
+-- plugin is off or has no average yet. getTimeForPages only exists since
+-- KOReader v2025.10: older versions get the same computation from avg_time.
+local function timeForPages(stats, pages)
+    if not stats then return nil end
+    if stats.getTimeForPages then return stats:getTimeForPages(pages) end
+    local avg = stats.avg_time
+    if not (stats.settings and stats.settings.is_enabled) or not avg or avg ~= avg then
+        return nil
+    end
+    local duration_format = G_reader_settings:readSetting("duration_format", "classic")
+    return require("datetime").secondsToClockDuration(duration_format, pages * avg, true)
+end
+
 -- Reading progress of the open document: the current page and page count
 -- (following the page map when the book has one), the progress as a 0–1
 -- fraction, and two functions evaluated on demand: `time_left()`, the
@@ -892,8 +906,7 @@ local function readingProgress(ui)
         pages     = pages,
         fraction  = fraction,
         time_left = function()
-            return ui.statistics
-                and ui.statistics:getTimeForPages(doc:getTotalPagesLeft(pageno))
+            return timeForPages(ui.statistics, doc:getTotalPagesLeft(pageno))
         end,
         book      = function()
             if not book_read then

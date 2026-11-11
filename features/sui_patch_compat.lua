@@ -239,7 +239,9 @@ function PatchCompat.check()
         return false
     end
 
-    local dir = DataStorage:getPatchesDir()
+    -- getPatchesDir only exists since KOReader v2026.07.
+    local dir = DataStorage.getPatchesDir and DataStorage:getPatchesDir()
+        or DataStorage:getDataDir() .. "/patches"
     local found, reenabled = PatchCompat.detect(dir,
         SUISettings:get(ALLOWED_KEY) or {}, SUISettings:get(DISABLED_KEY) or {})
     if #reenabled > 0 then allow(reenabled) end
