@@ -2956,26 +2956,21 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 -- all = { Cover Type, Book Stack, Folder Name }
                 local cover_type, book_stack, folder_name = all[1], all[2], all[3]
 
-                if folder_name then
+                -- Folder Name stays listed but inactive while captions show the
+                -- names; the settings window hides rows with enabled_func false,
+                -- so it gets `dim` there instead.
+                local is_sui = ctx_menu and ctx_menu.is_sui
+                if folder_name and not is_sui then
                     folder_name.enabled_func = function() return not FC.getCaptionsShow() end
-                    local prev_cb = folder_name.callback
-                    folder_name.callback = function()
-                        if FC.getCaptionsShow() then
-                            local UIManager = require("ui/uimanager")
-                            local InfoMessage = require("ui/widget/infomessage")
-                            UIManager:show(InfoMessage:new{
-                                text = _("Library captions are enabled. Folder names are shown in the caption strip under each cover instead of on the cover."),
-                            })
-                            return
-                        end
-                        if prev_cb then prev_cb() end
-                    end
                 end
 
                 return {
                     {
                         text                = _("Library"),
                         sub_item_table_func = function()
+                            if folder_name and is_sui then
+                                folder_name.dim = FC.getCaptionsShow() or nil
+                            end
                             return { cover_type, book_stack, folder_name }
                         end,
                     },
