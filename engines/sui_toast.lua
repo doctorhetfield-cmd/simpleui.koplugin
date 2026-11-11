@@ -12,6 +12,9 @@
 -- A tap or any key closes the notice; the event is consumed. Closing and
 -- showing refresh only the area of the card.
 --
+-- toast:setText(text) replaces the text of a notice on screen in place; only
+-- the area of the card (old and new) is refreshed.
+--
 -- `timeout` stays a plain number on the widget and the widget has no buttons
 -- or inputs, so a notice can be told apart from an interactive dialog.
 
@@ -128,6 +131,23 @@ function Toast:onCloseWidget()
     if area then
         UIManager:setDirty(nil, function() return "ui", area end)
     end
+end
+
+function Toast:setText(text)
+    local old = self.card
+    local old_area = old.dimen
+    self.text = text
+    self.card = buildCard(text)
+    self[1][1] = self.card
+    old:free()
+    if not old_area then return end
+    local size = self.card:getSize()
+    -- A card of the same size covers the old one: only the notice is redrawn.
+    -- Otherwise the windows below are redrawn too, under the old card.
+    local resized = size.w ~= old_area.w or size.h ~= old_area.h
+    UIManager:setDirty(resized and "all" or self, function()
+        return "ui", resized and old_area:combine(self.card.dimen) or self.card.dimen
+    end)
 end
 
 -- Closes the notice as its reader dismissing it.

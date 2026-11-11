@@ -1402,8 +1402,9 @@ function M.install()
 
     -- Paints the covers a plan has ready and keeps the cell waiting for the
     -- rest: an incomplete cover is repainted, and refreshed on screen, as more
-    -- of its books are extracted. A folder with nothing to take a cover from
-    -- gets the placeholder.
+    -- of its books are extracted. A folder whose books have no cover art
+    -- (none, or ignored) gets the placeholder with its name; a bookless real
+    -- folder gets the "Empty folder" placeholder when that option is on.
     function MosaicMenuItem:_applyCoverPlan(plan, quad, display)
         local ready = #plan.covers
         if ready > 0 then
@@ -1425,26 +1426,25 @@ function M.install()
                 end)
             end
             self._fc_painted = ready
-        elseif plan.complete and plan.seen == 0
-                and M.getSubfolderCover() and _isRealFolder(self.entry) then
-            self:_setEmptyFolderCover(display)
+        elseif plan.complete and plan.seen > 0 then
+            self:_setPlaceholderCover(display, ((self.text or ""):gsub("/$", "")))
+        elseif plan.complete and M.getSubfolderCover() and _isRealFolder(self.entry) then
+            self:_setPlaceholderCover(display, _("Empty folder"))
         end
         if not plan.complete then
             _awaitCovers(self, BookInfoManager, plan.requests)
         end
     end
 
-    -- Placeholder cover for bookless folders (subfolders only or empty).
-    -- Same framed title/author layout as books without a cover, with a fixed
-    -- title so empty folders remain recognisable in the mosaic.
-    function MosaicMenuItem:_setEmptyFolderCover(display)
+    -- Placeholder cover showing `title`, with the same framed layout as books
+    -- without a cover.
+    function MosaicMenuItem:_setPlaceholderCover(display, title)
         display = display or _readDisplay()
         self._foldercover_processed = true
         local border, backing, max_img_w, max_img_h = CoverWidgets.computeCellGeometry(self, not CE.isShown("stack"))
 
         local Placeholder = require("engines/sui_cover_placeholder")
         local img_w, img_h = Placeholder.fitSize(max_img_w, max_img_h)
-        local title = _("Empty folder")
         local cover = Placeholder.build(img_w, img_h, title, nil)
 
         local size    = Geom:new{ w = img_w, h = img_h }

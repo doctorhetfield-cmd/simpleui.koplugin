@@ -1371,6 +1371,8 @@ end
 --             so the message is visible on e-ink before blocking work.
 --             Independent of toasts.
 --   close   — safe dismiss for a notice held by the caller.
+--   progress — runs long work under a notice showing its progress, which the
+--             reader can cancel with a tap or a key.
 --
 -- Callers keep translated strings at the call site. This module only owns
 -- the show/close/repaint mechanics so timeouts and e-ink flush stay consistent;
@@ -1440,6 +1442,58 @@ end
 function M.Notify.close(notice)
     if not notice then return end
     pcall(function() _uim():close(notice) end)
+end
+
+--- Runs `work(progress)` in a coroutine under a cancellable notice, then
+--- `done(...)` with what `work` returned, once the notice has closed.
+---
+--- `progress(text)` shows `text` on the notice, with a hint that a tap (or a
+--- key) cancels, and returns false once the reader has cancelled. Before
+--- each update it hands the UI a moment to take a pending tap, so `work`
+--- calls it between its slow steps and stops when it returns false. An error
+--- in `work` is logged, closes the notice and skips `done`.
+--- @param work function(progress) → ...
+--- @param done function(...)|nil
+function M.Notify.progress(work, done)
+    local UIManager = _uim()
+    local _ = require("infra/sui_i18n").translate
+    local hint = Device:isTouchDevice() and _("Tap to cancel") or _("Press any key to cancel")
+    local co, notice, cancelled
+    local resume
+
+    local function progress(text)
+        if notice then
+            UIManager:scheduleIn(0.1, resume)
+            coroutine.yield()
+        end
+        if cancelled then return false end
+        text = text .. "\n" .. hint
+        if notice then
+            notice:setText(text)
+        else
+            notice = _Toast():new{
+                text = text,
+                dismiss_callback = function() cancelled = true end,
+            }
+            UIManager:show(notice)
+        end
+        UIManager:forceRePaint()
+        return true
+    end
+
+    local function finish(ok, ...)
+        if coroutine.status(co) ~= "dead" then return end
+        M.Notify.close(notice)
+        if not ok then
+            logger.err("SimpleUI: progress work failed:", debug.traceback(co, (...)))
+        elseif done then
+            done(...)
+        end
+    end
+    resume = function() finish(coroutine.resume(co, progress)) end
+
+    co = coroutine.create(work)
+    resume()
 end
 
 -- ---------------------------------------------------------------------------

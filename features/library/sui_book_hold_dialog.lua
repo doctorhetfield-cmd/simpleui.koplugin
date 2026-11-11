@@ -228,6 +228,20 @@ local function annotationItems(ctx)
            Rows.tag(fm.collections:genBookmarkBrowserButton(files, ctx.close), "notes")
 end
 
+-- "Book cover": opens the cover window, which views and changes the cover.
+local function coverItem(ctx)
+    return {
+        text     = _("Book cover"),
+        sui_icon = "cover",
+        callback = function()
+            ctx.close()
+            require("features/library/cover_editor/sui_cover_window").show(ctx.path, {
+                on_change = ctx.refresh,
+            })
+        end,
+    }
+end
+
 -- Rows of the book actions in the grid.
 local function actionRows(ctx)
     local rows = {}
@@ -246,7 +260,7 @@ local function actionRows(ctx)
 
     if ctx.has_provider then
         Rows.pushRow(rows,
-            Rows.tag(filemanagerutil.genBookCoverButton(ctx.path, ctx.book_props, ctx.close), "cover"),
+            coverItem(ctx),
             Rows.tag(filemanagerutil.genBookDescriptionButton(ctx.path, ctx.book_props, ctx.close), "description"))
     end
     return rows

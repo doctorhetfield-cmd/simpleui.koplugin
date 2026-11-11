@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-11-10 17:24+0000\n"
+"POT-Creation-Date: 2026-11-11 11:47+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -654,8 +654,8 @@ msgstr ""
 msgid "Add Button"
 msgstr ""
 
-#: engines/sui_window.lua:1163
-#: engines/sui_window.lua:4504
+#: engines/sui_window.lua:1176
+#: engines/sui_window.lua:4517
 #: features/sui_arrange.lua:434
 #: screens/sui_menu.lua:917
 #: screens/sui_menu.lua:954
@@ -808,7 +808,7 @@ msgstr ""
 msgid "All caps"
 msgstr ""
 
-#: engines/sui_window.lua:4594
+#: engines/sui_window.lua:4607
 #: screens/sui_settings_window.lua:673
 msgid "All items have already been added."
 msgstr ""
@@ -953,7 +953,7 @@ msgstr ""
 msgid "Apply and restart"
 msgstr ""
 
-#: infra/sui_core.lua:1469
+#: infra/sui_core.lua:1523
 msgid "Applying preset…"
 msgstr ""
 
@@ -1000,7 +1000,7 @@ msgstr ""
 msgid "Arrange Collection"
 msgstr ""
 
-#: engines/sui_window.lua:4503
+#: engines/sui_window.lua:4516
 #: modules/module_coverdeck.lua:1628
 #: modules/module_currently.lua:1349
 #: screens/sui_menu.lua:657
@@ -1032,6 +1032,10 @@ msgstr ""
 
 #: engines/sui_book_sources.lua:359
 msgid "Arrange To Be Read List"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_search.lua:299
+msgid "Artwork is subject to Apple's terms of use"
 msgstr ""
 
 #: modules/critter/voice_phrases.lua:157
@@ -1334,6 +1338,15 @@ msgstr ""
 msgid "Book count"
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_window.lua:259
+#: features/library/sui_book_hold_dialog.lua:234
+msgid "Book cover"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_window.lua:93
+msgid "Book file"
+msgstr ""
+
 #: modules/critter/reaction_lines.lua:84
 msgid "Book finished!"
 msgstr ""
@@ -1570,6 +1583,7 @@ msgstr ""
 #: features/dialogs/sui_dialogs.lua:176
 #: features/dialogs/sui_dialogs.lua:299
 #: features/dialogs/sui_dialogs.lua:413
+#: features/library/cover_editor/sui_cover_search.lua:244
 #: features/library/sui_library_search.lua:58
 #: features/sui_accent_picker.lua:103
 #: features/sui_backup.lua:1029
@@ -1744,8 +1758,16 @@ msgstr ""
 msgid "Choose backup file…"
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_window.lua:205
+msgid "Choose cover image"
+msgstr ""
+
 #: engines/sui_asset_browser.lua:91
 msgid "Choose file"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_window.lua:234
+msgid "Choose from device"
 msgstr ""
 
 #: features/sui_quickactions.lua:2155
@@ -1976,6 +1998,10 @@ msgstr ""
 msgid "Could be better."
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_window.lua:171
+msgid "Could not change the cover."
+msgstr ""
+
 #: features/sui_backup.lua:916
 #: features/sui_backup.lua:991
 #: features/sui_backup.lua:1110
@@ -2174,6 +2200,10 @@ msgstr ""
 
 #: features/sui_backup.lua:154
 msgid "Custom icons"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_window.lua:92
+msgid "Custom image"
 msgstr ""
 
 #: features/sui_backup.lua:148
@@ -2375,8 +2405,8 @@ msgstr ""
 msgid "Default: System"
 msgstr ""
 
-#: engines/sui_window.lua:2449
-#: engines/sui_window.lua:3811
+#: engines/sui_window.lua:2462
+#: engines/sui_window.lua:3824
 #: features/dialogs/sui_bento_sheet.lua:134
 #: features/library/sui_hold_rows.lua:135
 #: features/sui_manual_books.lua:85
@@ -2460,6 +2490,10 @@ msgstr ""
 #: modules/module_clock.lua:1106
 #: modules/module_clock.lua:1110
 msgid "Digital"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_window.lua:127
+msgid "Dimensions"
 msgstr ""
 
 #: screens/sui_menu.lua:2536
@@ -2577,6 +2611,10 @@ msgstr ""
 
 #: infra/sui_updater.lua:417
 msgid "Downloading Simple UI %s…"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_sources.lua:271
+msgid "Downloading covers %1/%2"
 msgstr ""
 
 #: modules/critter/voice_lines.lua:128
@@ -3046,6 +3084,10 @@ msgstr ""
 
 #: features/sui_style.lua:2700
 msgid "File not found: "
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_window.lua:131
+msgid "File size"
 msgstr ""
 
 #: modules/module_library.lua:213
@@ -4264,6 +4306,10 @@ msgstr ""
 msgid "I've practised for centuries."
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_search.lua:281
+msgid "ISBN %1"
+msgstr ""
+
 #: features/sui_quickactions.lua:2355
 #: features/sui_quickactions.lua:2359
 msgid "Icon"
@@ -4344,6 +4390,10 @@ msgstr ""
 
 #: modules/critter/dialog.lua:458
 msgid "In big letters."
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_search.lua:298
+msgid "Include Apple Books"
 msgstr ""
 
 #: features/sui_stats_menu.lua:114
@@ -5325,7 +5375,7 @@ msgstr ""
 msgid "Mostly with my face."
 msgstr ""
 
-#: engines/sui_window.lua:3794
+#: engines/sui_window.lua:3807
 msgid "Move down"
 msgstr ""
 
@@ -5333,12 +5383,12 @@ msgstr ""
 msgid "Move row"
 msgstr ""
 
-#: engines/sui_window.lua:3788
+#: engines/sui_window.lua:3801
 #: screens/sui_settings_window.lua:523
 msgid "Move to page"
 msgstr ""
 
-#: engines/sui_window.lua:3791
+#: engines/sui_window.lua:3804
 msgid "Move up"
 msgstr ""
 
@@ -5727,6 +5777,14 @@ msgstr ""
 msgid "No collections selected  —  long press to configure"
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_window.lua:94
+msgid "No cover"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_search.lua:311
+msgid "No covers found."
+msgstr ""
+
 #: modules/module_quote.lua:948
 msgid "No custom quotes found. Add a .lua file to the plugin's sui_quotes/ folder and select it in Settings."
 msgstr ""
@@ -5776,12 +5834,12 @@ msgstr ""
 msgid "No icons found in:"
 msgstr ""
 
-#: engines/sui_window.lua:3494
-#: engines/sui_window.lua:4287
+#: engines/sui_window.lua:3507
+#: engines/sui_window.lua:4300
 msgid "No items available."
 msgstr ""
 
-#: engines/sui_window.lua:4022
+#: engines/sui_window.lua:4035
 #: infra/sui_config.lua:2245
 #: modules/module_action_list.lua:298
 #: modules/module_collections.lua:383
@@ -5799,7 +5857,7 @@ msgstr ""
 msgid "No items selected."
 msgstr ""
 
-#: engines/sui_window.lua:4196
+#: engines/sui_window.lua:4209
 #: screens/sui_settings_window.lua:443
 #: screens/sui_settings_window.lua:549
 msgid "No modules"
@@ -6240,7 +6298,7 @@ msgstr ""
 msgid "Open it"
 msgstr ""
 
-#: features/library/sui_book_hold_dialog.lua:257
+#: features/library/sui_book_hold_dialog.lua:271
 msgid "Open module settings"
 msgstr ""
 
@@ -6332,7 +6390,7 @@ msgid "Page"
 msgstr ""
 
 #: engines/sui_screen_engine.lua:1931
-#: engines/sui_window.lua:1823
+#: engines/sui_window.lua:1836
 #: infra/sui_patches.lua:2293
 #: infra/sui_patches.lua:3133
 msgid "Page %1 of %2"
@@ -6711,6 +6769,10 @@ msgstr ""
 
 #: screens/sui_onboarding.lua:322
 msgid "Press and hold any element on the screen (like modules or bars) to quickly customize its settings."
+msgstr ""
+
+#: infra/sui_core.lua:1460
+msgid "Press any key to cancel"
 msgstr ""
 
 #: modules/critter/dialog.lua:347
@@ -7132,8 +7194,8 @@ msgstr ""
 msgid "Remove from list when finished"
 msgstr ""
 
-#: engines/sui_window.lua:2446
-#: engines/sui_window.lua:3800
+#: engines/sui_window.lua:2459
+#: engines/sui_window.lua:3813
 #: features/library/sui_hold_rows.lua:261
 #: features/sui_presets.lua:381
 #: features/sui_presets.lua:973
@@ -7230,6 +7292,7 @@ msgstr ""
 msgid "Restarting…"
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_window.lua:215
 #: features/sui_backup.lua:1028
 msgid "Restore"
 msgstr ""
@@ -7244,6 +7307,14 @@ msgstr ""
 
 #: features/sui_backup.lua:892
 msgid "Restore failed. Your previous configuration was kept unchanged."
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_window.lua:247
+msgid "Restore original cover"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_window.lua:214
+msgid "Restore the book's original cover?"
 msgstr ""
 
 #: features/sui_backup.lua:1027
@@ -7547,6 +7618,8 @@ msgstr ""
 msgid "Scrim over the wallpaper in Library, History and Collections. 0% shows the wallpaper, 100% hides it."
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_search.lua:288
+#: features/library/cover_editor/sui_cover_search.lua:322
 #: features/library/sui_library_search.lua:182
 #: features/sui_quickactions.lua:889
 #: infra/sui_config.lua:134
@@ -7563,12 +7636,29 @@ msgstr ""
 msgid "Search Library not available."
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_search.lua:117
+msgid "Search cancelled"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_search.lua:285
+msgid "Search covers"
+msgstr ""
+
 #: features/library/sui_library_search.lua:181
 msgid "Search library"
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_window.lua:228
+#: features/library/cover_editor/sui_cover_window.lua:260
+msgid "Search online"
+msgstr ""
+
 #: features/library/sui_library_search.lua:163
 msgid "Search results: %1"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_sources.lua:256
+msgid "Searching %1"
 msgstr ""
 
 #: features/library/sui_label_options.lua:135
@@ -7581,8 +7671,8 @@ msgstr ""
 msgid "Secondary Color"
 msgstr ""
 
-#: engines/sui_window.lua:2435
-#: engines/sui_window.lua:3785
+#: engines/sui_window.lua:2448
+#: engines/sui_window.lua:3798
 #: features/library/sui_hold_rows.lua:236
 msgid "Select"
 msgstr ""
@@ -8108,6 +8198,7 @@ msgstr ""
 msgid "Sort by: %1"
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_window.lua:125
 #: modules/module_coverdeck.lua:1564
 #: modules/module_quote.lua:1430
 msgid "Source"
@@ -8473,6 +8564,10 @@ msgstr ""
 
 #: screens/sui_settings_window.lua:325
 msgid "Tap \"Create Screen\" below to add one."
+msgstr ""
+
+#: infra/sui_core.lua:1460
+msgid "Tap to cancel"
 msgstr ""
 
 #: modules/critter/dialog.lua:239
@@ -8972,6 +9067,10 @@ msgstr ""
 msgid "Title and Author"
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_search.lua:286
+msgid "Title, author or ISBN"
+msgstr ""
+
 #: engines/sui_book_sources.lua:348
 #: modules/module_coverdeck.lua:1528
 #: modules/module_tbr.lua:376
@@ -9012,7 +9111,7 @@ msgstr ""
 msgid "Together, with books."
 msgstr ""
 
-#: engines/sui_window.lua:3803
+#: engines/sui_window.lua:3816
 msgid "Toggle"
 msgstr ""
 
@@ -9129,6 +9228,10 @@ msgstr ""
 msgid "Uncategorized"
 msgstr ""
 
+#: features/library/cover_editor/sui_cover_window.lua:239
+msgid "Undo last change"
+msgstr ""
+
 #: screens/sui_menu.lua:3113
 msgid "Uniformize Covers (2:3)"
 msgstr ""
@@ -9160,8 +9263,8 @@ msgstr ""
 msgid "Unsupported icon format.\nPlease use a PNG or SVG file."
 msgstr ""
 
-#: engines/sui_window.lua:2443
-#: engines/sui_window.lua:3797
+#: engines/sui_window.lua:2456
+#: engines/sui_window.lua:3810
 msgid "Update"
 msgstr ""
 
@@ -9209,6 +9312,10 @@ msgstr ""
 
 #: features/sui_quickactions.lua:2060
 msgid "Use this Nerd Font icon?"
+msgstr ""
+
+#: features/library/cover_editor/sui_cover_search.lua:248
+msgid "Use this cover"
 msgstr ""
 
 #: screens/sui_menu.lua:507
@@ -10245,6 +10352,12 @@ msgid_plural "%1 columns"
 msgstr[0] ""
 msgstr[1] ""
 
+#: features/library/cover_editor/sui_cover_search.lua:265
+msgid "%1 cover found"
+msgid_plural "%1 covers found"
+msgstr[0] ""
+msgstr[1] ""
+
 #: infra/sui_goals.lua:46
 #: modules/module_reading_goals.lua:733
 #: screens/insights/sui_insights_charts.lua:253
@@ -10656,6 +10769,12 @@ msgstr[1] ""
 #: modules/critter/challenge.lua:196
 msgid "Read %d page today?"
 msgid_plural "Read %d pages today?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: features/library/cover_editor/sui_cover_search.lua:312
+msgid "Show %1 cover"
+msgid_plural "Show %1 covers"
 msgstr[0] ""
 msgstr[1] ""
 
