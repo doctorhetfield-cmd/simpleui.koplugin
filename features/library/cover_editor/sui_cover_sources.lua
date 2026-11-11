@@ -12,7 +12,8 @@
 -- Public API
 --   CoverSources.isbnOf(file)   -> ISBN string | nil
 --   CoverSources.parseIsbn(s)   -> ISBN string | nil (checked)
---   CoverSources.search(opts)   -> { candidate, ... }, cancelled
+--   CoverSources.search(opts)   -> { candidate, ... }, cancelled, offline
+--     offline: no request reached a server (no network or no internet)
 --     opts.query          string    free-text query (title and author)
 --     opts.isbn           string?
 --     opts.include_apple  bool
@@ -249,6 +250,7 @@ function CoverSources.search(opts)
     local progress = opts.on_progress or function() return true end
     CoverSources.clearCache()
     util.makePath(cacheDir())
+    CoverNet.resetAnswered()
 
     local pending = {}
     for _i, source in ipairs(SOURCES) do
@@ -284,7 +286,7 @@ function CoverSources.search(opts)
         end
     end
     table.sort(results, function(a, b) return a.width * a.height > b.width * b.height end)
-    return results, cancelled
+    return results, cancelled, CoverNet.answered() == 0
 end
 
 return CoverSources

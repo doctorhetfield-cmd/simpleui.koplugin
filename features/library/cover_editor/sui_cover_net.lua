@@ -6,6 +6,9 @@
 -- Public API
 --   CoverNet.get(url)      -> body | nil, err
 --   CoverNet.getJson(url)  -> table | nil
+--   CoverNet.resetAnswered()
+--   CoverNet.answered()    -> requests a server answered (any HTTP status)
+--                             since resetAnswered(); 0 means none got through
 
 local logger = require("logger")
 
@@ -13,6 +16,11 @@ local CoverNet = {}
 
 -- Largest response body read into memory (a cover is well below this).
 local MAX_BODY = 8 * 1024 * 1024
+
+local answered = 0
+
+function CoverNet.resetAnswered() answered = 0 end
+function CoverNet.answered() return answered end
 
 -- socketutil.table_sink that aborts once more than MAX_BODY bytes came in.
 local function cappedSink(socketutil, chunks)
@@ -43,6 +51,8 @@ function CoverNet.get(url)
         })
     end)
     socketutil:reset_timeout()
+    -- A numeric code is a server's answer; anything else failed on the way.
+    if ok and type(code) == "number" then answered = answered + 1 end
     if not ok then
         logger.warn("SimpleUI cover search: request failed", url, code)
         return nil, tostring(code)

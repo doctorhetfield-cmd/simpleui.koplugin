@@ -42,7 +42,7 @@ Books and folders open an action sheet with the usual file actions (status, rese
 - **Choose from device**: pick an image file.
 - **Undo last change** (and undo the undo), or **Restore original cover**.
 
-Covers are stored with KOReader's own custom cover (`cover.*` in the book's sidecar folder), so they show everywhere, outside SimpleUI too, including a folder cover that uses the book. Online search needs Wi-Fi; KOReader asks to turn it on when needed.
+Covers are stored with KOReader's own custom cover (`cover.*` in the book's sidecar folder), so they show everywhere, outside SimpleUI too, including a folder cover that uses the book. Online search needs Wi-Fi; KOReader asks to turn it on when needed. When no cover service can be reached (no internet, or the connection dropped), a notice says so instead of reporting that no covers were found.
 
 ## Create collections from groups
 

@@ -103,18 +103,19 @@ function CoverSearch:run(ctx)
                 thumb_h       = cell_h - frame,
                 on_progress   = progress,
             }
-        end, function(results, cancelled)
+        end, function(results, cancelled, offline)
             -- Frees the previous thumbnails; their files were already cleared.
             for _i, c in ipairs(self.results or {}) do
                 if c.thumb then c.thumb:free() end
             end
-            -- A search cancelled before any cover was found leaves the form
-            -- as it was before the first search.
-            local none = cancelled and #results == 0
-            self.results, self.selected, self.page = not none and results or nil, nil, 1
+            -- A search that found nothing because it was cancelled or reached
+            -- no server leaves the form as it was before the first search.
+            local unfinished = #results == 0 and (cancelled or offline)
+            self.results, self.selected, self.page = not unfinished and results or nil, nil, 1
             ctx.repaint()
-            if none then
-                UI.Notify.toast(_("Search cancelled"))
+            if unfinished then
+                UI.Notify.toast(cancelled and _("Search cancelled")
+                    or _("Could not reach the cover services. Check your connection."))
             elseif #results > 0 then
                 self:showResults()
             end
@@ -122,7 +123,8 @@ function CoverSearch:run(ctx)
     end
     local NetworkMgr = require("infra/sui_config").getNetworkMgr()
     if NetworkMgr then
-        NetworkMgr:runWhenOnline(search)
+        -- Connected is enough: without internet the search reports it.
+        NetworkMgr:runWhenConnected(search)
     else
         search()
     end
