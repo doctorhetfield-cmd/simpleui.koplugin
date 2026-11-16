@@ -235,7 +235,9 @@ function M.build(item, dimen, opts)
     if bar_line then
         local fraction = M.barFraction(book_info)
         local info_h = textHeight(info_size)
-        local bar_w = math.floor(main_w / 2)
+        -- The bar fills the title's width left by the text beside it.
+        local wbar_text = line(M.barText(book_info, pages, settings), info_size, math.floor(main_w / 2))
+        local bar_w = main_w - pad - wbar_text:getSize().w
         local bar
         if settings.progress_bar == "dots" then
             local big = math.max(2, math.floor(info_h * 0.4))
@@ -248,7 +250,7 @@ function M.build(item, dimen, opts)
         end
         local progress_row = HorizontalGroup:new{ align = "center", bar }
         progress_row[2] = HorizontalSpan:new{ width = pad }
-        progress_row[3] = line(M.barText(book_info, pages, settings), info_size, main_w - bar_w - pad)
+        progress_row[3] = wbar_text
         wmain[#wmain + 1] = VerticalSpan:new{ width = gap }
         wmain[#wmain + 1] = progress_row
     end
