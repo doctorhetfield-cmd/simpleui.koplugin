@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-11-16 00:37+0000\n"
+"POT-Creation-Date: 2026-11-16 00:44+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -618,7 +618,7 @@ msgstr ""
 
 #: screens/sui_menu.lua:4334
 #: screens/sui_settings_window.lua:212
-#: screens/sui_settings_window.lua:915
+#: screens/sui_settings_window.lua:937
 msgid "About"
 msgstr ""
 
@@ -686,7 +686,7 @@ msgstr ""
 #: screens/sui_menu.lua:954
 #: screens/sui_menu.lua:1996
 #: screens/sui_menu.lua:2026
-#: screens/sui_settings_window.lua:921
+#: screens/sui_settings_window.lua:943
 msgid "Add Item"
 msgstr ""
 
@@ -698,12 +698,12 @@ msgstr ""
 msgid "Add Manual Count"
 msgstr ""
 
-#: screens/sui_settings_window.lua:920
-#: screens/sui_settings_window.lua:1036
+#: screens/sui_settings_window.lua:942
+#: screens/sui_settings_window.lua:1058
 msgid "Add Module"
 msgstr ""
 
-#: screens/sui_settings_window.lua:1005
+#: screens/sui_settings_window.lua:1027
 msgid "Add Page"
 msgstr ""
 
@@ -834,11 +834,11 @@ msgid "All caps"
 msgstr ""
 
 #: engines/sui_window.lua:4607
-#: screens/sui_settings_window.lua:673
+#: screens/sui_settings_window.lua:695
 msgid "All items have already been added."
 msgstr ""
 
-#: screens/sui_settings_window.lua:651
+#: screens/sui_settings_window.lua:673
 msgid "All modules have already been added."
 msgstr ""
 
@@ -1036,7 +1036,7 @@ msgstr ""
 #: screens/sui_menu.lua:724
 #: screens/sui_menu.lua:731
 #: screens/sui_menu.lua:1910
-#: screens/sui_settings_window.lua:936
+#: screens/sui_settings_window.lua:958
 msgid "Arrange Items"
 msgstr ""
 
@@ -1089,6 +1089,10 @@ msgstr ""
 
 #: screens/sui_menu.lua:1600
 msgid "At least one item must stay visible."
+msgstr ""
+
+#: screens/sui_settings_window.lua:470
+msgid "At least one page must stay visible."
 msgstr ""
 
 #: infra/sui_datenames.lua:32
@@ -1257,7 +1261,7 @@ msgstr ""
 #: features/sui_backup.lua:122
 #: screens/sui_menu.lua:4292
 #: screens/sui_settings_window.lua:165
-#: screens/sui_settings_window.lua:911
+#: screens/sui_settings_window.lua:933
 msgid "Bars"
 msgstr ""
 
@@ -1282,7 +1286,7 @@ msgstr ""
 #: infra/sui_config.lua:1239
 #: screens/sui_menu.lua:2726
 #: screens/sui_settings_window.lua:297
-#: screens/sui_settings_window.lua:922
+#: screens/sui_settings_window.lua:944
 msgid "Behaviour"
 msgstr ""
 
@@ -2116,7 +2120,7 @@ msgid "Covers"
 msgstr ""
 
 #: features/library/sui_group_actions.lua:130
-#: screens/sui_settings_window.lua:993
+#: screens/sui_settings_window.lua:1015
 msgid "Create"
 msgstr ""
 
@@ -2125,7 +2129,7 @@ msgstr ""
 msgid "Create Quick Action"
 msgstr ""
 
-#: screens/sui_settings_window.lua:986
+#: screens/sui_settings_window.lua:1008
 msgid "Create Screen"
 msgstr ""
 
@@ -2142,7 +2146,7 @@ msgstr ""
 msgid "Create collection"
 msgstr ""
 
-#: screens/sui_settings_window.lua:991
+#: screens/sui_settings_window.lua:1013
 msgid "Create screen"
 msgstr ""
 
@@ -2455,7 +2459,7 @@ msgstr ""
 #: screens/sui_menu.lua:3910
 #: screens/sui_settings_window.lua:375
 #: screens/sui_settings_window.lua:423
-#: screens/sui_settings_window.lua:482
+#: screens/sui_settings_window.lua:504
 msgid "Delete"
 msgstr ""
 
@@ -2979,7 +2983,7 @@ msgid "Export preset"
 msgstr ""
 
 #: screens/sui_settings_window.lua:263
-#: screens/sui_settings_window.lua:910
+#: screens/sui_settings_window.lua:932
 msgid "Extra Custom Screens"
 msgstr ""
 
@@ -3365,7 +3369,7 @@ msgstr ""
 
 #: engines/sui_screen_engine.lua:2068
 #: features/library/sui_label_options.lua:141
-#: screens/sui_settings_window.lua:540
+#: screens/sui_settings_window.lua:562
 msgid "Full Width"
 msgstr ""
 
@@ -3834,11 +3838,11 @@ msgstr ""
 #: screens/sui_menu.lua:2356
 #: screens/sui_menu.lua:4297
 #: screens/sui_settings_window.lua:157
-#: screens/sui_settings_window.lua:909
+#: screens/sui_settings_window.lua:931
 msgid "Home Screen"
 msgstr ""
 
-#: screens/sui_settings_window.lua:923
+#: screens/sui_settings_window.lua:945
 msgid "Home Screen Presets"
 msgstr ""
 
@@ -4458,7 +4462,7 @@ msgstr ""
 msgid "Incompatible patches"
 msgstr ""
 
-#: screens/sui_settings_window.lua:548
+#: screens/sui_settings_window.lua:570
 msgid "Incomplete row"
 msgstr ""
 
@@ -4806,8 +4810,8 @@ msgstr ""
 msgid "Layout"
 msgstr ""
 
-#: screens/sui_settings_window.lua:917
-#: screens/sui_settings_window.lua:918
+#: screens/sui_settings_window.lua:939
+#: screens/sui_settings_window.lua:940
 msgid "Layout Editor"
 msgstr ""
 
@@ -4905,7 +4909,7 @@ msgstr ""
 #: screens/sui_menu.lua:2969
 #: screens/sui_menu.lua:4301
 #: screens/sui_settings_window.lua:173
-#: screens/sui_settings_window.lua:912
+#: screens/sui_settings_window.lua:934
 #: screens/sui_titlebar.lua:1208
 #: screens/sui_titlebar.lua:1253
 msgid "Library"
@@ -5267,7 +5271,7 @@ msgstr ""
 msgid "Modules  (%d)"
 msgstr ""
 
-#: engines/sui_screen_engine.lua:2799
+#: engines/sui_screen_engine.lua:2810
 msgid "Modules exceed the visible area.\nMove some to another page or adjust the scale."
 msgstr ""
 
@@ -5418,7 +5422,7 @@ msgid "Move row"
 msgstr ""
 
 #: engines/sui_window.lua:3801
-#: screens/sui_settings_window.lua:523
+#: screens/sui_settings_window.lua:545
 msgid "Move to page"
 msgstr ""
 
@@ -5893,11 +5897,11 @@ msgstr ""
 
 #: engines/sui_window.lua:4209
 #: screens/sui_settings_window.lua:443
-#: screens/sui_settings_window.lua:549
+#: screens/sui_settings_window.lua:571
 msgid "No modules"
 msgstr ""
 
-#: screens/sui_settings_window.lua:520
+#: screens/sui_settings_window.lua:542
 msgid "No other pages available."
 msgstr ""
 
@@ -6431,8 +6435,8 @@ msgid "Page %1 of %2"
 msgstr ""
 
 #: screens/sui_settings_window.lua:417
-#: screens/sui_settings_window.lua:498
-#: screens/sui_settings_window.lua:929
+#: screens/sui_settings_window.lua:520
+#: screens/sui_settings_window.lua:951
 msgid "Page %d"
 msgstr ""
 
@@ -6441,8 +6445,8 @@ msgid "Page %s/%s"
 msgstr ""
 
 #: screens/sui_settings_window.lua:416
-#: screens/sui_settings_window.lua:497
-#: screens/sui_settings_window.lua:928
+#: screens/sui_settings_window.lua:519
+#: screens/sui_settings_window.lua:950
 msgid "Page 1 (Home)"
 msgstr ""
 
@@ -6797,7 +6801,7 @@ msgstr ""
 msgid "Presets"
 msgstr ""
 
-#: screens/sui_settings_window.lua:738
+#: screens/sui_settings_window.lua:760
 msgid "Presets module unavailable."
 msgstr ""
 
@@ -7640,7 +7644,7 @@ msgid "Scratch its head"
 msgstr ""
 
 #: screens/sui_settings_window.lua:361
-#: screens/sui_settings_window.lua:992
+#: screens/sui_settings_window.lua:1014
 msgid "Screen name"
 msgstr ""
 
@@ -7793,7 +7797,7 @@ msgstr ""
 
 #: features/sui_quickactions.lua:990
 #: infra/sui_config.lua:140
-#: screens/sui_settings_window.lua:561
+#: screens/sui_settings_window.lua:583
 msgid "Settings"
 msgstr ""
 
@@ -7995,7 +7999,7 @@ msgstr ""
 msgid "Simple UI %s is available!\nYou have %s."
 msgstr ""
 
-#: screens/sui_settings_window.lua:908
+#: screens/sui_settings_window.lua:930
 msgid "Simple UI Settings"
 msgstr ""
 
@@ -8440,7 +8444,7 @@ msgstr ""
 #: screens/sui_menu.lua:3386
 #: screens/sui_menu.lua:4309
 #: screens/sui_settings_window.lua:181
-#: screens/sui_settings_window.lua:913
+#: screens/sui_settings_window.lua:935
 msgid "Style"
 msgstr ""
 
@@ -9050,7 +9054,7 @@ msgstr ""
 #: screens/sui_menu.lua:4313
 #: screens/sui_quicksettings_bar.lua:1664
 #: screens/sui_settings_window.lua:189
-#: screens/sui_settings_window.lua:914
+#: screens/sui_settings_window.lua:936
 msgid "Tiny Critter"
 msgstr ""
 
@@ -9119,7 +9123,7 @@ msgstr ""
 msgid "To Be Read Books"
 msgstr ""
 
-#: screens/sui_settings_window.lua:568
+#: screens/sui_settings_window.lua:590
 msgid "To Page"
 msgstr ""
 

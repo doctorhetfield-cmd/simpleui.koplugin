@@ -442,7 +442,7 @@ local function buildScreens(st)
                 and table.concat(mod_names, "  ·  ")
                 or  _("No modules")
 
-            table.insert(items, {
+            local item = {
                 text         = title,
                 subtitle     = subtitle,
                 orig_item    = page,
@@ -456,7 +456,29 @@ local function buildScreens(st)
                     ctx.push("page_edit")
                 end,
                 on_delete    = del_fn,
+            }
+            -- A hidden page keeps its modules but is left out of the screen.
+            Config.applyVisibilityToggle(item, {
+                is_visible  = function() return not page.hidden end,
+                set_visible = function(visible)
+                    if not visible then
+                        local others = 0
+                        for _, p in ipairs(st.layout.pages) do
+                            if p ~= page and not p.hidden then others = others + 1 end
+                        end
+                        if others == 0 then
+                            UI.Notify.toast(_("At least one page must stay visible."), 2)
+                            return false
+                        end
+                    end
+                    page.hidden = not visible or nil
+                end,
+                on_change   = function()
+                    LayoutService.save(st.layout, st.pfx, st.layout_key, st.screen_id)
+                end,
+                repaint     = function() ctx.repaint() end,
             })
+            table.insert(items, item)
         end
 
         return SUI.ArrangeList{

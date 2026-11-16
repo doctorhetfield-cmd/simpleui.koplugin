@@ -2280,29 +2280,40 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
         return Config.getBentoSpan(mod_id, self._pfx)
     end
     local mod_col_span = {}
+    -- Modules placed on hidden pages: kept in the layout, not rendered.
+    local hidden_ids = {}
+    local visible_pages = 0
     if layout and type(layout.pages) == "table" then
         for _, page in ipairs(layout.pages) do
-            local page_ids = {}
-            for _, entry in ipairs(page.modules) do
-                -- Accept legacy { id, width } entries and migrate width to settings.
-                local mod_id
-                if type(entry) == "table" then
-                    mod_id = entry.id
-                    if type(entry.width) == "number" and mod_id then
-                        Config.setBentoWidth(entry.width, mod_id, self._pfx)
+            if page.hidden then
+                for _, entry in ipairs(page.modules) do
+                    local mod_id = type(entry) == "table" and entry.id or entry
+                    if mod_id then hidden_ids[mod_id] = true end
+                end
+            else
+                visible_pages = visible_pages + 1
+                local page_ids = {}
+                for _, entry in ipairs(page.modules) do
+                    -- Accept legacy { id, width } entries and migrate width to settings.
+                    local mod_id
+                    if type(entry) == "table" then
+                        mod_id = entry.id
+                        if type(entry.width) == "number" and mod_id then
+                            Config.setBentoWidth(entry.width, mod_id, self._pfx)
+                        end
+                    else
+                        mod_id = entry
                     end
-                else
-                    mod_id = entry
+                    if mod_id then
+                        table.insert(page_ids, mod_id)
+                        local span = _widthOf(mod_id)
+                        mod_col_span[mod_id] = span
+                        layout_fingerprint = layout_fingerprint .. mod_id .. ":" .. tostring(span) .. ","
+                    end
                 end
-                if mod_id then
-                    table.insert(page_ids, mod_id)
-                    local span = _widthOf(mod_id)
-                    mod_col_span[mod_id] = span
-                    layout_fingerprint = layout_fingerprint .. mod_id .. ":" .. tostring(span) .. ","
-                end
+                layout_fingerprint = layout_fingerprint .. "|"
+                table.insert(pages_by_id, page_ids)
             end
-            layout_fingerprint = layout_fingerprint .. "|"
-            table.insert(pages_by_id, page_ids)
         end
     else
         pages_by_id = splitOrderIntoPages(raw_order)
@@ -2341,7 +2352,7 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
 
         local chosen_pages = SUISettings:readSetting(self._pfx .. "homescreen_num_pages")
         if layout and type(layout.pages) == "table" then
-            chosen_pages = #layout.pages
+            chosen_pages = visible_pages
         end
         if chosen_pages and chosen_pages > #pages_of_mods then
             for _ = #pages_of_mods + 1, chosen_pages do
@@ -2353,7 +2364,7 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
         do
             local cd = Registry.get("coverdeck")
             if cd and Registry.isEnabled(cd, self._pfx) then
-                local found = false
+                local found = hidden_ids["coverdeck"] == true
                 for _, pg in ipairs(pages_of_mods) do
                     for _, m in ipairs(pg) do
                         if m.id == "coverdeck" then found = true; break end
