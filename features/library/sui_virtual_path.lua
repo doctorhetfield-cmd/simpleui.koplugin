@@ -29,11 +29,14 @@
 -- Public API
 -- ----------
 --   VirtualPath.ROOT_SEGMENT, .NULL_TOKEN         -- for logs/diagnostics
+--   VirtualPath.FLAT_SEGMENT                    -- segment of the flat view
 --   VirtualPath.isVirtual(path)
+--   VirtualPath.isFlat(path)                    -- every book under base_dir, no folders
 --   VirtualPath.getBaseDir(path)                -- real dir; base_dir itself if not virtual
 --   VirtualPath.parse(path) -> base_dir, filter_state, active_dimension, level
---       level is "root" | "dim_list" | "file_list" | nil (not virtual)
+--       level is "root" | "dim_list" | "file_list" | "flat" | nil (not virtual)
 --   VirtualPath.buildRoot(base_dir)
+--   VirtualPath.buildFlat(base_dir)
 --   VirtualPath.buildDimList(base_dir, filter_state, dimension)
 --   VirtualPath.buildLeaf(base_dir, filter_state, dimension, value)
 --   VirtualPath.buildParent(base_dir, filter_state)   -- path one level up
@@ -57,6 +60,10 @@ local VALUE_PREFIX = "="
 VirtualPath.NULL_TOKEN = VALUE_PREFIX -- "=" alone: the "no value" bucket
 
 local VROOT_SEP = "/" .. VirtualPath.ROOT_SEGMENT -- pre-built; avoids alloc per lookup
+
+-- Sole fragment of the flat view. A bare keyword, so it cannot be mistaken
+-- for a value segment.
+VirtualPath.FLAT_SEGMENT = "flat"
 
 -- Slashes inside a value (e.g. a tag literally containing "/") would be
 -- misread as path separators. Encode as %2F (URL-encoding convention,
@@ -115,6 +122,10 @@ function VirtualPath.parse(path)
     local fragments = getTail(path) or {}
     local state = FilterState.new(base_dir)
 
+    if #fragments == 1 and fragments[1] == VirtualPath.FLAT_SEGMENT then
+        return base_dir, state, nil, "flat"
+    end
+
     local pending_dimension = nil
     for _, fragment in ipairs(fragments) do
         if fragment:sub(1, #VALUE_PREFIX) == VALUE_PREFIX then
@@ -146,6 +157,14 @@ end
 
 function VirtualPath.buildRoot(base_dir)
     return base_dir .. VROOT_SEP
+end
+
+function VirtualPath.buildFlat(base_dir)
+    return base_dir .. VROOT_SEP .. "/" .. VirtualPath.FLAT_SEGMENT
+end
+
+function VirtualPath.isFlat(path)
+    return select(4, VirtualPath.parse(path)) == "flat"
 end
 
 local function buildFromTrail(base_dir, filter_state, trailing_dimension)
@@ -193,13 +212,13 @@ function VirtualPath.buildParent(base_dir, filter_state)
 end
 
 -- Path one level up from any virtual path: the base directory above the
--- root, the root above a first-level dim_list, the last resolved leaf above
+-- root and the flat view, the root above a first-level dim_list, the last resolved leaf above
 -- a dim_list within a trail, and buildParent's path above a leaf. nil for a
 -- path that is not virtual.
 function VirtualPath.parentOf(path)
     local base_dir, state, _dimension, level = VirtualPath.parse(path)
     if not level then return nil end
-    if level == "root" then return base_dir end
+    if level == "root" or level == "flat" then return base_dir end
     if level == "file_list" then return VirtualPath.buildParent(base_dir, state) end
     if #state.trail == 0 then return VirtualPath.buildRoot(base_dir) end
     return buildFromTrail(base_dir, state, nil)

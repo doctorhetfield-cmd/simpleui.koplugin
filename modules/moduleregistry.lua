@@ -4,7 +4,9 @@
 -- DESIGN (optimized for slow devices)
 -- ① Static list: no lfs.dir(), no discovery I/O.
 -- ② Lazy-require: module files are only loaded on the first call to
---    Registry.list() — never at plugin boot.
+--    Registry.list() — never at plugin boot — and modules with a `lazy`
+--    manifest in MODULES only once a field beyond the manifest is read
+--    (in practice, once they are enabled and rendered).
 -- ③ Cache: after the first load, _loaded/_by_id are tables in RAM,
 --    reused across all subsequent renders.
 -- ④ Zero business logic here: each module declares its own
@@ -99,7 +101,11 @@
 -- instances generically; nothing outside the registry should match on id
 -- patterns.
 --
--- ADDING A BUILT-IN MODULE: append a line to MODULES. Nothing else.
+-- ADDING A BUILT-IN MODULE: append a line to MODULES (with a `lazy` manifest
+-- when the module qualifies, see MODULES). Nothing else.
+-- Callers that walk Registry.list() during a render read only id /
+-- enabled_key / default_on (or call Registry.isEnabled) before checking that
+-- a module is enabled, so disabled lazy modules stay unloaded.
 --
 -- ADDING AN EXTERNAL MODULE (third-party plugin):
 --   local ok, Registry = pcall(require, "modules/moduleregistry")
@@ -119,25 +125,42 @@ local logger = require("logger")
 local SUISettings = require("infra/sui_store")
 local _ = require("infra/sui_i18n").translate
 
+-- An entry with `lazy` is represented by a proxy descriptor that answers
+-- id / enabled_key / default_on from the manifest and requires the module on
+-- the first access to any other field, so modules that are off never load.
+-- Only for modules without M.isEnabled, M.sub_modules or M.instanciable; the
+-- manifest must match the module (checked when it loads).
+-- An entry with `instanciable` is an instanciable base (M.instanciable).
 local MODULES = {
     { require_mod = "modules/module_clock"         },
-    { require_mod = "modules/module_quote"         },
-    { require_mod = "modules/module_currently"     },
-    { require_mod = "modules/module_recent"        },
-    { require_mod = "modules/module_new_books"      },
-    { require_mod = "modules/module_tbr"            },   -- also the TBR data/API layer
-    { require_mod = "modules/module_coverdeck"      },
-    { require_mod = "modules/module_collections"   },
-    { require_mod = "modules/module_feat_coll"      },
-    { require_mod = "modules/module_tab_grid"       },
-    { require_mod = "modules/module_library"        },
-    { require_mod = "modules/module_reading_goals" },
-    { require_mod = "modules/reading_stats/module_reading_stats" },
-    { require_mod = "modules/module_heatmap"       },
-    { require_mod = "modules/critter/module_critter"  },
-    { require_mod = "modules/module_quick_actions" },
+    { require_mod = "modules/module_quote",
+      lazy = { id = "quote",         enabled_key = "quote_enabled",         default_on = false } },
+    { require_mod = "modules/module_currently",
+      lazy = { id = "currently",     enabled_key = "currently_enabled",     default_on = true  } },
+    { require_mod = "modules/module_recent",
+      lazy = { id = "recent",        enabled_key = "recent_enabled",        default_on = false } },
+    { require_mod = "modules/module_new_books",
+      lazy = { id = "new_books",     enabled_key = "new_books_enabled",     default_on = false } },
+    -- Also the TBR data/API layer the collection hooks expect loaded.
+    { require_mod = "modules/module_tbr"           },
+    { require_mod = "modules/module_coverdeck",
+      lazy = { id = "coverdeck",     enabled_key = "coverdeck_enabled",     default_on = false } },
+    { require_mod = "modules/module_collections",
+      lazy = { id = "collections",   enabled_key = "collections_enabled",   default_on = false } },
+    { require_mod = "modules/module_feat_coll",      instanciable = true },
+    { require_mod = "modules/module_tab_grid",       instanciable = true },
+    { require_mod = "modules/module_library",
+      lazy = { id = "flat_library",  enabled_key = "flat_library_enabled",  default_on = false } },
+    { require_mod = "modules/module_reading_goals",
+      lazy = { id = "reading_goals", enabled_key = "reading_goals_enabled", default_on = true  } },
+    { require_mod = "modules/reading_stats/module_reading_stats", instanciable = true },
+    { require_mod = "modules/module_heatmap",
+      lazy = { id = "heatmap",       enabled_key = "heatmap_enabled",       default_on = false } },
+    { require_mod = "modules/critter/module_critter",
+      lazy = { id = "critter",       enabled_key = "critter_enabled",       default_on = false } },
+    { require_mod = "modules/module_quick_actions",  instanciable = true },
     { require_mod = "modules/module_action_list"   },
-    { require_mod = "modules/module_spacer"        },
+    { require_mod = "modules/module_spacer",         instanciable = true },
 }
 
 local _loaded        = nil
@@ -172,13 +195,59 @@ local function _instanciableBases()
     if _bases_cache then return _bases_cache end
     local bases = {}
     for _, def in ipairs(MODULES) do
-        local ok, mod = pcall(require, def.require_mod)
-        if ok and type(mod) == "table" and mod.instanciable then
-            bases[#bases + 1] = mod
+        if def.instanciable then
+            local ok, mod = pcall(require, def.require_mod)
+            if ok and type(mod) == "table" and mod.instanciable then
+                bases[#bases + 1] = mod
+            end
         end
     end
     _bases_cache = bases
     return bases
+end
+
+-- Proxy descriptor → its MODULES entry and module, for lazy modules (see
+-- MODULES); MODULES entry → its proxy, kept across Registry.invalidate().
+local _proxies = {}
+local _proxy_of = {}
+
+-- The real module behind a proxy, required on first use; nil when it fails.
+local function _resolve(proxy)
+    local p = _proxies[proxy]
+    if p.mod == nil then
+        local def = p.def
+        local ok, mod = pcall(require, def.require_mod)
+        if not ok or type(mod) ~= "table" then
+            logger.warn("simpleui: moduleregistry: failed to load '" .. def.require_mod .. "': " .. tostring(mod))
+            p.mod = false
+        else
+            p.mod = mod
+            local m = def.lazy
+            if mod.id ~= m.id or mod.enabled_key ~= m.enabled_key
+                    or (mod.default_on ~= false) ~= m.default_on
+                    or mod.isEnabled or mod.sub_modules or mod.instanciable then
+                logger.warn("simpleui: moduleregistry: lazy manifest out of date for '" .. def.require_mod .. "'")
+            end
+        end
+    end
+    return p.mod or nil
+end
+
+local function _makeProxy(def)
+    local m = def.lazy
+    local proxy = setmetatable({ id = m.id, enabled_key = m.enabled_key, default_on = m.default_on }, {
+        __index = function(t, k)
+            local mod = _resolve(t)
+            if mod then return mod[k] end
+        end,
+        __newindex = function(t, k, v)
+            local mod = _resolve(t)
+            if mod then mod[k] = v end
+        end,
+    })
+    _proxies[proxy] = { def = def }
+    _proxy_of[def] = proxy
+    return proxy
 end
 
 -- Base descriptor an instance id belongs to, or nil for a non-instance id.
@@ -383,6 +452,12 @@ local function _load()
     local placed = _placedInstanceIds()
     -- ── Built-ins ────────────────────────────────────────────────────────────
     for _, def in ipairs(MODULES) do
+        if def.lazy then
+            local proxy = _proxy_of[def] or _makeProxy(def)
+            _loaded[#_loaded + 1] = proxy
+            _by_id[proxy.id]      = proxy
+            goto continue
+        end
         local ok, mod = pcall(require, def.require_mod)
         if not ok or not mod then
             logger.warn("simpleui: moduleregistry: failed to load '" .. def.require_mod .. "': " .. tostring(mod))
@@ -411,6 +486,7 @@ local function _load()
                 end
             end
         end
+        ::continue::
     end
     -- ── Externals ────────────────────────────────────────────────────────────
     for _, entry in ipairs(_external) do
@@ -444,7 +520,8 @@ function Registry.get(id)
 end
 
 function Registry.isEnabled(mod, pfx)
-    if type(mod.isEnabled) == "function" then
+    -- A lazy module has no isEnabled: reading it would require the module.
+    if not _proxies[mod] and type(mod.isEnabled) == "function" then
         return mod.isEnabled(pfx)
     end
     if mod.enabled_key then
@@ -461,8 +538,8 @@ end
 function Registry.getRecentDemand(pfx)
     local demand = 0
     for _, mod in ipairs(Registry.list()) do
-        local need = mod.needs and mod.needs.recent
-        if need and Registry.isEnabled(mod, pfx) then
+        local need = Registry.isEnabled(mod, pfx) and mod.needs and mod.needs.recent
+        if need then
             if type(need) == "function" then need = need(pfx) end
             demand = math.max(demand, need)
         end
@@ -474,13 +551,25 @@ end
 -- M.needs): the entry is true, or a function(pfx) that returns true.
 function Registry.wantsData(pfx, need)
     for _, mod in ipairs(Registry.list()) do
-        local n = mod.needs and mod.needs[need]
-        if n and Registry.isEnabled(mod, pfx) then
+        local n = Registry.isEnabled(mod, pfx) and mod.needs and mod.needs[need]
+        if n then
             if type(n) == "function" then n = n(pfx) end
             if n then return true end
         end
     end
     return false
+end
+
+-- Requires the lazy modules enabled under any of the prefixes in `pfxs`, so
+-- the first render of their screens does not pay for loading them.
+function Registry.preloadEnabled(pfxs)
+    for _, mod in ipairs(Registry.list()) do
+        if _proxies[mod] then
+            for _i, pfx in ipairs(pfxs) do
+                if Registry.isEnabled(mod, pfx) then _resolve(mod); break end
+            end
+        end
+    end
 end
 
 function Registry.countEnabled(pfx)

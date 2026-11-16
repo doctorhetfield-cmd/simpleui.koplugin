@@ -569,7 +569,7 @@ local function _showTopbarSettingsWindow(plugin)
     local SUIWindow = require("engines/sui_window")
 
     local function buildRoot(ctx)
-        if not plugin._makeTopbarMenu then plugin:addToMainMenu({}) end
+        plugin:_ensureMenus()
         local ctx_menu = SUIWindow.makeCtxMenu(ctx)
         return SUIWindow.MenuTable{
             items          = plugin._makeTopbarMenu(ctx_menu),

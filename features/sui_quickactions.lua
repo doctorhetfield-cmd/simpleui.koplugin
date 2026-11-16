@@ -225,6 +225,14 @@ local function _goHome(target_fm)
         home = Device.home_dir
     end
     if not home then return false end
+    -- With the flat view on, the Library tab lands on it instead of the folder.
+    local ok_bm, BM = pcall(_BM)
+    if ok_bm and BM and BM.isFlatEnabled() then
+        target_fm._sui_show_folder_pending = true
+        BM.activateMode(target_fm, "normal", false)
+        target_fm._sui_show_folder_pending = nil
+        return true
+    end
     -- isInSeriesView/exitSeriesView live in sui_series_grouping.lua, NOT
     -- sui_foldercovers.lua (fixed bug: this used to require the wrong
     -- module, so in_virtual was always false and a series-group view

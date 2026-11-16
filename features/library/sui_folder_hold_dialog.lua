@@ -8,10 +8,10 @@
 --   clipboard tiles → grid (two columns) → list of further rows
 --
 -- The grid holds "Delete" beside "Rename" and "Set as HOME folder" beside the
--- folder shortcut toggle. The list holds the rows registered through
--- FileManager:addFileDialogButtons. The clipboard tiles and the first grid row
--- only appear when the sheet is opened from the file browser; without them
--- "Delete" joins the list.
+-- folder shortcut toggle. The list holds "Show all books here" and the rows
+-- registered through FileManager:addFileDialogButtons. The clipboard tiles
+-- and the first grid row only appear when the sheet is opened from the file
+-- browser; without them "Delete" joins the list.
 --
 -- Public API
 --   FolderHoldDialog.show(folder, opts) -> window
@@ -63,6 +63,25 @@ local function gridRows(ctx)
     return rows
 end
 
+-- Row that lists every book under the folder, without folders. Nil for the
+-- parent-folder entry and when browsing is off (the flat view needs it).
+local function showAllBooksItem(ctx)
+    local BrowseMeta = require("features/library/sui_library_browse")
+    if not (ctx.file_manager and BrowseMeta.isEnabled()) or (ctx.item and ctx.item.is_go_up) then
+        return nil
+    end
+    local folder = ffiUtil.realpath(ctx.path)
+    if not folder then return nil end
+    return {
+        text     = _("Show all books here"),
+        sui_icon = "folder",
+        callback = function()
+            ctx.close()
+            BrowseMeta.navigateToFlat(ctx.file_manager, folder, { entry = false })
+        end,
+    }
+end
+
 -- Rows of the list below the grid. `has_operations` tells that "Delete" is
 -- already offered by the grid.
 local function listRows(ctx, has_operations)
@@ -70,6 +89,8 @@ local function listRows(ctx, has_operations)
     if ctx.file_manager and not has_operations then
         Rows.pushRow(rows, Rows.deleteItem(ctx, not (ctx.item and ctx.item.is_go_up)))
     end
+    local all_books = showAllBooksItem(ctx)
+    if all_books then Rows.pushRow(rows, all_books) end
     Rows.appendRegisteredRows(ctx, rows, false)
     return rows
 end

@@ -110,20 +110,13 @@ function M.makeQaTap()
     end
 end
 
---- Ensures plugin._goalTapCallback exists (addToMainMenu populates it
---- lazily; idempotent), then returns a callback that resolves the live
---- plugin at call time and forwards to it. Safe to hand to any screen as
---- its on_goal_tap.
+--- Returns a callback that resolves the live plugin at call time and
+--- forwards to its _goalTapCallback. Safe to hand to any screen as its
+--- on_goal_tap.
 function M.makeGoalTap()
     return function(...)
         local plugin = M.getLivePlugin()
-        if not plugin then return end
-        if not plugin._goalTapCallback then
-            plugin:addToMainMenu({})
-        end
-        if plugin._goalTapCallback then
-            plugin._goalTapCallback(...)
-        end
+        if plugin then plugin._goalTapCallback(...) end
     end
 end
 

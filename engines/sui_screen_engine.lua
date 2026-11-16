@@ -1658,10 +1658,11 @@ function ScreenWidget:_buildCtx()
                 elem_order    = SUISettings:readSetting(self._pfx .. "coverdeck_stats_order"),
             },
         }
-        -- Text styles of every module that declares user-selectable text
-        -- elements (M.text_elems).
+        -- Text styles of every enabled module that declares user-selectable
+        -- text elements (M.text_elems). This cache is dropped together with
+        -- the enabled-modules cache.
         for _i, mod in ipairs(Registry.list()) do
-            if mod.text_elems then
+            if Registry.isEnabled(mod, self._pfx) and mod.text_elems then
                 cfg[mod.id] = cfg[mod.id] or {}
                 cfg[mod.id].text = Config.readTextStyles(mod.id, mod.text_elems, self._pfx)
             end

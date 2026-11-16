@@ -12,6 +12,8 @@
 -- Public API
 -- ----------
 --   LibraryScan.getFileList(home_dir) -> { fp, ... }              (cached)
+--   LibraryScan.getDocumentList(dir)  -> { fp, ... }              (cached; every
+--                                         document KOReader opens, not only BOOK_EXTS)
 --   LibraryScan.getRaw(home_dir)      -> { {fp,mtime,size}, ... } (cached)
 --   LibraryScan.cachedContains(home_dir, fp) -> bool|nil          (no I/O)
 --   LibraryScan.invalidate(home_dir?) -- forces a re-walk; no arg = all
@@ -61,8 +63,30 @@ local SYSTEM_DIR_NAMES = {
     ["lost+found"] = true,
 }
 
--- _cache[home_dir] = { list = {{fp,mtime,size},...}, dirs = {[path]=mtime}, checked_at = os.time() }
+-- _cache[key] = { list = {{fp,mtime,size},...}, dirs = {[path]=mtime}, checked_at = os.time(), used = n }
+-- `key` is the walked folder, or DOC_PREFIX .. folder for a walk of every
+-- document KOReader opens. At most MAX_CACHED walks are kept, the least
+-- recently used going first.
 local _cache = {}
+local DOC_PREFIX = "documents:"
+local MAX_CACHED = 6
+local _use_counter = 0
+
+local function touch(entry)
+    _use_counter = _use_counter + 1
+    entry.used = _use_counter
+end
+
+local function evictOldest(keep)
+    local count, oldest_key, oldest_used = 0, nil, nil
+    for key, entry in pairs(_cache) do
+        count = count + 1
+        if key ~= keep and (not oldest_used or entry.used < oldest_used) then
+            oldest_key, oldest_used = key, entry.used
+        end
+    end
+    if count > MAX_CACHED and oldest_key then _cache[oldest_key] = nil end
+end
 
 local function joinPath(parent, child)
     if parent:sub(-1) == "/" then return parent .. child end
@@ -74,11 +98,16 @@ local function supportedExt(name)
     return ext and LibraryScan.BOOK_EXTS[ext:lower()]
 end
 
+-- Whether KOReader opens the file, as the file browser decides it.
+local function openableDocument(_, fp)
+    return require("document/documentregistry"):hasProvider(fp)
+end
+
 -- Recursive walk. `dirs` records every visited directory's mtime — used
 -- afterwards to decide whether a re-walk is needed at all (see
 -- dirsChanged below). `state.count` is a shared budget across the whole
 -- recursion (not per-directory), so MAX_FILES is a true global cap.
-local function walk(dir, depth, out, dirs, state)
+local function walk(dir, depth, out, dirs, state, accepts)
     if depth > MAX_DEPTH or state.count > MAX_FILES then return end
     local ok, iter, dir_obj = pcall(lfs.dir, dir)
     if not ok or type(iter) ~= "function" then return end
@@ -100,9 +129,9 @@ local function walk(dir, depth, out, dirs, state)
                     -- into them would falsely invalidate the cache below.
                     if entry:sub(-4) ~= ".sdr" then
                         dirs[fp] = attr.modification or 0
-                        walk(fp, depth + 1, out, dirs, state)
+                        walk(fp, depth + 1, out, dirs, state, accepts)
                     end
-                elseif attr.mode == "file" and supportedExt(entry) then
+                elseif attr.mode == "file" and accepts(entry, fp) then
                     -- size kept alongside mtime so "sort by file size" has
                     -- data without a second stat per book later.
                     out[#out + 1] = { fp = fp, mtime = attr.modification or 0, size = attr.size or 0 }
@@ -123,28 +152,31 @@ local function dirsChanged(dirs)
     return false
 end
 
-local function rescan(home_dir)
+local function rescan(key, home_dir, accepts)
     local out, dirs = {}, {}
     local root_mtime = lfs.attributes(home_dir, "modification")
     if root_mtime then dirs[home_dir] = root_mtime end
-    walk(home_dir, 0, out, dirs, { count = 0 })
+    walk(home_dir, 0, out, dirs, { count = 0 }, accepts)
     local entry = { list = out, dirs = dirs, checked_at = os.time() }
-    _cache[home_dir] = entry
+    touch(entry)
+    _cache[key] = entry
+    evictOldest(key)
     logger.dbg("simpleui: sui_library_scan: rescanned", home_dir, "->", #out, "books")
     return entry
 end
 
--- getEntry(home_dir) -> cache entry, rescanning only when actually needed.
-local function getEntry(home_dir)
-    local entry = _cache[home_dir]
-    if not entry then return rescan(home_dir) end
+-- getEntry(key, home_dir, accepts) -> cache entry, rescanning only when actually needed.
+local function getEntry(key, home_dir, accepts)
+    local entry = _cache[key]
+    if not entry then return rescan(key, home_dir, accepts) end
     local now = os.time()
-    if now - entry.checked_at >= SAFETY_TTL then return rescan(home_dir) end
-    if dirsChanged(entry.dirs) then return rescan(home_dir) end
+    if now - entry.checked_at >= SAFETY_TTL then return rescan(key, home_dir, accepts) end
+    if dirsChanged(entry.dirs) then return rescan(key, home_dir, accepts) end
     -- Nothing changed — cheap stat-only check passed. Keep serving the
     -- cached list, but bump checked_at so SAFETY_TTL counts from this
     -- confirmed-fresh point rather than the original scan time.
     entry.checked_at = now
+    touch(entry)
     return entry
 end
 
@@ -154,7 +186,7 @@ end
 --- mutates the cache.
 function LibraryScan.getRaw(home_dir)
     if not home_dir or home_dir == "" then return {} end
-    local entry = getEntry(home_dir)
+    local entry = getEntry(home_dir, home_dir, supportedExt)
     local copy = {}
     for i = 1, #entry.list do copy[i] = entry.list[i] end
     return copy
@@ -165,6 +197,17 @@ function LibraryScan.getFileList(home_dir)
     local raw = LibraryScan.getRaw(home_dir)
     local fps = {}
     for i = 1, #raw do fps[i] = raw[i].fp end
+    return fps
+end
+
+--- Filepaths of every document KOReader opens under `dir`, the way the file
+--- browser tells them (unlike getFileList's fixed extensions). Same order and
+--- caching as getRaw().
+function LibraryScan.getDocumentList(dir)
+    if not dir or dir == "" then return {} end
+    local list = getEntry(DOC_PREFIX .. dir, dir, openableDocument).list
+    local fps = {}
+    for i = 1, #list do fps[i] = list[i].fp end
     return fps
 end
 
@@ -190,6 +233,7 @@ end
 function LibraryScan.invalidate(home_dir)
     if home_dir then
         _cache[home_dir] = nil
+        _cache[DOC_PREFIX .. home_dir] = nil
     else
         _cache = {}
     end

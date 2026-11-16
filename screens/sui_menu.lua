@@ -1,7 +1,9 @@
 -- menu.lua — Simple UI
--- Builds the full settings submenu registered in the KOReader main menu
--- (Top Bar, Navigation Bar, Quick Actions, Pagination Bar).
--- Returns an installer: require("menu")(plugin) populates plugin.addToMainMenu.
+-- Builds the settings menus (Top Bar, Navigation Bar, Quick Actions,
+-- Pagination Bar, ...) that the SUI Settings Window and the bars show.
+-- Returns an installer: require("screens/sui_menu")(SimpleUIPlugin) defines
+-- SimpleUIPlugin._buildMenus, which sets the plugin.make* builders on an
+-- instance (see SimpleUIPlugin:_ensureMenus in main.lua).
 
 local UIManager = require("ui/uimanager")
 local Device    = require("device")
@@ -59,7 +61,7 @@ local Arrange   = require("features/sui_arrange")
 
 return function(SimpleUIPlugin)
 
-SimpleUIPlugin.addToMainMenu = function(self, menu_items)
+SimpleUIPlugin._buildMenus = function(self)
     local plugin = self
 
     -- Local aliases for Config functions.
@@ -1811,35 +1813,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     plugin._makeQuickActionsMenu = makeQuickActionsMenu
 
     local function refreshHomescreen()
-        -- Rebuild the widget tree immediately (synchronous) with keep_cache=false
-        -- so that book modules (Currently Reading, Recent Books) re-prefetch their
-        -- data. Using keep_cache=true would reuse _cached_books_state which was
-        -- built before those modules were enabled (with current_fp=nil, recent_fps={})
-        -- causing the newly-enabled modules to render empty until the next full open.
-        -- Collections and other modules have no per-instance cache so this is a
-        -- no-op cost for them.
-        --
-        -- We also schedule a setDirty via UIManager:nextTick to guarantee a repaint
-        -- AFTER the menu widget is removed from the stack. Any setDirty fired while
-        -- the menu is open is painted behind it; when the menu closes the UIManager
-        -- only repaints the menu frame region, not the full HS. nextTick runs after
-        -- the current event's onCloseWidget teardown, so the HS is the top widget
-        -- by the time the dirty is processed.
         local HS = package.loaded["screens/sui_homescreen"]
-        if not (HS and HS._instance) then return end
-        local hs = HS._instance
-        hs:_refreshImmediate(false)
-        UIManager:nextTick(function()
-            if HS._instance == hs and hs._navbar_container then
-                UIManager:setDirty(hs, "ui")
-            end
-        end)
-    end
-
-    -- _goalTapCallback: shown when the user taps the Reading Goals widget on
-    -- the Homescreen. Lets them set the annual goal.
-    self._goalTapCallback = function()
-        require("infra/sui_goals").showDialog("annual", refreshHomescreen)
+        if HS then HS.refreshNow() end
     end
 
     -- -----------------------------------------------------------------------
@@ -2775,7 +2750,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 text_func    = function() return _("Intensity") end,
                 enabled_func = function() return Finished.isFaded() end,
                 title        = _("Fade Intensity"),
-                info         = _("Fades finished book covers towards white.\n50% is the default."),
+                info         = _("Fades finished books towards white.\n50% is the default."),
                 get          = FC.getFadeAmountPct,
                 value_min    = FC.FADE_AMOUNT_MIN,
                 value_max    = FC.FADE_AMOUNT_MAX,
@@ -2792,7 +2767,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         return item
     end
 
-    -- "Group by Book Series": one checkbox per view whose lists can be grouped.
+    -- "Group by Series": one checkbox per view whose lists can be grouped.
     local function makeSeriesGroupingItem(FC)
         local BM = require("features/library/sui_library_browse")
 
@@ -2823,15 +2798,14 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         end
 
         return {
-            text                = _("Group by Book Series"),
+            text                = _("Group by Series"),
             value_func          = activeViews,
-            separator           = true,
             enabled_func        = function() return FC.isEnabled() end,
             sub_item_table_func = viewItems,
         }
     end
 
-    -- "Library Captions": title (and author) strip below the library covers.
+    -- "Captions": title (and author) strip below the library covers.
     -- A restart applies it, since the strip patches the mosaic item at install.
     local function makeLibraryCaptionsItem(FC, ctx_menu)
         local SUIWallpaper = require("features/sui_wallpaper")
@@ -2841,7 +2815,7 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         end
 
         return {
-            text         = _("Library Captions"),
+            text         = _("Captions"),
             sub_item_table_func = function()
                 return {
                     {
@@ -2882,10 +2856,10 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         }
     end
 
-    -- "Cover Shadow": one checkbox per surface that draws shadowed covers.
+    -- "Shadow": one checkbox per surface that draws shadowed covers.
     local function makeCoverShadowItem()
         return {
-            text = _("Cover Shadow"),
+            text = _("Shadow"),
             sub_item_table_func = function()
                 local SUIStyle = require("features/sui_style")
                 -- One checkbox per surface; `refresh` redraws that surface.
@@ -2912,11 +2886,279 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         }
     end
 
-    -- Style → Covers: the look of covers and their badges, shared by the
-    -- library and the home screen modules.
-    local function makeCoversMenuItems(ctx_menu)
-        local ok_fc, FC = pcall(require, "features/library/sui_foldercovers")
-        if not ok_fc or not FC then return {} end
+    -- "Folders": cover type, book stack, folder name and the folder rows of the
+    -- list view. The stack style also shapes the Collections module, so the
+    -- home screen is redrawn along with the library.
+    local function makeFoldersItem(FC, ctx_menu)
+        local CE = require("features/sui_cover_elements")
+
+        local function refreshFolderCovers()
+            FC.invalidateCache()
+            _refreshFC()
+        end
+
+        local function refreshFolderStack()
+            refreshFolderCovers()
+            _applyFullLayoutRefresh()
+        end
+
+        return {
+            text         = _("Folders"),
+            enabled_func = function() return FC.isEnabled() end,
+            sub_item_table_func = function()
+                -- Cover Type, Book Stack, Folder Name
+                local rows = CE.makeFolderCoversItems{
+                    refresh_cover   = refreshFolderCovers,
+                    refresh_stack   = refreshFolderStack,
+                    refresh_name    = refreshFolderCovers,
+                    name_value_func = function()
+                        if FC.getCaptionsShow() then return _("Shown in captions") end
+                        return CE.isShown("name") and _("On") or _("Off")
+                    end,
+                }
+                local folder_name = rows[3]
+
+                -- Folder Name stays listed but inactive while captions show the
+                -- names; the settings window hides rows with enabled_func false,
+                -- so it gets `dim` there instead.
+                if ctx_menu and ctx_menu.is_sui then
+                    folder_name.dim = FC.getCaptionsShow() or nil
+                else
+                    folder_name.enabled_func = function() return not FC.getCaptionsShow() end
+                end
+
+                rows[#rows + 1] = Config.makeRadioSubmenuItem{
+                    text    = _("Covers in List View"),
+                    options = {
+                        { value = "fan",    label = _("Several Covers") },
+                        { value = "single", label = _("One Cover") },
+                    },
+                    get     = function() return require("features/library/sui_folder_fan").getMode() end,
+                    set     = function(v) require("features/library/sui_folder_fan").setMode(v) end,
+                    refresh = _refreshFC,
+                }
+                rows[#rows + 1] = {
+                    text           = _("Placeholder Cover for Empty Folders"),
+                    checked_func   = function() return FC.getSubfolderCover() end,
+                    keep_menu_open = true,
+                    callback       = function()
+                        FC.setSubfolderCover(not FC.getSubfolderCover())
+                        if not FC.getSubfolderCover() then
+                            FC.setRecursiveCover(false)
+                        end
+                        FC.invalidateCache()
+                        _refreshFC()
+                    end,
+                }
+                rows[#rows + 1] = {
+                    text           = _("Scan Subfolders for Covers"),
+                    checked_func   = function() return FC.getRecursiveCover() end,
+                    enabled_func   = function() return FC.getSubfolderCover() end,
+                    keep_menu_open = true,
+                    callback       = function()
+                        FC.setRecursiveCover(not FC.getRecursiveCover())
+                        FC.invalidateCache()
+                        _refreshFC()
+                    end,
+                }
+                return rows
+            end,
+        }
+    end
+
+    -- One submenu per library tab with its view and sort. They read and write
+    -- through the same functions as the sheet of a long press on the tab.
+    -- `extras[mode]` lists rows appended to that tab's submenu.
+    local function tabDisplayItems(fm, extras)
+        local BM        = require("features/library/sui_library_browse")
+        local SortSheet = require("features/library/sui_sort_sheet")
+        local items = {}
+        for _i, mode in ipairs(BM.MODES) do
+            items[#items + 1] = {
+                text = BM.getModeLabel(mode),
+                sub_item_table_func = function()
+                    local fc = fm.file_chooser
+                    local function viewOptions()
+                        local options = {}
+                        for _j, option in ipairs(SortSheet.viewOptions(fm, mode)) do
+                            options[#options + 1] = { value = option.id, label = option.text }
+                        end
+                        return options
+                    end
+                    local function sortOptions()
+                        local options = {}
+                        for _j, group in ipairs(SortSheet.sortGroups(fc, mode)) do
+                            for _k, c in ipairs(group.collates) do
+                                options[#options + 1] = { value = c[1], label = c[2] }
+                            end
+                            if #options > 0 then options[#options].separator = true end
+                        end
+                        if #options > 0 then options[#options].separator = nil end
+                        return options
+                    end
+                    local sub = {
+                        Config.makeRadioSubmenuItem{
+                            text          = _("View"),
+                            options       = viewOptions,
+                            get           = function() return SortSheet.getView(fm, mode) end,
+                            set           = function(id) SortSheet.setView(fm, mode, id) end,
+                            current_label = function()
+                                local current = SortSheet.getView(fm, mode)
+                                for _j, option in ipairs(viewOptions()) do
+                                    if option.value == current then return option.label end
+                                end
+                            end,
+                        },
+                        Config.makeRadioSubmenuItem{
+                            text          = _("Sort"),
+                            options       = sortOptions,
+                            get           = function() return SortSheet.getSort(fm, mode) end,
+                            set           = function(id) SortSheet.setSort(fm, mode, id) end,
+                            current_label = function()
+                                local collate = fc.collates[SortSheet.getSort(fm, mode)] or fc.collates.strcoll
+                                return collate.text
+                            end,
+                        },
+                        {
+                            text           = _("Reverse Sorting"),
+                            checked_func   = function() return SortSheet.isReverse(fm, mode) end,
+                            keep_menu_open = true,
+                            callback       = function()
+                                SortSheet.setReverse(fm, mode, not SortSheet.isReverse(fm, mode))
+                            end,
+                        },
+                    }
+                    if mode == "normal" then
+                        sub[#sub + 1] = {
+                            text           = _("Folders and Files Mixed"),
+                            enabled_func   = function() return fc:getCollate().can_collate_mixed or false end,
+                            checked_func   = function() return G_reader_settings:isTrue("collate_mixed") end,
+                            keep_menu_open = true,
+                            callback       = function()
+                                fm:onSetMixedSorting(not G_reader_settings:isTrue("collate_mixed"))
+                            end,
+                        }
+                        if BM.isEnabled() then
+                            sub[#sub + 1] = {
+                                text           = _("Flat View"),
+                                checked_func   = BM.isFlatEnabled,
+                                keep_menu_open = true,
+                                callback       = function() BM.setFlat(fm, not BM.isFlatEnabled()) end,
+                            }
+                        end
+                    end
+                    local more = extras and extras[mode]
+                    if more and #more > 0 then
+                        sub[#sub].separator = true
+                        for _j, row in ipairs(more) do sub[#sub + 1] = row end
+                    end
+                    return sub
+                end,
+            }
+        end
+        items[#items].separator = true
+        return items
+    end
+
+    -- The file browser's progress, book details and hints in one submenu: the CoverBrowser
+    -- settings the library views follow, plus the library list dog-ear.
+    local function hintsItem(FC, BIM)
+        local function check(text, checked, toggle, opts)
+            local item = {
+                text           = text,
+                checked_func   = checked,
+                keep_menu_open = true,
+                callback       = function() toggle(); _refreshFC() end,
+            }
+            for k, v in pairs(opts or {}) do item[k] = v end
+            return item
+        end
+        -- `inverted`: the setting hides what the item shows.
+        local function bimCheck(text, key, inverted, opts)
+            return check(text,
+                function()
+                    local on = BIM:getSetting(key) and true or false
+                    return on ~= (inverted or false)
+                end,
+                function() BIM:toggleSetting(key) end, opts)
+        end
+        local function progressShown() return not BIM:getSetting("hide_page_info") end
+        -- Saves the series mode and updates the copy CoverBrowser keeps for
+        -- its own Series menu.
+        local function setSeriesMode(mode)
+            BIM:saveSetting("series_mode", mode)
+            local FM = package.loaded["apps/filemanager/filemanager"]
+            local cb = FM and FM.instance and FM.instance.coverbrowser
+            local ok, userpatch = pcall(require, "userpatch")
+            if not (cb and type(cb.init) == "function" and ok) then return end
+            local _v, idx = userpatch.getUpValue(cb.init, "series_mode")
+            if debug.getupvalue(cb.init, idx) == "series_mode" then
+                userpatch.replaceUpValue(cb.init, idx, mode)
+            end
+        end
+        return {
+            text           = _("Progress and Details"),
+            sub_item_table = {
+                {
+                    text           = _("Progress"),
+                    sub_item_table = {
+                        bimCheck(_("Progress Bar in Mosaic"), "show_progress_in_mosaic"),
+                        check(_("Progress Bar in List"), FC.getListProgressBar,
+                            function() FC.setListProgressBar(not FC.getListProgressBar()) end),
+                        Config.makeRadioSubmenuItem{
+                            text         = _("List Progress Bar Style"),
+                            options      = {
+                                { value = "style", label = _("Style") },
+                                { value = "dots",  label = _("Dots") },
+                            },
+                            get          = FC.getListProgressStyle,
+                            set          = FC.setListProgressStyle,
+                            refresh      = _refreshFC,
+                            enabled_func = function() return FC.getListProgressBar() and progressShown() end,
+                        },
+                        bimCheck(_("Progress in List"), "hide_page_info", true,
+                            { separator = true }),
+                        bimCheck(_("Pages Read Instead of %"), "show_pages_read_as_progress", false,
+                            { enabled_func = progressShown }),
+                        bimCheck(_("Pages Left to Read"), "show_pages_left_in_progress", false,
+                            { enabled_func = progressShown }),
+                    },
+                },
+                {
+                    text           = _("Book Details"),
+                    sub_item_table = {
+                        bimCheck(_("File Properties in List"), "hide_file_info", true,
+                            { help_text = _("Shows the file type and size of each book.") }),
+                        -- Turning it on keeps a series mode already chosen in the file browser.
+                        check(_("Series in List"),
+                            function() return BIM:getSetting("series_mode") ~= nil end,
+                            function()
+                                setSeriesMode(BIM:getSetting("series_mode") == nil
+                                    and "series_in_separate_line" or nil)
+                            end,
+                            { help_text = _("Shows the series name and number of each book.") }),
+                    },
+                },
+                {
+                    text           = _("Hints"),
+                    sub_item_table = {
+                        check(_("Opened Books in Library"),
+                            function() return FC.getHintOpened() end,
+                            function() FC.setHintOpened(not FC.getHintOpened()) end,
+                            { help_text = _("Marks the books that have been opened with a folded corner.") }),
+                        bimCheck(_("Opened Books in History"), "history_hint_opened"),
+                        bimCheck(_("Opened Books in Collections"), "collections_hint_opened",
+                            false, { separator = true }),
+                        bimCheck(_("Books with Description"), "no_hint_description", true),
+                    },
+                },
+            },
+        }
+    end
+
+    -- "Book Covers": how the covers look and what is drawn over them. The
+    -- badges, shadow and finished-book fade also reach the home screen modules.
+    local function makeBookCoversItem(FC, ctx_menu)
         local CE = require("features/sui_cover_elements")
 
         -- A changed badge default redraws the library and the home screen.
@@ -2926,103 +3168,55 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             refreshHomescreen()
         end
 
-        local function refreshFolderCovers()
-            FC.invalidateCache()
-            _refreshFC()
-        end
-
-        -- The stack style also shapes the Collections module, so the home
-        -- screen is redrawn along with the library.
-        local function refreshFolderStack()
-            refreshFolderCovers()
-            _applyFullLayoutRefresh()
-        end
-
-        -- Folders: library settings vs module settings. Library folder-name
-        -- options are superseded by captions when those are on.
-        local folders = {
-            text         = _("Folders"),
-            enabled_func = function() return FC.isEnabled() end,
-            sub_item_table_func = function()
-                local all = CE.makeFolderCoversItems{
-                    refresh_cover   = refreshFolderCovers,
-                    refresh_stack   = refreshFolderStack,
-                    refresh_name    = refreshFolderCovers,
-                    name_value_func = function()
-                        if FC.getCaptionsShow() then return _("Shown in captions") end
-                        return CE.isShown("name") and _("On") or _("Off")
-                    end,
-                }
-                -- all = { Cover Type, Book Stack, Folder Name }
-                local cover_type, book_stack, folder_name = all[1], all[2], all[3]
-
-                -- Folder Name stays listed but inactive while captions show the
-                -- names; the settings window hides rows with enabled_func false,
-                -- so it gets `dim` there instead.
-                local is_sui = ctx_menu and ctx_menu.is_sui
-                if folder_name and not is_sui then
-                    folder_name.enabled_func = function() return not FC.getCaptionsShow() end
-                end
-
-                return {
-                    {
-                        text                = _("Library"),
-                        sub_item_table_func = function()
-                            if folder_name and is_sui then
-                                folder_name.dim = FC.getCaptionsShow() or nil
-                            end
-                            return { cover_type, book_stack, folder_name }
-                        end,
-                    },
-                    {
-                        text                = _("Modules"),
-                        -- Only the shared stack *style* applies to modules.
-                        -- Show/Hide of the stack is library-only (CE.isShown
-                        -- "stack"); modules hide their pile via each module's
-                        -- own settings (GroupCell hide_pile).
-                        sub_item_table_func = function()
-                            local SUIStyle = require("features/sui_style")
-                            return {
-                                Config.makeRadioSubmenuItem{
-                                    text    = _("Book Stack Style"),
-                                    options = {
-                                        { value = SUIStyle.FOLDER_STACK_DEFAULT, label = _("Default") },
-                                        { value = SUIStyle.FOLDER_STACK_CLASSIC, label = _("Classic") },
-                                    },
-                                    get     = function() return SUIStyle.getFolderStackStyle() end,
-                                    set     = function(v) SUIStyle.setFolderStackStyle(v) end,
-                                    refresh = refreshFolderStack,
-                                },
-                            }
-                        end,
-                    },
-                }
-            end,
-        }
-
-        local captions = makeLibraryCaptionsItem(FC, ctx_menu)
-        captions.enabled_func = function() return FC.isEnabled() end
-
         return {
-            {
-                text                = _("Library Badges"),
-                sub_item_table_func = function() return CE.makeBadgesItems{ refresh = refreshBadges } end,
-            },
-            folders,
-            makeFinishedBooksItem(FC),
-            makeCoverShadowItem(),
-            captions,
+            text = _("Book Covers"),
+            sub_item_table_func = function()
+                local captions = makeLibraryCaptionsItem(FC, ctx_menu)
+                captions.enabled_func = function() return FC.isEnabled() end
+                local items = {
+                    {
+                        text           = _("Uniform Aspect Ratio (2:3)"),
+                        enabled_func   = function() return FC.isEnabled() end,
+                        checked_func   = function() return FC.getCoverMode() == "2_3" end,
+                        keep_menu_open = true,
+                        callback       = function()
+                            FC.setCoverMode(FC.getCoverMode() == "2_3" and "default" or "2_3")
+                            _refreshFC()
+                        end,
+                    },
+                    {
+                        text                = _("Badges"),
+                        sub_item_table_func = function() return CE.makeBadgesItems{ refresh = refreshBadges } end,
+                    },
+                    captions,
+                    makeCoverShadowItem(),
+                }
+                local ok_bim, BIM = pcall(require, "bookinfomanager")
+                if ok_bim and BIM then
+                    items[#items + 1] = hintsItem(FC, BIM)
+                end
+                items[#items + 1] = {
+                    text           = _("Hide Selection Underline"),
+                    enabled_func   = function() return FC.isEnabled() end,
+                    checked_func   = function() return FC.getHideUnderline() end,
+                    keep_menu_open = true,
+                    callback       = function() FC.setHideUnderline(not FC.getHideUnderline()); _refreshFC() end,
+                }
+                return items
+            end,
         }
     end
 
+    -- Library settings: what the library is made of, how it is browsed and
+    -- how its covers and folders look.
     local function makeLibraryMenuItems(ctx_menu)
         local ok_fc, FC = pcall(require, "features/library/sui_foldercovers")
         if not ok_fc or not FC then return {} end
 
         return {
-            -- ── Enable Library Custom Covers ────────────────────────────
+            -- ── Custom Covers ───────────────────────────────────────────
             {
-                text           = _("Enable Library Custom Covers"),
+                text           = _("Custom Covers"),
                 checked_func   = function() return FC.isEnabled() end,
                 keep_menu_open = true,
                 callback       = function()
@@ -3036,9 +3230,10 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     _refreshFC()
                 end,
             },
-            -- ── Enable Browse by Author / Series / Tags ───────────────────────
+            -- ── Browse by Author, Series and Tags ───────────────────────────
             {
-                text         = _("Enable Browse by Author / Series / Tags"),
+                text         = _("Browse by Author, Series and Tags"),
+                separator    = true,
                 checked_func = function()
                     local ok_bm, BM = pcall(require, "features/library/sui_library_browse")
                     return ok_bm and BM and BM.isEnabled()
@@ -3059,8 +3254,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     else
                         local fc2 = fm2 and fm2.file_chooser
                         if fc2 and fc2.path then
-                            if fc2.path:find("/\u{E257}", 1, true) then
-                                BM.exitToNormal(fc2, fm2)
+                            if require("features/library/sui_virtual_path").isVirtual(fc2.path) then
+                                BM.exitToNormal(fc2, fm2, true)
                             end
                         end
                         BM.setSavedMode("normal")
@@ -3072,89 +3267,46 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     end
                 end,
             },
-            -- ── Show Uncategorized Items ──────────────────────────────────────
+            -- ── Browsing ──────────────────────────────────────────────────────
             {
-                text           = _("Show Uncategorized Items"),
-                help_text      = _("Lists books without an author, series or tag as a separate group in the Authors, Series and Tags views."),
-                keep_menu_open = true,
-                enabled_func   = function()
-                    local ok_bm, BM = pcall(require, "features/library/sui_library_browse")
-                    return ok_bm and BM and BM.isEnabled()
-                end,
-                checked_func   = function()
-                    local ok_bm, BM = pcall(require, "features/library/sui_library_browse")
-                    return ok_bm and BM and BM.getShowEmpty()
-                end,
-                callback       = function()
-                    local ok_bm, BM = pcall(require, "features/library/sui_library_browse")
-                    if not (ok_bm and BM) then return end
-                    BM.setShowEmpty(not BM.getShowEmpty())
-                    local FM2 = package.loaded["apps/filemanager/filemanager"]
-                    local fc2 = FM2 and FM2.instance and FM2.instance.file_chooser
-                    if fc2 and BM.getPathLevel(fc2.path) == "dim_list" then
-                        pcall(function() fc2:refreshPath() end)
-                    end
+                text = _("Browsing"),
+                sub_item_table_func = function()
+                    return {
+                        makeSeriesGroupingItem(FC),
+                        makeFinishedBooksItem(FC),
+                        {
+                            text           = _("Show Uncategorized Books"),
+                            help_text      = _("Lists books without an author, series or tag as a separate group in the Authors, Series and Tags views."),
+                            keep_menu_open = true,
+                            enabled_func   = function()
+                                local ok_bm, BM = pcall(require, "features/library/sui_library_browse")
+                                return ok_bm and BM and BM.isEnabled()
+                            end,
+                            checked_func   = function()
+                                local ok_bm, BM = pcall(require, "features/library/sui_library_browse")
+                                return ok_bm and BM and BM.getShowEmpty()
+                            end,
+                            callback       = function()
+                                local ok_bm, BM = pcall(require, "features/library/sui_library_browse")
+                                if not (ok_bm and BM) then return end
+                                BM.setShowEmpty(not BM.getShowEmpty())
+                                local FM2 = package.loaded["apps/filemanager/filemanager"]
+                                local fc2 = FM2 and FM2.instance and FM2.instance.file_chooser
+                                if fc2 and BM.getPathLevel(fc2.path) == "dim_list" then
+                                    pcall(function() fc2:refreshPath() end)
+                                end
+                            end,
+                        },
+                    }
                 end,
             },
-            -- ── Group by Book Series ──────────────────────────────────────────
-            makeSeriesGroupingItem(FC),
-            -- ── Cover Settings ───────────────────────────────────
+            -- ── Views ────────────────────────────────────────────────────────
+            -- One submenu per library tab with its view, sort and items per page
+            -- (the Library tab takes the 3 size dialogs from CoverBrowser: portrait
+            -- mosaic, landscape mosaic and portrait list), then the collections list.
+            -- The remaining CoverBrowser items (cache, font size, flash) are omitted.
             {
-                text         = _("Cover Settings"),
-                enabled_func = function() return FC.isEnabled() end,
-                sub_item_table = {
-                    -- ── Uniformize Covers (2:3) ────────────────────────────────
-                    {
-                        text           = _("Uniformize Covers (2:3)"),
-                        checked_func   = function() return FC.getCoverMode() == "2_3" end,
-                        keep_menu_open = true,
-                        callback       = function()
-                            FC.setCoverMode(FC.getCoverMode() == "2_3" and "default" or "2_3")
-                            _refreshFC()
-                        end,
-                    },
-                    {
-                        text           = _("Hide Selection Underline"),
-                        checked_func   = function() return FC.getHideUnderline() end,
-                        keep_menu_open = true,
-                        callback       = function() FC.setHideUnderline(not FC.getHideUnderline()); _refreshFC() end,
-                    },
-                    {
-                        text           = _("Placeholder Cover for Bookless Folders"),
-                        checked_func   = function() return FC.getSubfolderCover() end,
-                        keep_menu_open = true,
-                        callback       = function()
-                            FC.setSubfolderCover(not FC.getSubfolderCover())
-                            if not FC.getSubfolderCover() then
-                                FC.setRecursiveCover(false)
-                            end
-                            FC.invalidateCache()
-                            _refreshFC()
-                        end,
-                    },
-                    {
-                        text           = _("Scan Subfolders for Covers"),
-                        checked_func   = function() return FC.getRecursiveCover() end,
-                        enabled_func   = function() return FC.getSubfolderCover() end,
-                        keep_menu_open = true,
-                        callback       = function()
-                            FC.setRecursiveCover(not FC.getRecursiveCover())
-                            FC.invalidateCache()
-                            _refreshFC()
-                        end,
-                    },
-                },
-            },
-            -- ── Library View ─────────────────────────────────────────────────
-            -- Exposes only the 3 items-per-page items from CoverBrowser:
-            --   • Items per page in portrait mosaic mode
-            --   • Items per page in landscape mosaic mode
-            --   • Items per page in portrait list mode
-            -- The remaining items (Progress, Display hints, Series, cache, etc.)
-            -- are intentionally omitted.
-            {
-                text      = _("Display"),
-                separator = true,
+                text = _("Views"),
                 sub_item_table_func = function()
                     -- CoverBrowser is registered as fm.coverbrowser via
                     -- FileManager:registerModule(plugin_module.name, ...).
@@ -3184,16 +3336,20 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     local ok = pcall(cb.addToMainMenu, cb, tmp)
                     if not ok then return {} end
 
-                    local items = {}
-
-                    -- 1. "Display mode" — mosaic/list/classic radio (untouched)
-                    if tmp.filemanager_display_mode then
-                        table.insert(items, tmp.filemanager_display_mode)
+                    local BM         = require("features/library/sui_library_browse")
+                    local SortSheet  = require("features/library/sui_sort_sheet")
+                    local TabViews   = require("features/library/sui_tab_views")
+                    local fc         = fm.file_chooser
+                    local function refreshMenu()
+                        if ctx_menu and ctx_menu.refresh then ctx_menu.refresh() end
                     end
 
-                    -- 2. "Mosaic and detailed list settings" filtered to the
-                    --    first 3 entries (grid/list size dialogs).
-                    --    CoverBrowser inserts at pos 4+ of the stub.
+                    -- Rows appended to the submenu of each tab.
+                    local extras = {}
+
+                    -- Library tab: the file browser's own size dialogs, from the
+                    -- first 3 entries of "Mosaic and detailed list settings"
+                    -- (CoverBrowser inserts it at pos 4+ of the stub).
                     local mosaic_item
                     for i, child in ipairs(tmp.filebrowser_settings.sub_item_table) do
                         if i > 3 and (child.text or child.text_func) then
@@ -3201,8 +3357,6 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                             break
                         end
                     end
-
-                    local fc = fm.file_chooser
                     if mosaic_item and fc and type(mosaic_item.sub_item_table) == "table" then
                         -- Entries keep their native dialogs, drawn as sheets
                         -- above this window. Each row gets a
@@ -3210,18 +3364,18 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                         -- (see the row title/value convention in
                         -- engines/sui_window.lua). Defaults mirror the native ones.
                         local size_rows = {
-                            { label = _("Portrait mosaic mode"),
+                            { label = _("Portrait Mosaic Mode"),
                               value = function()
                                   return T(_("%1 × %2"), fc.nb_cols_portrait or 3, fc.nb_rows_portrait or 3)
                               end },
-                            { label = _("Landscape mosaic mode"),
+                            { label = _("Landscape Mosaic Mode"),
                               value = function()
                                   return T(_("%1 × %2"), fc.nb_cols_landscape or 4, fc.nb_rows_landscape or 2)
                               end },
-                            { label = _("Portrait list mode"),
+                            { label = _("Portrait List Mode"),
                               value = function() return tostring(fc.files_per_page or 10) end },
                         }
-                        local filtered = {}
+                        local sizes = {}
                         for i, row in ipairs(size_rows) do
                             local entry = mosaic_item.sub_item_table[i]
                             if not entry then break end
@@ -3234,18 +3388,60 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                             entry.callback = function(...)
                                 return NativeWidgets().showOverWindows(native_callback, ...)
                             end
-                            filtered[#filtered + 1] = entry
+                            sizes[#sizes + 1] = entry
                         end
-                        table.insert(items, {
-                            text           = mosaic_item.text,
-                            separator      = mosaic_item.separator,
-                            sub_item_table = filtered,
-                        })
+                        if #sizes > 0 then
+                            extras.normal = { { text = _("Items per Page"), sub_item_table = sizes } }
+                        end
                     end
+
+                    -- Metadata tabs: portrait list items per page, used while
+                    -- the tab is listed as a list.
+                    for _i, mode in ipairs(BM.MODES) do
+                        if mode ~= "normal" then
+                            extras[mode] = { Config.makeSpinItem{
+                                text          = _("Items per Page"),
+                                title         = _("Items per page"),
+                                info          = _("Portrait list mode"),
+                                enabled_func  = function()
+                                    return TabViews.isListView(SortSheet.getView(fm, mode))
+                                end,
+                                get           = function() return SortSheet.getPerPage(fm, mode) end,
+                                set           = function(n) SortSheet.setPerPage(fm, mode, n) end,
+                                refresh       = refreshMenu,
+                                value_min     = TabViews.PER_PAGE_MIN,
+                                value_max     = TabViews.PER_PAGE_MAX,
+                                default_value = TabViews.defaultPerPage(mode),
+                            } }
+                        end
+                    end
+
+                    local items = tabDisplayItems(fm, extras)
+
+                    -- Collections list, drawn with SimpleUI's rows.
+                    local CollectionRows = require("features/library/sui_collection_rows")
+                    items[#items + 1] = {
+                        text           = _("Collections"),
+                        sub_item_table = { Config.makeSpinItem{
+                            text          = _("Items per Page"),
+                            title         = _("Items per page"),
+                            info          = _("Portrait list mode"),
+                            enabled_func  = CollectionRows.isActive,
+                            get           = CollectionRows.getPerPage,
+                            set           = CollectionRows.setPerPage,
+                            refresh       = refreshMenu,
+                            value_min     = CollectionRows.PER_PAGE_MIN,
+                            value_max     = CollectionRows.PER_PAGE_MAX,
+                            default_value = CollectionRows.PER_PAGE_DEFAULT,
+                        } },
+                    }
 
                     return items
                 end,
             },
+            -- ── Book Covers and Folders ───────────────────────────────────────
+            makeBookCoversItem(FC, ctx_menu),
+            makeFoldersItem(FC, ctx_menu),
         }
     end
     plugin.makeLibraryMenuItems = makeLibraryMenuItems
@@ -3447,6 +3643,43 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         end
 
         local items = {
+            -- ── UI Font ───────────────────────────────────────────────────
+            {
+                text = _("UI Font"),
+                value_func     = uiFontValue,
+                mandatory_func = uiFontValue,
+                sub_item_table_func = function()
+                    local ok_ss, SUIStyle = pcall(require, "features/sui_style")
+                    if not ok_ss or not SUIStyle then return {} end
+                    local ok_fi, items = pcall(SUIStyle.makeFontMenuItems)
+                    if not ok_fi or type(items) ~= "table" then return {} end
+                    return items
+                end,
+            },
+            -- ── Global Text Size ──────────────────────────────────────────
+            -- Global scale applied to every KOReader UI text size, via a
+            -- patch on ui/font.lua's Font:getFace() (sui_patches.lua
+            -- patchFontGetFace) — covers native menus/dialogs AND
+            -- SimpleUI's own widgets alike, not just Simple UI. Does not
+            -- affect the book's reading font size (crengine, separate
+            -- system). Like the UI Font picker above, a restart is needed
+            -- to fully apply it everywhere (the scale is captured once, at
+            -- plugin-init patch time).
+            Config.makeSpinItem{
+                text_func    = function() return _("Global Text Size") end,
+                title        = _("Global Text Size"),
+                info         = _("Global scale applied to all of KOReader's interface text — menus, dialogs, titles, and Simple UI. It does not change the book's reading font size, which has its own setting.\n100% is the default size. Useful when a chosen UI font (see UI Font above) renders smaller or larger than usual."),
+                get          = Config.getFontScalePct,
+                value_min    = Config.FONT_SCALE_MIN,
+                value_max    = Config.FONT_SCALE_MAX,
+                value_step   = Config.FONT_SCALE_STEP,
+                default_value= Config.FONT_SCALE_DEF,
+                unit         = "%",
+                set          = function(value)
+                    Config.setFontScalePct(value)
+                    askRestart(_("A restart is required to apply the new text size everywhere.\n\nRestart now?"))
+                end,
+            },
             -- ── Icons (sub-folder) ─────────────────────────────────────
             {
                 text = _("Icons"),
@@ -4040,24 +4273,6 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                     },
                 }, -- end Icons sub_item_table
             },   -- end Icons submenu
-            -- ── Covers ────────────────────────────────────────────────────
-            {
-                text                = _("Covers"),
-                sub_item_table_func = function() return makeCoversMenuItems(ctx_menu) end,
-            },
-            -- ── UI Font ───────────────────────────────────────────────────
-            {
-                text = _("UI Font"),
-                value_func     = uiFontValue,
-                mandatory_func = uiFontValue,
-                sub_item_table_func = function()
-                    local ok_ss, SUIStyle = pcall(require, "features/sui_style")
-                    if not ok_ss or not SUIStyle then return {} end
-                    local ok_fi, items = pcall(SUIStyle.makeFontMenuItems)
-                    if not ok_fi or type(items) ~= "table" then return {} end
-                    return items
-                end,
-            },
             -- ── Module Labels ─────────────────────────────────────────────
             {
                 text                = _("Module Labels"),
@@ -4066,32 +4281,11 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 end,
                 sub_item_table_func = makeSectionLabelItems,
             },
-            -- ── Global Text Size ──────────────────────────────────────────
-            -- Global scale applied to every KOReader UI text size, via a
-            -- patch on ui/font.lua's Font:getFace() (sui_patches.lua
-            -- patchFontGetFace) — covers native menus/dialogs AND
-            -- SimpleUI's own widgets alike, not just Simple UI. Does not
-            -- affect the book's reading font size (crengine, separate
-            -- system). Like the UI Font picker above, a restart is needed
-            -- to fully apply it everywhere (the scale is captured once, at
-            -- plugin-init patch time).
-            Config.makeSpinItem{
-                text_func    = function() return _("Global Text Size") end,
-                title        = _("Global Text Size"),
-                info         = _("Global scale applied to all of KOReader's interface text — menus, dialogs, titles, and Simple UI. It does not change the book's reading font size, which has its own setting.\n100% is the default size. Useful when a chosen UI font (see UI Font above) renders smaller or larger than usual."),
-                get          = Config.getFontScalePct,
-                value_min    = Config.FONT_SCALE_MIN,
-                value_max    = Config.FONT_SCALE_MAX,
-                value_step   = Config.FONT_SCALE_STEP,
-                default_value= Config.FONT_SCALE_DEF,
-                unit         = "%",
-                set          = function(value)
-                    Config.setFontScalePct(value)
-                    askRestart(_("A restart is required to apply the new text size everywhere.\n\nRestart now?"))
-                end,
-            },
+            -- ── Progress Bar Type ─────────────────────────────────────────
             {
-                text = _("Progress Bar Type"),
+                text      = _("Progress Bar Type"),
+                help_text = _("Look of the progress bars on the Home Screen. Library list progress bars set to \"Style\" follow it."),
+                separator = true,
                 sub_item_table = {
                     {
                         text           = _("Flat"),
@@ -4123,10 +4317,10 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
             sub_item_table_func = function() return require("features/sui_menu_hide").makeMenuItems(ctx_menu) end,
         }
         if Accent.isSupported() then
-            items[#items + 1] = {
+            table.insert(items, 1, {
                 text                = _("Colors"),
                 sub_item_table_func = function() return makeColorItems(ctx_menu) end,
-            }
+            })
         end
         return items
     end
@@ -4213,10 +4407,6 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- Main menu entry
     -- -----------------------------------------------------------------------
 
-    -- sorting_hint = "tools" places this entry in the Tools section of the
-    -- KOReader main menu (where Statistics, Terminal, etc. live).
-    -- Using a dedicated key "simpleui" avoids colliding with the section table.
-    --
     -- OPT-H: All sub-menus are now built lazily via sub_item_table_func.
     -- Previously makeNavbarMenu(), makePaginationBarMenu() and makeTopbarMenu()
     -- were called eagerly at registration time, creating hundreds of closures
@@ -4260,7 +4450,8 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
     -- menu below does not affect the SUI Settings Window in any way.
     --
     -- To restore the native Tools > Simple UI submenu instead of opening the
-    -- SUI Settings Window, replace the menu_items.simpleui assignment below
+    -- SUI Settings Window, expose this function on the plugin and replace the
+    -- menu_items.simpleui entry of SimpleUIPlugin:addToMainMenu (main.lua)
     -- with:
     --   menu_items.simpleui = {
     --       sorting_hint        = "tools",
@@ -4301,10 +4492,9 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
                 text = _("Library"),
                 sub_item_table_func = function() return plugin.makeLibraryMenuItems() end,
             },
-            -- ── Appearance ───────────────────────────────────────────────────
-            -- Consolidates all visual customisation: icons (system, quick actions,
-            -- packs, presets) and the UI font. Previously split across Style > Icons
-            -- (4 levels deep) and Style > UI Font.
+            -- ── Style ────────────────────────────────────────────────────────
+            -- Global appearance: colors, UI font, text size, icons, module labels
+            -- and progress bars. Library covers live under Library.
             {
                 text = _("Style"),
                 sub_item_table_func = function() return plugin.makeStyleMenuItems(nil) end,
@@ -4347,17 +4537,5 @@ SimpleUIPlugin.addToMainMenu = function(self, menu_items)
         end
         return sub_item_table
     end
-
-    -- -------------------------------------------------------------------
-    -- Active Tools menu entry: opens the SUI Settings Window directly.
-    -- -------------------------------------------------------------------
-    menu_items.simpleui = {
-        sorting_hint = "tools",
-        text         = _("Simple UI"),
-        callback     = function()
-            local SettingsWindow = require("screens/sui_settings_window")
-            SettingsWindow:show()
-        end,
-    }
-end -- addToMainMenu
+end -- _buildMenus
 end -- installer function

@@ -17,7 +17,6 @@ local BD              = require("ui/bidi")
 local Blitbuffer      = require("ffi/blitbuffer")
 local CenterContainer = require("ui/widget/container/centercontainer")
 local FileChooser     = require("ui/widget/filechooser")
-local Font            = require("ui/font")
 local FrameContainer  = require("ui/widget/container/framecontainer")
 local Geom            = require("ui/geometry")
 local HorizontalGroup = require("ui/widget/horizontalgroup")
@@ -26,14 +25,16 @@ local ImageWidget     = require("ui/widget/imagewidget")
 local LeftContainer   = require("ui/widget/container/leftcontainer")
 local OverlapGroup    = require("ui/widget/overlapgroup")
 local Screen          = require("device").screen
-local VerticalGroup   = require("ui/widget/verticalgroup")
-local VerticalSpan    = require("ui/widget/verticalspan")
 local Size            = require("ui/size")
-local TextBoxWidget   = require("ui/widget/textboxwidget")
-local TextWidget      = require("ui/widget/textwidget")
 local UIManager       = require("ui/uimanager")
 
 local CoverFinder    = require("features/library/sui_cover_finder")
+local BookRows       = require("features/library/sui_book_rows")
+local util           = require("util")
+local filemanagerutil = require("apps/filemanager/filemanagerutil")
+local TabViews       = require("features/library/sui_tab_views")
+local FolderFan      = require("features/library/sui_folder_fan")
+local ListRows       = require("features/library/sui_list_rows")
 local Finished       = require("features/library/sui_finished_books")
 local CoverWidgets   = require("features/library/sui_cover_widgets")
 local CE             = require("features/sui_cover_elements")
@@ -61,6 +62,9 @@ local SK = {
     legacy_title_strip  = "simpleui_fc_show_title_strip",
     legacy_author_strip = "simpleui_fc_show_author_strip",
     fade_amount       = "simpleui_fc_fade_amount",
+    hint_opened       = "simpleui_fc_hint_opened",
+    list_progress_bar   = "simpleui_lib_list_progress_bar",
+    list_progress_style = "simpleui_lib_list_progress_style",
 }
 
 -- ---------------------------------------------------------------------------
@@ -100,6 +104,10 @@ end
 
 function M.isEnabled()   return SUISettings:isTrue(SK.enabled)  end
 function M.setEnabled(v) SUISettings:saveSetting(SK.enabled, v) end
+
+-- Dogear on the list rows of opened books in the library; off by default.
+function M.getHintOpened()  return SUISettings:isTrue(SK.hint_opened) end
+function M.setHintOpened(v) SUISettings:saveSetting(SK.hint_opened, v) end
 
 function M.getHideUnderline()  return _getFlag(SK.hide_underline) end
 function M.setHideUnderline(v) _setFlag(SK.hide_underline, v)     end
@@ -171,6 +179,19 @@ end
 -- lightenRect expects a 0.0–1.0 float.
 function M.getFadeAmount() return M.getFadeAmountPct() / 100 end
 
+-- Progress bar of the list rows: off by default, drawn as the Style menu's
+-- bar ("style") or as dots.
+M.LIST_PROGRESS_STYLES = { "style", "dots" }
+function M.getListProgressBar() return SUISettings:nilOrTrue(SK.list_progress_bar) end
+function M.setListProgressBar(on) SUISettings:saveSetting(SK.list_progress_bar, on and true or false) end
+function M.getListProgressStyle()
+    return Config.readChoice(SK.list_progress_style, M.LIST_PROGRESS_STYLES, "style")
+end
+function M.setListProgressStyle(style)
+    SUISettings:saveSetting(SK.list_progress_style,
+        Config.resolveChoice(style, M.LIST_PROGRESS_STYLES, "style"))
+end
+
 -- ---------------------------------------------------------------------------
 -- 4. Constants
 -- ---------------------------------------------------------------------------
@@ -180,8 +201,6 @@ local _BASE_COVER_H = math.floor(Screen:scaleBySize(96))
 local _BASE_NB_SIZE = Screen:scaleBySize(10)
 local _BASE_NB_FS   = SUIStyle.FS_DETAIL  -- 15: folder-count number badge overlay
 
-local _EDGE_MARGIN = math.max(1, Screen:scaleBySize(1))
-
 local _LATERAL_PAD        = Screen:scaleBySize(10)
 local _BADGE_MARGIN_BASE  = Screen:scaleBySize(8)
 local _BADGE_MARGIN_R_BASE = Screen:scaleBySize(4)
@@ -190,14 +209,7 @@ local _BADGE_MARGIN_R_BASE = Screen:scaleBySize(4)
 -- (64px-reference) font size into an actual scaled size. Keeping this
 -- identical means folder names in the list-with-covers view end up the
 -- same size as book titles, matching stock behaviour.
-local _LM_SCALE_BY_SIZE = Screen:scaleBySize(1000000) * (1/1000000)
-local function _lmFontSize(dimen_h, nominal, max)
-    local font_size = math.floor(nominal * dimen_h * (1/64) / _LM_SCALE_BY_SIZE)
-    if max and font_size >= max then
-        return max
-    end
-    return font_size
-end
+local _lmFontSize = ListRows.fontSize
 
 -- Set by M.install() to the strip height for this session; 0 when both
 -- title and author strips are disabled.  Read by _computeCellGeometry.
@@ -452,6 +464,24 @@ local function _dotCoverImage(dir_path)
         return ow, oh
     end)
     if ok and w and h then return { file = cover_file, w = w, h = h } end
+end
+
+-- The static `.cover.*` image of a real folder as a cover record
+-- { cover_bb, cover_w, cover_h, ... } owned by the caller, or nil.
+local function _dotCoverInfo(dir_path)
+    local cover_file = CoverFinder.findDotCover(dir_path)
+    if not cover_file then return nil end
+    local ok, img = pcall(function()
+        local iw = ImageWidget:new{ file = cover_file, scale_factor = 1 }
+        iw:_render()
+        local bb = iw._bb and iw._bb:copy()
+        local ow = iw:getOriginalWidth()
+        local oh = iw:getOriginalHeight()
+        iw:free()
+        return { cover_bb = bb, cover_w = ow, cover_h = oh,
+                 has_cover = true, cover_fetched = true }
+    end)
+    if ok and img and img.cover_bb then return img end
 end
 
 -- Resolve the effective folder style for dir_path.
@@ -724,13 +754,52 @@ local function _leftAlignListCover(item)
     row[1] = LeftContainer:new{ dimen = slot.dimen, slot[1] }
 end
 
+-- True for the entry of a folder row (not a book nor the go-up row).
+local function _isFolderRow(entry)
+    return entry and not (entry.is_file or entry.file or entry.is_go_up) or false
+end
+
 -- Folder rows show their name without a trailing slash, whether the folder is
 -- real or virtual.
 local function _stripListFolderSlash(item)
-    local entry = item.entry
-    if entry and not entry.is_file and not entry.file and not entry.is_go_up and item.text then
+    if _isFolderRow(item.entry) and item.text then
         item.text = (item.text:gsub("/$", ""))
     end
+end
+
+-- Count line of a folder row in the detailed list: "12 books", "3 folders ·
+-- 12 books" for a real folder that holds folders, with a star for a folder
+-- shortcut. Nil when the row has no count to show.
+local function _folderCountLine(item)
+    local entry, menu = item.entry, item.menu
+    if not _isFolderRow(entry) then return nil end
+    local books, dirs = entry.nb_sub_files, 0
+    local star = false
+    if not books then
+        if not (menu and menu.getList and entry.path and _isRealFolder(entry)) then return nil end
+        local sub_dirs, files = menu:getList(entry.path)
+        books, dirs = #files, #sub_dirs
+        star = menu.ui and menu.ui.folder_shortcuts
+            and menu.ui.folder_shortcuts:hasFolderShortcut(entry.path, true) or false
+    end
+    local text = ListRows.countText(books, dirs)
+    return star and ("☆ " .. text) or text
+end
+
+-- Name, optional author line and count line of a folder row in the detailed
+-- list.
+local function _listFolderLines(item, dimen, main_w, author)
+    return ListRows.lines(BD.directory(item.text), _folderCountLine(item), dimen, main_w,
+        { author = author, fallback = item.mandatory })
+end
+
+-- Authors of the first book of a series folder, on one line; nil if unknown.
+local function _seriesAuthors(entry, BookInfoManager)
+    local first = entry.cover_paths and entry.cover_paths[1]
+    local info  = first and BookInfoManager:getBookInfo(first, false)
+    local authors = info and info.authors
+    if not authors or authors == "" then return nil end
+    return (authors:gsub("\n", ", "))
 end
 
 -- The widget drawn as the cell's cover: the cover frame of a book, the cover
@@ -1756,11 +1825,26 @@ function M.install()
     if ListMenuItem and not ListMenuItem._simpleui_lm_patched then
         ListMenuItem._simpleui_lm_patched     = true
         ListMenuItem._simpleui_lm_orig_update = ListMenuItem.update
+        ListMenuItem._simpleui_lm_orig_paintTo = ListMenuItem.paintTo
+
+        -- Finished books of the "fade" mode are lightened over their whole
+        -- row content, below the separator lines.
+        function ListMenuItem:paintTo(bb, x, y)
+            ListMenuItem._simpleui_lm_orig_paintTo(self, bb, x, y)
+            if self._fc_fade then
+                local line_h = self.underline_h or 1
+                bb:lightenRect(x, y + line_h, self.width, self.height - 2 * line_h, self._fc_fade)
+            end
+        end
 
         local orig_lm_update = ListMenuItem.update
         local function updateFolderCover(self, ...)
             orig_lm_update(self, ...)
 
+            if self.menu and not self.do_cover_image and _isFolderRow(self.entry) then
+                self:_setListFolderText()
+                return
+            end
             if not self.do_cover_image                   then return end
             if not M.isEnabled()                         then return end
             if self.menu and self.menu.no_refresh_covers then return end
@@ -1774,24 +1858,42 @@ function M.install()
 
             -- A user-picked book leads and takes precedence over a static image.
             local lead = CoverOverrides.get(dir_path, true)
-            if not lead and _isRealFolder(entry) then
-                local cover_file = CoverFinder.findDotCover(dir_path)
-                if cover_file then
-                    local ok, img = pcall(function()
-                        local iw = ImageWidget:new{ file = cover_file, scale_factor = 1 }
-                        iw:_render()
-                        local bb = iw._bb and iw._bb:copy()
-                        local ow = iw:getOriginalWidth()
-                        local oh = iw:getOriginalHeight()
-                        iw:free()
-                        return { cover_bb = bb, cover_w = ow, cover_h = oh,
-                                 has_cover = true, cover_fetched = true }
-                    end)
-                    if ok and img and img.cover_bb then
-                        self:_setListFolderCover(img)
-                        return
-                    end
+            local fan = FolderFan.getMode() == "fan" and FolderFan.geometry(
+                self.width, self.height - 2 * (self.underline_h or 1), {
+                    margin = Screen:scaleBySize(6),
+                    shadow = SUIStyle.coverShadowOffset(SUIStyle.SHADOW_LIBRARY),
+                    border = SUIStyle.BADGE_BORDER_SZ,
+                    min_h  = Screen:scaleBySize(40),
+                    uniform = M.getCoverMode() == "2_3",
+                })
+            local dot = not lead and _isRealFolder(entry) and _dotCoverInfo(dir_path) or nil
+            if dot and not fan then
+                self:_setListFolderCover(dot)
+                return
+            end
+
+            if fan then
+                local plan = _planFolderCover(self, BookInfoManager,
+                    dot and FolderFan.MAX - 1 or FolderFan.MAX, _coverDepth("quad"), lead)
+                if not plan.complete then
+                    if dot then dot.cover_bb:free() end
+                    _awaitCovers(self, BookInfoManager, plan.requests)
+                    return
                 end
+                local cards = {}
+                if dot then
+                    cards[1] = { bb = dot.cover_bb, w = dot.cover_w, h = dot.cover_h }
+                end
+                for _i, c in ipairs(plan.covers) do
+                    cards[#cards + 1] = { bb = c.data, w = c.w, h = c.h, shared = true }
+                end
+                if #cards == 0 then
+                    local name = (self.text or ""):gsub("/$", "")
+                    local empty = plan.seen == 0 and M.getSubfolderCover() and _isRealFolder(entry)
+                    cards[1] = { title = empty and _("Empty folder") or name }
+                end
+                self:_setListFolderFan(cards, fan)
+                return
             end
 
             local plan = _planFolderCover(
@@ -1803,17 +1905,148 @@ function M.install()
                 })
             elseif not plan.complete then
                 _awaitCovers(self, BookInfoManager, plan.requests)
+            elseif _isFolderRow(entry) then
+                -- Same placeholder as the mosaic: the folder's name, or "Empty folder".
+                local name = (self.text or ""):gsub("/$", "")
+                local empty = plan.seen == 0 and M.getSubfolderCover() and _isRealFolder(entry)
+                self:_setListFolderCover(nil, empty and _("Empty folder") or name)
             end
         end -- updateFolderCover
 
         function ListMenuItem:update(...)
             _stripListFolderSlash(self)
             updateFolderCover(self, ...)
+            self:_setListBookRow()
+            if self.menu and self.menu.name == "filemanager" and not M.getHintOpened() then
+                self.do_hint_opened = false
+            end
             _leftAlignListCover(self)
         end
 
+        -- Renders a folder as text: name over count line, and a chevron at the end.
+        function ListMenuItem:_setListFolderText()
+            local dimen = Geom:new{
+                w = self.width,
+                h = self.height - 2 * (self.underline_h or 1),
+            }
+            ListRows.setContent(self, ListRows.trailingRow(dimen, SUIStyle.icon("chevron"), function(main_w)
+                return _listFolderLines(self, dimen, main_w)
+            end))
+        end
+
+        -- The row's trailing chevron, flush right and centred vertically.
+        local function _trailingChevron(wchev, dimen)
+            local size = wchev:getSize()
+            wchev.overlap_offset = { dimen.w - size.w, math.floor((dimen.h - size.h) / 2) }
+            return wchev
+        end
+
+        -- Left slot of a list row: the cover in a book-shaped box, flush with the
+        -- row's left edge, the same width on every row. `shared` marks a cover
+        -- buffer that belongs to BookInfoManager and must outlive the widget.
+        -- Without a cover the generated one shows `title` and `authors`.
+        -- `on_hold` draws the pause badge in the middle of the cover.
+-- Returns the slot widget (nil without a cover or a title) and its width.
+        local function _listCoverSlot(bookinfo, dimen, shared, title, authors, on_hold)
+            local border_size = SUIStyle.BADGE_BORDER_SZ
+            local box_h  = dimen.h - 2 * Screen:scaleBySize(6)
+            local slot_w = math.floor(box_h / 1.5)
+            local max_w, max_h = slot_w - 2 * border_size, box_h - 2 * border_size
+            local inner, inner_w, inner_h
+            if bookinfo and bookinfo.cover_bb then
+                -- A buffer shared with the file browser must not be freed with
+                -- the widget, or it is corrupted for every other consumer.
+                inner = CoverWidgets.fitCover(bookinfo.cover_bb, bookinfo.cover_w,
+                    bookinfo.cover_h, max_w, max_h, M.getCoverMode() == "2_3", not shared)
+                local size = inner:getSize()
+                inner_w, inner_h = size.w, size.h
+            elseif title then
+                local Placeholder = require("engines/sui_cover_placeholder")
+                inner_w, inner_h = Placeholder.fitSize(max_w, max_h)
+                inner = Placeholder.build(inner_w, inner_h, title, authors)
+            else
+                return nil, slot_w
+            end
+            local cover = FrameContainer:new{
+                width      = inner_w + 2 * border_size,
+                height     = inner_h + 2 * border_size,
+                margin     = 0,
+                padding    = 0,
+                bordersize = border_size,
+                inner,
+            }
+            if on_hold then
+                local cover_w, cover_h = inner_w + 2 * border_size, inner_h + 2 * border_size
+                local badge = CoverWidgets.buildPauseBadge(
+                    math.floor(cover_w * 0.4 * CE.getSizePct() / 100), CE.getColor("onhold"))
+                local bsize = badge:getSize()
+                badge.overlap_offset = { math.floor((cover_w - bsize.w) / 2), math.floor((cover_h - bsize.h) / 2) }
+                cover = OverlapGroup:new{ dimen = Geom:new{ w = cover_w, h = cover_h }, cover, badge }
+            end
+            return LeftContainer:new{ dimen = Geom:new{ w = slot_w, h = dimen.h }, cover }, slot_w
+        end
+
+        -- Redraws a known book's row in the list style of the folder rows. The
+        -- native row stays for books still loading, deleted files, rows showing
+        -- the file name and books whose metadata is ignored.
+        function ListMenuItem:_setListBookRow()
+            self._fc_fade = nil
+            if self.is_directory or self.file_deleted or self.do_filename_only
+                    or not (self.bookinfo_found and self.filepath and self.menu) then
+                return
+            end
+            local bookinfo = BookInfoManager:getBookInfo(self.filepath, self.do_cover_image)
+            if not bookinfo then return end
+            -- The cover buffer is a fresh copy; the widget that takes it frees it.
+            if bookinfo.ignore_meta or bookinfo.unsupported then
+                if bookinfo.cover_bb then bookinfo.cover_bb:free() end
+                return
+            end
+            if bookinfo.cover_bb and not (self.do_cover_image and bookinfo.has_cover
+                    and not bookinfo.ignore_cover) then
+                bookinfo.cover_bb:free()
+                bookinfo.cover_bb = nil
+            end
+            local dimen = Geom:new{
+                w = self.width,
+                h = self.height - 2 * (self.underline_h or 1),
+            }
+            local book_info = self.menu.getBookInfo(self.filepath)
+            self._fc_fade = book_info.status == "complete" and Finished.isFaded()
+                and M.getFadeAmount() or nil
+            local _dir, filename = util.splitFilePathName(self.filepath)
+            local _name, filetype = filemanagerutil.splitFileNameType(filename)
+            -- Virtual folders put a context text in `mandatory`; the file's own
+            -- text is kept apart.
+            local file_text = (self.entry and self.entry.file_mandatory) or self.mandatory
+            local row = BookRows.build(self, dimen, {
+                bookinfo   = bookinfo,
+                book_info  = book_info,
+                cover_slot = self.do_cover_image and function(info, d)
+                    return _listCoverSlot(info, d, false, info.title or _name,
+                        BookRows.authorsLine(info.authors),
+                        book_info.status == "abandoned" and CE.isShown("onhold"))
+                end or nil,
+                font_size  = function(nominal, max) return _lmFontSize(dimen.h, nominal, max) end,
+                settings   = {
+                    hide_page_info = BookInfoManager:getSetting("hide_page_info"),
+                    pages_read     = BookInfoManager:getSetting("show_pages_read_as_progress"),
+                    pages_left     = BookInfoManager:getSetting("show_pages_left_in_progress"),
+                    hide_file_info = BookInfoManager:getSetting("hide_file_info"),
+                    series_mode    = BookInfoManager:getSetting("series_mode"),
+                    progress_bar   = M.getListProgressBar() and M.getListProgressStyle() or nil,
+                },
+                fileinfo   = BookRows.fileInfoText(BD.wrap(filetype),
+                    file_text and BD.wrap(file_text), book_info.has_annotations,
+                    bookinfo._no_provider),
+            })
+            ListRows.setContent(self, row)
+        end
+
         -- Renders a cover thumbnail on the left, folder name + item count on the right.
-        function ListMenuItem:_setListFolderCover(bookinfo)
+        -- Without `bookinfo` the slot shows the generated cover for
+        -- `placeholder_title`. In a tab's cover view a series shows its author.
+        function ListMenuItem:_setListFolderCover(bookinfo, placeholder_title)
             self._foldercover_processed = true
             self.bookinfo_found = true -- see CoverWidgets.installWidget
 
@@ -1823,89 +2056,58 @@ function M.install()
                 h = self.height - 2 * underline_h,
             }
 
-        local border_size = SUIStyle.BADGE_BORDER_SZ
-            local img_size    = dimen.h
-            local max_img_w   = img_size - 2 * border_size
-
-            local _, _, scale_factor = BookInfoManager.getCachedCoverSize(
-                bookinfo.cover_w, bookinfo.cover_h, max_img_w, max_img_w)
-            local wimage = ImageWidget:new{
-                image             = bookinfo.cover_bb,
-                scale_factor      = scale_factor,
-                -- bookinfo.cover_bb is BookInfoManager's own persistent bb,
-                -- shared with every other consumer of this book's cover --
-                -- same rationale as the img.data guard in _setFolderCover
-                -- above. Without this, ImageWidget's default
-                -- (image_disposable = true) frees BIM's bb on this item's
-                -- teardown, corrupting it for the file browser and any
-                -- other place that reads bookinfo.cover_bb afterwards.
-                image_disposable  = false,
-            }
-            wimage:_render()
-            local image_size = wimage:getSize()
-
-            local wleft = LeftContainer:new{
-                dimen = Geom:new{ w = img_size, h = dimen.h },
-                FrameContainer:new{
-                    width      = image_size.w + 2 * border_size,
-                    height     = image_size.h + 2 * border_size,
-                    margin     = 0,
-                    padding    = 0,
-                    bordersize = border_size,
-                    wimage,
-                },
-            }
-
+            local path      = self.menu.path
+            local tab_cover = TabViews.isCoverRoot(path)
             local pad       = _LATERAL_PAD
-            local main_w    = dimen.w - img_size - pad * 2
-            -- Match stock: same formula as book title font size
-            -- (listmenu.lua's fontsize_title = _fontSize(20, 24)), so folder
-            -- names render at the same size as individual book titles.
-            local font_size = _lmFontSize(dimen.h, 20, 24)
-            local info_size = math.max(10, font_size - 4)
 
-            local wname = TextBoxWidget:new{
-                text                          = BD.directory(self.text),
-                face                          = Font:getFace(SUIStyle.FACE_REGULAR, font_size),
-                width                         = main_w,
-                alignment                     = "left",
-                bold                          = true,
-                height                        = dimen.h,
-                height_adjust                 = true,
-                height_overflow_show_ellipsis = true,
-            }
-            local wcount = TextWidget:new{
-                text = self.mandatory or "",
-                face = Font:getFace(SUIStyle.FACE_MONO, info_size),
-            }
+            local wleft, slot_w = _listCoverSlot(bookinfo, dimen, true, placeholder_title)
 
-            local wmain = LeftContainer:new{
-                dimen = Geom:new{ w = main_w, h = dimen.h },
-                VerticalGroup:new{
-                    wname,
-                    VerticalSpan:new{ width = _EDGE_MARGIN * 2 },
-                    wcount,
-                },
-            }
+            local wchev, chev_w = ListRows.glyphWidget(dimen, SUIStyle.icon("chevron"))
+            local text_x = slot_w + pad
+            local main_w = dimen.w - text_x - chev_w
+            local author = tab_cover and TabViews.rootMode(path) == "series"
+                and _seriesAuthors(self.entry, BookInfoManager) or nil
+            local wmain  = _listFolderLines(self, dimen, main_w, author)
 
-            local widget = OverlapGroup:new{
+            local row = OverlapGroup:new{ dimen = dimen:copy() }
+            if wleft then row[#row + 1] = wleft end
+            row[#row + 1] = LeftContainer:new{
                 dimen = dimen:copy(),
-                wleft,
-                LeftContainer:new{
-                    dimen = dimen:copy(),
-                    HorizontalGroup:new{
-                        HorizontalSpan:new{ width = img_size + pad },
-                        wmain,
-                    },
+                HorizontalGroup:new{
+                    HorizontalSpan:new{ width = text_x },
+                    wmain,
                 },
             }
-
-            if self._underline_container[1] then self._underline_container[1]:free() end
-            self._underline_container[1] = VerticalGroup:new{
-                VerticalSpan:new{ width = underline_h },
-                widget,
-            }
+            row[#row + 1] = _trailingChevron(wchev, dimen)
+            ListRows.setContent(self, row)
         end -- ListMenuItem:_setListFolderCover
+
+        -- Renders a folder as name and count at the left and a fan of its covers
+        -- at the right. The text is as wide on every row, whatever the fan holds.
+        function ListMenuItem:_setListFolderFan(cards, g)
+            self._foldercover_processed = true
+            self.bookinfo_found = true -- see CoverWidgets.installWidget
+
+            local dimen = Geom:new{
+                w = self.width,
+                h = self.height - 2 * (self.underline_h or 1),
+            }
+            local wchev, chev_w = ListRows.glyphWidget(dimen, SUIStyle.icon("chevron"))
+            local main_w = dimen.w - chev_w - FolderFan.width(g, FolderFan.MAX)
+            local path   = self.menu.path
+            local author = TabViews.isCoverRoot(path) and TabViews.rootMode(path) == "series"
+                and _seriesAuthors(self.entry, BookInfoManager) or nil
+            local wmain  = _listFolderLines(self, dimen, main_w, author)
+
+            -- Text and fan reach the row's edges, as the other list rows do.
+            local widget = FolderFan.build(cards, g)
+            widget.overlap_offset = { dimen.w - chev_w - widget:getSize().w, g.top }
+            local row = OverlapGroup:new{ dimen = dimen:copy() }
+            row[1] = LeftContainer:new{ dimen = dimen:copy(), wmain }
+            row[2] = widget
+            row[3] = _trailingChevron(wchev, dimen)
+            ListRows.setContent(self, row)
+        end -- ListMenuItem:_setListFolderFan
     end -- ListMenuItem patch
 end -- M.install
 
@@ -1964,7 +2166,14 @@ function M.uninstall()
             ListMenuItem.update = ListMenuItem._simpleui_lm_orig_update
             ListMenuItem._simpleui_lm_orig_update = nil
         end
+        if ListMenuItem._simpleui_lm_orig_paintTo then
+            ListMenuItem.paintTo = ListMenuItem._simpleui_lm_orig_paintTo
+            ListMenuItem._simpleui_lm_orig_paintTo = nil
+        end
         ListMenuItem._setListFolderCover  = nil
+        ListMenuItem._setListFolderFan    = nil
+        ListMenuItem._setListFolderText   = nil
+        ListMenuItem._setListBookRow      = nil
         ListMenuItem._simpleui_lm_patched = nil
     end
 end

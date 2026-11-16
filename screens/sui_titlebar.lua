@@ -256,6 +256,9 @@ end
 --              This is the virtual equivalent of the home root.
 --   file_list — the books inside one author / series / tag: show.
 --              This is the virtual equivalent of a subfolder.
+--   flat     — every book under a folder: the home folder's is the top
+--              of the Library tab (hide), any other folder's has a
+--              folder to return to (show).
 --   (BrowseMeta not active → path treated as normal filesystem path)
 --
 -- Normal filesystem paths depend on lock_home_folder:
@@ -279,7 +282,7 @@ local function _isSubFolder(path)
         if ok and level then
             -- file_list = inside a specific author/series/tag → show.
             -- root / dim_list = top of the virtual tree → hide.
-            return level == "file_list"
+            return level == "file_list" or (level == "flat" and path ~= BM.flatHomePath())
         end
         -- getPathLevel returned nil → path is not virtual; fall through.
     end
@@ -932,6 +935,8 @@ local function _installBackController(fm_self, shown_x, on_state)
     fc.onFolderUp = function(fc_self, ...)
         local BM = _BrowseMeta()
         if BM then
+            -- The flat view of the Library tab has no folder above it.
+            if BM.isFlatRoot(fc_self) and not _seriesViewOf(fc_self) then return true end
             -- Arrived at a leaf from elsewhere (the book dialog, or a screen):
             -- one back press from that leaf returns to where it started, not
             -- to the root of the dimension.
@@ -941,12 +946,7 @@ local function _installBackController(fm_self, shown_x, on_state)
                 if ok_pl and level == "file_list" and BM.getPathDepth(fc_self.path) == 1 then
                     fc_self._sui_leaf_origin = nil
                     if fc_self.path == origin.leaf then
-                        BM.exitToNormal(fc_self, fm_self)
-                        if origin.return_fn then
-                            origin.return_fn()
-                        else
-                            fc_self:changeToPath(origin.path, origin.file)
-                        end
+                        BM.returnFromLeaf(fc_self, fm_self, origin)
                         refreshState(fc_self, 1)
                         return true
                     end
@@ -1287,18 +1287,20 @@ local function _isLibraryRoot(view)
     local BM = _BrowseMeta()
     if BM then
         local ok, level = pcall(BM.getPathLevel, view.path)
-        if ok and level then return level ~= "file_list" end
+        if ok and level then
+            return level ~= "file_list" and (level ~= "flat" or view.path == BM.flatHomePath())
+        end
     end
     local home = _normHome()
     return home == nil or _normPath(view.path) == home
 end
 
 -- True when `view` is a folder of the filesystem. The Authors, Series and
--- Tags views, their lists and the series groups are virtual.
+-- Tags views, their lists, the flat view and the series groups are virtual.
 local function _isFilesystemView(view)
     if view.series then return false end
     local BM = _BrowseMeta()
-    return not BM or BM.getPathMode(view.path) == "normal"
+    return not BM or not BM.getPathLevel(view.path)
 end
 
 -- Name shown in place of the tabs on an inner view.
@@ -1373,7 +1375,7 @@ local function _applyTabs(fm_self, tb)
             local BM = _BrowseMeta()
             if BM then BM.activateMode(fm_self, mode) end
         end,
-        -- Long press: switch to the tab, then show its sort options.
+        -- Long press: switch to the tab, then show its view and sort options.
         on_hold = function(mode)
             local BM = _BrowseMeta()
             if not BM then return end

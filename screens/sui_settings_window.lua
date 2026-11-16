@@ -17,8 +17,8 @@
 --   custom_screens          — Custom Screens list (reached via Home Screen ▸
 --                              "Extra Custom Screens", not linked from __root__)
 --   bars_settings           — Bars section
---   library_settings        — Library section
---   style_settings          — Style section (icons, fonts and appearance)
+--   library_settings        — Library section (browsing, views, covers, folders)
+--   style_settings          — Style section (colors, fonts and icons)
 --   critter_settings        — Tiny Critter section
 --   quick_actions_settings — Quick Actions section
 --   about_settings         — About section
@@ -91,10 +91,7 @@ local function buildScreens(st)
             local RUI = package.loaded["apps/reader/readerui"]
             plugin = RUI and RUI.instance and RUI.instance.simpleui
         end
-        if plugin and type(plugin.makeWallpaperMenuItems) ~= "function" then
-            local fake = {}
-            pcall(function() plugin:addToMainMenu(fake) end)
-        end
+        if plugin then pcall(function() plugin:_ensureMenus() end) end
         return plugin
     end
 
@@ -172,7 +169,7 @@ local function buildScreens(st)
             SUI.ListRow{
                 title        = _("Library"),
                 left_icon    = "library",
-                subtitle     = _("Book-browser settings"),
+                subtitle     = _("Browsing, covers and folders"),
                 inner_w      = iw,
                 show_chevron = true,
                 on_tap       = function() ctx.push("library_settings") end,
@@ -180,7 +177,7 @@ local function buildScreens(st)
             SUI.ListRow{
                 title        = _("Style"),
                 left_icon    = "style",
-                subtitle     = _("Icons, fonts and appearance"),
+                subtitle     = _("Colors, fonts and icons"),
                 inner_w      = iw,
                 show_chevron = true,
                 on_tap       = function() ctx.push("style_settings") end,
