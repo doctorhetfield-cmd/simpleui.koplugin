@@ -354,8 +354,9 @@ end
 -- own slot: the cover is drawn coverShadowOffset() px smaller on each axis,
 -- so layouts keep their size. The shadow is on until a surface is switched off.
 
-M.SHADOW_LIBRARY = "library"   -- the Library grid
-M.SHADOW_MODULES = "modules"   -- the Home Screen modules
+M.SHADOW_LIBRARY      = "library"        -- the Library mosaic view
+M.SHADOW_LIBRARY_LIST = "library_list"   -- the Library list view
+M.SHADOW_MODULES      = "modules"        -- the Home Screen modules
 
 local _COVER_SHADOW_KEY_PREFIX = "simpleui_style_cover_shadow_"
 local _COVER_SHADOW_BASE       = math.max(2, Screen:scaleBySize(7))

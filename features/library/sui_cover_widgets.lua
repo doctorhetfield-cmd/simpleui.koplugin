@@ -38,8 +38,9 @@
 --   CoverWidgets.pileInset(scale)
 --       -- Total px a cover gives up on the right and bottom for its pile
 --       -- (layer steps plus the front cover's shadow).
---   CoverWidgets.buildPile(cover_w, cover_h, inset)
---       -- Two shaded layers peeking out behind a cover of cover_w × cover_h.
+--   CoverWidgets.buildPile(cover_w, cover_h, inset, shadowed)
+--       -- Two shaded layers peeking out behind a cover of cover_w × cover_h;
+--       -- the last one casts a shadow when `shadowed`.
 --   CoverWidgets.paintShadow(bb, x, y, w, h, offset)
 --       -- Soft shadow around a w × h card at (x, y), cast down and to the right.
 --   CoverWidgets.buildShadow(card_w, card_h, offset)
@@ -642,15 +643,16 @@ end
 
 -- Cards behind a cover of cover_w × cover_h. `inset` comes from pileInset();
 -- the widget is (cover_w + inset) × (cover_h + inset) and the caller draws
--- the cover at its top-left corner.
-function CoverWidgets.buildPile(cover_w, cover_h, inset)
+-- the cover at its top-left corner. Without `shadowed` the last card casts no
+-- shadow and its room stays empty.
+function CoverWidgets.buildPile(cover_w, cover_h, inset, shadowed)
     local stroke = SUIStyle.BADGE_BORDER_SZ
     local step   = math.floor((inset + stroke) / (_PILE_LAYERS + 1))
     if step <= stroke then return nil end
     return setmetatable({
         w = cover_w + inset, h = cover_h + inset,
         card_w = cover_w,    card_h = cover_h,
-        step = step,         shadow = step - stroke,
+        step = step,         shadow = shadowed and step - stroke or 0,
     }, PileWidget)
 end
 
@@ -743,7 +745,8 @@ end
 
 -- What sits behind a cover and the room it takes, as
 -- { kind, left, right, bottom } in px: the stack in the configured style, or
--- only the shadow of `scope` when the stack is hidden. The classic spine
+-- only the shadow of `scope` when the stack is hidden. The pile casts its
+-- shadow while the shadow of `scope` is on (`shadowed`). The classic spine
 -- replaces the shadow, so it is drawn alone. `scale` follows the cover's own
 -- scale (1 when omitted).
 function CoverWidgets.backingInset(scope, hide_stack, scale)
@@ -755,7 +758,10 @@ function CoverWidgets.backingInset(scope, hide_stack, scale)
         return spineInset(scale)
     end
     local pile = CoverWidgets.pileInset(scale)
-    return { kind = "pile", left = 0, right = pile, bottom = pile }
+    return {
+        kind = "pile", left = 0, right = pile, bottom = pile,
+        shadowed = SUIStyle.coverShadowEnabled(scope),
+    }
 end
 
 -- Widget drawn behind a cover of cover_w × cover_h; `inset` comes from
@@ -763,7 +769,9 @@ end
 -- cover is drawn in, `inset.left` px to the left of the cover.
 function CoverWidgets.buildBacking(cover_w, cover_h, inset)
     if inset.kind == "spine" then return CoverWidgets.buildSpine(cover_h, inset) end
-    if inset.kind == "pile"  then return CoverWidgets.buildPile(cover_w, cover_h, inset.bottom) end
+    if inset.kind == "pile"  then
+        return CoverWidgets.buildPile(cover_w, cover_h, inset.bottom, inset.shadowed)
+    end
     return CoverWidgets.buildShadow(cover_w, cover_h, inset.bottom)
 end
 

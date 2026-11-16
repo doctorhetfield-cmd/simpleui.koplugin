@@ -1861,7 +1861,7 @@ function M.install()
             local fan = FolderFan.getMode() == "fan" and FolderFan.geometry(
                 self.width, self.height - 2 * (self.underline_h or 1), {
                     margin = Screen:scaleBySize(6),
-                    shadow = SUIStyle.coverShadowOffset(SUIStyle.SHADOW_LIBRARY),
+                    shadow = SUIStyle.coverShadowOffset(SUIStyle.SHADOW_LIBRARY_LIST),
                     border = SUIStyle.BADGE_BORDER_SZ,
                     min_h  = Screen:scaleBySize(40),
                     uniform = M.getCoverMode() == "2_3",
@@ -1946,12 +1946,17 @@ function M.install()
         -- buffer that belongs to BookInfoManager and must outlive the widget.
         -- Without a cover the generated one shows `title` and `authors`.
         -- `on_hold` draws the pause badge in the middle of the cover.
--- Returns the slot widget (nil without a cover or a title) and its width.
-        local function _listCoverSlot(bookinfo, dimen, shared, title, authors, on_hold)
+        -- `stack` draws the folder stack behind the cover; without it the
+        -- cover casts the list view shadow. The cover shrinks to leave room for
+        -- either inside the slot.
+        -- Returns the slot widget (nil without a cover or a title) and its width.
+        local function _listCoverSlot(bookinfo, dimen, shared, title, authors, on_hold, stack)
             local border_size = SUIStyle.BADGE_BORDER_SZ
             local box_h  = dimen.h - 2 * Screen:scaleBySize(6)
             local slot_w = math.floor(box_h / 1.5)
-            local max_w, max_h = slot_w - 2 * border_size, box_h - 2 * border_size
+            local backing = CoverWidgets.backingInset(SUIStyle.SHADOW_LIBRARY_LIST, not stack)
+            local max_w = slot_w - backing.left - backing.right - 2 * border_size
+            local max_h = box_h - backing.bottom - 2 * border_size
             local inner, inner_w, inner_h
             if bookinfo and bookinfo.cover_bb then
                 -- A buffer shared with the file browser must not be freed with
@@ -1967,21 +1972,32 @@ function M.install()
             else
                 return nil, slot_w
             end
+            local cover_w, cover_h = inner_w + 2 * border_size, inner_h + 2 * border_size
             local cover = FrameContainer:new{
-                width      = inner_w + 2 * border_size,
-                height     = inner_h + 2 * border_size,
+                width      = cover_w,
+                height     = cover_h,
                 margin     = 0,
                 padding    = 0,
                 bordersize = border_size,
                 inner,
             }
             if on_hold then
-                local cover_w, cover_h = inner_w + 2 * border_size, inner_h + 2 * border_size
                 local badge = CoverWidgets.buildPauseBadge(
                     math.floor(cover_w * 0.4 * CE.getSizePct() / 100), CE.getColor("onhold"))
                 local bsize = badge:getSize()
                 badge.overlap_offset = { math.floor((cover_w - bsize.w) / 2), math.floor((cover_h - bsize.h) / 2) }
                 cover = OverlapGroup:new{ dimen = Geom:new{ w = cover_w, h = cover_h }, cover, badge }
+            end
+            local behind = CoverWidgets.buildBacking(cover_w, cover_h, backing)
+            if behind then
+                cover.overlap_offset = { backing.left, 0 }
+                cover = OverlapGroup:new{
+                    dimen = Geom:new{
+                        w = cover_w + backing.left + backing.right,
+                        h = cover_h + backing.bottom,
+                    },
+                    behind, cover,
+                }
             end
             return LeftContainer:new{ dimen = Geom:new{ w = slot_w, h = dimen.h }, cover }, slot_w
         end
@@ -2060,7 +2076,8 @@ function M.install()
             local tab_cover = TabViews.isCoverRoot(path)
             local pad       = _LATERAL_PAD
 
-            local wleft, slot_w = _listCoverSlot(bookinfo, dimen, true, placeholder_title)
+            local wleft, slot_w = _listCoverSlot(bookinfo, dimen, true, placeholder_title,
+                nil, nil, CE.isShown("stack"))
 
             local wchev, chev_w = ListRows.glyphWidget(dimen, SUIStyle.icon("chevron"))
             local text_x = slot_w + pad

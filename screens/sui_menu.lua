@@ -2862,6 +2862,11 @@ SimpleUIPlugin._buildMenus = function(self)
             text = _("Shadow"),
             sub_item_table_func = function()
                 local SUIStyle = require("features/sui_style")
+                local function refreshLibrary()
+                    local ok_fc, FC = pcall(require, "features/library/sui_foldercovers")
+                    if ok_fc and FC then FC.invalidateCache() end
+                    _refreshFC()
+                end
                 -- One checkbox per surface; `refresh` redraws that surface.
                 local function scopeItem(label, scope, refresh)
                     return {
@@ -2875,11 +2880,13 @@ SimpleUIPlugin._buildMenus = function(self)
                     }
                 end
                 return {
-                    scopeItem(_("Library"), SUIStyle.SHADOW_LIBRARY, function()
-                        local ok_fc, FC = pcall(require, "features/library/sui_foldercovers")
-                        if ok_fc and FC then FC.invalidateCache() end
-                        _refreshFC()
-                    end),
+                    {
+                        text = _("Library"),
+                        sub_item_table = {
+                            scopeItem(_("Mosaic View"), SUIStyle.SHADOW_LIBRARY, refreshLibrary),
+                            scopeItem(_("List View"), SUIStyle.SHADOW_LIBRARY_LIST, refreshLibrary),
+                        },
+                    },
                     scopeItem(_("Modules"), SUIStyle.SHADOW_MODULES, _applyFullLayoutRefresh),
                 }
             end,
