@@ -21,6 +21,9 @@
 --   SourceMenu.excludeCurrentItems(ctx_menu)
 --       "Hide Currently Reading" row; empty while that module is not enabled
 --       on the screen.
+--   SourceMenu.hiddenHistoryItems(ctx_menu)
+--       "Hidden books" submenu: one checkable row per book hidden from the
+--       reading history; not shown while no book is hidden.
 --   SourceMenu.keyedState(key)       -> { get, set }
 --       Sort state stored under a settings key.
 
@@ -29,6 +32,7 @@ local CollectionArrange = require("features/sui_collection_arrange")
 local SH                = require("modules/module_books_shared")
 local Sources           = require("engines/sui_book_sources")
 local SUISettings       = require("infra/sui_store")
+local VirtualPaths      = require("infra/sui_virtual_paths")
 
 local SourceMenu = {}
 
@@ -113,6 +117,33 @@ function SourceMenu.excludeCurrentItems(ctx_menu)
             callback       = function()
                 SH.setCurrentExcluded(pfx, not SH.isCurrentExcluded(pfx))
                 ctx_menu.refresh()
+            end,
+        },
+    }
+end
+
+function SourceMenu.hiddenHistoryItems(ctx_menu)
+    local _lc = ctx_menu._
+    return {
+        {
+            text                = _lc("Hidden books"),
+            enabled_func        = function() return #SH.hiddenEntries() > 0 end,
+            sub_item_table_func = function()
+                local items = {}
+                for _i, entry in ipairs(SH.hiddenEntries()) do
+                    local ok, data = pcall(SH.getBookData, VirtualPaths.toVirtual(entry.file))
+                    local title = ok and data and data.title ~= "" and data.title or entry.text
+                    items[#items + 1] = {
+                        text           = title or entry.file,
+                        checked_func   = function() return SH.isHiddenEntry(entry) end,
+                        keep_menu_open = true,
+                        callback       = function()
+                            SH.setHidden(entry, not SH.isHiddenEntry(entry))
+                            ctx_menu.refresh()
+                        end,
+                    }
+                end
+                return items
             end,
         },
     }

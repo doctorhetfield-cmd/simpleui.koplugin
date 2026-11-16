@@ -280,7 +280,13 @@ Sources.register{
         return { exclude_current = SH.isCurrentExcluded(pfx) }
     end,
 
-    menu_items = function(ctx_menu) return sourceMenu().excludeCurrentItems(ctx_menu) end,
+    menu_items = function(ctx_menu)
+        local items = sourceMenu().excludeCurrentItems(ctx_menu)
+        for _i, item in ipairs(sourceMenu().hiddenHistoryItems(ctx_menu)) do
+            items[#items + 1] = item
+        end
+        return items
+    end,
 
     getFileList = function(ctx) return ctx.recent_fps or {} end,
 

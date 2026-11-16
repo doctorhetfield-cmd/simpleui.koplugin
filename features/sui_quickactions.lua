@@ -509,8 +509,9 @@ local function _showBookmarkBrowserSourceDialog(bb_ui)
         items = {
             { text = _("History"), sui_icon = "history", callback = function()
                 open_with_source(function(books)
+                    local SH = require("modules/module_books_shared")
                     for _, v in ipairs(require("readhistory").hist) do
-                        books[v.file] = v.select_enabled or nil
+                        books[v.file] = (v.select_enabled and not SH.isHiddenEntry(v)) or nil
                     end
                 end)
             end },
@@ -789,7 +790,14 @@ local function _registerBuiltins()
             execute = function(ctx)
                 local su = ctx.show_unavailable or _unavailToast
                 local RH = package.loaded["readhistory"] or require("readhistory")
-                local fp = RH and RH.hist and RH.hist[1] and RH.hist[1].file
+                local SH = require("modules/module_books_shared")
+                local fp
+                for _, entry in ipairs(RH and RH.hist or {}) do
+                    if not SH.isHiddenEntry(entry) then
+                        fp = entry.file
+                        break
+                    end
+                end
                 if fp then
                     local ReaderUI = package.loaded["apps/reader/readerui"]
                         or require("apps/reader/readerui")

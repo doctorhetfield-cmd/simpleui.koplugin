@@ -3615,6 +3615,10 @@ msgstr "Ei! Eu estava a descansar."
 msgid "Hidden"
 msgstr "Oculto"
 
+#: features/sui_source_menu.lua:129
+msgid "Hidden books"
+msgstr "Livros ocultos"
+
 #: features/library/sui_finished_books.lua:66
 msgid "Hide"
 msgstr "Ocultar"
@@ -3647,6 +3651,11 @@ msgstr "Ocultar Ícone Wi-Fi Quando Desligado"
 #: features/sui_menu_hide.lua:617
 msgid "Hide and show the Reader menu items shared with the File Manager as they are in the File Manager?"
 msgstr "Ocultar e mostrar os itens do menu do Leitor partilhados com o Gestor de Ficheiros tal como estão no Gestor de Ficheiros?"
+
+#: features/library/sui_book_hold_dialog.lua:275
+#: infra/sui_patches.lua:3860
+msgid "Hide from history"
+msgstr "Ocultar do histórico"
 
 #: features/sui_patch_compat.lua:65
 msgid "Hides Wi-Fi dialogs, and any other dialog that mentions Wi-Fi"
@@ -7710,6 +7719,10 @@ msgstr "Mostrar livros terminados"
 #: modules/reading_stats/module_reading_stats.lua:1756
 msgid "Show icons"
 msgstr "Mostrar ícones"
+
+#: features/library/sui_book_hold_dialog.lua:275
+msgid "Show in history"
+msgstr "Mostrar no histórico"
 
 #: modules/module_heatmap.lua:360
 msgid "Show legend"

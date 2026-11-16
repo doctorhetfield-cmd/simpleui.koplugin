@@ -266,6 +266,21 @@ local function actionRows(ctx)
     return rows
 end
 
+-- "Hide from history" / "Show in history", for a book in the reading history.
+local function historyItem(ctx)
+    local entry = SH.historyEntry(ctx.path)
+    if not entry then return nil end
+    local hidden = SH.isHiddenEntry(entry)
+    return {
+        text     = hidden and _("Show in history") or _("Hide from history"),
+        sui_icon = hidden and "show" or "hide",
+        callback = function()
+            SH.setHidden(entry, not hidden)
+            ctx.closeAndRefresh()
+        end,
+    }
+end
+
 local function settingsItem(ctx)
     return {
         text     = _("Open module settings"),
@@ -312,6 +327,7 @@ local function listRows(ctx, registered, delete)
         for _i, row in ipairs(ok and extra or {}) do Rows.appendRow(rows, row) end
     end
     if ctx.file_chooser then Rows.pushRow(rows, Rows.executeScriptItem(ctx)) end
+    Rows.pushRow(rows, historyItem(ctx))
 
     if delete then Rows.pushRow(rows, delete) end
     if opts.open_settings_fn then Rows.pushRow(rows, settingsItem(ctx)) end

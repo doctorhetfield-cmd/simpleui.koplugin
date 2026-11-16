@@ -28,7 +28,8 @@ function Book.current(now)
     if not hist then return nil end
     local SH = require("modules/module_books_shared")
     for _i, entry in ipairs(hist) do
-        if entry.file and lfs.attributes(entry.file, "mode") == "file" then
+        if entry.file and not SH.isHiddenEntry(entry)
+                and lfs.attributes(entry.file, "mode") == "file" then
             local book = SH.getBookData(entry.file)
             if book.status == "complete" then return nil end
             return Book.facts(book.title, book.percent, entry.time, now)
