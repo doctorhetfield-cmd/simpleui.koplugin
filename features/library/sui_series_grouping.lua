@@ -1,7 +1,8 @@
 -- sui_series_grouping.lua — Simple UI
 -- Groups consecutive series books into a virtual folder-like item when
 -- browsing a REAL folder in FileManager (e.g. "Hainish Cycle" appears as
--- one entry instead of 5 loose books). Entering a group uses a lightweight
+-- one entry instead of 5 loose books), or the flat view of a folder, where a
+-- series spread over several subfolders becomes one group. Entering a group uses a lightweight
 -- switchItemTable — it stays "inside" the same real folder (scroll position,
 -- back-button target, and breadcrumb are all the real folder's), unlike the
 -- full author/series/tags browse mode in sui_library_browse.lua which
@@ -47,6 +48,7 @@ local FolderCovers   = require("features/library/sui_foldercovers")
 local FilterState    = require("features/library/sui_filter_state")
 local VirtualPath    = require("features/library/sui_virtual_path")
 local MetadataSource = require("features/library/sui_metadata_source")
+local RuleCollections = require("features/library/sui_rule_collections")
 
 local SeriesGrouping = {}
 
@@ -110,16 +112,22 @@ function SeriesGrouping.openCoverPicker(vpath, fc, BookInfoManager, sheet)
 end
 
 -- `sheet` (optional): flow sheet to show the name prompt on, as a page.
+-- The collection follows the series in the group's folder, and in its
+-- subfolders when the group gathers books from them.
 function SeriesGrouping.createCollection(vpath, series_name, sheet)
-    local series_items = _sg_items_cache[vpath]
-    local paths = {}
-    for _, item in ipairs(series_items or {}) do
-        if item.path then paths[#paths + 1] = item.path end
+    local folder = vpath:match("^(.*)/[^/]+$")
+    if not (folder and series_name and series_name ~= "") then
+        if sheet then sheet:close() end
+        return
+    end
+    local subfolders = false
+    for _i, item in ipairs(_sg_items_cache[vpath] or {}) do
+        if item.path and item.path:match("^(.*)/[^/]+$") ~= folder then subfolders = true; break end
     end
     GroupActions.createCollection{
-        suggested_name = series_name or "",
-        paths          = paths,
-        empty_message  = _("No books found in this series."),
+        suggested_name = series_name,
+        connect_rule   = RuleCollections.new(folder,
+            { { dimension = "series", value = series_name } }, subfolders),
         parent         = sheet,
     }
 end
@@ -132,9 +140,11 @@ end
 
 -- Series properties of a book. Folders are read in one query each and kept
 -- in `folder_cache` (folder -> properties by filename | false) for the
--- duration of one item-table pass.
-local function seriesPropsOf(BookInfoManager, folder_cache, item)
+-- duration of one item-table pass. The flat view passes `subtree_series`, the
+-- series of every book under its folder read at once.
+local function seriesPropsOf(BookInfoManager, folder_cache, item, subtree_series)
     if item.doc_props then return item.doc_props end
+    if subtree_series then return subtree_series[item.path] end
     local dir, filename = item.path:match("^(.*/)([^/]+)$")
     if not dir then return BookInfoManager:getDocProps(item.path) end
     local folder = folder_cache[dir]
@@ -151,13 +161,19 @@ local function sgProcessItemTable(item_table, file_chooser)
     if not file_chooser or not item_table then return end
     if item_table._sg_is_series_view then return end
     if file_chooser.show_current_dir_for_hold then return end
-    if VirtualPath.isVirtual(file_chooser.path) then return end
+    -- The flat view of a folder is the only virtual view that is grouped. Its
+    -- groups hang off that folder, whichever subfolder their books are in.
+    local flat = VirtualPath.isFlat(file_chooser.path)
+    if VirtualPath.isVirtual(file_chooser.path) and not flat then return end
+    local flat_dir = flat and VirtualPath.getBaseDir(file_chooser.path) or nil
 
-    -- Evict stale _sg_items_cache entries for the current directory.
+    -- Evict stale _sg_items_cache entries for the current directory. The flat
+    -- view of a folder shares its prefix but is another view of it: switching
+    -- between the two evicts, so a group never outlives the view that made it.
     local current_path = file_chooser.path
     if current_path and current_path ~= _sg_last_evicted_path then
         _sg_last_evicted_path = current_path
-        local prefix = current_path
+        local prefix = flat_dir or current_path
         if prefix:sub(-1) ~= "/" then prefix = prefix .. "/" end
         for k in pairs(_sg_items_cache) do
             if k:sub(1, #prefix) == prefix then _sg_items_cache[k] = nil end
@@ -168,6 +184,7 @@ local function sgProcessItemTable(item_table, file_chooser)
     if not ok_bim or not BookInfoManager then return end
 
     local folder_cache = {}
+    local subtree_series = flat_dir and MetadataSource.getSeriesByPath(BookInfoManager, flat_dir) or nil
     local series_map   = {}
     local processed    = {}
     local book_count   = 0
@@ -185,13 +202,14 @@ local function sgProcessItemTable(item_table, file_chooser)
             local handled = false
             if (item.is_file or item.file) and item.path then
                 book_count = book_count + 1
-                local doc_props = seriesPropsOf(BookInfoManager, folder_cache, item)
+                local doc_props = seriesPropsOf(BookInfoManager, folder_cache, item, subtree_series)
                 local sname, suffix_index = FilterState.parseSeries(doc_props and doc_props.series)
                 if sname then
                     local skey = FilterState.seriesKey(sname)
                     item._sg_series_index = doc_props.series_index or suffix_index or 0
                     if not series_map[skey] then
-                        local base_path  = item.path:match("(.*/)") or ""
+                        local base_path  = flat_dir and (flat_dir:gsub("/*$", "/"))
+                                           or item.path:match("(.*/)") or ""
                         local group_attr = {}
                         if item.attr then
                             for k, v in pairs(item.attr) do group_attr[k] = v end
@@ -244,6 +262,7 @@ local function sgProcessItemTable(item_table, file_chooser)
                 return (a._sg_series_index or 0) < (b._sg_series_index or 0)
             end)
             group.mandatory             = tostring(#items) .. " \u{F016}"
+            group.nb_sub_files          = #items
             _sg_items_cache[group.path] = items
         else
             processed[group._sg_list_index] = items[1]

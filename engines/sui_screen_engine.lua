@@ -1658,10 +1658,11 @@ function ScreenWidget:_buildCtx()
                 elem_order    = SUISettings:readSetting(self._pfx .. "coverdeck_stats_order"),
             },
         }
-        -- Text styles of every module that declares user-selectable text
-        -- elements (M.text_elems).
+        -- Text styles of every enabled module that declares user-selectable
+        -- text elements (M.text_elems). This cache is dropped together with
+        -- the enabled-modules cache.
         for _i, mod in ipairs(Registry.list()) do
-            if mod.text_elems then
+            if Registry.isEnabled(mod, self._pfx) and mod.text_elems then
                 cfg[mod.id] = cfg[mod.id] or {}
                 cfg[mod.id].text = Config.readTextStyles(mod.id, mod.text_elems, self._pfx)
             end
@@ -2187,6 +2188,23 @@ function ScreenWidget:_buildModWidget(mod, col_w, ctx, min_h)
         widget, label_inside
 end
 
+-- True when book module `mod` builds a widget at column width `col_w` with the
+-- current ctx. The trial widget is freed and the covers it queued for
+-- extraction are dropped: the rebuild that follows queues them again.
+function ScreenWidget:_bookModHasItems(mod, col_w)
+    local queued = Config._cover_extract_queue and #Config._cover_extract_queue or 0
+    local widget = self:_buildModWidget(mod, col_w, self._ctx_cache)
+    local queue = Config._cover_extract_queue
+    for i = queue and #queue or 0, queued + 1, -1 do
+        local fp = table.remove(queue, i)
+        Config._cover_extract_pending[fp] = nil
+        Config._cover_extract_specs[fp] = nil
+    end
+    if not widget then return false end
+    widget:free()
+    return true
+end
+
 function ScreenWidget:_makeModWrapper(mod, widget, inner_w)
     local pool = self._wrapper_pool
     local w    = pool[mod.id]
@@ -2280,29 +2298,40 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
         return Config.getBentoSpan(mod_id, self._pfx)
     end
     local mod_col_span = {}
+    -- Modules placed on hidden pages: kept in the layout, not rendered.
+    local hidden_ids = {}
+    local visible_pages = 0
     if layout and type(layout.pages) == "table" then
         for _, page in ipairs(layout.pages) do
-            local page_ids = {}
-            for _, entry in ipairs(page.modules) do
-                -- Accept legacy { id, width } entries and migrate width to settings.
-                local mod_id
-                if type(entry) == "table" then
-                    mod_id = entry.id
-                    if type(entry.width) == "number" and mod_id then
-                        Config.setBentoWidth(entry.width, mod_id, self._pfx)
+            if page.hidden then
+                for _, entry in ipairs(page.modules) do
+                    local mod_id = type(entry) == "table" and entry.id or entry
+                    if mod_id then hidden_ids[mod_id] = true end
+                end
+            else
+                visible_pages = visible_pages + 1
+                local page_ids = {}
+                for _, entry in ipairs(page.modules) do
+                    -- Accept legacy { id, width } entries and migrate width to settings.
+                    local mod_id
+                    if type(entry) == "table" then
+                        mod_id = entry.id
+                        if type(entry.width) == "number" and mod_id then
+                            Config.setBentoWidth(entry.width, mod_id, self._pfx)
+                        end
+                    else
+                        mod_id = entry
                     end
-                else
-                    mod_id = entry
+                    if mod_id then
+                        table.insert(page_ids, mod_id)
+                        local span = _widthOf(mod_id)
+                        mod_col_span[mod_id] = span
+                        layout_fingerprint = layout_fingerprint .. mod_id .. ":" .. tostring(span) .. ","
+                    end
                 end
-                if mod_id then
-                    table.insert(page_ids, mod_id)
-                    local span = _widthOf(mod_id)
-                    mod_col_span[mod_id] = span
-                    layout_fingerprint = layout_fingerprint .. mod_id .. ":" .. tostring(span) .. ","
-                end
+                layout_fingerprint = layout_fingerprint .. "|"
+                table.insert(pages_by_id, page_ids)
             end
-            layout_fingerprint = layout_fingerprint .. "|"
-            table.insert(pages_by_id, page_ids)
         end
     else
         pages_by_id = splitOrderIntoPages(raw_order)
@@ -2341,7 +2370,7 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
 
         local chosen_pages = SUISettings:readSetting(self._pfx .. "homescreen_num_pages")
         if layout and type(layout.pages) == "table" then
-            chosen_pages = #layout.pages
+            chosen_pages = visible_pages
         end
         if chosen_pages and chosen_pages > #pages_of_mods then
             for _ = #pages_of_mods + 1, chosen_pages do
@@ -2353,7 +2382,7 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
         do
             local cd = Registry.get("coverdeck")
             if cd and Registry.isEnabled(cd, self._pfx) then
-                local found = false
+                local found = hidden_ids["coverdeck"] == true
                 for _, pg in ipairs(pages_of_mods) do
                     for _, m in ipairs(pg) do
                         if m.id == "coverdeck" then found = true; break end
@@ -2418,6 +2447,7 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
     self._clock_body_ref    = body
     self._stats_mod_slots   = {}
     self._book_mod_slots    = {}
+    self._book_mod_empty    = {}  -- book mod id -> col_w of a module built with no items
     self._cover_mod_slots   = {}
     self._book_mod_label_slots = {}
     self._clock_is_wrapped  = false
@@ -2466,6 +2496,8 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
                 if content then
                     logger.warn("simpleui: screen (" .. tostring(self._id) .. "): build failed for "
                                 .. tostring(mod.id) .. ": " .. tostring(content))
+                elseif mod.is_book_mod then
+                    self._book_mod_empty[mod.id] = col_w
                 end
                 return nil
             end
@@ -2934,11 +2966,16 @@ function ScreenWidget:_scheduleDataRefresh(stats_only)
                 local pages = self._enabled_mods_cache and self._enabled_mods_cache.pages_of_mods or {}
                 local shown = { pages[self._current_page] }
                 if _isLandscape() then shown[2] = pages[self._current_page + 1] end
+                -- A module that built with no items only forces the rebuild
+                -- when the authoritative data now gives it some.
                 for _, page_mods in pairs(shown) do
                     for _, mod in ipairs(page_mods) do
                         if mod.is_book_mod and not self._book_mod_slots[mod.id] then
-                            missing_slot = mod.id
-                            break
+                            local empty_w = self._book_mod_empty and self._book_mod_empty[mod.id]
+                            if not empty_w or self:_bookModHasItems(mod, empty_w) then
+                                missing_slot = mod.id
+                                break
+                            end
                         end
                     end
                     if missing_slot then break end

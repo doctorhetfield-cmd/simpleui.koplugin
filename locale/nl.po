@@ -100,18 +100,30 @@ msgstr ""
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d dagen · %d/%d min tot volgende reeksbevriezing"
 
-#: modules/reading_stats/module_reading_stats.lua:412
+#: infra/sui_text.lua:124
+#: screens/sui_stats_windows.lua:1632
 msgid "%dh"
-msgstr ""
+msgstr "%du"
 
-#: modules/reading_stats/module_reading_stats.lua:411
+#: infra/sui_text.lua:119
+msgid "%dh %02dm"
+msgstr "%du %02dm"
+
+#: infra/sui_text.lua:123
 msgid "%dh %dm"
-msgstr ""
+msgstr "%du %dm"
 
-#: modules/reading_stats/module_reading_stats.lua:409
-#: modules/reading_stats/module_reading_stats.lua:413
+#: infra/sui_text.lua:125
 msgid "%dm"
-msgstr ""
+msgstr "%dm"
+
+#: infra/sui_text.lua:120
+msgid "%dm %02ds"
+msgstr "%dm %02ds"
+
+#: infra/sui_text.lua:121
+msgid "%ds"
+msgstr "%ds"
 
 #: screens/insights/sui_insights_charts.lua:121
 msgid "%s a day on average"
@@ -1561,10 +1573,6 @@ msgstr "Collectie"
 #: modules/module_collections.lua:491
 msgid "Collection Menu"
 msgstr "Collectiemenu"
-
-#: features/library/sui_group_actions.lua:137
-msgid "Collection \"%1\" created with %2 books."
-msgstr "Collectie \"%1\" aangemaakt met %2 boeken."
 
 #: features/library/sui_group_actions.lua:110
 msgid "Collection already exists: %1"
@@ -7336,10 +7344,6 @@ msgstr "Het omslag dat je ziet als een boek opent, komt normaal uit de gecachte 
 msgid "The critter may use it in what it says."
 msgstr ""
 
-#: modules/critter/module_critter.lua:773
-msgid "The critter, its decorations, its bubble and what it says are set in Settings > Tiny Critter."
-msgstr ""
-
 #: modules/critter/voice_lines.lua:122
 msgid "The dawn found us both."
 msgstr ""
@@ -8977,200 +8981,3 @@ msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "dag op rij"
 msgstr[1] "dagen op rij"
-
-#~ msgid "ALL TIME"
-#~ msgstr "TOTAAL"
-
-#~ msgid "All time — Books"
-#~ msgstr "Totaal — Boeken"
-
-#~ msgid "All time — Time"
-#~ msgstr "Totaal — Tijd"
-
-#~ msgid "Column Width (Bento Grid)"
-#~ msgstr "Kolombreedte (bentoraster)"
-
-#~ msgid "DAY STREAK"
-#~ msgstr "DAGEN OP RIJ"
-
-#~ msgid "Daily avg — Pages"
-#~ msgstr "Daggemiddelde — Pagina's"
-
-#~ msgid "Daily avg — Time"
-#~ msgstr "Daggemiddelde — Tijd"
-
-#~ msgid "FREEZES"
-#~ msgstr "REEKSBEVRIEZINGEN"
-
-#~ msgid "LAST 7 DAYS"
-#~ msgstr "AFGELOPEN 7 DAGEN"
-
-#~ msgid ""
-#~ "Share of the row this module occupies.\n"
-#~ "100% = full width. Modules under 100% share a row when their widths fit (bento grid)."
-#~ msgstr ""
-#~ "Deel van de rij dat deze module inneemt.\n"
-#~ "100% = volledige breedte. Modules onder 100% delen een rij als ze naast elkaar passen (bentoraster)."
-
-#~ msgid "Show wallpaper on all screens"
-#~ msgstr "Achtergrond op alle schermen tonen"
-
-#~ msgid "Status — Abandoned"
-#~ msgstr "Status — Gestopt"
-
-#~ msgid "Status — Reading"
-#~ msgstr "Status — Aan het lezen"
-
-#~ msgid "Status — Unread"
-#~ msgstr "Status — Ongelezen"
-
-#~ msgid "THIS MONTH"
-#~ msgstr "DEZE MAAND"
-
-#~ msgid "THIS WEEK"
-#~ msgstr "DEZE WEEK"
-
-#~ msgid "TODAY'S SUMMARY"
-#~ msgstr "SAMENVATTING VAN VANDAAG"
-
-#~ msgid "This month — Pages"
-#~ msgstr "Deze maand — Pagina's"
-
-#~ msgid "This month — Time"
-#~ msgstr "Deze maand — Tijd"
-
-#~ msgid "This week — Pages"
-#~ msgstr "Deze week — Pagina's"
-
-#~ msgid "This week — Time"
-#~ msgstr "Deze week — Tijd"
-
-#~ msgid "Today — Pages"
-#~ msgstr "Vandaag — Pagina's"
-
-#~ msgid "Today — Time"
-#~ msgstr "Vandaag — Tijd"
-
-#~ msgid "WEEK STREAK"
-#~ msgstr "WEKEN OP RIJ"
-
-#~ msgid "hours read"
-#~ msgstr "uur gelezen"
-
-#~ msgid "reading time"
-#~ msgstr "leestijd"
-
-#~ msgid "%d freeze available"
-#~ msgid_plural "%d freezes available"
-#~ msgstr[0] "%d reeksbevriezing beschikbaar"
-#~ msgstr[1] "%d reeksbevriezingen beschikbaar"
-
-#~ msgid "day read"
-#~ msgid_plural "days read"
-#~ msgstr[0] "leesdag"
-#~ msgstr[1] "leesdagen"
-
-#~ msgid "page read"
-#~ msgid_plural "pages read"
-#~ msgstr[0] "pagina gelezen"
-#~ msgstr[1] "pagina's gelezen"
-
-#~ msgid "Badges"
-#~ msgstr "Badges"
-
-#~ msgid "Bar Style"
-#~ msgstr "Balkstijl"
-
-#~ msgid "Folder Book Stack"
-#~ msgstr "Boekenstapel in map"
-
-#~ msgid "Folder Cover Type"
-#~ msgstr "Type mapomslag"
-
-#~ msgid "Follow Library"
-#~ msgstr "Bibliotheek volgen"
-
-#~ msgid "Number of Books in Folder"
-#~ msgstr "Aantal boeken in map"
-
-#~ msgid "Number of Pages"
-#~ msgstr "Aantal pagina's"
-
-#~ msgid "Overlays"
-#~ msgstr "Overlays"
-
-#~ msgid ""
-#~ "Scale for the library badges (progress, pages, etc.).\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Schaal van de bibliotheekbadges (voortgang, pagina's, enz.).\n"
-#~ "100% is de standaardgrootte."
-
-#~ msgid ""
-#~ "Scales the section label text above each module.\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Schaalt de sectielabeltekst boven elke module.\n"
-#~ "100% is de standaardgrootte."
-
-#~ msgid "Title and Author Below Covers"
-#~ msgstr "Titel en auteur onder omslagen"
-
-#~ msgid ""
-#~ "Title and author strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Strook met titel en auteur ingeschakeld.\n"
-#~ "\n"
-#~ "Nu herstarten?"
-
-#~ msgid "Title only"
-#~ msgstr "Alleen titel"
-
-#~ msgid ""
-#~ "Title strip disabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Titelstrook uitgeschakeld.\n"
-#~ "\n"
-#~ "Nu herstarten?"
-
-#~ msgid ""
-#~ "Title strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Titelstrook ingeschakeld.\n"
-#~ "\n"
-#~ "Nu herstarten?"
-
-#~ msgid "UI Font  (default)"
-#~ msgstr "Interfacelettertype  (standaard)"
-
-#~ msgid "UI Font  [%s]"
-#~ msgstr "Interfacelettertype  [%s]"
-
-#~ msgid "Visibility"
-#~ msgstr "Zichtbaarheid"
-
-#~ msgid "Visible"
-#~ msgstr "Zichtbaar"
-
-#~ msgid "The maximum of %d stat per row has been reached. Remove one first."
-#~ msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-#~ msgstr[0] "De limiet van %d statistiek per rij is bereikt. Verwijder er eerst een."
-#~ msgstr[1] "De limiet van %d statistieken per rij is bereikt. Verwijder er eerst een."
-
-#~ msgid "Button Background"
-#~ msgstr "Knopachtergrond"
-
-#~ msgid "Button Opacity"
-#~ msgstr "Dekking knop"
-
-#~ msgid "Button Style"
-#~ msgstr "Knopstijl"
-
-#~ msgid "Card Opacity"
-#~ msgstr "Dekking kaart"

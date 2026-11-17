@@ -676,13 +676,14 @@ local function _buildPool()
 
     local hist = ReadHistory.hist
     local n_hist = #hist
+    local SH = require("modules/module_books_shared")
 
     -- Phase 1: collect all history entries that have a sidecar on disk.
     -- This only does stat() calls (microseconds each) — no file reads yet.
     local candidates = {}
     for i = 1, n_hist do
         local fp = hist[i].file
-        if fp and lfs.attributes(fp, "mode") == "file" then
+        if fp and not SH.isHiddenEntry(hist[i]) and lfs.attributes(fp, "mode") == "file" then
             local sidecar = DocSettings:findSidecarFile(fp)
             if sidecar then
                 candidates[#candidates + 1] = { fp = fp }

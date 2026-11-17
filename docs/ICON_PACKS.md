@@ -92,12 +92,6 @@ Every file in the pack root must be an `.svg` or `.png`. The filename (without e
 | `sui_qa_system.svg` | Default Quick Action icon (System) |
 | `sui_qa_group.svg` | Default Quick Action icon (Group) |
 
-**Folder Covers**
-
-| Filename | Description |
-|----------|-------------|
-| `sui_fc_empty.svg` | Placeholder cover for empty folders |
-
 **Touch menu tab bar** (native KOReader tabs + the SimpleUI-injected Quick Settings tab)
 
 | Filename | Description |

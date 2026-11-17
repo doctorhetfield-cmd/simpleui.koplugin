@@ -32,6 +32,7 @@ local Config = require("infra/sui_config")
 local I18n   = require("infra/sui_i18n")
 local _      = I18n.translate
 local N_     = I18n.ngettext
+local Text   = require("infra/sui_text")
 
 local BookStats = {}
 
@@ -155,13 +156,7 @@ function BookStats.secondsLeft(stats, data)
 end
 
 function BookStats.formatDuration(secs)
-    secs = math.floor(secs or 0)
-    if secs <= 0 then return "0m" end
-    local hours   = math.floor(secs / 3600)
-    local minutes = math.floor((secs % 3600) / 60)
-    if hours > 0 and minutes > 0 then return string.format("%dh %dm", hours, minutes)
-    elseif hours > 0            then return string.format("%dh", hours)
-    else                             return string.format("%dm", minutes) end
+    return Text.formatDuration(secs)
 end
 
 -- ---------------------------------------------------------------------------

@@ -84,6 +84,10 @@ local ELEMENTS = {
             end,
         },
     },
+    onhold = {
+        show = true, color = "accent",
+        label = function() return _("On Hold (List View)") end,
+    },
     count = {
         show = true, color = "accent",
         label = function() return _("Folder Count") end,
@@ -108,6 +112,8 @@ ELEMENTS.stack = {
     variant = {
         prop = "style", key = SUIStyle.FOLDER_STACK_STYLE_KEY, default = SUIStyle.FOLDER_STACK_DEFAULT,
         label = function() return _("Style") end,
+        independent = true,
+        help = function() return _("Also used by the Collections module on the Home Screen.") end,
         options = function()
             return {
                 { value = SUIStyle.FOLDER_STACK_DEFAULT, label = _("Default") },
@@ -131,7 +137,7 @@ ELEMENTS.name = {
     end,
 }
 
-CE.KINDS = { "pages", "series", "progress", "new", "count" }
+CE.KINDS = { "pages", "series", "progress", "new", "onhold", "count" }
 
 local FOLDER_TYPES = { "single", "quad", "auto" }
 
@@ -225,7 +231,7 @@ end
 
 -- Show / variant / Color rows of one element (Color only on badges, plus the
 -- element's own extra rows). Everything but Show is disabled while Show is
--- off. `refresh` runs after every change.
+-- off, except a variant marked `independent`. `refresh` runs after every change.
 function CE.makeItems(opts)
     local kind, refresh = opts.kind, opts.refresh
     local element = ELEMENTS[kind]
@@ -245,7 +251,8 @@ function CE.makeItems(opts)
     if element.variant then
         items[#items + 1] = Config.makeRadioSubmenuItem{
             text         = element.variant.label(),
-            enabled_func = shown,
+            help_text    = element.variant.help and element.variant.help() or nil,
+            enabled_func = (not element.variant.independent) and shown or nil,
             options      = element.variant.options,
             get          = function() return CE.getVariant(kind) end,
             set          = function(v) CE.set(kind, "variant", v) end,

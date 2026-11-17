@@ -30,8 +30,9 @@
 --     drawn as segments; each selected or checked button is inverted.
 --   * Other rows are drawn as icon cells: rows of two actions form a grid,
 --     rows of one action a list, and consecutive rows of three or more actions
---     are reflowed in pairs into a grid. A group of cells shows icons only when
---     at least half of its actions have one.
+--     are reflowed in pairs into a grid. A button's own `sui_icon` is kept,
+--     others get the icon their text maps to. A group of cells shows icons
+--     only when at least half of its actions have one.
 --   * A native separator row starts a new section.
 --   * The first line of the title is the sheet title; further lines are the
 --     sheet message. A dialog may set `sui_icon` to give the sheet a header
@@ -185,7 +186,7 @@ local function toItem(spec)
 
     return {
         text          = label,
-        sui_icon      = DialogIcons.forText(label),
+        sui_icon      = spec.sui_icon or DialogIcons.forText(label),
         enabled       = enabled,
         checked       = checked,
         choice        = choice,

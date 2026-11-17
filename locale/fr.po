@@ -97,17 +97,30 @@ msgstr "Il reste %d%%. Je vais prendre mon courage à deux mains."
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d jours · %d/%d min avant le prochain gel"
 
-#: modules/reading_stats/module_reading_stats.lua:412
+#: infra/sui_text.lua:124
+#: screens/sui_stats_windows.lua:1632
 msgid "%dh"
-msgstr "%dh"
+msgstr "%d h"
 
-#: modules/reading_stats/module_reading_stats.lua:411
+#: infra/sui_text.lua:119
+msgid "%dh %02dm"
+msgstr "%d h %02d min"
+
+#: infra/sui_text.lua:123
 msgid "%dh %dm"
-msgstr "%dh %dm"
+msgstr "%d h %d min"
 
-#: modules/reading_stats/module_reading_stats.lua:409 modules/reading_stats/module_reading_stats.lua:413
+#: infra/sui_text.lua:125
 msgid "%dm"
-msgstr "%dm"
+msgstr "%d min"
+
+#: infra/sui_text.lua:120
+msgid "%dm %02ds"
+msgstr "%d min %02d s"
+
+#: infra/sui_text.lua:121
+msgid "%ds"
+msgstr "%d s"
 
 #: screens/insights/sui_insights_charts.lua:121
 msgid "%s a day on average"
@@ -1493,10 +1506,6 @@ msgstr "Collection"
 #: modules/module_collections.lua:491
 msgid "Collection Menu"
 msgstr "Menu de la collection"
-
-#: features/library/sui_group_actions.lua:137
-msgid "Collection \"%1\" created with %2 books."
-msgstr "Collection « %1 » créée avec %2 livres."
 
 #: features/library/sui_group_actions.lua:110
 msgid "Collection already exists: %1"
@@ -7016,10 +7025,6 @@ msgstr "La couverture qui s'affiche à droite lorsqu'un livre s'ouvre provient g
 msgid "The critter may use it in what it says."
 msgstr "La petite créature peut s'en servir comme indiqué."
 
-#: modules/critter/module_critter.lua:773
-msgid "The critter, its decorations, its bubble and what it says are set in Settings > Tiny Critter."
-msgstr "La petite créature, ses décorations, sa bulle et ce qu'elle dit se configurent dans « Paramètres > Petite créature »."
-
 #: modules/critter/voice_lines.lua:122
 msgid "The dawn found us both."
 msgstr "L'aube nous a trouvés tous les deux."
@@ -8615,114 +8620,3 @@ msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "série de jour"
 msgstr[1] "séries de jour"
-
-#~ msgid "ALL TIME"
-#~ msgstr "TOUS LE TEMPS"
-
-#~ msgid "All time — Books"
-#~ msgstr "Tout le temps — Livres"
-
-#~ msgid "All time — Time"
-#~ msgstr "Tout le temps — Heure"
-
-#~ msgid "Column Width (Bento Grid)"
-#~ msgstr "Largeur de colonne (grille Bento)"
-
-#~ msgid "DAY STREAK"
-#~ msgstr "SÉRiE DU JOUR"
-
-#~ msgid "Daily avg — Pages"
-#~ msgstr "Moy./jour — Pages"
-
-#~ msgid "Daily avg — Time"
-#~ msgstr "Moy./jour — Temps"
-
-#~ msgid "FREEZES"
-#~ msgstr "GELS"
-
-#~ msgid "LAST 7 DAYS"
-#~ msgstr "7 DERNIERS JOURS"
-
-#~ msgid ""
-#~ "Share of the row this module occupies.\n"
-#~ "100% = full width. Modules under 100% share a row when their widths fit (bento grid)."
-#~ msgstr ""
-#~ "Part de la ligne occupée par ce module.\n"
-#~ "100 % = largeur totale. Les modules dont la largeur est inférieure à 100 % se partagent une ligne lorsque leurs largeurs correspondent (grille Bento)."
-
-#~ msgid "Show wallpaper on all screens"
-#~ msgstr "Afficher le fond d'écran sur tous les écrans"
-
-#~ msgid "Status — Abandoned"
-#~ msgstr "État — Abandonné"
-
-#~ msgid "Status — Reading"
-#~ msgstr "État — En cours de lecture"
-
-#~ msgid "Status — Unread"
-#~ msgstr "État — Non lu"
-
-#~ msgid "THIS MONTH"
-#~ msgstr "CE MOIS-CI"
-
-#~ msgid "THIS WEEK"
-#~ msgstr "CETTE SEMAINE"
-
-#~ msgid "TODAY'S SUMMARY"
-#~ msgstr "RÉSUMÉ DU JOUR"
-
-#~ msgid "This month — Pages"
-#~ msgstr "Ce mois-ci — Pages"
-
-#~ msgid "This month — Time"
-#~ msgstr "Ce mois-ci — Temps"
-
-#~ msgid "This week — Pages"
-#~ msgstr "Cette semaine — Pages"
-
-#~ msgid "This week — Time"
-#~ msgstr "Cette semaine — Temps"
-
-#~ msgid "Today — Pages"
-#~ msgstr "Aujourd'hui — Pages"
-
-#~ msgid "Today — Time"
-#~ msgstr "Aujourd'hui — Temps"
-
-#~ msgid "WEEK STREAK"
-#~ msgstr "SÉRIE DE SEMAINES"
-
-#~ msgid "hours read"
-#~ msgstr "heures de lecturre"
-
-#~ msgid "reading time"
-#~ msgstr "temps de lecture"
-
-#~ msgid "%d freeze available"
-#~ msgid_plural "%d freezes available"
-#~ msgstr[0] "%d gel disponible"
-#~ msgstr[1] "%d gels disponibles"
-
-#~ msgid "day read"
-#~ msgid_plural "days read"
-#~ msgstr[0] "jour de lecture"
-#~ msgstr[1] "jours de lecture"
-
-#~ msgid "page read"
-#~ msgid_plural "pages read"
-#~ msgstr[0] "page lue"
-#~ msgstr[1] "pages lues aujourd'hui"
-
-#~ msgid "Overlays"
-#~ msgstr "Superpositions"
-
-#~ msgid "Visibility"
-#~ msgstr "Visibilité"
-
-#~ msgid "Visible"
-#~ msgstr "Visible"
-
-#~ msgid "The maximum of %d stat per row has been reached. Remove one first."
-#~ msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-#~ msgstr[0] "Le maximum de %d statistique par ligne a été atteint. Supprimez-en une d'abord."
-#~ msgstr[1] "Le maximum de %d statistiques par ligne a été atteint. Supprimez-en une d'abord."

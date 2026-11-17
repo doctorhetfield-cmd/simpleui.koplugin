@@ -23,8 +23,8 @@ local Memory       = require("infra/sui_memory")
 local Text         = require("infra/sui_text")
 local SUISettings  = require("infra/sui_store")
 
--- Installer of the main menu entries, loaded on first access by addToMainMenu
--- and dropped on teardown so a hot update loads the new one.
+-- Installer of the settings menu builders, loaded on first use by
+-- _ensureMenus and dropped on teardown so a hot update loads the new one.
 local _menu_installer
 
 -- ---------------------------------------------------------------------------
@@ -85,8 +85,15 @@ local SimpleUIPlugin = WidgetContainer:new{
     _makeNavbarMenu           = nil,
     _makeTopbarMenu           = nil,
     _makeQuickActionsMenu     = nil,
-    _goalTapCallback          = nil,
 }
+
+-- Tap on the Reading Goals widget of a screen: sets the annual goal.
+function SimpleUIPlugin._goalTapCallback()
+    require("infra/sui_goals").showDialog("annual", function()
+        local HS = package.loaded["screens/sui_homescreen"]
+        if HS then HS.refreshNow() end
+    end)
+end
 
 -- ---------------------------------------------------------------------------
 -- Lifecycle
@@ -517,15 +524,19 @@ function SimpleUIPlugin:init()
             if SUISettings:nilOrTrue("simpleui_topbar_enabled") then
                 Topbar.scheduleRefresh(self, 0)
             end
-            -- Pre-load ALL desktop modules during boot idle time so the first
-            -- Homescreen open has no perceptible freeze. scheduleIn(2) runs
-            -- after the FileManager UI is fully painted and stable.
-            -- Registry.list() triggers _load() which pcall-requires all 9
-            -- module_*.lua files — they land in package.loaded and subsequent
-            -- require() calls are free table lookups, not disk I/O.
+            -- Pre-load the modules enabled on any screen during boot idle
+            -- time so the first screen open has no perceptible freeze.
+            -- scheduleIn(2) runs after the FileManager UI is fully painted
+            -- and stable. Modules that are off stay unloaded.
             UIManager:scheduleIn(2, function()
                 local ok, reg = pcall(require, "modules/moduleregistry")
-                if ok and reg then pcall(reg.list) end
+                if not (ok and reg) then return end
+                pcall(function()
+                    local SE = require("engines/sui_screen_engine")
+                    local pfxs = {}
+                    for _i, id in ipairs(SE.knownScreenIds()) do pfxs[#pfxs + 1] = SE.getPfx(id) end
+                    reg.preloadEnabled(pfxs)
+                end)
             end)
             -- Silent automatic update check — 24 h throttle.
             -- scheduleIn(3) ensures it runs after the first paint is stable
@@ -834,7 +845,6 @@ function SimpleUIPlugin:onScreenResize()
             hs_inst._navbar_closing_intentionally = true
             pcall(function() UIManager:close(hs_inst) end)
             hs_inst._navbar_closing_intentionally = nil
-            if not self._goalTapCallback then self:addToMainMenu({}) end
             local tabs = Config.loadTabConfig()
             Bottombar.setActiveAndRefreshFM(self, "homescreen", tabs)
             HS.show(
@@ -1179,17 +1189,6 @@ function SimpleUIPlugin:onCloseDocument()
     -- module can be enabled on any of them, each with its own pfx, so unlike
     -- the single-screen era this cannot be decided from one flat check.
     local screen_ids = ScreenEngine.knownScreenIds()
-    local live_ids    = ScreenEngine.liveScreenIds()
-
-    -- Fast-path: nothing is currently live, and the only known screen (the
-    -- built-in Homescreen — no Custom Screen has been touched this session)
-    -- is already flagged for rebuild. Nothing further to do — the next open
-    -- will rebuild from scratch. Avoids loading the Registry and all module
-    -- pcalls. Only taken when NO screen at all is currently live, since a
-    -- live screen always needs its own fresh check below.
-    if #live_ids == 0 and #screen_ids == 1 and ScreenEngine.needsRefresh("hs") then
-        return
-    end
 
     -- Registry is already loaded (moduleregistry was pre-loaded at boot via
     -- scheduleIn(2)); use package.loaded to avoid a pcall on the hot path.
@@ -1635,32 +1634,37 @@ end
 function SimpleUIPlugin:_updateFMHomeIcon() end
 
 -- ---------------------------------------------------------------------------
--- Main menu entry (sui_menu is lazy-loaded on first access)
+-- Main menu entry and settings menus
 -- ---------------------------------------------------------------------------
 
+-- Tools > Simple UI opens the SUI Settings Window. "tools" sorts the entry in
+-- the Tools section of the KOReader main menu; the dedicated key "simpleui"
+-- avoids colliding with the section table.
 function SimpleUIPlugin:addToMainMenu(menu_items)
     local _ = require("infra/sui_i18n").translate
+    menu_items.simpleui = {
+        sorting_hint = "tools",
+        text         = _("Simple UI"),
+        callback     = function()
+            require("screens/sui_settings_window"):show()
+        end,
+    }
+end
+
+-- Sets the settings menu builders of screens/sui_menu (plugin.make*,
+-- _makeNavbarMenu, ...) on this instance, loading the installer on first use.
+function SimpleUIPlugin:_ensureMenus()
+    if self._makeNavbarMenu then return end
     if not _menu_installer then
         local ok, result = pcall(require, "screens/sui_menu")
         if not ok then
             logger.err("simpleui: sui_menu failed to load: " .. tostring(result))
-            menu_items.simpleui = { sorting_hint = "tools", text = _("Simple UI"), sub_item_table = {} }
             return
         end
         _menu_installer = result
-        -- Capture the bootstrap stub before installing so we can detect replacement.
-        local bootstrap_fn = rawget(SimpleUIPlugin, "addToMainMenu")
         _menu_installer(SimpleUIPlugin)
-        -- The installer replaces addToMainMenu on the class; call the real one now.
-        local real_fn = rawget(SimpleUIPlugin, "addToMainMenu")
-        if type(real_fn) == "function" and real_fn ~= bootstrap_fn then
-            real_fn(self, menu_items)
-        else
-            logger.err("simpleui: sui_menu installer did not replace addToMainMenu")
-            menu_items.simpleui = { sorting_hint = "tools", text = _("Simple UI"), sub_item_table = {} }
-        end
-        return
     end
+    self:_buildMenus()
 end
 
 return SimpleUIPlugin

@@ -31,6 +31,7 @@ local FilterState    = require("features/library/sui_filter_state")
 local GroupActions   = require("features/library/sui_group_actions")
 local LibraryScan    = require("engines/sui_library_scan")
 local MetadataSource = require("features/library/sui_metadata_source")
+local RuleCollections = require("features/library/sui_rule_collections")
 local ScreenNav      = require("infra/sui_screen_nav")
 local VirtualPath    = require("features/library/sui_virtual_path")
 
@@ -120,12 +121,6 @@ function FacetGroups.open(group)
     })
 end
 
-local function bookPaths(group)
-    local paths = {}
-    for i, book in ipairs(FacetGroups.books(group)) do paths[i] = book.path end
-    return paths
-end
-
 function FacetGroups.describe(group)
     return {
         name          = group.name,
@@ -142,8 +137,8 @@ function FacetGroups.describe(group)
                     GroupActions.createCollection{
                         parent         = sheet,
                         suggested_name = group.name,
-                        paths          = bookPaths(group),
-                        empty_message  = _("No books found."),
+                        connect_rule   = RuleCollections.new(FacetGroups.baseDir(),
+                            { { dimension = group.dimension, value = group.value } }, true),
                     }
                 end,
             }}

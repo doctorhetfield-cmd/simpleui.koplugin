@@ -1,6 +1,6 @@
 -- module_books_shared.lua — Simple UI
 -- Helpers shared by the Currently Reading and Recent Books modules:
--- cover loading, book data, progress bar, prefetch, formatTimeLeft.
+-- cover loading, book data, progress bar, prefetch.
 -- Not a module — no id or build(). Pure shared utilities.
 
 local Device          = require("device")
@@ -374,22 +374,6 @@ function SH.applyProgressBadge(cover_widget, bd, cw, ch, opts)
     }
     overlap[#overlap + 1] = wg
     return overlap
-end
-
--- ---------------------------------------------------------------------------
--- formatTimeLeft
--- ---------------------------------------------------------------------------
-function SH.formatTimeLeft(pct, pages, avg_time)
-    if not avg_time or avg_time <= 0 or not pct or pct < 0 or not pages then return nil end
-    local remaining = math_floor(pages * (1.0 - pct))
-    if remaining <= 0 then return nil end
-    local secs = math_floor(remaining * avg_time)
-    if secs <= 0 then return nil end
-    local h = math_floor(secs / 3600)
-    local m = math_floor((secs % 3600) / 60)
-    if h > 0 and m > 0 then return string.format("%dh %dm", h, m)
-    elseif h > 0        then return string.format("%dh", h)
-    else                     return string.format("%dm", m) end
 end
 
 -- ---------------------------------------------------------------------------
@@ -853,6 +837,76 @@ function SH.setCurrentExcluded(pfx, excluded)
     if store then store:saveSetting((pfx or "") .. EXCLUDE_CURRENT_KEY, excluded) end
 end
 
+-- ---------------------------------------------------------------------------
+-- Hidden history books
+-- Books hidden from every list of the reading history, KOReader's History
+-- included (see patchHiddenHistory in infra/sui_patches.lua). The history file
+-- itself is left untouched. Stored as { [file] = true }, keyed by the history
+-- entry's file; a book stays hidden until it is shown again.
+-- ---------------------------------------------------------------------------
+local HIDDEN_KEY = "simpleui_hidden_history"
+local _hidden    = nil
+
+local function _hiddenSet()
+    if not _hidden then
+        local store = _getSUIStore()
+        local v = store and store:readSetting(HIDDEN_KEY)
+        _hidden = type(v) == "table" and v or {}
+    end
+    return _hidden
+end
+
+local function _saveHidden()
+    local store = _getSUIStore()
+    if store then store:saveSetting(HIDDEN_KEY, next(_hidden) and _hidden or nil) end
+end
+
+local function _readHistory()
+    local ok, ReadHistory = pcall(require, "readhistory")
+    return ok and ReadHistory and ReadHistory.hist or {}
+end
+
+--- Whether a ReadHistory entry is hidden.
+function SH.isHiddenEntry(entry)
+    return entry ~= nil and entry.file ~= nil and _hiddenSet()[entry.file] ~= nil
+end
+
+--- The ReadHistory entry of fp (real or virtual path), or nil.
+function SH.historyEntry(fp)
+    if not fp then return nil end
+    local virtual = VirtualPaths.isVirtual(fp)
+    for _i, entry in ipairs(_readHistory()) do
+        if entry.file == fp or (virtual and VirtualPaths.toVirtual(entry.file) == fp) then
+            return entry
+        end
+    end
+    return nil
+end
+
+--- Hides or shows a ReadHistory entry, then marks every screen stale.
+function SH.setHidden(entry, hidden)
+    if not (entry and entry.file) then return end
+    _hiddenSet()[entry.file] = hidden or nil
+    _saveHidden()
+    -- The stale snapshot may still list a hidden book.
+    _last_books_state      = nil
+    _disk_books_load_tried = true
+    local store = _getSUIStore()
+    if store and store.delNoFlush then pcall(store.delNoFlush, store, _STALE_BOOKS_SETTING_KEY) end
+    local ScreenEngine = package.loaded["engines/sui_screen_engine"]
+    if ScreenEngine then ScreenEngine.markAllStale() end
+end
+
+--- Hidden ReadHistory entries, in history order.
+function SH.hiddenEntries()
+    local entries = {}
+    if not next(_hiddenSet()) then return entries end
+    for _i, entry in ipairs(_readHistory()) do
+        if SH.isHiddenEntry(entry) then entries[#entries + 1] = entry end
+    end
+    return entries
+end
+
 -- opts.exclude_current (default true): when Currently and Recent are both
 -- active, keep the currently-reading book out of recent_fps. Callers that
 -- pass false allow the same book in both modules.
@@ -881,7 +935,7 @@ function SH.prefetchBooks(show_currently, show_recent, max_recent, opts)
     for i = 1, #(ReadHistory.hist or {}) do
         local entry = ReadHistory.hist[i]
         local fp = entry and entry.file
-        if fp and lfs.attributes(fp, "mode") == "file" then
+        if fp and not SH.isHiddenEntry(entry) and lfs.attributes(fp, "mode") == "file" then
             -- A book known to a virtual library is keyed by its virtual path, so
             -- cover extraction, sidecar lookups and opening all go through the
             -- library's own handling.

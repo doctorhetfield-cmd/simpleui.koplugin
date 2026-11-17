@@ -22,6 +22,7 @@
 
 local SUISettings = require("infra/sui_store")
 local _           = require("infra/sui_i18n").translate
+local N_          = require("infra/sui_i18n").ngettext
 
 local Goals = {}
 
@@ -41,6 +42,9 @@ local SPECS = {
         key     = "simpleui_reading_goal",
         default = 12,   -- one book a month
         max     = 365,
+        value_label = function(n)
+            return string.format(N_("%d book", "%d books", n), n)
+        end,
         label   = function() return _("Annual Goal") end,
         title   = function() return _("Annual Reading Goal") end,
         info    = function() return string.format(_("Books to read in %s:"), _year()) end,
@@ -50,7 +54,7 @@ local SPECS = {
         default   = 0,
         max       = 350,
         unit_secs = 3600,
-        unit      = "h",
+        unit      = _(" hr"),
         label     = function() return _("Monthly Goal") end,
         title     = function() return _("Monthly Reading Goal") end,
         info      = function() return _("Hours per month:") end,
@@ -61,7 +65,7 @@ local SPECS = {
         max       = 720,
         step      = 5,
         unit_secs = 60,
-        unit      = " min",
+        unit      = _(" min"),
         label     = function() return _("Daily Goal") end,
         title     = function() return _("Daily Reading Goal") end,
         info      = function() return _("Minutes per day:") end,
@@ -126,7 +130,7 @@ function Goals.makeMenuItems()
     local items  = {}
     for _i, id in ipairs(Goals.IDS) do
         local spec = _spec(id)
-        items[#items + 1] = Config.makeStepperItem{
+        items[#items + 1] = Config.makeSpinItem{
             text_func   = spec.label,
             title       = spec.title(),
             info        = spec.info(),
@@ -136,7 +140,12 @@ function Goals.makeMenuItems()
             value_step  = spec.step,
             default_value = math.floor(spec.default / (spec.unit_secs or 1)),
             get         = function() return Goals.getUnits(id) end,
-            set         = function(units) Goals.setUnits(id, units) end,
+            set         = function(v) Goals.setUnits(id, v) end,
+            value_func  = function()
+                local n = Goals.getUnits(id)
+                if spec.value_label then return spec.value_label(n) end
+                return tostring(n) .. (spec.unit or "")
+            end,
         }
     end
     return items

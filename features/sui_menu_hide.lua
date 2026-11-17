@@ -155,17 +155,45 @@ local function applyLive(target)
     if menu and menu.tab_item_table ~= nil then MenuHooks.refresh(menu, target) end
 end
 
---- Hides or shows one id of a target.
-function M.setHidden(target, id, hidden)
-    local set = {}
-    for k in pairs(M.getHidden(target)) do set[k] = true end
-    set[id] = hidden and true or nil
+-- Stores the hidden set of a target and applies it to the running menu.
+local function writeHidden(target, set)
     if next(set) then
         SUISettings:set(settingKey(target), set)
     else
         SUISettings:del(settingKey(target))
     end
     applyLive(target)
+end
+
+--- Hides or shows one id of a target.
+function M.setHidden(target, id, hidden)
+    local set = {}
+    for k in pairs(M.getHidden(target)) do set[k] = true end
+    set[id] = hidden and true or nil
+    writeHidden(target, set)
+end
+
+--- Hidden set for the reader that mirrors the File Manager: every id present in
+--- both trees takes its File Manager state; ids only in the reader keep theirs.
+function M.mirrorHidden(fm_tree, reader_tree, fm_hidden, reader_hidden)
+    local fm_ids = {}
+    local function collect(nodes)
+        for _i, node in ipairs(nodes) do
+            fm_ids[node.id] = true
+            if node.children then collect(node.children) end
+        end
+    end
+    collect(fm_tree)
+    local set = {}
+    for k in pairs(reader_hidden) do set[k] = true end
+    local function apply(nodes)
+        for _i, node in ipairs(nodes) do
+            if fm_ids[node.id] then set[node.id] = fm_hidden[node.id] == true or nil end
+            if node.children then apply(node.children) end
+        end
+    end
+    apply(reader_tree)
+    return set
 end
 
 --- Shows every hidden entry again, in both menus.
@@ -364,11 +392,7 @@ end
 -- ---------------------------------------------------------------------------
 
 local function showProtectedNotice()
-    local InfoMessage = require("ui/widget/infomessage")
-    require("ui/uimanager"):show(InfoMessage:new{
-        text    = _("This item can't be hidden"),
-        timeout = 3,
-    })
+    require("infra/sui_core").Notify.toast(_("This item can't be hidden"))
 end
 
 -- Checkbox row that shows or hides `node`. A protected node is always shown.
@@ -557,31 +581,51 @@ end
 function M.makeMenuItems(ctx_menu)
     local is_sui = ctx_menu and ctx_menu.is_sui or false
     buildLiveMenus()
-    local fm_row = makeContextRow(MenuHooks.TARGET.FM, _("File Manager"),
-        _("Open the File Manager once to list its menu"), is_sui)
-    local reader_row = makeContextRow(MenuHooks.TARGET.READER, _("Reader"),
-        _("Open a book once to list the Reader menu"), is_sui)
+    local missing_fm    = _("Open the File Manager once to list its menu")
+    local missing_reader = _("Open a book once to list the Reader menu")
+    local fm_row = makeContextRow(MenuHooks.TARGET.FM, _("File Manager"), missing_fm, is_sui)
+    local reader_row = makeContextRow(MenuHooks.TARGET.READER, _("Reader"), missing_reader, is_sui)
     reader_row.separator = true
     local note = _("Make sure you can still open Simple UI settings, e.g. with a quick action.")
+    -- Asks to confirm `action`; the counts shown on the rows are stale once it runs.
+    local function confirmThen(touch_menu, text, action)
+        require("features/dialogs/sui_dialogs").confirm{
+            text        = text,
+            ok_callback = function()
+                action()
+                if is_sui then
+                    if ctx_menu.refresh then ctx_menu.refresh() end
+                elseif touch_menu and touch_menu.updateItems then
+                    touch_menu:updateItems()
+                end
+            end,
+        }
+    end
     return {
         fm_row,
         reader_row,
         {
+            text     = _("Apply File Manager Layout to Reader"),
+            callback = function(touch_menu)
+                local fm_tree     = M.loadTree(MenuHooks.TARGET.FM)
+                local reader_tree = M.loadTree(MenuHooks.TARGET.READER)
+                if not fm_tree or not reader_tree then
+                    require("infra/sui_core").Notify.toast(fm_tree and missing_reader or missing_fm)
+                    return
+                end
+                confirmThen(touch_menu,
+                    _("Hide and show the Reader menu items shared with the File Manager as they are in the File Manager?"),
+                    function()
+                        local set = M.mirrorHidden(fm_tree, reader_tree,
+                            M.getHidden(MenuHooks.TARGET.FM), M.getHidden(MenuHooks.TARGET.READER))
+                        writeHidden(MenuHooks.TARGET.READER, set)
+                    end)
+            end,
+        },
+        {
             text     = _("Show All Items"),
             callback = function(touch_menu)
-                local ConfirmBox = require("ui/widget/confirmbox")
-                require("ui/uimanager"):show(ConfirmBox:new{
-                    text        = _("Show all hidden menu items again?"),
-                    ok_callback = function()
-                        M.clearAll()
-                        -- The counts shown on the rows are stale once the box closes.
-                        if is_sui then
-                            if ctx_menu.refresh then ctx_menu.refresh() end
-                        elseif touch_menu and touch_menu.updateItems then
-                            touch_menu:updateItems()
-                        end
-                    end,
-                })
+                confirmThen(touch_menu, _("Show all hidden menu items again?"), M.clearAll)
             end,
             separator = true,
         },

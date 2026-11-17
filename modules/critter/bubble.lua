@@ -10,8 +10,9 @@
 -- anti-aliased; in the "pixel" style (see pixel_shapes.lua) they are stepped
 -- blocks of one `unit`, painted as plain rectangles. A bubble too small for its
 -- unit is built smooth. The pixel style also casts a one-unit shadow of ink to
--- the bottom right, inside the size it is given. It is laid out physically (left stays left in
--- right-to-left interfaces), because the tail has to face the critter.
+-- the bottom, on the side away from the critter, inside the size it is given.
+-- It is laid out physically (left stays left in right-to-left interfaces),
+-- because the tail has to face the critter.
 
 local Device         = require("device")
 local Geom           = require("ui/geometry")
@@ -125,12 +126,14 @@ Bubble.paintRects = paintRects
 -- it stands for.
 local PixelBody = Widget:extend{
     content = nil, pad = 0, unit = 1, shape = nil, box_w = 0, box_h = 0, shadow = 0,
+    shadow_left = false,   -- cast the shadow to the bottom left instead of the bottom right
     border_color = nil, fill_color = nil,
 }
 
 function PixelBody:init()
     self.dimen = Geom:new{ w = self.box_w, h = self.box_h }
     self.off_x = math.floor((self.box_w - self.shape.w - self.shadow) / 2)
+               + (self.shadow_left and self.shadow or 0)
     self.off_y = math.floor((self.box_h - self.shape.h - self.shadow) / 2)
 end
 
@@ -140,8 +143,9 @@ function PixelBody:paintTo(bb, x, y)
     self.dimen.x, self.dimen.y = x, y
     local sx, sy = x + self.off_x, y + self.off_y
     if self.shadow > 0 then
-        paintRects(bb, self.shape.fill, sx + self.shadow, sy + self.shadow, self.border_color)
-        paintRects(bb, self.shape.border, sx + self.shadow, sy + self.shadow, self.border_color)
+        local shx = sx + (self.shadow_left and -self.shadow or self.shadow)
+        paintRects(bb, self.shape.fill, shx, sy + self.shadow, self.border_color)
+        paintRects(bb, self.shape.border, shx, sy + self.shadow, self.border_color)
     end
     paintRects(bb, self.shape.fill, sx, sy, self.fill_color)
     paintRects(bb, self.shape.border, sx, sy, self.border_color)
@@ -357,6 +361,7 @@ function Bubble.build(o)
             pad          = pad,
             unit         = o.unit,
             shadow       = shadow,
+            shadow_left  = o.side == "right",
             shape        = shape,
             border_color = ink,
             fill_color   = SUIStyle.COLOR.surface,

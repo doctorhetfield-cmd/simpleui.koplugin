@@ -104,18 +104,30 @@ msgstr ""
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d zile · %d/%d min pînă la următorul îngheț"
 
-#: modules/reading_stats/module_reading_stats.lua:412
+#: infra/sui_text.lua:124
+#: screens/sui_stats_windows.lua:1632
 msgid "%dh"
-msgstr ""
+msgstr "%dh"
 
-#: modules/reading_stats/module_reading_stats.lua:411
+#: infra/sui_text.lua:119
+msgid "%dh %02dm"
+msgstr "%dh %02dm"
+
+#: infra/sui_text.lua:123
 msgid "%dh %dm"
-msgstr ""
+msgstr "%dh %dm"
 
-#: modules/reading_stats/module_reading_stats.lua:409
-#: modules/reading_stats/module_reading_stats.lua:413
+#: infra/sui_text.lua:125
 msgid "%dm"
-msgstr ""
+msgstr "%dm"
+
+#: infra/sui_text.lua:120
+msgid "%dm %02ds"
+msgstr "%dm %02ds"
+
+#: infra/sui_text.lua:121
+msgid "%ds"
+msgstr "%ds"
 
 #: screens/insights/sui_insights_charts.lua:121
 msgid "%s a day on average"
@@ -1569,10 +1581,6 @@ msgstr "Colecție"
 #: modules/module_collections.lua:491
 msgid "Collection Menu"
 msgstr "Meniu colecție"
-
-#: features/library/sui_group_actions.lua:137
-msgid "Collection \"%1\" created with %2 books."
-msgstr "Colecția „%1” creată cu %2 cărți."
 
 #: features/library/sui_group_actions.lua:110
 msgid "Collection already exists: %1"
@@ -7386,10 +7394,6 @@ msgstr "Coperta afișată imediat la deschiderea unei cărți provine în mod no
 msgid "The critter may use it in what it says."
 msgstr ""
 
-#: modules/critter/module_critter.lua:773
-msgid "The critter, its decorations, its bubble and what it says are set in Settings > Tiny Critter."
-msgstr ""
-
 #: modules/critter/voice_lines.lua:122
 msgid "The dawn found us both."
 msgstr ""
@@ -9080,192 +9084,3 @@ msgid_plural "days streak"
 msgstr[0] "zi în serie"
 msgstr[1] "zile în serie"
 msgstr[2] ""
-
-#~ msgid "ALL TIME"
-#~ msgstr "DINTOTDEAUNA"
-
-#~ msgid "All time — Books"
-#~ msgstr "Dintotdeauna — Cărți"
-
-#~ msgid "All time — Time"
-#~ msgstr "Dintotdeauna — Timp"
-
-#~ msgid "DAY STREAK"
-#~ msgstr "SERIE DE ZILE"
-
-#~ msgid "Daily avg — Pages"
-#~ msgstr "Media zilnică — Pagini"
-
-#~ msgid "Daily avg — Time"
-#~ msgstr "Media zilnică — Timp"
-
-#~ msgid "FREEZES"
-#~ msgstr "ÎNGHEȚURI"
-
-#~ msgid "LAST 7 DAYS"
-#~ msgstr "ULTIMELE 7 ZILE"
-
-#~ msgid "Show wallpaper on all screens"
-#~ msgstr "Arată fundalul pe toate ecranele"
-
-#~ msgid "Status — Abandoned"
-#~ msgstr "Stare — Abandonată"
-
-#~ msgid "Status — Reading"
-#~ msgstr "Stare — Se citește"
-
-#~ msgid "Status — Unread"
-#~ msgstr "Stare — Necitită"
-
-#~ msgid "THIS MONTH"
-#~ msgstr "LUNA ACEASTA"
-
-#~ msgid "THIS WEEK"
-#~ msgstr "SĂPTĂMÎNA ACEASTA"
-
-#~ msgid "TODAY'S SUMMARY"
-#~ msgstr "REZUMATUL DE ASTĂZI"
-
-#~ msgid "This month — Pages"
-#~ msgstr "Luna aceasta — Pagini"
-
-#~ msgid "This month — Time"
-#~ msgstr "Luna aceasta — Timp"
-
-#~ msgid "This week — Pages"
-#~ msgstr "Săptămîna aceasta — Pagini"
-
-#~ msgid "This week — Time"
-#~ msgstr "Săptămîna aceasta — Timp"
-
-#~ msgid "Today — Pages"
-#~ msgstr "Astăzi — Pagini"
-
-#~ msgid "Today — Time"
-#~ msgstr "Astăzi — Timp"
-
-#~ msgid "WEEK STREAK"
-#~ msgstr "SERIE DE SĂPTĂMÎNI"
-
-#~ msgid "hours read"
-#~ msgstr "ore citite"
-
-#~ msgid "reading time"
-#~ msgstr "timp de citit"
-
-#~ msgid "%d freeze available"
-#~ msgid_plural "%d freezes available"
-#~ msgstr[0] "%d îngheț disponibil"
-#~ msgstr[1] "%d înghețuri disponibile"
-#~ msgstr[2] "%d de înghețuri disponibile"
-
-#~ msgid "day read"
-#~ msgid_plural "days read"
-#~ msgstr[0] "zi citită"
-#~ msgstr[1] "zi în serie"
-#~ msgstr[2] "zi în serie"
-
-#~ msgid "page read"
-#~ msgid_plural "pages read"
-#~ msgstr[0] "pagină citită"
-#~ msgstr[1] "pagini citite astăzi"
-#~ msgstr[2] "pagini citite astăzi"
-
-#~ msgid "Badges"
-#~ msgstr "Insigne"
-
-#~ msgid "Bar Style"
-#~ msgstr "Stil bară"
-
-#~ msgid "Folder Cover Type"
-#~ msgstr "Tip copertă dosar"
-
-#~ msgid "Follow Library"
-#~ msgstr "Ca în bibliotecă"
-
-#~ msgid "Number of Books in Folder"
-#~ msgstr "Numărul de cărți din dosar"
-
-#~ msgid "Number of Pages"
-#~ msgstr "Numărul de pagini"
-
-#~ msgid "Overlays"
-#~ msgstr "Overlay-uri"
-
-#~ msgid ""
-#~ "Scale for the library badges (progress, pages, etc.).\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Scalare pentru insignele bibliotecii (progres, pagini, etc.).\n"
-#~ "Mărimea implicită este 100%.Mărimea implicită este 100%."
-
-#~ msgid ""
-#~ "Scales the section label text above each module.\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Scalează textul etichetei de secțiune de deasupra fiecărui modul.\n"
-#~ "Mărimea implicită este 100%."
-
-#~ msgid "Title and Author Below Covers"
-#~ msgstr "Titlu și autor sub coperți"
-
-#~ msgid ""
-#~ "Title and author strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Bara de titlu și autor activată.\n"
-#~ "\n"
-#~ "Repornești acum?"
-
-#~ msgid "Title only"
-#~ msgstr "Doar titlu"
-
-#~ msgid ""
-#~ "Title strip disabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Bara de titlu dezactivată.\n"
-#~ "\n"
-#~ "Repornești acum?"
-
-#~ msgid ""
-#~ "Title strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Bara de titlu activată.\n"
-#~ "\n"
-#~ "Repornești acum?Navpager activat.\n"
-#~ "\n"
-#~ "Repornești acum?"
-
-#~ msgid "UI Font  (default)"
-#~ msgstr "Font interfață  (implicit)"
-
-#~ msgid "UI Font  [%s]"
-#~ msgstr "Font interfață  [%s]"
-
-#~ msgid "Visibility"
-#~ msgstr "Vizibilitate"
-
-#~ msgid "Visible"
-#~ msgstr "Vizibil"
-
-#~ msgid "The maximum of %d stat per row has been reached. Remove one first."
-#~ msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-#~ msgstr[0] "Numărul maxim de %d acțiune pe modul a fost atins. Șterge una mai întîi."
-#~ msgstr[1] "Numărul maxim de %d acțiuni pe modul a fost atins. Șterge una mai întîi."
-#~ msgstr[2] "Numărul maxim de %d de acțiuni pe modul a fost atins. Șterge una mai întîi."
-
-#~ msgid "Button Background"
-#~ msgstr "Fundal buton"
-
-#, fuzzy
-#~ msgid "Button Opacity"
-#~ msgstr "Mărime buton"
-
-#, fuzzy
-#~ msgid "Button Style"
-#~ msgstr "Mărime buton"

@@ -98,18 +98,30 @@ msgstr ""
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d日 · 次の凍結まで%d/%d分"
 
-#: modules/reading_stats/module_reading_stats.lua:412
+#: infra/sui_text.lua:124
+#: screens/sui_stats_windows.lua:1632
 msgid "%dh"
-msgstr ""
+msgstr "%d 時間"
 
-#: modules/reading_stats/module_reading_stats.lua:411
+#: infra/sui_text.lua:119
+msgid "%dh %02dm"
+msgstr "%d 時間 %02d分"
+
+#: infra/sui_text.lua:123
 msgid "%dh %dm"
-msgstr ""
+msgstr "%d 時間 %d分"
 
-#: modules/reading_stats/module_reading_stats.lua:409
-#: modules/reading_stats/module_reading_stats.lua:413
+#: infra/sui_text.lua:125
 msgid "%dm"
-msgstr ""
+msgstr "%d分"
+
+#: infra/sui_text.lua:120
+msgid "%dm %02ds"
+msgstr "%d分 %02d秒"
+
+#: infra/sui_text.lua:121
+msgid "%ds"
+msgstr "%d秒"
 
 #: screens/insights/sui_insights_charts.lua:121
 msgid "%s a day on average"
@@ -1560,10 +1572,6 @@ msgstr "コレクション"
 #: modules/module_collections.lua:491
 msgid "Collection Menu"
 msgstr "コレクションメニュー"
-
-#: features/library/sui_group_actions.lua:137
-msgid "Collection \"%1\" created with %2 books."
-msgstr "コレクション「%1」が%2冊の本で作成されました。"
 
 #: features/library/sui_group_actions.lua:110
 msgid "Collection already exists: %1"
@@ -7360,10 +7368,6 @@ msgstr "本を開いた瞬間に表示されるカバーは、通常ライブラ
 msgid "The critter may use it in what it says."
 msgstr ""
 
-#: modules/critter/module_critter.lua:773
-msgid "The critter, its decorations, its bubble and what it says are set in Settings > Tiny Critter."
-msgstr ""
-
 #: modules/critter/voice_lines.lua:122
 msgid "The dawn found us both."
 msgstr ""
@@ -8965,196 +8969,3 @@ msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "日連続"
 msgstr[1] "日連続"
-
-#~ msgid "ALL TIME"
-#~ msgstr "全期間"
-
-#~ msgid "All time — Books"
-#~ msgstr "全期間 — 本"
-
-#~ msgid "All time — Time"
-#~ msgstr "全期間 — 時間"
-
-#~ msgid "Column Width (Bento Grid)"
-#~ msgstr "列の幅（Bento グリッド）"
-
-#~ msgid "DAY STREAK"
-#~ msgstr "日連続"
-
-#~ msgid "Daily avg — Pages"
-#~ msgstr "日平均 — ページ"
-
-#~ msgid "Daily avg — Time"
-#~ msgstr "日平均 — 時間"
-
-#~ msgid "FREEZES"
-#~ msgstr "凍結"
-
-#~ msgid "LAST 7 DAYS"
-#~ msgstr "過去7日間"
-
-#~ msgid ""
-#~ "Share of the row this module occupies.\n"
-#~ "100% = full width. Modules under 100% share a row when their widths fit (bento grid)."
-#~ msgstr ""
-#~ "このモジュールが占める行の割合。\n"
-#~ "100% = 全幅。100% 未満のモジュールは、幅が合えば同じ行に並びます（Bento グリッド）。"
-
-#~ msgid "Show wallpaper on all screens"
-#~ msgstr "すべての画面で壁紙を表示"
-
-#~ msgid "Status — Abandoned"
-#~ msgstr "ステータス — 放棄"
-
-#~ msgid "Status — Reading"
-#~ msgstr "ステータス — 読書中"
-
-#~ msgid "Status — Unread"
-#~ msgstr "ステータス — 未読"
-
-#~ msgid "THIS MONTH"
-#~ msgstr "今月"
-
-#~ msgid "THIS WEEK"
-#~ msgstr "今週"
-
-#~ msgid "TODAY'S SUMMARY"
-#~ msgstr "本日のまとめ"
-
-#~ msgid "This month — Pages"
-#~ msgstr "今月 — ページ"
-
-#~ msgid "This month — Time"
-#~ msgstr "今月 — 時間"
-
-#~ msgid "This week — Pages"
-#~ msgstr "今週 — ページ"
-
-#~ msgid "This week — Time"
-#~ msgstr "今週 — 時間"
-
-#~ msgid "Today — Pages"
-#~ msgstr "今日 — ページ"
-
-#~ msgid "Today — Time"
-#~ msgstr "今日 — 時間"
-
-#~ msgid "WEEK STREAK"
-#~ msgstr "週連続"
-
-#~ msgid "hours read"
-#~ msgstr "読了時間"
-
-#~ msgid "reading time"
-#~ msgstr "読書時間"
-
-#~ msgid "%d freeze available"
-#~ msgid_plural "%d freezes available"
-#~ msgstr[0] "利用可能な凍結: %d件"
-#~ msgstr[1] "利用可能な凍結: %d件"
-
-#~ msgid "day read"
-#~ msgid_plural "days read"
-#~ msgstr[0] "読了日"
-#~ msgstr[1] "読了日"
-
-#~ msgid "page read"
-#~ msgid_plural "pages read"
-#~ msgstr[0] "読了ページ"
-#~ msgstr[1] "読了ページ"
-
-#~ msgid "Badges"
-#~ msgstr "バッジ"
-
-#~ msgid "Bar Style"
-#~ msgstr "バースタイル"
-
-#~ msgid "Folder Cover Type"
-#~ msgstr "フォルダカバータイプ"
-
-#~ msgid "Follow Library"
-#~ msgstr "ライブラリに合わせる"
-
-#~ msgid "Number of Books in Folder"
-#~ msgstr "フォルダ内の本数"
-
-#~ msgid "Number of Pages"
-#~ msgstr "ページ数"
-
-#~ msgid "Overlays"
-#~ msgstr "オーバーレイ"
-
-#~ msgid ""
-#~ "Scale for the library badges (progress, pages, etc.).\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "ライブラリバッジ（進捗、ページなど）のスケール。\n"
-#~ "100%がデフォルトサイズ。"
-
-#~ msgid ""
-#~ "Scales the section label text above each module.\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "各モジュール上のセクションラベルテキストのスケール。\n"
-#~ "100%がデフォルトサイズ。"
-
-#~ msgid "Title and Author Below Covers"
-#~ msgstr "カバー下にタイトルと著者"
-
-#~ msgid ""
-#~ "Title and author strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "タイトルと著者ストリップが有効になりました。\n"
-#~ "\n"
-#~ "今すぐ再起動しますか？"
-
-#~ msgid "Title only"
-#~ msgstr "タイトルのみ"
-
-#~ msgid ""
-#~ "Title strip disabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "タイトルストリップが無効になりました。\n"
-#~ "\n"
-#~ "今すぐ再起動しますか？"
-
-#~ msgid ""
-#~ "Title strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "タイトルストリップが有効になりました。\n"
-#~ "\n"
-#~ "今すぐ再起動しますか？"
-
-#~ msgid "UI Font  (default)"
-#~ msgstr "UIフォント（デフォルト）"
-
-#~ msgid "UI Font  [%s]"
-#~ msgstr "UIフォント [%s]"
-
-#~ msgid "Visibility"
-#~ msgstr "表示"
-
-#~ msgid "Visible"
-#~ msgstr "表示"
-
-#~ msgid "The maximum of %d stat per row has been reached. Remove one first."
-#~ msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-#~ msgstr[0] "行あたり最大%d個の統計に達しました。先に1つ削除してください。"
-#~ msgstr[1] "行あたり最大%d個の統計に達しました。先に1つ削除してください。"
-
-#~ msgid "Button Background"
-#~ msgstr "ボタン背景"
-
-#, fuzzy
-#~ msgid "Button Opacity"
-#~ msgstr "ボタンサイズ"
-
-#, fuzzy
-#~ msgid "Button Style"
-#~ msgstr "ボタンサイズ"

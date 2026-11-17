@@ -99,18 +99,30 @@ msgstr ""
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d d. · %d/%d min iki kito užšaldymo"
 
-#: modules/reading_stats/module_reading_stats.lua:412
+#: infra/sui_text.lua:124
+#: screens/sui_stats_windows.lua:1632
 msgid "%dh"
-msgstr ""
+msgstr "%d val"
 
-#: modules/reading_stats/module_reading_stats.lua:411
+#: infra/sui_text.lua:119
+msgid "%dh %02dm"
+msgstr "%d val %02dm"
+
+#: infra/sui_text.lua:123
 msgid "%dh %dm"
-msgstr ""
+msgstr "%d val %dm"
 
-#: modules/reading_stats/module_reading_stats.lua:409
-#: modules/reading_stats/module_reading_stats.lua:413
+#: infra/sui_text.lua:125
 msgid "%dm"
-msgstr ""
+msgstr "%dm"
+
+#: infra/sui_text.lua:120
+msgid "%dm %02ds"
+msgstr "%dm %02ds"
+
+#: infra/sui_text.lua:121
+msgid "%ds"
+msgstr "%ds"
 
 #: screens/insights/sui_insights_charts.lua:121
 msgid "%s a day on average"
@@ -1565,10 +1577,6 @@ msgstr "Kolekcija"
 #: modules/module_collections.lua:491
 msgid "Collection Menu"
 msgstr "Kolekcijos meniu"
-
-#: features/library/sui_group_actions.lua:137
-msgid "Collection \"%1\" created with %2 books."
-msgstr "Kolekcija „%1“ sukurta su %2 knygomis."
 
 #: features/library/sui_group_actions.lua:110
 msgid "Collection already exists: %1"
@@ -7382,10 +7390,6 @@ msgstr "Viršelis, rodomas iškart atveriant knygą, paprastai gaunamas iš bibl
 msgid "The critter may use it in what it says."
 msgstr ""
 
-#: modules/critter/module_critter.lua:773
-msgid "The critter, its decorations, its bubble and what it says are set in Settings > Tiny Critter."
-msgstr ""
-
 #: modules/critter/voice_lines.lua:122
 msgid "The dawn found us both."
 msgstr ""
@@ -9042,190 +9046,3 @@ msgid_plural "days streak"
 msgstr[0] "dienų serija"
 msgstr[1] "dienų serija"
 msgstr[2] ""
-
-#~ msgid "ALL TIME"
-#~ msgstr "VISAS LAIKAS"
-
-#~ msgid "All time — Books"
-#~ msgstr "Visas laikas — Knygos"
-
-#~ msgid "All time — Time"
-#~ msgstr "Visas laikas — Laikas"
-
-#~ msgid "DAY STREAK"
-#~ msgstr "DIENŲ SERIJA"
-
-#~ msgid "Daily avg — Pages"
-#~ msgstr "Vid. per dieną — Puslapiai"
-
-#~ msgid "Daily avg — Time"
-#~ msgstr "Vid. per dieną — Laikas"
-
-#~ msgid "FREEZES"
-#~ msgstr "UŽŠALDYMAI"
-
-#~ msgid "LAST 7 DAYS"
-#~ msgstr "PASKUTINĖS 7 DIENOS"
-
-#~ msgid "Show wallpaper on all screens"
-#~ msgstr "Rodyti foną visuose ekranuose"
-
-#~ msgid "Status — Abandoned"
-#~ msgstr "Būsena — Atsisakyta"
-
-#~ msgid "Status — Reading"
-#~ msgstr "Būsena — Skaitoma"
-
-#~ msgid "Status — Unread"
-#~ msgstr "Būsena — Neskaityta"
-
-#~ msgid "THIS MONTH"
-#~ msgstr "ŠIS MĖNUO"
-
-#~ msgid "THIS WEEK"
-#~ msgstr "ŠI SAVAITĖ"
-
-#~ msgid "TODAY'S SUMMARY"
-#~ msgstr "ŠIANDIENOS SANTRAUKA"
-
-#~ msgid "This month — Pages"
-#~ msgstr "Šis mėnuo — Puslapiai"
-
-#~ msgid "This month — Time"
-#~ msgstr "Šis mėnuo — Laikas"
-
-#~ msgid "This week — Pages"
-#~ msgstr "Ši savaitė — Puslapiai"
-
-#~ msgid "This week — Time"
-#~ msgstr "Ši savaitė — Laikas"
-
-#~ msgid "Today — Pages"
-#~ msgstr "Šiandien — Puslapiai"
-
-#~ msgid "Today — Time"
-#~ msgstr "Šiandien — Laikas"
-
-#~ msgid "WEEK STREAK"
-#~ msgstr "SAVAITĖS SERIJA"
-
-#~ msgid "hours read"
-#~ msgstr "valandos skaitytos"
-
-#~ msgid "reading time"
-#~ msgstr "skaitymo laikas"
-
-#~ msgid "%d freeze available"
-#~ msgid_plural "%d freezes available"
-#~ msgstr[0] "%d užšaldymas prieinamas"
-#~ msgstr[1] "%d užšaldymai prieinami"
-#~ msgstr[2] "%d užšaldymų prieinama"
-
-#~ msgid "day read"
-#~ msgid_plural "days read"
-#~ msgstr[0] "diena skaityta"
-#~ msgstr[1] "dienos skaitytos"
-#~ msgstr[2] "dienų skaityta"
-
-#~ msgid "page read"
-#~ msgid_plural "pages read"
-#~ msgstr[0] "puslapis perskaitytas"
-#~ msgstr[1] "puslapiai perskaityti"
-#~ msgstr[2] "puslapių perskaityta"
-
-#~ msgid "Badges"
-#~ msgstr "Ženkleliai"
-
-#~ msgid "Bar Style"
-#~ msgstr "Juostos stilius"
-
-#~ msgid "Folder Cover Type"
-#~ msgstr "Aplanko viršelio tipas"
-
-#~ msgid "Follow Library"
-#~ msgstr "Kaip bibliotekoje"
-
-#~ msgid "Number of Books in Folder"
-#~ msgstr "Knygų skaičius aplanke"
-
-#~ msgid "Number of Pages"
-#~ msgstr "Puslapių skaičius"
-
-#~ msgid "Overlays"
-#~ msgstr "Perdangos"
-
-#~ msgid ""
-#~ "Scale for the library badges (progress, pages, etc.).\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Mastelis bibliotekos ženkleliams (progresas, puslapiai ir t.t.).\n"
-#~ "100% yra numatytasis dydis."
-
-#~ msgid ""
-#~ "Scales the section label text above each module.\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Mastelis skyriaus etiketės tekstui virš kiekvieno modulio.\n"
-#~ "100% yra numatytasis dydis."
-
-#~ msgid "Title and Author Below Covers"
-#~ msgstr "Pavadinimas ir autorius po viršeliais"
-
-#~ msgid ""
-#~ "Title and author strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Pavadinimo ir autoriaus juostelė įjungta.\n"
-#~ "\n"
-#~ "Perkrauti dabar?"
-
-#~ msgid "Title only"
-#~ msgstr "Tik pavadinimas"
-
-#~ msgid ""
-#~ "Title strip disabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Pavadinimo juostelė išjungta.\n"
-#~ "\n"
-#~ "Perkrauti dabar?"
-
-#~ msgid ""
-#~ "Title strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Pavadinimo juostelė įjungta.\n"
-#~ "\n"
-#~ "Perkrauti dabar?"
-
-#~ msgid "UI Font  (default)"
-#~ msgstr "Sąsajos šriftas  (numatytasis)"
-
-#~ msgid "UI Font  [%s]"
-#~ msgstr "Sąsajos šriftas  [%s]"
-
-#~ msgid "Visibility"
-#~ msgstr "Matomumas"
-
-#~ msgid "Visible"
-#~ msgstr "Matoma"
-
-#~ msgid "The maximum of %d stat per row has been reached. Remove one first."
-#~ msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-#~ msgstr[0] "Pasiektas maksimalus %d statistika eilutėje. Pirmiausia pašalinkite vieną."
-#~ msgstr[1] "Pasiektas maksimalus %d statistikos eilutėje. Pirmiausia pašalinkite vieną."
-#~ msgstr[2] "Pasiektas maksimalus %d statistikų eilutėje. Pirmiausia pašalinkite vieną."
-
-#~ msgid "Button Background"
-#~ msgstr "Mygtuko fonas"
-
-#, fuzzy
-#~ msgid "Button Opacity"
-#~ msgstr "Mygtuko dydis"
-
-#, fuzzy
-#~ msgid "Button Style"
-#~ msgstr "Mygtuko dydis"

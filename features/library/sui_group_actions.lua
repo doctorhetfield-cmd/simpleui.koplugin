@@ -22,17 +22,18 @@
 --                            nothing to choose from
 --
 --   GroupActions.createCollection(args)
+--     Asks whether the collection stays connected to its source or keeps only
+--     the current books, then asks for its name.
 --     args.suggested_name       -- pre-filled name (may be "")
---     args.paths                -- { fullpath, ... } snapshot books (optional if connect_folder)
---     args.empty_message        -- shown when neither paths nor connect_folder yield work
---     args.connect_folder       -- filesystem path to link (KOReader connected-folder model)
---     args.connect_subfolders   -- scan subfolders when connecting
+--     args.connect_folder       -- source folder (KOReader connected-folder model)
+--     args.connect_subfolders   -- include subfolders of the folder
 --     args.connect_scan_on_show -- rescan when opening the collection (default true)
---     args.parent               -- optional flow sheet to show the name prompt on, as a
---                                  page; the sheet closes once the collection is created,
---                                  or when there is nothing to put in it
+--     args.connect_rule         -- source metadata rule instead (see sui_rule_collections)
+--     args.parent               -- optional flow sheet to show the pages on; the sheet
+--                                  closes once the collection is created
 
 local _ = require("infra/sui_i18n").translate
+local N_ = require("infra/sui_i18n").ngettext
 local UI = require("infra/sui_core")
 local CoverOverrides = require("features/library/sui_cover_overrides")
 
@@ -85,58 +86,90 @@ function GroupActions.openCoverPicker(args)
     }
 end
 
+-- Creates collection `name` from the folder or rule of `args`, connected or
+-- holding only the books found now.
+local function fillCollection(RC, name, args, connected)
+    RC:addCollection(name)
+    local settings = RC.coll_settings[name]
+    local count = 0
+    if args.connect_folder then
+        local folders = {
+            [args.connect_folder] = {
+                subfolders   = args.connect_subfolders and true or false,
+                scan_on_show = args.connect_scan_on_show ~= false,
+            },
+        }
+        local n
+        if connected then
+            settings.folders = folders
+            n = RC:updateCollectionFromFolder(name)
+        else
+            n = RC:updateCollectionFromFolder(name, folders)
+        end
+        if type(n) == "number" then count = n end
+    elseif args.connect_rule then
+        local RuleCollections = require("features/library/sui_rule_collections")
+        settings[RuleCollections.KEY] = args.connect_rule
+        count = RuleCollections.sync(RC, name)
+        if not connected then settings[RuleCollections.KEY] = nil end
+    end
+    RC:write({ [name] = true })
+    return count
+end
+
 function GroupActions.createCollection(args)
     local T = require("ffi/util").template
+    local ActionSheet = require("engines/sui_action_sheet")
+    local RC = require("readcollection")
+    local sheet
 
-    local paths = args.paths or {}
-    local connect_folder = args.connect_folder
-    -- Snapshot collections need at least one book; connected folders may start empty
-    -- and pick up files on later scans.
-    if #paths == 0 and not connect_folder then
-        if args.parent then args.parent:close() end
-        UI.Notify.toast(args.empty_message or _("No books found."), 2)
-        return
+    local function askName(connected)
+        require("features/dialogs/sui_dialogs").prompt{
+            title        = _("New collection name"),
+            value        = args.suggested_name or "",
+            ok_text      = _("Create"),
+            parent       = sheet,
+            close_parent = true,
+            validate     = function(name)
+                if RC.coll[name] then
+                    return T(_("Collection already exists: %1"), name)
+                end
+            end,
+            on_submit    = function(name)
+                local count = fillCollection(RC, name, args, connected)
+                UI.Notify.toast(T(N_("Collection \"%1\" created with %2 book.",
+                    "Collection \"%1\" created with %2 books.", count), name, count))
+            end,
+        }
     end
 
-    local RC = require("readcollection")
-    require("features/dialogs/sui_dialogs").prompt{
-        title        = _("New collection name"),
-        value        = args.suggested_name or "",
-        ok_text      = _("Create"),
-        parent       = args.parent,
-        close_parent = true,
-        validate     = function(name)
-            if RC.coll[name] then
-                return T(_("Collection already exists: %1"), name)
-            end
-        end,
-        on_submit    = function(name)
-            RC:addCollection(name)
-            local count = 0
-
-            if connect_folder then
-                -- Live link: same model as KOReader "Connect folders".
-                local settings = RC.coll_settings[name]
-                settings.folders = settings.folders or {}
-                settings.folders[connect_folder] = {
-                    subfolders    = args.connect_subfolders and true or false,
-                    scan_on_show  = args.connect_scan_on_show ~= false,
-                }
-                local n = RC:updateCollectionFromFolder(name)
-                if type(n) == "number" then count = n end
-            else
-                for _, fp in ipairs(paths) do
-                    if not RC.coll[name][fp] then
-                        RC:addItem(fp, name)
-                        count = count + 1
-                    end
-                end
-            end
-            RC:write({ [name] = true })
-
-            UI.Notify.toast(T(_("Collection \"%1\" created with %2 books."), name, count))
-        end,
+    local page = {
+        title    = _("Create collection"),
+        icon     = "collections",
+        message  = _("A connected collection adds and removes books as they change in the folder. A fixed collection keeps only the books found now."),
+        sections = { ActionSheet.list{
+            {
+                text      = _("Connected"),
+                keep_open = true,
+                chevron   = true,
+                callback  = function() askName(true) end,
+            },
+            {
+                text      = _("Fixed"),
+                keep_open = true,
+                chevron   = true,
+                callback  = function() askName(false) end,
+            },
+        } },
     }
+    if args.parent then
+        sheet = args.parent
+        sheet:showPage(page)
+    else
+        page.name = "sui_win_create_collection"
+        page.flow = true
+        sheet = ActionSheet.show(page)
+    end
 end
 
 return GroupActions

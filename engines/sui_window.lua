@@ -336,6 +336,23 @@ end
 ---                                  the navbar region).
 ---
 --- @return SUIWindow
+
+-- Widths of a window `width` portrait pixels wide (nil: the default width) in
+-- the current orientation: base (portrait), frame, side padding and content.
+local function _frameWidths(width)
+    local landscape_factor = UI.getLandscapeFactor()
+    local base_w  = width or math.floor(UI.getPortraitDims() * 5 / 6)
+    local modal_w = math.floor(base_w * landscape_factor)
+    local pad_h   = math.floor(Screen:scaleBySize(20) * landscape_factor)
+    return base_w, modal_w, pad_h, modal_w - 2 * pad_h
+end
+
+--- Content width (ctx.inner_w) of a window `width` portrait pixels wide (nil:
+--- the default width), for sizing content before the window is built.
+function SUIWindow.innerWidth(width)
+    return (select(4, _frameWidths(width)))
+end
+
 -- Height of a window that passes no `height`: 23/30 of the portrait height, before
 -- the landscape factor. Callers that size content to the window use it too.
 function SUIWindow.defaultHeight()
@@ -362,17 +379,13 @@ function SUIWindow:new(opts)
     -- shrink on top of an already-swapped axis, squashing height instead of
     -- scaling both axes down uniformly. opts.width/opts.height, when passed
     -- explicitly by callers, are likewise expected to be portrait-based.
-    local portrait_w = UI.getPortraitDims()
     local landscape_factor = UI.getLandscapeFactor()
     o._scale         = landscape_factor
-    o._base_w        = opts.width or math.floor(portrait_w * 5 / 6)
-    o._modal_w       = math.floor(o._base_w * landscape_factor)
+    o._base_w, o._modal_w, o._pad_h, o._inner_w = _frameWidths(opts.width)
     o._modal_h       = math.floor((opts.height or SUIWindow.defaultHeight()) * landscape_factor)
     o._screen_w      = sw
     o._screen_h      = sh
     o._pad_v         = math.floor(Size.padding.large   * landscape_factor)
-    o._pad_h         = math.floor(Screen:scaleBySize(20) * landscape_factor)
-    o._inner_w       = o._modal_w - 2 * o._pad_h
     o._navpager_mode = opts.navpager_mode == true
     o._bottom_inset  = opts.bottom_inset or 0
     -- When true, the window shrinks to fit page 1's content instead of

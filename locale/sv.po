@@ -103,18 +103,30 @@ msgstr ""
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d dagar · %d/%d min till nästa frysning"
 
-#: modules/reading_stats/module_reading_stats.lua:412
+#: infra/sui_text.lua:124
+#: screens/sui_stats_windows.lua:1632
 msgid "%dh"
-msgstr ""
+msgstr "%dh"
 
-#: modules/reading_stats/module_reading_stats.lua:411
+#: infra/sui_text.lua:119
+msgid "%dh %02dm"
+msgstr "%dh %02dm"
+
+#: infra/sui_text.lua:123
 msgid "%dh %dm"
-msgstr ""
+msgstr "%dh %dm"
 
-#: modules/reading_stats/module_reading_stats.lua:409
-#: modules/reading_stats/module_reading_stats.lua:413
+#: infra/sui_text.lua:125
 msgid "%dm"
-msgstr ""
+msgstr "%dm"
+
+#: infra/sui_text.lua:120
+msgid "%dm %02ds"
+msgstr "%dm %02ds"
+
+#: infra/sui_text.lua:121
+msgid "%ds"
+msgstr "%ds"
 
 #: screens/insights/sui_insights_charts.lua:121
 msgid "%s a day on average"
@@ -1568,10 +1580,6 @@ msgstr "Samling"
 #: modules/module_collections.lua:491
 msgid "Collection Menu"
 msgstr "Samlingsmeny"
-
-#: features/library/sui_group_actions.lua:137
-msgid "Collection \"%1\" created with %2 books."
-msgstr "Samlingen \"%1\" skapades med %2 böcker."
 
 #: features/library/sui_group_actions.lua:110
 msgid "Collection already exists: %1"
@@ -7388,10 +7396,6 @@ msgstr "Omslaget som visas direkt när en bok öppnas kommer normalt från bibli
 msgid "The critter may use it in what it says."
 msgstr ""
 
-#: modules/critter/module_critter.lua:773
-msgid "The critter, its decorations, its bubble and what it says are set in Settings > Tiny Critter."
-msgstr ""
-
 #: modules/critter/voice_lines.lua:122
 msgid "The dawn found us both."
 msgstr ""
@@ -9029,186 +9033,3 @@ msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "dag i rad"
 msgstr[1] "dagar i rad"
-
-#~ msgid "ALL TIME"
-#~ msgstr "ALLA TIDER"
-
-#~ msgid "All time — Books"
-#~ msgstr "Totalt — Böcker"
-
-#~ msgid "All time — Time"
-#~ msgstr "Totalt — Tid"
-
-#~ msgid "DAY STREAK"
-#~ msgstr "DAGSSVIT"
-
-#~ msgid "Daily avg — Pages"
-#~ msgstr "Dagligt snitt — Sidor"
-
-#~ msgid "Daily avg — Time"
-#~ msgstr "Dagligt snitt — Tid"
-
-#~ msgid "FREEZES"
-#~ msgstr "FRYSNINGAR"
-
-#~ msgid "LAST 7 DAYS"
-#~ msgstr "SENASTE 7 DAGARNA"
-
-#~ msgid "Show wallpaper on all screens"
-#~ msgstr "Visa bakgrundsbild på alla skärmar"
-
-#~ msgid "Status — Abandoned"
-#~ msgstr "Status — Övergiven"
-
-#~ msgid "Status — Reading"
-#~ msgstr "Status — Läser"
-
-#~ msgid "Status — Unread"
-#~ msgstr "Status — Oläst"
-
-#~ msgid "THIS MONTH"
-#~ msgstr "DENNA MÅNAD"
-
-#~ msgid "THIS WEEK"
-#~ msgstr "DENNA VECKA"
-
-#~ msgid "TODAY'S SUMMARY"
-#~ msgstr "DAGENS SAMMANFATTNING"
-
-#~ msgid "This month — Pages"
-#~ msgstr "Denna månad — Sidor"
-
-#~ msgid "This month — Time"
-#~ msgstr "Denna månad — Tid"
-
-#~ msgid "This week — Pages"
-#~ msgstr "Denna vecka — Sidor"
-
-#~ msgid "This week — Time"
-#~ msgstr "Denna vecka — Tid"
-
-#~ msgid "Today — Pages"
-#~ msgstr "Idag — Sidor"
-
-#~ msgid "Today — Time"
-#~ msgstr "Idag — Tid"
-
-#~ msgid "WEEK STREAK"
-#~ msgstr "VECKOSVIT"
-
-#~ msgid "hours read"
-#~ msgstr "timmar lästa"
-
-#~ msgid "reading time"
-#~ msgstr "lästid"
-
-#~ msgid "%d freeze available"
-#~ msgid_plural "%d freezes available"
-#~ msgstr[0] "%d frysning tillgänglig"
-#~ msgstr[1] "%d frysningar tillgängliga"
-
-#~ msgid "day read"
-#~ msgid_plural "days read"
-#~ msgstr[0] "dag läst"
-#~ msgstr[1] "dag i rad"
-
-#~ msgid "page read"
-#~ msgid_plural "pages read"
-#~ msgstr[0] "sida läst"
-#~ msgstr[1] "sidor lästa idag"
-
-#~ msgid "Badges"
-#~ msgstr "Märken"
-
-#~ msgid "Bar Style"
-#~ msgstr "Stapelstil"
-
-#~ msgid "Folder Cover Type"
-#~ msgstr "Mappomslagstyp"
-
-#~ msgid "Follow Library"
-#~ msgstr "Som i biblioteket"
-
-#~ msgid "Number of Books in Folder"
-#~ msgstr "Antal böcker i mapp"
-
-#~ msgid "Number of Pages"
-#~ msgstr "Antal sidor"
-
-#~ msgid "Overlays"
-#~ msgstr "Övertäckningar"
-
-#~ msgid ""
-#~ "Scale for the library badges (progress, pages, etc.).\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Skala för biblioteksmärken (förlopp, sidor, etc.).\n"
-#~ "100% är standardstorleken."
-
-#~ msgid ""
-#~ "Scales the section label text above each module.\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Skalar sektionsetiketttexten ovanför varje modul.\n"
-#~ "100% är standardstorleken."
-
-#~ msgid "Title and Author Below Covers"
-#~ msgstr "Titel och författare under omslag"
-
-#~ msgid ""
-#~ "Title and author strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Titel- och författarrad aktiverad.\n"
-#~ "\n"
-#~ "Omstarta nu?"
-
-#~ msgid "Title only"
-#~ msgstr "Endast titel"
-
-#~ msgid ""
-#~ "Title strip disabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Titelrad inaktiverad.\n"
-#~ "\n"
-#~ "Omstarta nu?"
-
-#~ msgid ""
-#~ "Title strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Titelrad aktiverad.\n"
-#~ "\n"
-#~ "Omstarta nu?"
-
-#~ msgid "UI Font  (default)"
-#~ msgstr "Gränssnittstypsnitt  (standard)"
-
-#~ msgid "UI Font  [%s]"
-#~ msgstr "Gränssnittstypsnitt  [%s]"
-
-#~ msgid "Visibility"
-#~ msgstr "Synlighet"
-
-#~ msgid "Visible"
-#~ msgstr "Synlig"
-
-#~ msgid "The maximum of %d stat per row has been reached. Remove one first."
-#~ msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-#~ msgstr[0] "Maximalt %d statistik per rad nått. Ta bort en först."
-#~ msgstr[1] "Maximalt %d åtgärder per modul nått. Ta bort en först."
-
-#~ msgid "Button Background"
-#~ msgstr "Knappbakgrund"
-
-#, fuzzy
-#~ msgid "Button Opacity"
-#~ msgstr "Knappstorlek"
-
-#, fuzzy
-#~ msgid "Button Style"
-#~ msgstr "Knappstorlek"

@@ -96,18 +96,30 @@ msgstr ""
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d ngày · %d/%d phút đến lượt đóng băng tiếp theo"
 
-#: modules/reading_stats/module_reading_stats.lua:412
+#: infra/sui_text.lua:124
+#: screens/sui_stats_windows.lua:1632
 msgid "%dh"
-msgstr ""
+msgstr "%d giờ"
 
-#: modules/reading_stats/module_reading_stats.lua:411
+#: infra/sui_text.lua:119
+msgid "%dh %02dm"
+msgstr "%d giờ %02dp"
+
+#: infra/sui_text.lua:123
 msgid "%dh %dm"
-msgstr ""
+msgstr "%d giờ %dp"
 
-#: modules/reading_stats/module_reading_stats.lua:409
-#: modules/reading_stats/module_reading_stats.lua:413
+#: infra/sui_text.lua:125
 msgid "%dm"
-msgstr ""
+msgstr "%dp"
+
+#: infra/sui_text.lua:120
+msgid "%dm %02ds"
+msgstr "%dp %02dg"
+
+#: infra/sui_text.lua:121
+msgid "%ds"
+msgstr "%dg"
 
 #: screens/insights/sui_insights_charts.lua:121
 msgid "%s a day on average"
@@ -1561,10 +1573,6 @@ msgstr "Bộ sưu tập"
 #: modules/module_collections.lua:491
 msgid "Collection Menu"
 msgstr "Menu bộ sưu tập"
-
-#: features/library/sui_group_actions.lua:137
-msgid "Collection \"%1\" created with %2 books."
-msgstr "Bộ sưu tập \"%1\" đã tạo với %2 cuốn sách."
 
 #: features/library/sui_group_actions.lua:110
 msgid "Collection already exists: %1"
@@ -7378,10 +7386,6 @@ msgstr "Bìa hiển thị ngay khi mở sách thường lấy từ ảnh thu nh�
 msgid "The critter may use it in what it says."
 msgstr ""
 
-#: modules/critter/module_critter.lua:773
-msgid "The critter, its decorations, its bubble and what it says are set in Settings > Tiny Critter."
-msgstr ""
-
 #: modules/critter/voice_lines.lua:122
 msgid "The dawn found us both."
 msgstr ""
@@ -8985,186 +8989,3 @@ msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "chuỗi ngày"
 msgstr[1] "chuỗi ngày"
-
-#~ msgid "ALL TIME"
-#~ msgstr "TOÀN THỜI GIAN"
-
-#~ msgid "All time — Books"
-#~ msgstr "Tổng cộng — Sách"
-
-#~ msgid "All time — Time"
-#~ msgstr "Tổng cộng — Thời gian"
-
-#~ msgid "DAY STREAK"
-#~ msgstr "CHUỖI NGÀY DUY TRÌ"
-
-#~ msgid "Daily avg — Pages"
-#~ msgstr "Trung bình hàng ngày — Trang"
-
-#~ msgid "Daily avg — Time"
-#~ msgstr "Trung bình hàng ngày — Thời gian"
-
-#~ msgid "FREEZES"
-#~ msgstr "ĐÓNG BĂNG"
-
-#~ msgid "LAST 7 DAYS"
-#~ msgstr "7 NGÀY GẦN ĐÂY"
-
-#~ msgid "Show wallpaper on all screens"
-#~ msgstr "Hiển thị hình nền trên tất cả màn hình"
-
-#~ msgid "Status — Abandoned"
-#~ msgstr "Trạng thái — Đã bỏ"
-
-#~ msgid "Status — Reading"
-#~ msgstr "Trạng thái — Đang đọc"
-
-#~ msgid "Status — Unread"
-#~ msgstr "Trạng thái — Chưa đọc"
-
-#~ msgid "THIS MONTH"
-#~ msgstr "THÁNG NÀY"
-
-#~ msgid "THIS WEEK"
-#~ msgstr "TUẦN NÀY"
-
-#~ msgid "TODAY'S SUMMARY"
-#~ msgstr "TÓM TẮT HÔM NAY"
-
-#~ msgid "This month — Pages"
-#~ msgstr "Tháng này — Trang"
-
-#~ msgid "This month — Time"
-#~ msgstr "Tháng này — Thời gian"
-
-#~ msgid "This week — Pages"
-#~ msgstr "Tuần này — Trang"
-
-#~ msgid "This week — Time"
-#~ msgstr "Tuần này — Thời gian"
-
-#~ msgid "Today — Pages"
-#~ msgstr "Hôm nay — Trang"
-
-#~ msgid "Today — Time"
-#~ msgstr "Hôm nay — Thời gian"
-
-#~ msgid "WEEK STREAK"
-#~ msgstr "CHUỖI TUẦN"
-
-#~ msgid "hours read"
-#~ msgstr "giờ đã đọc"
-
-#~ msgid "reading time"
-#~ msgstr "thời gian đọc"
-
-#~ msgid "%d freeze available"
-#~ msgid_plural "%d freezes available"
-#~ msgstr[0] "%d lượt đóng băng khả dụng"
-#~ msgstr[1] "%d lượt đóng băng khả dụng"
-
-#~ msgid "day read"
-#~ msgid_plural "days read"
-#~ msgstr[0] "ngày đọc"
-#~ msgstr[1] "ngày đọc"
-
-#~ msgid "page read"
-#~ msgid_plural "pages read"
-#~ msgstr[0] "trang đọc"
-#~ msgstr[1] "trang đọc"
-
-#~ msgid "Badges"
-#~ msgstr "Huy hiệu"
-
-#~ msgid "Bar Style"
-#~ msgstr "Kiểu thanh"
-
-#~ msgid "Folder Cover Type"
-#~ msgstr "Loại bìa thư mục"
-
-#~ msgid "Follow Library"
-#~ msgstr "Theo thư viện"
-
-#~ msgid "Number of Books in Folder"
-#~ msgstr "Số lượng sách trong thư mục"
-
-#~ msgid "Number of Pages"
-#~ msgstr "Số trang"
-
-#~ msgid "Overlays"
-#~ msgstr "Lớp phủ"
-
-#~ msgid ""
-#~ "Scale for the library badges (progress, pages, etc.).\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Tỷ lệ cho huy hiệu thư viện (tiến trình, trang, v.v.).\n"
-#~ "100% là kích thước mặc định."
-
-#~ msgid ""
-#~ "Scales the section label text above each module.\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Tỷ lệ chữ nhãn phần phía trên mỗi mô-đun.\n"
-#~ "100% là kích thước mặc định."
-
-#~ msgid "Title and Author Below Covers"
-#~ msgstr "Tiêu đề và tác giả dưới bìa"
-
-#~ msgid ""
-#~ "Title and author strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Dải tiêu đề và tác giả đã bật.\n"
-#~ "\n"
-#~ "Khởi động lại ngay?"
-
-#~ msgid "Title only"
-#~ msgstr "Chỉ tiêu đề"
-
-#~ msgid ""
-#~ "Title strip disabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Dải tiêu đề đã tắt.\n"
-#~ "\n"
-#~ "Khởi động lại ngay?"
-
-#~ msgid ""
-#~ "Title strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Dải tiêu đề đã bật.\n"
-#~ "\n"
-#~ "Khởi động lại ngay?"
-
-#~ msgid "UI Font  (default)"
-#~ msgstr "Phông chữ giao diện (mặc định)"
-
-#~ msgid "UI Font  [%s]"
-#~ msgstr "Phông chữ giao diện [%s]"
-
-#~ msgid "Visibility"
-#~ msgstr "Hiển thị"
-
-#~ msgid "Visible"
-#~ msgstr "Hiển thị"
-
-#~ msgid "The maximum of %d stat per row has been reached. Remove one first."
-#~ msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-#~ msgstr[0] "Đã đạt tối đa %d mục thống kê mỗi hàng. Vui lòng xóa bớt."
-#~ msgstr[1] "Đã đạt tối đa %d mục thống kê mỗi hàng. Vui lòng xóa bớt."
-
-#~ msgid "Button Background"
-#~ msgstr "Nền nút"
-
-#, fuzzy
-#~ msgid "Button Opacity"
-#~ msgstr "Kích thước nút"
-
-#, fuzzy
-#~ msgid "Button Style"
-#~ msgstr "Kích thước nút"

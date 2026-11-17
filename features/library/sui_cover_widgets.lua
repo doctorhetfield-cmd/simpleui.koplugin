@@ -38,8 +38,9 @@
 --   CoverWidgets.pileInset(scale)
 --       -- Total px a cover gives up on the right and bottom for its pile
 --       -- (layer steps plus the front cover's shadow).
---   CoverWidgets.buildPile(cover_w, cover_h, inset)
---       -- Two shaded layers peeking out behind a cover of cover_w × cover_h.
+--   CoverWidgets.buildPile(cover_w, cover_h, inset, shadowed)
+--       -- Two shaded layers peeking out behind a cover of cover_w × cover_h;
+--       -- the last one casts a shadow when `shadowed`.
 --   CoverWidgets.paintShadow(bb, x, y, w, h, offset)
 --       -- Soft shadow around a w × h card at (x, y), cast down and to the right.
 --   CoverWidgets.buildShadow(card_w, card_h, offset)
@@ -65,6 +66,8 @@
 --   CoverWidgets.buildQuadCover(item, img_list, border, backing, max_img_w, max_img_h, display)
 --       -- Wraps buildQuadGrid with assembleCoverWidget (mosaic's pile/label/badge).
 --   CoverWidgets.installWidget(item, widget, complete)
+--   CoverWidgets.fitCover(bb, w, h, max_w, max_h, uniform, disposable)
+--       -- Rendered cover image fitted in max_w × max_h; `uniform` fills a 2:3 box.
 --   CoverWidgets.clearLabelMetricsCache()
 
 local _  = require("infra/sui_i18n").translate
@@ -640,15 +643,16 @@ end
 
 -- Cards behind a cover of cover_w × cover_h. `inset` comes from pileInset();
 -- the widget is (cover_w + inset) × (cover_h + inset) and the caller draws
--- the cover at its top-left corner.
-function CoverWidgets.buildPile(cover_w, cover_h, inset)
+-- the cover at its top-left corner. Without `shadowed` the last card casts no
+-- shadow and its room stays empty.
+function CoverWidgets.buildPile(cover_w, cover_h, inset, shadowed)
     local stroke = SUIStyle.BADGE_BORDER_SZ
     local step   = math.floor((inset + stroke) / (_PILE_LAYERS + 1))
     if step <= stroke then return nil end
     return setmetatable({
         w = cover_w + inset, h = cover_h + inset,
         card_w = cover_w,    card_h = cover_h,
-        step = step,         shadow = step - stroke,
+        step = step,         shadow = shadowed and step - stroke or 0,
     }, PileWidget)
 end
 
@@ -704,6 +708,26 @@ function CoverWidgets.buildSpine(cover_h, inset)
     }, SpineWidget)
 end
 
+-- ── List cover image ──────────────────────────────────────────────────────────
+
+-- Rendered ImageWidget of a w × h cover buffer, fitted in max_w × max_h. With
+-- `uniform` it fills the largest 2:3 box there, stretched as the mosaic's
+-- uniform covers are: by up to 50 %, past that only fitted. `disposable`: the
+-- widget frees the buffer with itself.
+function CoverWidgets.fitCover(bb, w, h, max_w, max_h, uniform, disposable)
+    local opts = { image = bb, image_disposable = disposable }
+    if uniform then
+        local box_w, box_h = max_w, math.floor(max_w * 3 / 2)
+        if box_h > max_h then box_w, box_h = math.floor(max_h * 2 / 3), max_h end
+        opts.width, opts.height, opts.stretch_limit_percentage = box_w, box_h, 50
+    else
+        opts.scale_factor = math.min(max_w / w, max_h / h)
+    end
+    local image = ImageWidget:new(opts)
+    image:_render()
+    return image
+end
+
 -- ── Cover shadow ──────────────────────────────────────────────────────────────
 
 -- Soft shadow around a w × h card at (x, y), cast down and to the right. The
@@ -721,7 +745,8 @@ end
 
 -- What sits behind a cover and the room it takes, as
 -- { kind, left, right, bottom } in px: the stack in the configured style, or
--- only the shadow of `scope` when the stack is hidden. The classic spine
+-- only the shadow of `scope` when the stack is hidden. The pile casts its
+-- shadow while the shadow of `scope` is on (`shadowed`). The classic spine
 -- replaces the shadow, so it is drawn alone. `scale` follows the cover's own
 -- scale (1 when omitted).
 function CoverWidgets.backingInset(scope, hide_stack, scale)
@@ -733,7 +758,10 @@ function CoverWidgets.backingInset(scope, hide_stack, scale)
         return spineInset(scale)
     end
     local pile = CoverWidgets.pileInset(scale)
-    return { kind = "pile", left = 0, right = pile, bottom = pile }
+    return {
+        kind = "pile", left = 0, right = pile, bottom = pile,
+        shadowed = SUIStyle.coverShadowEnabled(scope),
+    }
 end
 
 -- Widget drawn behind a cover of cover_w × cover_h; `inset` comes from
@@ -741,7 +769,9 @@ end
 -- cover is drawn in, `inset.left` px to the left of the cover.
 function CoverWidgets.buildBacking(cover_w, cover_h, inset)
     if inset.kind == "spine" then return CoverWidgets.buildSpine(cover_h, inset) end
-    if inset.kind == "pile"  then return CoverWidgets.buildPile(cover_w, cover_h, inset.bottom) end
+    if inset.kind == "pile"  then
+        return CoverWidgets.buildPile(cover_w, cover_h, inset.bottom, inset.shadowed)
+    end
     return CoverWidgets.buildShadow(cover_w, cover_h, inset.bottom)
 end
 
@@ -1135,6 +1165,32 @@ function CoverWidgets.buildQuadCover(item, img_list, border, backing, max_img_w,
 
     local size = Geom:new{ w = img_w, h = img_h }
     return CoverWidgets.assembleCoverWidget(item, grid, size, border, backing, display)
+end
+
+-- Pause badge: a ring-bordered disc of diameter `d` with two bars, in the
+-- badge colour `color` (see SUIStyle.badgeColors). Painted straight into the
+-- buffer; its size is `d` square.
+local _PauseBadge
+function CoverWidgets.buildPauseBadge(d, color)
+    if not _PauseBadge then
+        local Widget = require("ui/widget/widget")
+        _PauseBadge = Widget:extend{}
+        function _PauseBadge:paintTo(bb, x, y)
+            self.dimen.x, self.dimen.y = x, y
+            local d, border = self.d, SUIStyle.BADGE_BORDER_SZ
+            local fill, ink = SUIStyle.badgeColors(self.color)
+            AAPaint.fillPill(bb, x, y, d, d, SUIStyle.BADGE_BORDER_CLR, 255)
+            AAPaint.fillPill(bb, x + border, y + border, d - 2 * border, d - 2 * border, fill, 255)
+            local bar_w = math.max(2, math.floor(d * 0.14))
+            local bar_h = math.floor(d * 0.44)
+            local gap   = math.max(2, math.floor(d * 0.14))
+            local left  = x + math.floor((d - 2 * bar_w - gap) / 2)
+            local top   = y + math.floor((d - bar_h) / 2)
+            AAPaint.fillRect(bb, left, top, bar_w, bar_h, ink, 255)
+            AAPaint.fillRect(bb, left + bar_w + gap, top, bar_w, bar_h, ink, 255)
+        end
+    end
+    return _PauseBadge:new{ dimen = Geom:new{ w = d, h = d }, d = d, color = color }
 end
 
 return CoverWidgets

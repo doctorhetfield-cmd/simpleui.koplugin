@@ -37,6 +37,8 @@
 --          read-only)
 --   MetadataSource.getFolderSeries(bim, dir)
 --       -> { [filename] = {series=, series_index=}, ... } | nil
+--   MetadataSource.getSeriesByPath(bim, base_dir)
+--       -> { [fullpath] = {series=, series_index=}, ... }  (books with a series, one read for the subtree)
 --   MetadataSource.sortFiles(files, active_dimension)  -- mutates in place
 --   MetadataSource.clearCache(base_dir)  -- base_dir == nil clears everything
 
@@ -305,6 +307,26 @@ local function getScopeRows(bim, base_dir)
         rows = _scope_rows_cache:put(base_dir, fetchScopeRows(bim, base_dir))
     end
     return rows
+end
+
+-- Series name and index of every book under base_dir that has a series, by
+-- full path, from the cached rows of the whole subtree (Calibre included).
+-- The map is kept with the rows it was built from and goes with them.
+local _series_by_rows = setmetatable({}, { __mode = "k" })
+
+function MetadataSource.getSeriesByPath(bim, base_dir)
+    if not bim or not base_dir then return {} end
+    syncWithDatabase()
+    local rows = getScopeRows(bim, base_dir)
+    local map = _series_by_rows[rows]
+    if not map then
+        map = {}
+        for _, row in ipairs(rows) do
+            if row.series then map[row[1]] = { series = row.series, series_index = row.series_index } end
+        end
+        _series_by_rows[rows] = map
+    end
+    return map
 end
 
 local function copyArray(array)

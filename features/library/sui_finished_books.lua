@@ -61,7 +61,7 @@ local function buildOptions()
         {
             value     = MODE.FADE,
             label     = _("Fade"),
-            help_text = _("Fades finished book covers in the file browser. Other lists show them as usual."),
+            help_text = _("Fades finished books in the file browser. Other lists show them as usual."),
         },
         { value = MODE.HIDE, label = _("Hide") },
     }

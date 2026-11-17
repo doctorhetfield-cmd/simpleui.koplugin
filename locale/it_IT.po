@@ -101,18 +101,30 @@ msgstr "Manca il %d%%. Mi farò coraggio."
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d giorni · %d/%d min al prossimo congelamento"
 
-#: modules/reading_stats/module_reading_stats.lua:412
+#: infra/sui_text.lua:124
+#: screens/sui_stats_windows.lua:1632
 msgid "%dh"
-msgstr "%d h"
+msgstr "%dh"
 
-#: modules/reading_stats/module_reading_stats.lua:411
+#: infra/sui_text.lua:119
+msgid "%dh %02dm"
+msgstr "%dh %02d min"
+
+#: infra/sui_text.lua:123
 msgid "%dh %dm"
-msgstr "%d h %d min"
+msgstr "%dh %d min"
 
-#: modules/reading_stats/module_reading_stats.lua:409
-#: modules/reading_stats/module_reading_stats.lua:413
+#: infra/sui_text.lua:125
 msgid "%dm"
 msgstr "%d min"
+
+#: infra/sui_text.lua:120
+msgid "%dm %02ds"
+msgstr "%d min %02ds"
+
+#: infra/sui_text.lua:121
+msgid "%ds"
+msgstr "%ds"
 
 #: screens/insights/sui_insights_charts.lua:121
 msgid "%s a day on average"
@@ -1563,10 +1575,6 @@ msgstr "Collezione"
 #: modules/module_collections.lua:491
 msgid "Collection Menu"
 msgstr "Menu collezione"
-
-#: features/library/sui_group_actions.lua:137
-msgid "Collection \"%1\" created with %2 books."
-msgstr "Collezione \"%1\" creata con %2 libri."
 
 #: features/library/sui_group_actions.lua:110
 msgid "Collection already exists: %1"
@@ -7359,10 +7367,6 @@ msgstr "La copertina mostrata subito all'apertura di un libro proviene normalmen
 msgid "The critter may use it in what it says."
 msgstr "La mascotte potrebbe usarlo in quello che dice."
 
-#: modules/critter/module_critter.lua:773
-msgid "The critter, its decorations, its bubble and what it says are set in Settings > Tiny Critter."
-msgstr "La mascotte, le sue decorazioni, il suo fumetto e ciò che dice si impostano in Impostazioni > Mascotte."
-
 #: modules/critter/voice_lines.lua:122
 msgid "The dawn found us both."
 msgstr "L'alba ci ha trovati entrambi svegli."
@@ -8997,196 +9001,3 @@ msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "giorno consecutivo"
 msgstr "giorni consecutivi"
-
-#~ msgid "ALL TIME"
-#~ msgstr "SEMPRE"
-
-#~ msgid "All time — Books"
-#~ msgstr "Libri di sempre"
-
-#~ msgid "All time — Time"
-#~ msgstr "Tempo di sempre"
-
-#~ msgid "Column Width (Bento Grid)"
-#~ msgstr "Larghezza colonna (Griglia Bento)"
-
-#~ msgid "DAY STREAK"
-#~ msgstr "SERIE DI GIORNI"
-
-#~ msgid "Daily avg — Pages"
-#~ msgstr "Media giornaliera — Pagine"
-
-#~ msgid "Daily avg — Time"
-#~ msgstr "Media giornaliera — Tempo"
-
-#~ msgid "FREEZES"
-#~ msgstr "CONGELAMENTI"
-
-#~ msgid "LAST 7 DAYS"
-#~ msgstr "ULTIMI 7 GIORNI"
-
-#~ msgid ""
-#~ "Share of the row this module occupies.\n"
-#~ "100% = full width. Modules under 100% share a row when their widths fit (bento grid)."
-#~ msgstr ""
-#~ "Quota della riga occupata da questo modulo.\n"
-#~ "100% = larghezza intera. I moduli inferiori al 100% condividono una riga quando le larghezze lo consentono (griglia Bento)."
-
-#~ msgid "Show wallpaper on all screens"
-#~ msgstr "Mostra sfondo su tutte le schermate"
-
-#~ msgid "Status — Abandoned"
-#~ msgstr "Stato — Abbandonato"
-
-#~ msgid "Status — Reading"
-#~ msgstr "Stato — In lettura"
-
-#~ msgid "Status — Unread"
-#~ msgstr "Stato — Non letto"
-
-#~ msgid "THIS MONTH"
-#~ msgstr "QUESTO MESE"
-
-#~ msgid "THIS WEEK"
-#~ msgstr "QUESTA SETTIMANA"
-
-#~ msgid "TODAY'S SUMMARY"
-#~ msgstr "RIEPILOGO DI OGGI"
-
-#~ msgid "This month — Pages"
-#~ msgstr "Questo mese — Pagine"
-
-#~ msgid "This month — Time"
-#~ msgstr "Questo mese — Tempo"
-
-#~ msgid "This week — Pages"
-#~ msgstr "Questa settimana — Pagine"
-
-#~ msgid "This week — Time"
-#~ msgstr "Questa settimana — Tempo"
-
-#~ msgid "Today — Pages"
-#~ msgstr "Oggi — Pagine"
-
-#~ msgid "Today — Time"
-#~ msgstr "Oggi — Tempo"
-
-#~ msgid "WEEK STREAK"
-#~ msgstr "SERIE DI SETTIMANE"
-
-#~ msgid "hours read"
-#~ msgstr "ore lette"
-
-#~ msgid "reading time"
-#~ msgstr "tempo di lettura"
-
-#~ msgid "%d freeze available"
-#~ msgid_plural "%d freezes available"
-#~ msgstr[0] "%d congelamento disponibile"
-#~ msgstr[1] "%d congelamenti disponibili"
-
-#~ msgid "day read"
-#~ msgid_plural "days read"
-#~ msgstr[0] "giorno letto"
-#~ msgstr[1] "giorno consecutivo"
-
-#~ msgid "page read"
-#~ msgid_plural "pages read"
-#~ msgstr[0] "pagina letta"
-#~ msgstr[1] "pagine lette oggi"
-
-#~ msgid "Badges"
-#~ msgstr "Distintivi"
-
-#~ msgid "Bar Style"
-#~ msgstr "Stile barra"
-
-#~ msgid "Folder Cover Type"
-#~ msgstr "Tipo copertina cartella"
-
-#~ msgid "Follow Library"
-#~ msgstr "Come in libreria"
-
-#~ msgid "Number of Books in Folder"
-#~ msgstr "Numero di Libri nella Cartella"
-
-#~ msgid "Number of Pages"
-#~ msgstr "Numero di Pagine"
-
-#~ msgid "Overlays"
-#~ msgstr "Sovrapposizioni"
-
-#~ msgid ""
-#~ "Scale for the library badges (progress, pages, etc.).\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Scala per i distintivi della libreria (progresso, pagine, ecc.).\n"
-#~ "100% è la dimensione predefinita."
-
-#~ msgid ""
-#~ "Scales the section label text above each module.\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Scala il testo dell'etichetta della sezione sopra ogni modulo.\n"
-#~ "100% è la dimensione predefinita."
-
-#~ msgid "Title and Author Below Covers"
-#~ msgstr "Titolo e autore sotto le copertine"
-
-#~ msgid ""
-#~ "Title and author strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Barra titolo e autore abilitata.\n"
-#~ "\n"
-#~ "Riavviare ora?"
-
-#~ msgid "Title only"
-#~ msgstr "Solo titolo"
-
-#~ msgid ""
-#~ "Title strip disabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Barra titolo disabilitata.\n"
-#~ "\n"
-#~ "Riavviare ora?"
-
-#~ msgid ""
-#~ "Title strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Barra titolo abilitata.\n"
-#~ "\n"
-#~ "Riavviare ora?"
-
-#~ msgid "UI Font  (default)"
-#~ msgstr "Font interfaccia  (predefinito)"
-
-#~ msgid "UI Font  [%s]"
-#~ msgstr "Font interfaccia  [%s]"
-
-#~ msgid "Visibility"
-#~ msgstr "Visibilità"
-
-#~ msgid "Visible"
-#~ msgstr "Visibile"
-
-#~ msgid "The maximum of %d stat per row has been reached. Remove one first."
-#~ msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-#~ msgstr[0] "Raggiunto il massimo di %d statistica per riga. Rimuovine una prima."
-#~ msgstr[1] "Raggiunto il massimo %d di azioni per modulo. Rimuovine una prima."
-
-#~ msgid "Button Background"
-#~ msgstr "Sfondo pulsante"
-
-#, fuzzy
-#~ msgid "Button Opacity"
-#~ msgstr "Dimensione pulsanti"
-
-#, fuzzy
-#~ msgid "Button Style"
-#~ msgstr "Dimensione pulsanti"

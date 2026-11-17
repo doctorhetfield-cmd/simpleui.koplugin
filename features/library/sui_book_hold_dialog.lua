@@ -228,6 +228,20 @@ local function annotationItems(ctx)
            Rows.tag(fm.collections:genBookmarkBrowserButton(files, ctx.close), "notes")
 end
 
+-- "Book cover": opens the cover window, which views and changes the cover.
+local function coverItem(ctx)
+    return {
+        text     = _("Book cover"),
+        sui_icon = "cover",
+        callback = function()
+            ctx.close()
+            require("features/library/cover_editor/sui_cover_window").show(ctx.path, {
+                on_change = ctx.refresh,
+            })
+        end,
+    }
+end
+
 -- Rows of the book actions in the grid.
 local function actionRows(ctx)
     local rows = {}
@@ -246,10 +260,25 @@ local function actionRows(ctx)
 
     if ctx.has_provider then
         Rows.pushRow(rows,
-            Rows.tag(filemanagerutil.genBookCoverButton(ctx.path, ctx.book_props, ctx.close), "cover"),
+            coverItem(ctx),
             Rows.tag(filemanagerutil.genBookDescriptionButton(ctx.path, ctx.book_props, ctx.close), "description"))
     end
     return rows
+end
+
+-- "Hide from history" / "Show in history", for a book in the reading history.
+local function historyItem(ctx)
+    local entry = SH.historyEntry(ctx.path)
+    if not entry then return nil end
+    local hidden = SH.isHiddenEntry(entry)
+    return {
+        text     = hidden and _("Show in history") or _("Hide from history"),
+        sui_icon = hidden and "show" or "hide",
+        callback = function()
+            SH.setHidden(entry, not hidden)
+            ctx.closeAndRefresh()
+        end,
+    }
 end
 
 local function settingsItem(ctx)
@@ -298,6 +327,7 @@ local function listRows(ctx, registered, delete)
         for _i, row in ipairs(ok and extra or {}) do Rows.appendRow(rows, row) end
     end
     if ctx.file_chooser then Rows.pushRow(rows, Rows.executeScriptItem(ctx)) end
+    Rows.pushRow(rows, historyItem(ctx))
 
     if delete then Rows.pushRow(rows, delete) end
     if opts.open_settings_fn then Rows.pushRow(rows, settingsItem(ctx)) end

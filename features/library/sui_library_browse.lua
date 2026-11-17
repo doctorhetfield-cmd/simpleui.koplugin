@@ -16,7 +16,7 @@
 -- sui_virtual_path encodes a full filter TRAIL, so the path grammar, the row
 -- filtering and the facet counts are all trail-aware. A leaf whose last
 -- dimension defines `subgroup_by` (see sui_filter_state) lists its books
--- split by that dimension while "Group by Book Series" is on: one folder per
+-- split by that dimension while "Group by Series" is on: one folder per
 -- series with at least FilterState.MIN_GROUP_SIZE books, then the books left
 -- ungrouped. Each folder is the leaf of the stacked trail (author → series).
 --
@@ -42,6 +42,13 @@
 --   M.openVirtualCoverPicker(vpath, fc)
 --   M.getAuthorBookCount(fc, author)    — count books by author in current base_dir (cached)
 --   M.navigateToLeaf(fm, dimension, value, opts) — navigate FM directly to a virtual leaf
+--   M.returnFromLeaf(fc, fm, origin)    — go back from a leaf to where its navigation started
+--   M.isFlatEnabled() / M.setFlatEnabled(on) — whether the Library tab lists every book without folders
+--   M.setFlat(fm, on)                        — save the setting and show the matching Library view
+--   M.flatHomePath()                         — flat view of the library home folder
+--   M.isFlatRoot(fc)                         — whether the flat view is the top level of `fc`
+--   M.navigateToFlat(fm, folder, opts)       — navigate FM to the flat view of `folder`;
+--                                              opts.entry makes it the root (no up item)
 
 local lfs     = require("libs/libkoreader-lfs")
 local ffiUtil = require("ffi/util")
@@ -56,8 +63,12 @@ local VirtualPath      = require("features/library/sui_virtual_path")
 local MetadataSource   = require("features/library/sui_metadata_source")
 local CoverOverrides   = require("features/library/sui_cover_overrides")
 local GroupActions     = require("features/library/sui_group_actions")
+local RuleCollections  = require("features/library/sui_rule_collections")
 local CoverFinder      = require("features/library/sui_cover_finder")
 local FolderCovers     = require("features/library/sui_foldercovers")
+local SortSheet        = require("features/library/sui_sort_sheet")
+local TabViews         = require("features/library/sui_tab_views")
+local LibraryScan      = require("engines/sui_library_scan")
 
 local M = {}
 
@@ -162,6 +173,43 @@ function M.setShowEmpty(v)
     SUISettings:saveSetting(_SHOW_EMPTY_KEY, v)
 end
 
+-- Whether the Library tab lists every book under the home folder without
+-- folders (the flat view).
+local _FLAT_KEY = "simpleui_lib_flat"
+
+-- The flat view is served by the browse patches, so it needs them on.
+function M.isFlatEnabled()
+    return SUISettings:isTrue(_FLAT_KEY) and M.isEnabled()
+end
+
+function M.setFlatEnabled(on)
+    SUISettings:saveSetting(_FLAT_KEY, on and true or false)
+end
+
+function M.flatHomePath()
+    return VirtualPath.buildFlat(LibraryScan.resolveHomeDir())
+end
+
+-- Whether `fc` shows the flat view as its top level, with no folder above it.
+function M.isFlatRoot(fc)
+    return fc ~= nil and VirtualPath.isFlat(fc.path) and fc._browse_by_meta_entry_path == fc.path
+end
+
+-- Goes back from a leaf reached from elsewhere (see navigateToLeaf's origin): to
+-- the flat view it started in, to its real folder, or to where its own
+-- return function takes over, the Library view being shown under it.
+function M.returnFromLeaf(fc, fm, origin)
+    if origin.return_fn then
+        M.exitToNormal(fc, fm)
+        origin.return_fn()
+    elseif VirtualPath.isFlat(origin.path) then
+        M.navigateToFlat(fm, VirtualPath.getBaseDir(origin.path), { entry = origin.entry, focus = origin.file })
+    else
+        M.exitToNormal(fc, fm, true)
+        fc:changeToPath(origin.path, origin.file)
+    end
+end
+
 -- ---------------------------------------------------------------------------
 -- Public path helpers
 -- ---------------------------------------------------------------------------
@@ -204,8 +252,14 @@ end
 -- Navigation
 -- ---------------------------------------------------------------------------
 
-function M.exitToNormal(fc, fm)
+-- Leaves a virtual view for the Library view: the flat home while the flat
+-- view is on, else the real folder. `keep_real` forces the real folder.
+function M.exitToNormal(fc, fm, keep_real)
     if not fc then return end
+    if fm and not keep_real and M.isFlatEnabled() then
+        M.navigateToFlat(fm, LibraryScan.resolveHomeDir(), { entry = true })
+        return
+    end
     local base = VirtualPath.getBaseDir(fc.path)
     -- Persist "normal" BEFORE changeToPath so that if changeToPath errors out
     -- (caught upstream by a pcall), the next session never tries to restore a
@@ -249,6 +303,39 @@ function M.navigateTo(fm, mode)
     M.setSavedMode(mode)
 end
 
+-- Navigates the FM to the flat view of `folder`. With opts.entry the flat view
+-- is the top level (no up item); otherwise the up item returns to `folder`.
+-- opts.focus is a book of the list to focus.
+function M.navigateToFlat(fm, folder, opts)
+    local fc = fm and fm.file_chooser
+    if not fc then return end
+
+    local target = VirtualPath.buildFlat(folder)
+    fc._browse_by_meta_entry_path = (opts and opts.entry) and target or nil
+    fm._navbar_suppress_path_change = true
+    fc:changeToPath(target, opts and opts.focus)
+    fm._navbar_suppress_path_change = nil
+    if fm.updateTitleBarPath then
+        pcall(function() fm:updateTitleBarPath(target) end)
+    end
+    if fc.onGotoPage then
+        pcall(function() fc:onGotoPage(1) end)
+    end
+end
+
+-- Turns the flat view on or off and, on the Library tab, shows the matching
+-- view: the flat home, or the real folder the current view lists.
+function M.setFlat(fm, on)
+    M.setFlatEnabled(on)
+    local fc = fm and fm.file_chooser
+    if not fc or M.getCurrentMode(fc) ~= "normal" then return end
+    if on then
+        M.navigateToFlat(fm, LibraryScan.resolveHomeDir(), { entry = true })
+    else
+        M.exitToNormal(fc, fm)
+    end
+end
+
 -- navigateToRoot(fc, fm, mode)
 -- Re-navigates to the top-level dim_list (Authors/Series/Tags) without
 -- exiting to the normal filesystem. Called when the user taps an already-
@@ -290,8 +377,14 @@ function M.activateMode(fm, mode, already_active)
     if already_active == nil then
         already_active = M.getCurrentMode(fc) == mode
     end
-    if mode == "normal" then
-        if already_active then
+    if mode == "normal" and M.isFlatEnabled() then
+        if fc.path == M.flatHomePath() then
+            pcall(fc.onGotoPage, fc, 1)
+        else
+            M.navigateToFlat(fm, LibraryScan.resolveHomeDir(), { entry = true })
+        end
+    elseif mode == "normal" then
+        if already_active and not VirtualPath.isFlat(fc.path) then
             pcall(fc.onGotoPage, fc, 1)
         else
             M.exitToNormal(fc, fm)
@@ -360,6 +453,7 @@ end
 --                leaf returns to the real folder, scrolled to that book
 --   return_fn    called when going back from the leaf, instead of returning
 --                to a real folder, for a navigation that started elsewhere
+--   filter_state trail the leaf is added to; none by default
 --
 -- Preconditions: browse mode must be installed (M.install() called).
 function M.navigateToLeaf(fm, dimension, value, opts)
@@ -369,14 +463,19 @@ function M.navigateToLeaf(fm, dimension, value, opts)
 
     local fc_base = VirtualPath.getBaseDir(fc.path)
     local base    = opts.base_dir or fc_base
-    local target  = VirtualPath.buildLeaf(base, nil, dimension, value)
+    local prefix  = opts.filter_state
+    local target  = VirtualPath.buildLeaf(base, prefix, dimension, value)
+    local first   = prefix and prefix.trail[1]
+    local mode    = first and first.dimension or dimension
 
     -- The origin lives on the file chooser, not in a module upvalue, so it
     -- survives module reloads. It is bound to the leaf it was set for.
     if opts.origin_file or opts.return_fn then
+        local from_flat = VirtualPath.isFlat(fc.path)
         fc._sui_leaf_origin = {
             leaf      = target,
-            path      = VirtualPath.isVirtual(fc.path) and fc_base or fc.path,
+            path      = (VirtualPath.isVirtual(fc.path) and not from_flat) and fc_base or fc.path,
+            entry     = from_flat and fc._browse_by_meta_entry_path == fc.path,
             file      = opts.origin_file,
             return_fn = opts.return_fn,
         }
@@ -384,7 +483,7 @@ function M.navigateToLeaf(fm, dimension, value, opts)
         fc._sui_leaf_origin = nil
     end
 
-    fc._browse_by_meta_entry_path = VirtualPath.buildDimList(base, nil, dimension)
+    fc._browse_by_meta_entry_path = VirtualPath.buildDimList(base, nil, mode)
     fm._navbar_suppress_path_change = true
     fc:changeToPath(target)
     fm._navbar_suppress_path_change = nil
@@ -395,7 +494,7 @@ function M.navigateToLeaf(fm, dimension, value, opts)
         pcall(function() fc:onGotoPage(1) end)
     end
     -- Persist the mode so the next session restores the virtual tree.
-    M.setSavedMode(dimension)
+    M.setSavedMode(mode)
 end
 
 -- ---------------------------------------------------------------------------
@@ -450,7 +549,7 @@ function M.openVirtualCoverPicker(vpath, fc, sheet)
 end
 
 -- `sheet`: optional flow sheet to show the name prompt on, as a page.
-local function _createCollectionFromVirtualFolder(vpath, fc, sheet)
+local function _createCollectionFromVirtualFolder(vpath, sheet)
     local base_dir, filter_state, _dim, level = VirtualPath.parse(vpath)
     if level ~= "file_list" then return _closeSheet(sheet) end
 
@@ -461,14 +560,9 @@ local function _createCollectionFromVirtualFolder(vpath, fc, sheet)
     -- identity — same guard the original had.
     if not last or last.value == false then return _closeSheet(sheet) end
 
-    local books = _resolveLeafBooks(fc, base_dir, filter_state)
-    local paths = {}
-    for _, item in ipairs(books) do paths[#paths + 1] = item.path end
-
     GroupActions.createCollection{
         suggested_name = last.value,
-        paths          = paths,
-        empty_message  = _("No books found."),
+        connect_rule   = RuleCollections.new(base_dir, trail, true),
         parent         = sheet,
     }
 end
@@ -566,6 +660,18 @@ local function _getVirtualList(fc, path, collate)
 
     local dirs, files = {}, {}
 
+    -- Every document under base_dir, as the cached scan lists them.
+    if level == "flat" then
+        for _i, fullpath in ipairs(LibraryScan.getDocumentList(base_dir)) do
+            local fname = fullpath:match("[^/]*$")
+            local attr  = lfs.attributes(fullpath)
+            if attr and attr.mode == "file" and fc:show_file(fname, fullpath) then
+                files[#files + 1] = fc:getListItem(path, fname, fullpath, attr, collate)
+            end
+        end
+        return dirs, files
+    end
+
     if level == "root" then
         for i, dimension in ipairs(FilterState.ORDERED_DIMENSIONS) do
             local text  = _("Browse by") .. " " .. DIM_LABELS[dimension]
@@ -658,6 +764,8 @@ local function _getVirtualList(fc, path, collate)
                         }
                     end
                     if collate then
+                        -- The row keeps the file's own text for the detailed list.
+                        item.file_mandatory = item.mandatory
                         item.mandatory = _bookContext(row, filter_state.selected) or item.mandatory
                     end
                     files[#files + 1] = item
@@ -730,21 +838,25 @@ local function _installPatches()
                 return t
             end
 
-            -- Folders and books follow the collate chosen in the file browser,
-            -- as in a real folder. A series keeps its reading order (series
-            -- index), set by sortFiles.
+            -- The list of a tab (Authors/Series/Tags) follows that tab's own
+            -- sort. Other folders and books follow the collate chosen in the
+            -- file browser, as in a real folder. A series keeps its reading
+            -- order (series index), set by sortFiles.
             local _b, filter_state, _d, level = VirtualPath.parse(path)
-            if level == "dim_list" or level == "file_list" then
-                local collate = fc:getCollate()
+            local tab_mode = TabViews.rootMode(path)
+            if tab_mode then
+                if #dirs > 1 then table.sort(dirs, TabViews.dirSorter(fc, tab_mode)) end
+            elseif level == "dim_list" or level == "file_list" or level == "flat" then
+                local collate, collate_id = fc:getCollate()
                 local reverse = G_reader_settings:isTrue("reverse_collate")
                 local trail   = filter_state and filter_state.trail or {}
                 local leaf    = trail[#trail] and trail[#trail].dimension
-                if level == "file_list" and leaf ~= "series" and #fls > 1 then
+                if (level == "file_list" or level == "flat") and leaf ~= "series" and #fls > 1 then
                     table.sort(fls, fc:getSortingFunction(collate, reverse))
                 end
                 if #dirs > 1 then
-                    -- A collate that cannot sort folders keeps them by name.
-                    table.sort(dirs, collate.can_collate_mixed
+                    -- A collate that cannot sort metadata folders keeps them by name.
+                    table.sort(dirs, SortSheet.sortsFacetFolders(collate_id)
                         and fc:getSortingFunction(collate, reverse)
                         or fc:getSortingFunction(fc.collates.strcoll))
                 end
@@ -862,7 +974,7 @@ local function _installPatches()
                     local last  = trail[#trail]
                     -- "no value" leaf: long-press disabled (no meaningful name).
                     if not last or last.value == false then return true end
-                    _createCollectionFromVirtualFolder(item.path, fc)
+                    _createCollectionFromVirtualFolder(item.path)
                 end
                 -- Non-leaf virtual items (dim-root folders such as "Authors")
                 -- still return true silently — no sensible action to offer.
@@ -909,7 +1021,7 @@ local function _installPatches()
                     sui_icon  = "collections",
                     keep_open = true,
                     chevron   = true,
-                    callback  = function() _createCollectionFromVirtualFolder(item.path, fc, sheet) end,
+                    callback  = function() _createCollectionFromVirtualFolder(item.path, sheet) end,
                 }
 
                 local ActionSheet = require("engines/sui_action_sheet")
@@ -1014,7 +1126,11 @@ local _patched_tb_path = false
 
 local function _getVirtualSubtitle(path)
     if not VirtualPath.isVirtual(path) then return nil end
-    local _b, filter_state, active_dimension = VirtualPath.parse(path)
+    local base_dir, filter_state, active_dimension, level = VirtualPath.parse(path)
+    if level == "flat" then
+        if base_dir == LibraryScan.resolveHomeDir() then return _("All Books") end
+        return base_dir:match("[^/]+$") or base_dir
+    end
     local trail = filter_state.trail
     local last  = trail[#trail]
     if last then
@@ -1074,6 +1190,8 @@ function M.install()
         _installPatches()
         _installFMSafetyPatches()
         _installTitleBarPathPatch()
+        SortSheet.install()
+        TabViews.install()
     end)
     if not ok then
         logger.warn("sui_library_browse: install error:", tostring(err))
@@ -1081,9 +1199,12 @@ function M.install()
 end
 
 function M.uninstall()
+    -- Before _removePatches, which puts back the refreshPath it found first.
+    pcall(TabViews.uninstall)
     pcall(_removePatches)
     pcall(_removeFMSafetyPatches)
     pcall(_removeTitleBarPathPatch)
+    pcall(SortSheet.uninstall)
     MetadataSource.clearCache()
     _last_base_dir = nil
     _FM_cache   = nil

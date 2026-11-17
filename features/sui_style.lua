@@ -233,14 +233,6 @@ M.SLOTS = {
         default_ko = "icons/group.svg",
         default_icon = "nerd:E73A",  -- 3x3 grid, same as SUIStyle.ICON.group
     },
-    -- ── Folder Covers ────────────────────────────────────────────────────
-    {
-        id        = "sui_fc_empty",
-        label     = function() return _("Folder Covers: Empty Folder") end,
-        group     = "sui_fc_icons",
-        default_ko = "icons/custom.svg",
-        default_icon = "nerd:F114",
-    },
     -- ── Touch menu tab bar ───────────────────────────────────────────────
     -- Overrides the icons shown on the native KOReader touch-menu tabs
     -- (FileManager + Reader), plus the SimpleUI-injected Quick Settings tab.
@@ -362,8 +354,9 @@ end
 -- own slot: the cover is drawn coverShadowOffset() px smaller on each axis,
 -- so layouts keep their size. The shadow is on until a surface is switched off.
 
-M.SHADOW_LIBRARY = "library"   -- the Library grid
-M.SHADOW_MODULES = "modules"   -- the Home Screen modules
+M.SHADOW_LIBRARY      = "library"        -- the Library mosaic view
+M.SHADOW_LIBRARY_LIST = "library_list"   -- the Library list view
+M.SHADOW_MODULES      = "modules"        -- the Home Screen modules
 
 local _COVER_SHADOW_KEY_PREFIX = "simpleui_style_cover_shadow_"
 local _COVER_SHADOW_BASE       = math.max(2, Screen:scaleBySize(7))
@@ -1066,15 +1059,6 @@ function M.makeMenuItems(plugin)
             if plugin then plugin:_rebuildAllNavbars() end
             local ok_se, ScreenEngine = pcall(require, "engines/sui_screen_engine")
             if ok_se and ScreenEngine then ScreenEngine.refreshAllLiveImmediate(false) end
-        elseif group == "sui_fc_icons" then
-            local ok_fc, FC = pcall(require, "features/library/sui_foldercovers")
-            if ok_fc and FC and FC.invalidateCache then FC.invalidateCache() end
-            local fm = _fm()
-            if fm and fm.file_chooser then
-                fm._navbar_suppress_path_change = true
-                fm.file_chooser:refreshPath()
-                fm._navbar_suppress_path_change = nil
-            end
         elseif group == "sui_tabbar_icons" then
             M.refreshLiveTabBars()
         end
@@ -1161,7 +1145,6 @@ function M.makeMenuItems(plugin)
 
     _addGroupRows("sui_pager_icons")
     _addGroupRows("sui_navpager_icons")
-    _addGroupRows("sui_fc_icons")
     _addGroupRows("sui_qs_icons")
     _addGroupRows("sui_tabbar_icons")
 
@@ -1275,7 +1258,6 @@ function M.sui_build_system_icons(plugin, ctx_menu, ctx)
         addGroup("sui_browse_icons", _("Browse Icons"))
         addGroup("sui_pager_icons", _("Pagination Bar"))
         addGroup("sui_navpager_icons", _("Navpager"))
-        addGroup("sui_fc_icons", _("Folder Covers"))
         addGroup("sui_qs_icons", _("Quick Settings"))
         addGroup("sui_tabbar_icons", _("Tab Bar"))
         return rows

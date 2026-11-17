@@ -102,18 +102,30 @@ msgstr ""
 msgid "%d/%d days · %d/%d min to next freeze"
 msgstr "%d/%d gün · sonraki dondurmaya %d/%d dk"
 
-#: modules/reading_stats/module_reading_stats.lua:412
+#: infra/sui_text.lua:124
+#: screens/sui_stats_windows.lua:1632
 msgid "%dh"
-msgstr ""
+msgstr "%d sa"
 
-#: modules/reading_stats/module_reading_stats.lua:411
+#: infra/sui_text.lua:119
+msgid "%dh %02dm"
+msgstr "%d sa %02ddk"
+
+#: infra/sui_text.lua:123
 msgid "%dh %dm"
-msgstr ""
+msgstr "%d sa %ddk"
 
-#: modules/reading_stats/module_reading_stats.lua:409
-#: modules/reading_stats/module_reading_stats.lua:413
+#: infra/sui_text.lua:125
 msgid "%dm"
-msgstr ""
+msgstr "%ddk"
+
+#: infra/sui_text.lua:120
+msgid "%dm %02ds"
+msgstr "%ddk %02dsn"
+
+#: infra/sui_text.lua:121
+msgid "%ds"
+msgstr "%dsn"
 
 #: screens/insights/sui_insights_charts.lua:121
 msgid "%s a day on average"
@@ -1567,10 +1579,6 @@ msgstr "Koleksiyon"
 #: modules/module_collections.lua:491
 msgid "Collection Menu"
 msgstr "Koleksiyon Menüsü"
-
-#: features/library/sui_group_actions.lua:137
-msgid "Collection \"%1\" created with %2 books."
-msgstr "\"%1\" koleksiyonu %2 kitapla oluşturuldu."
 
 #: features/library/sui_group_actions.lua:110
 msgid "Collection already exists: %1"
@@ -7382,10 +7390,6 @@ msgstr "Bir kitap açılır açılmaz gösterilen kapak normalde kütüphanenin 
 msgid "The critter may use it in what it says."
 msgstr ""
 
-#: modules/critter/module_critter.lua:773
-msgid "The critter, its decorations, its bubble and what it says are set in Settings > Tiny Critter."
-msgstr ""
-
 #: modules/critter/voice_lines.lua:122
 msgid "The dawn found us both."
 msgstr ""
@@ -9023,186 +9027,3 @@ msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "günlük seri"
 msgstr[1] "günlük seri"
-
-#~ msgid "ALL TIME"
-#~ msgstr "TÜM ZAMANLAR"
-
-#~ msgid "All time — Books"
-#~ msgstr "Tüm zamanlar — Kitaplar"
-
-#~ msgid "All time — Time"
-#~ msgstr "Tüm zamanlar — Süre"
-
-#~ msgid "DAY STREAK"
-#~ msgstr "GÜNLÜK SERİ"
-
-#~ msgid "Daily avg — Pages"
-#~ msgstr "Günlük ort. — Sayfa"
-
-#~ msgid "Daily avg — Time"
-#~ msgstr "Günlük ort. — Süre"
-
-#~ msgid "FREEZES"
-#~ msgstr "DONDURMALAR"
-
-#~ msgid "LAST 7 DAYS"
-#~ msgstr "SON 7 GÜN"
-
-#~ msgid "Show wallpaper on all screens"
-#~ msgstr "Duvar kağıdını tüm ekranlarda göster"
-
-#~ msgid "Status — Abandoned"
-#~ msgstr "Durum — Bırakıldı"
-
-#~ msgid "Status — Reading"
-#~ msgstr "Durum — Okunuyor"
-
-#~ msgid "Status — Unread"
-#~ msgstr "Durum — Okunmadı"
-
-#~ msgid "THIS MONTH"
-#~ msgstr "BU AY"
-
-#~ msgid "THIS WEEK"
-#~ msgstr "BU HAFTA"
-
-#~ msgid "TODAY'S SUMMARY"
-#~ msgstr "BUGÜNÜN ÖZETİ"
-
-#~ msgid "This month — Pages"
-#~ msgstr "Bu ay — Sayfa"
-
-#~ msgid "This month — Time"
-#~ msgstr "Bu ay — Süre"
-
-#~ msgid "This week — Pages"
-#~ msgstr "Bu hafta — Sayfa"
-
-#~ msgid "This week — Time"
-#~ msgstr "Bu hafta — Süre"
-
-#~ msgid "Today — Pages"
-#~ msgstr "Bugün — Sayfa"
-
-#~ msgid "Today — Time"
-#~ msgstr "Bugün — Süre"
-
-#~ msgid "WEEK STREAK"
-#~ msgstr "HAFTALIK SERİ"
-
-#~ msgid "hours read"
-#~ msgstr "okunan saat"
-
-#~ msgid "reading time"
-#~ msgstr "okuma süresi"
-
-#~ msgid "%d freeze available"
-#~ msgid_plural "%d freezes available"
-#~ msgstr[0] "%d dondurma mevcut"
-#~ msgstr[1] "%d dondurma mevcut"
-
-#~ msgid "day read"
-#~ msgid_plural "days read"
-#~ msgstr[0] "okunan gün"
-#~ msgstr[1] "okunan gün"
-
-#~ msgid "page read"
-#~ msgid_plural "pages read"
-#~ msgstr[0] "okunan sayfa"
-#~ msgstr[1] "okunan sayfa"
-
-#~ msgid "Badges"
-#~ msgstr "Rozetler"
-
-#~ msgid "Bar Style"
-#~ msgstr "Çubuk Stili"
-
-#~ msgid "Folder Cover Type"
-#~ msgstr "Klasör Kapak Türü"
-
-#~ msgid "Follow Library"
-#~ msgstr "Kütüphaneyi Takip Et"
-
-#~ msgid "Number of Books in Folder"
-#~ msgstr "Klasördeki Kitap Sayısı"
-
-#~ msgid "Number of Pages"
-#~ msgstr "Sayfa Sayısı"
-
-#~ msgid "Overlays"
-#~ msgstr "Katmanlar"
-
-#~ msgid ""
-#~ "Scale for the library badges (progress, pages, etc.).\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Kütüphane rozetleri için ölçek (ilerleme, sayfa vb.).\n"
-#~ "Varsayılan boyut %100'dür."
-
-#~ msgid ""
-#~ "Scales the section label text above each module.\n"
-#~ "100% is the default size."
-#~ msgstr ""
-#~ "Her modülün üzerindeki bölüm etiketi metnini ölçeklendirir.\n"
-#~ "Varsayılan boyut %100'dür."
-
-#~ msgid "Title and Author Below Covers"
-#~ msgstr "Kapakların Altında Başlık ve Yazar"
-
-#~ msgid ""
-#~ "Title and author strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Başlık ve yazar şeridi etkinleştirildi.\n"
-#~ "\n"
-#~ "Şimdi yeniden başlatılsın mı?"
-
-#~ msgid "Title only"
-#~ msgstr "Yalnızca Başlık"
-
-#~ msgid ""
-#~ "Title strip disabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Başlık şeridi devre dışı bırakıldı.\n"
-#~ "\n"
-#~ "Şimdi yeniden başlatılsın mı?"
-
-#~ msgid ""
-#~ "Title strip enabled.\n"
-#~ "\n"
-#~ "Restart now?"
-#~ msgstr ""
-#~ "Başlık şeridi etkinleştirildi.\n"
-#~ "\n"
-#~ "Şimdi yeniden başlatılsın mı?"
-
-#~ msgid "UI Font  (default)"
-#~ msgstr "Arayüz Yazı Tipi  (varsayılan)"
-
-#~ msgid "UI Font  [%s]"
-#~ msgstr "Arayüz Yazı Tipi  [%s]"
-
-#~ msgid "Visibility"
-#~ msgstr "Görünürlük"
-
-#~ msgid "Visible"
-#~ msgstr "Görünür"
-
-#~ msgid "The maximum of %d stat per row has been reached. Remove one first."
-#~ msgid_plural "The maximum of %d stats per row has been reached. Remove one first."
-#~ msgstr[0] "Satır başına maksimum %d istatistik sınırına ulaşıldı. Önce birini kaldırın."
-#~ msgstr[1] "Satır başına maksimum %d istatistik sınırına ulaşıldı. Önce birini kaldırın."
-
-#~ msgid "Button Background"
-#~ msgstr "Düğme Arka Planı"
-
-#, fuzzy
-#~ msgid "Button Opacity"
-#~ msgstr "Düğme Boyutu"
-
-#, fuzzy
-#~ msgid "Button Style"
-#~ msgstr "Düğme Boyutu"

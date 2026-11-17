@@ -17,6 +17,47 @@ local M = {}
 
 local MAX_NAME_CHARS = 20
 
+local _CRITTER_NAMES = {
+    argos   = function() return _("Argos") end,
+    chonk   = function() return _("Chonk") end,
+    frankie = function() return _("Frankie") end,
+    hazel   = function() return _("Hazel") end,
+    sholmes = function() return _("Sholmes") end,
+    suey    = function() return _("Suey") end,
+    tulu    = function() return _("Tulu") end,
+    vlad    = function() return _("Vlad") end,
+}
+
+local function critterName(entry)
+    if not entry then return "" end
+    local name = _CRITTER_NAMES[entry.id]
+    if name then return name() end
+    return entry.name
+end
+
+local _DECOR_NAMES = {
+    book_stack    = function() return _("Book stack") end,
+    bookcase      = function() return _("Bookcase") end,
+    candle_shelf  = function() return _("Candle shelf") end,
+    cat_pot       = function() return _("Cat pot") end,
+    coffee        = function() return _("Coffee") end,
+    corkboard     = function() return _("Corkboard") end,
+    hanging_plant = function() return _("Hanging plant") end,
+    lamp          = function() return _("Lamp") end,
+    picture       = function() return _("Picture") end,
+    pillow        = function() return _("Pillow") end,
+    plant         = function() return _("Plant") end,
+    plant_shelf   = function() return _("Plant shelf") end,
+    window        = function() return _("Window") end,
+}
+
+local function decorName(entry)
+    if not entry then return "" end
+    local name = _DECOR_NAMES[entry.id]
+    if name then return name() end
+    return entry.name
+end
+
 local function makeCritterItem(refresh)
     local function get()
         local entry = Assets.get(Settings.pick())
@@ -26,14 +67,14 @@ local function makeCritterItem(refresh)
         text_func  = function() return _("Critter") end,
         value_func = function()
             local entry = Assets.get(Settings.pick())
-            return entry and entry.name or ""
+            return entry and critterName(entry) or ""
         end,
         sub_item_table_func = function()
             Assets.relist()
             Assets.ensureUserDir()
             local options = {}
             for _i, entry in ipairs(Assets.list()) do
-                options[#options + 1] = { value = entry.id, label = entry.name }
+                options[#options + 1] = { value = entry.id, label = critterName(entry) }
             end
             local rows = Config.appendRadioItems({}, {
                 options = options,
@@ -104,7 +145,7 @@ local function makeDecorItem(ctx_menu, refresh)
         pool   = function()
             local pool = {}
             for _i, entry in ipairs(Assets.decorList()) do
-                pool[#pool + 1] = { id = entry.id, label = entry.name }
+                pool[#pool + 1] = { id = entry.id, label = decorName(entry) }
             end
             return pool
         end,

@@ -44,6 +44,8 @@ Every module takes **1/3, 1/2, 2/3 or the full width** of a row. Consecutive mod
 
 A screen can have **several pages** that you swipe between. In the layout editor you can add pages, move modules between pages, and reorder modules inside a page. Incomplete rows are flagged so you can close them. The editor shows each module's width, and for full-width modules a short summary of what it displays.
 
+Tap a page's eye icon to **hide** it: it leaves the screen but keeps its modules and their settings, so you can show it again later without rebuilding it. At least one page always stays visible.
+
 ## Custom Screens
 
 Build extra Home-Screen-like pages of your own, each with an independent module layout, alongside your main Home Screen:

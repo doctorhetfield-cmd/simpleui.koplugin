@@ -13,6 +13,7 @@
 -- ScreenEngine._instance, ._cached_books_state, etc. directly on this table,
 -- and those fields double as the engine's flat legacy state store for
 -- id == "hs" — returning a different table here would break that identity.
+local UIManager = require("ui/uimanager")
 local ScreenEngine = require("engines/sui_screen_engine")
 local SUISettings = require("infra/sui_store")
 
@@ -48,6 +49,21 @@ end
 
 function ScreenEngine.close()
     ScreenEngine.closeScreen("hs")
+end
+
+-- Rebuilds the open Homescreen at once, re-prefetching book data so modules
+-- just enabled do not render empty, then repaints it on the next tick: a
+-- setDirty while a menu or dialog is open is painted behind it, and its close
+-- only repaints its own region.
+function ScreenEngine.refreshNow()
+    local hs = ScreenEngine._instance
+    if not hs then return end
+    hs:_refreshImmediate(false)
+    UIManager:nextTick(function()
+        if ScreenEngine._instance == hs and hs._navbar_container then
+            UIManager:setDirty(hs, "ui")
+        end
+    end)
 end
 
 -- Rebuilds every live screen (built-in + any Custom Screen open in the

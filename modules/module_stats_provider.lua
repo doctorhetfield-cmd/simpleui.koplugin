@@ -1493,8 +1493,8 @@ end
 -- Preserves _cache (SP.getStale() needs it for the stale first-paint) but
 -- clears _cache_day so the next call re-runs every DB query. Status counts are dropped too, unless the caller
 -- has already adjusted them through SP.applyStatusChange (keep_status_counts).
--- Call from: main.lua:onCloseDocument, sui_homescreen:onShow (when
--- _stats_need_refresh is set), module_reading_goals dialogs.
+-- Call from: main.lua:onCloseDocument (closed book unknown), the screen
+-- wake-up fallback in engines/sui_screen_engine.lua, infra/sui_goals.lua.
 -- ---------------------------------------------------------------------------
 function SP.invalidate(keep_status_counts)
     _cache_day          = nil
