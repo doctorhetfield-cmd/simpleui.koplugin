@@ -83,9 +83,8 @@ msgid "%1 × %2"
 msgstr "%1 × %2"
 
 #: features/library/sui_book_rows.lua:50 features/library/sui_book_rows.lua:78
-#, fuzzy
 msgid "%1, %2 to read"
-msgstr "%d buku terbaca"
+msgstr "%1, %2 dibaca"
 
 #: features/sui_backup.lua:697
 msgid "%d files (%s)"
@@ -840,9 +839,8 @@ msgid "Alignment"
 msgstr ""
 
 #: features/library/sui_library_browse.lua:1131
-#, fuzzy
 msgid "All Books"
-msgstr "Buku"
+msgstr "Semua Buku"
 
 #: screens/sui_menu.lua:3592 screens/sui_menu.lua:4287
 msgid "All caps"
@@ -990,9 +988,8 @@ msgid "Apply File Manager Layout to Reader"
 msgstr ""
 
 #: features/sui_patch_compat.lua:208
-#, fuzzy
 msgid "Apply and restart"
-msgstr "Menerapkan preset…"
+msgstr "Terapkan dan restart"
 
 #: infra/sui_core.lua:1516
 msgid "Applying preset…"
@@ -1224,9 +1221,8 @@ msgid "Badge Size"
 msgstr ""
 
 #: screens/sui_menu.lua:3195
-#, fuzzy
 msgid "Badges"
-msgstr "Tampilan Pustaka"
+msgstr ""
 
 #: features/sui_cover_elements.lua:67
 msgid "Banner"
@@ -1322,9 +1318,8 @@ msgid "Book Cover Transition"
 msgstr ""
 
 #: screens/sui_menu.lua:3179
-#, fuzzy
 msgid "Book Covers"
-msgstr "Folder Buku"
+msgstr "Sampul Buku"
 
 #: modules/critter/reaction_lines.lua:257
 msgid "Book Day. A holiday for my favourite thing: sitting."
@@ -1355,29 +1350,25 @@ msgid "Book Statistics"
 msgstr "Statistik Buku"
 
 #: features/library/sui_sort_sheet.lua:104
-#, fuzzy
 msgid "Book count"
-msgstr "Info Buku"
+msgstr "Jumlah buku"
 
 #: features/library/cover_editor/sui_cover_window.lua:259
 #: features/library/sui_book_hold_dialog.lua:234
-#, fuzzy
 msgid "Book cover"
-msgstr "Folder Buku"
+msgstr "Sampul buku"
 
 #: features/library/cover_editor/sui_cover_window.lua:93
-#, fuzzy
 msgid "Book file"
-msgstr "Folder Buku"
+msgstr "Berkas buku"
 
 #: modules/critter/reaction_lines.lua:84
 msgid "Book finished!"
 msgstr "Buku selesai!"
 
 #: modules/critter/menu.lua:39
-#, fuzzy
 msgid "Book stack"
-msgstr "Susunan Buku"
+msgstr "Susunan buku"
 
 #: main.lua:488
 msgid "Book statistics"
@@ -1388,9 +1379,8 @@ msgid "Book, walk, book, walk!"
 msgstr ""
 
 #: modules/critter/menu.lua:40
-#, fuzzy
 msgid "Bookcase"
-msgstr "Buku"
+msgstr "Wadah buku"
 
 #: features/sui_quickactions.lua:508
 msgid "Bookmark browser"
@@ -1456,9 +1446,8 @@ msgid "Books to read in %s:"
 msgstr "Buku untuk dibaca dalam %s:"
 
 #: screens/sui_menu.lua:3159
-#, fuzzy
 msgid "Books with Description"
-msgstr "Tidak ada buku di koleksi ini."
+msgstr "Buku disertai Deskripsi"
 
 #: engines/sui_group_cell.lua:298 features/library/sui_label_options.lua:146
 #: features/sui_cover_elements.lua:100 modules/module_tab_grid.lua:598
@@ -1517,9 +1506,8 @@ msgid "Browse by"
 msgstr "Telusuri berdasarkan"
 
 #: screens/sui_menu.lua:3242
-#, fuzzy
 msgid "Browse by Author, Series and Tags"
-msgstr "Aktifkan Telusuri berdasarkan Penulis / Serial / Tag"
+msgstr "Telusuri berdasarkan Penulis, Serial dan Tag"
 
 #: features/sui_quickactions.lua:675
 msgid "Browse by Authors/Series/Tags not available."
@@ -1535,9 +1523,8 @@ msgid "Browse…"
 msgstr "Telusuri…"
 
 #: screens/sui_menu.lua:3279
-#, fuzzy
 msgid "Browsing"
-msgstr "Telusur"
+msgstr "Telusuri"
 
 #: screens/sui_settings_window.lua:172
 msgid "Browsing, covers and folders"
@@ -1642,7 +1629,7 @@ msgstr ""
 #: screens/sui_menu.lua:2818
 #, fuzzy
 msgid "Captions"
-msgstr "Tombol Pustaka"
+msgstr "Sematan"
 
 #: modules/reading_stats/module_reading_stats.lua:1696
 msgid "Cards"
@@ -1786,18 +1773,16 @@ msgid "Choose backup file…"
 msgstr "Pilih berkas cadangan…"
 
 #: features/library/cover_editor/sui_cover_window.lua:205
-#, fuzzy
 msgid "Choose cover image"
-msgstr "Pilih paket ikon"
+msgstr "Pilih gambar sampul"
 
 #: engines/sui_asset_browser.lua:91
 msgid "Choose file"
 msgstr "Pilih berkas"
 
 #: features/library/cover_editor/sui_cover_window.lua:234
-#, fuzzy
 msgid "Choose from device"
-msgstr "Pilih berkas"
+msgstr "Pilih dari perangkat"
 
 #: features/sui_quickactions.lua:2171 features/sui_quickactions.lua:2193
 msgid "Choose icon"
@@ -2013,9 +1998,8 @@ msgid "Could be better."
 msgstr ""
 
 #: features/library/cover_editor/sui_cover_window.lua:171
-#, fuzzy
 msgid "Could not change the cover."
-msgstr "Tidak bisa menentukan folder pencadangan."
+msgstr "Tidak bisa mengubah sampul."
 
 #: features/sui_backup.lua:916 features/sui_backup.lua:991
 #: features/sui_backup.lua:1110
@@ -2165,9 +2149,8 @@ msgid "Custom Actions"
 msgstr ""
 
 #: screens/sui_menu.lua:3226
-#, fuzzy
 msgid "Custom Covers"
-msgstr "Sampul Grup"
+msgstr "Sampul Custom"
 
 #: modules/module_quote.lua:1438
 msgid "Custom File"
@@ -2248,7 +2231,7 @@ msgstr "Rerata harian"
 
 #: modules/reading_stats/module_reading_stats.lua:441
 msgid "Daily average, last 7 days"
-msgstr "rerata harian, 7 hari terakhir"
+msgstr "Rerata harian, 7 hari terakhir"
 
 #: modules/critter/voice_phrases.lua:133
 msgid "Daily goal done. Now pet me."
@@ -2316,9 +2299,8 @@ msgid "Day one. My favourite kind."
 msgstr ""
 
 #: screens/sui_stats_windows.lua:1719
-#, fuzzy
 msgid "Day streak"
-msgstr "Streak terbaik"
+msgstr "Hari streak"
 
 #: screens/sui_stats_windows.lua:881 screens/sui_stats_windows.lua:2652
 msgid "Days"
@@ -2486,19 +2468,16 @@ msgid "Disable \"Lock Scale\" first to set a per-module scale."
 msgstr ""
 
 #: features/sui_patch_compat.lua:169
-#, fuzzy
 msgid "Disable and restart"
-msgstr "Menerapkan preset…"
+msgstr "Matikan dan restart"
 
 #: infra/sui_patches.lua:1416
-#, fuzzy
 msgid "Disconnect folder"
-msgstr "Folder beranda"
+msgstr "Putuskan folder"
 
 #: infra/sui_patches.lua:1463
-#, fuzzy
 msgid "Disconnect folders"
-msgstr "Folder beranda"
+msgstr "Putuskan folder-folder"
 
 #: infra/sui_config.lua:204
 msgid "Disk Usage"
@@ -2529,9 +2508,8 @@ msgid "Do you think books get lonely?"
 msgstr ""
 
 #: screens/sui_menu.lua:4271
-#, fuzzy
 msgid "Don't Invert Colored Icons in Night Mode"
-msgstr "Balik di Mode Malam"
+msgstr "Jangan invert ikon berwarna di Mode Malam"
 
 #: modules/critter/voice_phrases.lua:706
 msgid "Don't break the spell."
@@ -2827,9 +2805,8 @@ msgid "Evening. I knocked your pen off."
 msgstr ""
 
 #: modules/critter/voice_phrases.lua:81
-#, fuzzy
 msgid "Evening. Lap time."
-msgstr "durasi baca"
+msgstr ""
 
 #: modules/critter/voice_phrases.lua:519
 msgid "Evening. The game is afoot."
@@ -3072,9 +3049,8 @@ msgid "File not found: "
 msgstr ""
 
 #: features/library/cover_editor/sui_cover_window.lua:131
-#, fuzzy
 msgid "File size"
-msgstr "Peramban berkas"
+msgstr "Ukuran berkas"
 
 #: modules/module_library.lua:213
 msgid "File size (largest)"
@@ -3139,9 +3115,8 @@ msgid "Finished Books"
 msgstr "Buku Terbaca"
 
 #: features/library/sui_sort_sheet.lua:92
-#, fuzzy
 msgid "Finished last"
-msgstr "Rampung"
+msgstr "Terakhir rampung"
 
 #: modules/module_clock.lua:254
 msgid "Five"
@@ -3232,9 +3207,8 @@ msgstr ""
 
 #: engines/sui_book_grid.lua:1985 modules/module_coverdeck.lua:1684
 #: modules/module_currently.lua:1407
-#, fuzzy
 msgid "Follow Style"
-msgstr "Style Jam"
+msgstr ""
 
 #: screens/sui_menu.lua:3545
 msgid "Follow accent"
@@ -3533,7 +3507,6 @@ msgid "Great. Now I'll worry all night."
 msgstr ""
 
 #: modules/critter/phrases.lua:50
-#, fuzzy
 msgid "Greetings"
 msgstr "Sambutan"
 
@@ -4611,18 +4584,16 @@ msgstr "Item"
 
 #: screens/sui_menu.lua:3401 screens/sui_menu.lua:3410
 #: screens/sui_menu.lua:3433
-#, fuzzy
 msgid "Items per Page"
-msgstr "Rata-rata per halaman"
+msgstr "Item per Halaman"
 
 #: features/library/sui_sort_sheet.lua:303
 #: features/library/sui_sort_sheet.lua:304
 #: features/library/sui_sort_sheet.lua:454
 #: features/library/sui_sort_sheet.lua:465 screens/sui_menu.lua:3411
 #: screens/sui_menu.lua:3434
-#, fuzzy
 msgid "Items per page"
-msgstr "Rata-rata per halaman"
+msgstr "Item per halaman"
 
 #: infra/sui_datenames.lua:31
 msgid "Jan"
@@ -4774,9 +4745,8 @@ msgid "Last backup: never"
 msgstr "Pencadangan terbaru: belum pernah"
 
 #: features/library/sui_sort_sheet.lua:88
-#, fuzzy
 msgid "Last read"
-msgstr "%s terbaca"
+msgstr "Dibaca terakhir kali"
 
 #: features/dialogs/sui_dialogs.lua:218
 msgid "Later"
@@ -5111,7 +5081,7 @@ msgstr ""
 
 #: infra/sui_datenames.lua:45
 msgid "March"
-msgstr "maret"
+msgstr "Maret"
 
 #: screens/sui_menu.lua:3155
 msgid "Marks the books that have been opened with a folded corner."
@@ -5759,7 +5729,6 @@ msgid "No books in this tab"
 msgstr "Tidak ditemukan buku di tab ini"
 
 #: engines/sui_screen_engine.lua:272
-#, fuzzy
 msgid "No books opened yet"
 msgstr "Belum ada buku dibuka"
 
@@ -5797,14 +5766,12 @@ msgid "No collections selected  —  long press to configure"
 msgstr ""
 
 #: features/library/cover_editor/sui_cover_window.lua:94
-#, fuzzy
 msgid "No cover"
-msgstr "Sampul Grup"
+msgstr "Tidak ada sampul"
 
 #: features/library/cover_editor/sui_cover_search.lua:313
-#, fuzzy
 msgid "No covers found."
-msgstr "Tidak ditemukan buku."
+msgstr "Tidak ada sampul ditemukan."
 
 #: modules/module_quote.lua:949
 msgid ""
@@ -5912,9 +5879,8 @@ msgid "No quotes found."
 msgstr ""
 
 #: screens/insights/sui_insights_charts.lua:225
-#, fuzzy
 msgid "No reading in this year"
-msgstr "bacaan di tahun ini"
+msgstr "Tidak ada bacaan di tahun ini"
 
 #: screens/insights/sui_insights_charts.lua:106
 msgid "No reading on the same days last week"
@@ -6449,9 +6415,8 @@ msgid "Pages Badge Color"
 msgstr ""
 
 #: screens/sui_menu.lua:3130
-#, fuzzy
 msgid "Pages Left to Read"
-msgstr "Halaman terbaca hari ini"
+msgstr "Halaman Tersisa untuk Dibaca"
 
 #: screens/sui_menu.lua:3128
 #, fuzzy
@@ -6490,9 +6455,8 @@ msgid "Pages read today"
 msgstr "Halaman terbaca hari ini"
 
 #: modules/reading_stats/module_reading_stats.lua:445
-#, fuzzy
 msgid "Pages turned"
-msgstr "Halaman terbaca"
+msgstr "Halaman dibuka"
 
 #: modules/module_tab_grid.lua:581
 msgid "Pagination"
@@ -7143,34 +7107,28 @@ msgstr ""
 
 #: modules/critter/phrases.lua:51
 #: modules/reading_stats/module_reading_stats.lua:449
-#, fuzzy
 msgid "Reading streak"
-msgstr "durasi baca"
+msgstr "Membaca streak"
 
 #: modules/reading_stats/module_reading_stats.lua:656
-#, fuzzy
 msgid "Reading time"
-msgstr "durasi baca"
+msgstr "Durasi baca"
 
 #: modules/reading_stats/module_reading_stats.lua:443
-#, fuzzy
 msgid "Reading time this month"
-msgstr "durasi baca"
+msgstr "Durasi baca bulan ini"
 
 #: modules/reading_stats/module_reading_stats.lua:438
-#, fuzzy
 msgid "Reading time this week"
-msgstr "durasi baca"
+msgstr "Durasi baca pekan ini"
 
 #: modules/reading_stats/module_reading_stats.lua:440
-#, fuzzy
 msgid "Reading time this year"
-msgstr "durasi baca"
+msgstr "Durasi baca tahun ini"
 
 #: modules/reading_stats/module_reading_stats.lua:436
-#, fuzzy
 msgid "Reading time today"
-msgstr "durasi baca"
+msgstr "Durasi baca hari ini"
 
 #: modules/critter/reaction_lines.lua:248
 msgid "Reading today is practically mandatory."
@@ -7210,9 +7168,8 @@ msgid "Regular"
 msgstr ""
 
 #: modules/critter/phrases.lua:223
-#, fuzzy
 msgid "Remember %s?"
-msgstr "Desember"
+msgstr "Ingat %s?"
 
 #: features/dialogs/sui_bento_sheet.lua:236
 msgid "Remove"
@@ -7301,39 +7258,38 @@ msgid "Reset to Default Scale"
 msgstr ""
 
 #: modules/critter/reaction_lines.lua:233
-#, fuzzy
 msgid "Resolutions?"
-msgstr "Koleksi"
+msgstr "Resolusi?"
 
 #: features/dialogs/sui_dialogs.lua:217 features/sui_quickactions.lua:593
 msgid "Restart"
-msgstr ""
+msgstr "Nyalakan ulang"
 
 #: features/sui_backup.lua:1042 infra/sui_compat_check.lua:123
 #: infra/sui_compat_check.lua:223
 msgid "Restart now"
-msgstr ""
+msgstr "Nyalakan ulang sekarang?"
 
 #: features/sui_style.lua:2292
 msgid "Restart to fully apply the UI font change."
-msgstr ""
+msgstr "Nyalakan ulang untuk memuat perubahan font UI."
 
 #: features/sui_quickactions.lua:595
 msgid "Restarting…"
-msgstr ""
+msgstr "Menyalakan ulang…"
 
 #: features/library/cover_editor/sui_cover_window.lua:215
 #: features/sui_backup.lua:1028
 msgid "Restore"
-msgstr ""
+msgstr "Pulihkan"
 
 #: features/sui_backup.lua:1175
 msgid "Restore Selected…"
-msgstr ""
+msgstr "Pulihkan yang terpilih…"
 
 #: features/sui_backup.lua:1033
 msgid "Restore failed."
-msgstr ""
+msgstr "Pemulihan gagal."
 
 #: features/sui_backup.lua:892
 msgid "Restore failed. Your previous configuration was kept unchanged."
@@ -7358,13 +7314,12 @@ msgid "Return to Home Screen on Wakeup"
 msgstr ""
 
 #: screens/sui_menu.lua:3030
-#, fuzzy
 msgid "Reverse Sorting"
-msgstr "Pengaturan Sampul"
+msgstr "Urutkan Terbalik"
 
 #: features/library/sui_sort_sheet.lua:401
 msgid "Reverse sorting"
-msgstr ""
+msgstr "Urutkan terbalik"
 
 #: engines/sui_book_grid.lua:2108 features/sui_cover_elements.lua:82
 msgid "Ribbon"
@@ -7477,22 +7432,22 @@ msgstr ""
 
 #: infra/sui_datenames.lua:52
 msgid "Sat"
-msgstr ""
+msgstr "Sab"
 
 #: features/sui_accent_picker.lua:88
 msgid "Saturation"
-msgstr ""
+msgstr "Saturasi"
 
 #: infra/sui_datenames.lua:58
 msgid "Saturday"
-msgstr ""
+msgstr "Sabtu"
 
 #: features/sui_manual_books.lua:106 features/sui_manual_books.lua:134
 #: features/sui_presets.lua:936 features/sui_quickactions.lua:2626
 #: infra/sui_goals.lua:119 screens/sui_menu.lua:4061
 #: screens/sui_settings_window.lua:359 screens/sui_stats_windows.lua:506
 msgid "Save"
-msgstr ""
+msgstr "Simpan"
 
 #: features/sui_presets.lua:929 screens/sui_menu.lua:4054
 msgid "Save as new preset"
@@ -7689,9 +7644,8 @@ msgstr "Telusuri pustaka"
 
 #: features/library/cover_editor/sui_cover_window.lua:228
 #: features/library/cover_editor/sui_cover_window.lua:260
-#, fuzzy
 msgid "Search online"
-msgstr "Telusuri pustaka"
+msgstr "Telusuri online"
 
 #: features/library/sui_library_search.lua:163
 msgid "Search results: %1"
@@ -7821,14 +7775,12 @@ msgid "Seventeen"
 msgstr ""
 
 #: screens/sui_menu.lua:2940
-#, fuzzy
 msgid "Several Covers"
-msgstr "Sampul Grup"
+msgstr "Beberapa Sampul"
 
 #: screens/sui_menu.lua:2862
-#, fuzzy
 msgid "Shadow"
-msgstr "Bayangan Sampul"
+msgstr "Bayangan"
 
 #: modules/critter/reaction_lines.lua:424
 msgid "Shall I pick a harder one tomorrow?"
@@ -7911,9 +7863,8 @@ msgid "Show Tiny Critter"
 msgstr ""
 
 #: screens/sui_menu.lua:3285
-#, fuzzy
 msgid "Show Uncategorized Books"
-msgstr "Tampilkan item belum berkategori"
+msgstr "Tampilkan buku yang belum berkategori"
 
 #: screens/sui_menu.lua:2361
 msgid ""
@@ -7941,14 +7892,12 @@ msgid "Show finished books"
 msgstr ""
 
 #: modules/reading_stats/module_reading_stats.lua:1748
-#, fuzzy
 msgid "Show icons"
-msgstr "Pilih ikon"
+msgstr "Tampilkan ikon"
 
 #: features/library/sui_book_hold_dialog.lua:275
-#, fuzzy
 msgid "Show in history"
-msgstr "Pilih ikon"
+msgstr "Tampilkan di riwayat"
 
 #: modules/module_heatmap.lua:360
 msgid "Show legend"
@@ -8158,9 +8107,8 @@ msgid "Sleep well. The book will keep."
 msgstr ""
 
 #: screens/sui_quicksettings_bar.lua:1644
-#, fuzzy
 msgid "Slider Style"
-msgstr "Gaya Sampul"
+msgstr "Gaya Penggulir"
 
 #: screens/sui_quicksettings_bar.lua:1659
 msgid "Sliders in Book Layout"
@@ -8203,9 +8151,8 @@ msgid "So, how did it end?"
 msgstr ""
 
 #: modules/critter/voice_phrases.lua:246
-#, fuzzy
 msgid "So, reading it is."
-msgstr "bacaan di pekan ini"
+msgstr ""
 
 #: modules/critter/dialog.lua:285
 msgid "Sofas were invented for books."
@@ -8316,13 +8263,12 @@ msgid "Square Pill"
 msgstr ""
 
 #: screens/sui_menu.lua:2548
-#, fuzzy
 msgid "Stack Modules"
-msgstr "Tambah Modul"
+msgstr "Susun Modul"
 
 #: screens/sui_menu.lua:2628
 msgid "Start & Wake"
-msgstr ""
+msgstr "Nyala & Bangunkan"
 
 #: modules/critter/challenge.lua:214
 msgid "Start reading before %d:00 and it's yours."
@@ -8330,21 +8276,20 @@ msgstr ""
 
 #: screens/sui_onboarding.lua:447
 msgid "Start using Simple UI"
-msgstr ""
+msgstr "Nyalakan dengan Simple UI"
 
 #: infra/sui_patches.lua:1111 infra/sui_patches.lua:1113
 #: screens/sui_menu.lua:2318
 msgid "Start with"
-msgstr ""
+msgstr "Mulai dengan"
 
 #: screens/sui_onboarding.lua:131
 msgid "Start with a ready-made layout. You can change everything later."
 msgstr ""
 
 #: features/sui_manual_books.lua:110
-#, fuzzy
 msgid "Started"
-msgstr "Tanggal mulai"
+msgstr "Dimulai"
 
 #: modules/module_coverdeck.lua:142 modules/module_coverdeck.lua:1618
 #: modules/module_coverdeck.lua:1638 modules/module_coverdeck.lua:1645
@@ -8352,7 +8297,7 @@ msgstr "Tanggal mulai"
 #: modules/module_currently.lua:1359 modules/moduleregistry.lua:311
 #: screens/sui_quicksettings_bar.lua:222 screens/sui_quicksettings_bar.lua:1601
 msgid "Statistics"
-msgstr ""
+msgstr "Statistik"
 
 #: features/sui_stats_menu.lua:91
 msgid "Statistics Loading Notice"
@@ -8456,9 +8401,8 @@ msgid "Streak noted. A pattern!"
 msgstr ""
 
 #: modules/critter/phrases.lua:153
-#, fuzzy
 msgid "Streak started!"
-msgstr "Tanggal mulai"
+msgstr "Streak dimulai!"
 
 #: modules/critter/voice_phrases.lua:354
 msgid "Streak! I'm all stitched up."
@@ -8511,9 +8455,8 @@ msgid "Sweet dreams and good books."
 msgstr ""
 
 #: modules/module_tab_grid.lua:587
-#, fuzzy
 msgid "Swipe Bar"
-msgstr "Bilah Atas"
+msgstr "Bilah Usapan"
 
 #: screens/sui_menu.lua:991
 msgid "Swipe Indicator"
@@ -9014,9 +8957,8 @@ msgid "This name is reserved by a built-in preset."
 msgstr ""
 
 #: modules/critter/voice_phrases.lua:104
-#, fuzzy
 msgid "This time."
-msgstr "Total waktu"
+msgstr "Kali ini."
 
 #: modules/reading_stats/module_reading_stats.lua:438
 #: modules/reading_stats/module_reading_stats.lua:439
@@ -9101,9 +9043,8 @@ msgid "Tiny Critter"
 msgstr ""
 
 #: modules/critter/menu.lua:245
-#, fuzzy
 msgid "Tiny Critter Settings"
-msgstr "Pengaturan Sampul"
+msgstr ""
 
 #: modules/critter/dialog.lua:369
 msgid "Tiring."
@@ -9134,9 +9075,8 @@ msgid "Title Bar Opacity"
 msgstr ""
 
 #: screens/sui_menu.lua:1725
-#, fuzzy
 msgid "Title Bar Size"
-msgstr "Ukuran Baterai"
+msgstr ""
 
 #: screens/sui_menu.lua:1754
 msgid ""
@@ -9163,9 +9103,8 @@ msgid "To Be Read Books"
 msgstr "Ke Antrean Baca"
 
 #: screens/sui_settings_window.lua:587
-#, fuzzy
 msgid "To Page"
-msgstr "Tambah Halaman"
+msgstr "Ke Halaman"
 
 #: modules/module_reading_goals.lua:903 modules/module_reading_goals.lua:934
 #: modules/module_reading_goals.lua:1014 modules/module_reading_goals.lua:1059
@@ -9184,9 +9123,8 @@ msgid "Today we celebrate you and your shelves."
 msgstr ""
 
 #: modules/critter/phrases.lua:54
-#, fuzzy
 msgid "Today's reading"
-msgstr "Hari membaca"
+msgstr "Bacaan hari ini"
 
 #: modules/critter/reaction_lines.lua:283
 msgid "Together, with books."
@@ -9218,9 +9156,8 @@ msgid "Total"
 msgstr "Total"
 
 #: modules/reading_stats/module_reading_stats.lua:445
-#, fuzzy
 msgid "Total pages turned"
-msgstr "Total durasi baca"
+msgstr "Total halaman dibuka"
 
 #: modules/reading_stats/module_reading_stats.lua:447
 msgid "Total reading time"
@@ -9391,9 +9328,8 @@ msgid "Use this Nerd Font icon?"
 msgstr ""
 
 #: features/library/cover_editor/sui_cover_search.lua:250
-#, fuzzy
 msgid "Use this cover"
-msgstr "Buku di tahun ini"
+msgstr "Pakai sampul ini"
 
 #: screens/sui_menu.lua:509
 msgid ""
@@ -9431,9 +9367,8 @@ msgid "View"
 msgstr ""
 
 #: features/library/sui_sort_sheet.lua:504
-#, fuzzy
 msgid "View and sort"
-msgstr "Menerapkan preset…"
+msgstr "Lihat dan urut"
 
 #: screens/sui_menu.lua:3316
 msgid "Views"
@@ -9513,9 +9448,8 @@ msgid "Wednesday"
 msgstr ""
 
 #: screens/sui_stats_windows.lua:1722
-#, fuzzy
 msgid "Week streak"
-msgstr "Streak terbaik"
+msgstr "Streak dalam pekan"
 
 #: modules/critter/voice_phrases.lua:666
 msgid "Weekend! All day together!"
@@ -9993,9 +9927,8 @@ msgid "You win. Hmph."
 msgstr ""
 
 #: modules/critter/game_lines.lua:22
-#, fuzzy
 msgid "You win. This time."
-msgstr "Total waktu"
+msgstr "Kamu menang. Kali ini."
 
 #: modules/critter/phrases.lua:203
 msgid "You're %d%% into %s."
@@ -10372,9 +10305,8 @@ msgid "pages/day (7 days)"
 msgstr "halaman/hari (7 hari)"
 
 #: modules/reading_stats/module_reading_stats.lua:461
-#, fuzzy
 msgid "pages/hour (90 days)"
-msgstr "halaman/hari (7 hari)"
+msgstr "halaman/jam (90 hari)"
 
 #: modules/reading_stats/module_reading_stats.lua:469
 msgid "peak reading hour"
@@ -10393,14 +10325,12 @@ msgid "september"
 msgstr ""
 
 #: modules/reading_stats/module_reading_stats.lua:446
-#, fuzzy
 msgid "today"
-msgstr "Hari ini"
+msgstr "hari ini"
 
 #: modules/reading_stats/module_reading_stats.lua:445
-#, fuzzy
 msgid "total pages turned"
-msgstr "Total durasi baca"
+msgstr "total halaman terbuka "
 
 #: modules/reading_stats/module_reading_stats.lua:496
 msgid "unread"
@@ -10442,10 +10372,9 @@ msgid_plural "%1 % of %2 pages"
 msgstr[0] ""
 
 #: features/library/sui_list_rows.lua:46
-#, fuzzy
 msgid "%1 book"
 msgid_plural "%1 books"
-msgstr[0] "%d buku terbaca"
+msgstr[0] "%d buku"
 
 #: modules/reading_stats/width_sheet.lua:100
 msgid "%1 column"
@@ -10453,23 +10382,21 @@ msgid_plural "%1 columns"
 msgstr[0] "%1 kolom"
 
 #: features/library/cover_editor/sui_cover_search.lua:267
-#, fuzzy
 msgid "%1 cover found"
 msgid_plural "%1 covers found"
-msgstr[0] "%1 kolom"
+msgstr[0] "%1 sampul ditemukan"
 
 #: features/library/sui_list_rows.lua:48
-#, fuzzy
 msgid "%1 folder"
 msgid_plural "%1 folders"
-msgstr[0] "Folder beranda"
+msgstr[0] "%1 folder"
 
 #: infra/sui_goals.lua:46 modules/module_reading_goals.lua:766
 #: screens/insights/sui_insights_charts.lua:253
 #: screens/sui_stats_windows.lua:759
 msgid "%d book"
 msgid_plural "%d books"
-msgstr[0] ""
+msgstr[0] "%d buku"
 
 #: modules/critter/phrases.lua:83
 msgid "%d book finished this year"
@@ -10832,10 +10759,9 @@ msgid_plural "Read %d pages today?"
 msgstr[0] ""
 
 #: features/library/cover_editor/sui_cover_search.lua:314
-#, fuzzy
 msgid "Show %1 cover"
 msgid_plural "Show %1 covers"
-msgstr[0] "Pilih ikon"
+msgstr[0] "Tampilkan %1 sampul"
 
 #: screens/sui_menu.lua:39
 msgid ""
