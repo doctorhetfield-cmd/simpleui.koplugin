@@ -2188,6 +2188,23 @@ function ScreenWidget:_buildModWidget(mod, col_w, ctx, min_h)
         widget, label_inside
 end
 
+-- True when book module `mod` builds a widget at column width `col_w` with the
+-- current ctx. The trial widget is freed and the covers it queued for
+-- extraction are dropped: the rebuild that follows queues them again.
+function ScreenWidget:_bookModHasItems(mod, col_w)
+    local queued = Config._cover_extract_queue and #Config._cover_extract_queue or 0
+    local widget = self:_buildModWidget(mod, col_w, self._ctx_cache)
+    local queue = Config._cover_extract_queue
+    for i = queue and #queue or 0, queued + 1, -1 do
+        local fp = table.remove(queue, i)
+        Config._cover_extract_pending[fp] = nil
+        Config._cover_extract_specs[fp] = nil
+    end
+    if not widget then return false end
+    widget:free()
+    return true
+end
+
 function ScreenWidget:_makeModWrapper(mod, widget, inner_w)
     local pool = self._wrapper_pool
     local w    = pool[mod.id]
@@ -2430,6 +2447,7 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
     self._clock_body_ref    = body
     self._stats_mod_slots   = {}
     self._book_mod_slots    = {}
+    self._book_mod_empty    = {}  -- book mod id -> col_w of a module built with no items
     self._cover_mod_slots   = {}
     self._book_mod_label_slots = {}
     self._clock_is_wrapped  = false
@@ -2478,6 +2496,8 @@ function ScreenWidget:_updatePage(keep_cache, books_only, stats_only)
                 if content then
                     logger.warn("simpleui: screen (" .. tostring(self._id) .. "): build failed for "
                                 .. tostring(mod.id) .. ": " .. tostring(content))
+                elseif mod.is_book_mod then
+                    self._book_mod_empty[mod.id] = col_w
                 end
                 return nil
             end
@@ -2946,11 +2966,16 @@ function ScreenWidget:_scheduleDataRefresh(stats_only)
                 local pages = self._enabled_mods_cache and self._enabled_mods_cache.pages_of_mods or {}
                 local shown = { pages[self._current_page] }
                 if _isLandscape() then shown[2] = pages[self._current_page + 1] end
+                -- A module that built with no items only forces the rebuild
+                -- when the authoritative data now gives it some.
                 for _, page_mods in pairs(shown) do
                     for _, mod in ipairs(page_mods) do
                         if mod.is_book_mod and not self._book_mod_slots[mod.id] then
-                            missing_slot = mod.id
-                            break
+                            local empty_w = self._book_mod_empty and self._book_mod_empty[mod.id]
+                            if not empty_w or self:_bookModHasItems(mod, empty_w) then
+                                missing_slot = mod.id
+                                break
+                            end
                         end
                     end
                     if missing_slot then break end

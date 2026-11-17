@@ -26,6 +26,8 @@
 --   local drums = Charts.odometer{ digits = "001234", rolling = true, w = avail_w,
 --                                  avail_h = h, max_w = bar_max, color = c, digit_color = d }
 --
+--   local x, y, w, h = Charts.clipRect(buf_w, buf_h, x, y, w, h)  -- nil when outside
+--
 -- Dot states: "read" (filled), "frozen" (ring) and anything else (faint).
 -- Heatmap levels: 0 (no reading) to 4, or false for a cell that does not exist.
 
@@ -557,6 +559,15 @@ end
 -- last one is only outlined, and with `opts.rolling` it is caught between its
 -- digit and the next one. Drums are as wide as `opts.w` allows, up to
 -- `opts.max_w`, and keep their proportions within `opts.avail_h`.
+-- Part of the rectangle (x, y, w, h) inside a buf_w x buf_h buffer, as
+-- x, y, w, h; nil when nothing of it is inside.
+function Charts.clipRect(buf_w, buf_h, x, y, w, h)
+    local x0, y0 = math.max(x, 0), math.max(y, 0)
+    local x1, y1 = math.min(x + w, buf_w), math.min(y + h, buf_h)
+    if x1 <= x0 or y1 <= y0 then return nil end
+    return x0, y0, x1 - x0, y1 - y0
+end
+
 -- opts: digits (string), rolling (optional), w, avail_h, max_w (px), color,
 --       digit_color (the colour that reads on `color`).
 -- Returns nil when `opts.w` or `opts.avail_h` cannot hold legible drums.
@@ -593,11 +604,12 @@ function Charts.odometer(opts)
         return text
     end
 
-    -- Paints `digit` centred in the drum at `view`, `shift` px below centre.
-    local function paintDigit(view, text, shift)
+    -- Paints `digit` centred in a drum inside of inner_w x inner_h whose
+    -- top-left sits at (ox, oy) in `view`, `shift` px below centre.
+    local function paintDigit(view, text, shift, ox, oy, inner_w, inner_h)
         local size = text:getSize()
-        text:paintTo(view, math.floor((view:getWidth() - size.w) / 2),
-            math.floor((view:getHeight() - size.h) / 2) + shift)
+        text:paintTo(view, ox + math.floor((inner_w - size.w) / 2),
+            oy + math.floor((inner_h - size.h) / 2) + shift)
     end
 
     function widget:paintTo(bb, x, y)
@@ -612,16 +624,24 @@ function Charts.odometer(opts)
             elseif not AAPaint.fillRoundedRect(bb, dx, y, drum_w, drum_h, radius, color, FULL_ALPHA) then
                 AAPaint.fillRect(bb, dx, y, drum_w, drum_h, color, FULL_ALPHA)
             end
-            -- The digit is clipped to the drum by painting it into a view of its inside.
-            local view = bb:viewport(dx + border, y + border, drum_w - 2 * border, drum_h - 2 * border)
-            local digit = tonumber(digits:sub(i, i))
-            if last then
-                paintDigit(view, digitText(outline_texts, digit, color), -roll)
-                if roll > 0 then
-                    paintDigit(view, digitText(outline_texts, (digit + 1) % 10, color), pitch - roll)
+            -- The digit is clipped to the drum by painting it into a view of
+            -- its inside, cut to the buffer: a view never exceeds its parent.
+            local ix, iy = dx + border, y + border
+            local inner_w, inner_h = drum_w - 2 * border, drum_h - 2 * border
+            local vx, vy, vw, vh = Charts.clipRect(bb:getWidth(), bb:getHeight(), ix, iy, inner_w, inner_h)
+            if vx then
+                local view = bb:viewport(vx, vy, vw, vh)
+                local ox, oy = ix - vx, iy - vy
+                local digit = tonumber(digits:sub(i, i))
+                if last then
+                    paintDigit(view, digitText(outline_texts, digit, color), -roll, ox, oy, inner_w, inner_h)
+                    if roll > 0 then
+                        paintDigit(view, digitText(outline_texts, (digit + 1) % 10, color), pitch - roll,
+                            ox, oy, inner_w, inner_h)
+                    end
+                else
+                    paintDigit(view, digitText(filled_texts, digit, digit_color), 0, ox, oy, inner_w, inner_h)
                 end
-            else
-                paintDigit(view, digitText(filled_texts, digit, digit_color), 0)
             end
         end
     end
