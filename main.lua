@@ -1189,17 +1189,6 @@ function SimpleUIPlugin:onCloseDocument()
     -- module can be enabled on any of them, each with its own pfx, so unlike
     -- the single-screen era this cannot be decided from one flat check.
     local screen_ids = ScreenEngine.knownScreenIds()
-    local live_ids    = ScreenEngine.liveScreenIds()
-
-    -- Fast-path: nothing is currently live, and the only known screen (the
-    -- built-in Homescreen — no Custom Screen has been touched this session)
-    -- is already flagged for rebuild. Nothing further to do — the next open
-    -- will rebuild from scratch. Avoids loading the Registry and all module
-    -- pcalls. Only taken when NO screen at all is currently live, since a
-    -- live screen always needs its own fresh check below.
-    if #live_ids == 0 and #screen_ids == 1 and ScreenEngine.needsRefresh("hs") then
-        return
-    end
 
     -- Registry is already loaded (moduleregistry was pre-loaded at boot via
     -- scheduleIn(2)); use package.loaded to avoid a pcall on the hot path.
