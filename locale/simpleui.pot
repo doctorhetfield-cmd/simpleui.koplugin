@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: simpleui\n"
-"POT-Creation-Date: 2026-11-16 22:57+0000\n"
+"POT-Creation-Date: 2026-11-18 20:54+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -73,7 +73,7 @@ msgstr ""
 #: engines/sui_book_grid.lua:1917
 #: features/library/sui_sort_sheet.lua:311
 #: modules/module_quick_actions.lua:515
-#: modules/reading_stats/module_reading_stats.lua:1661
+#: modules/reading_stats/module_reading_stats.lua:1641
 #: screens/sui_menu.lua:3376
 #: screens/sui_menu.lua:3380
 msgid "%1 × %2"
@@ -635,7 +635,7 @@ msgstr ""
 
 #: features/library/sui_label_options.lua:134
 #: features/sui_style.lua:1444
-#: modules/reading_stats/module_reading_stats.lua:1728
+#: modules/reading_stats/module_reading_stats.lua:1708
 msgid "Accent"
 msgstr ""
 
@@ -690,8 +690,8 @@ msgstr ""
 msgid "Add Button"
 msgstr ""
 
-#: engines/sui_window.lua:1176
-#: engines/sui_window.lua:4517
+#: engines/sui_window.lua:1182
+#: engines/sui_window.lua:4543
 #: features/sui_arrange.lua:434
 #: screens/sui_menu.lua:919
 #: screens/sui_menu.lua:956
@@ -741,7 +741,7 @@ msgstr ""
 msgid "Add at least 2 decorations to arrange."
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1639
+#: modules/reading_stats/module_reading_stats.lua:1619
 msgid "Add at least 2 stats to arrange."
 msgstr ""
 
@@ -848,7 +848,7 @@ msgstr ""
 msgid "All caps"
 msgstr ""
 
-#: engines/sui_window.lua:4607
+#: engines/sui_window.lua:4633
 #: screens/sui_settings_window.lua:692
 msgid "All items have already been added."
 msgstr ""
@@ -917,8 +917,8 @@ msgstr ""
 msgid "An old bus ticket."
 msgstr ""
 
-#: modules/module_clock.lua:1105
-#: modules/module_clock.lua:1124
+#: modules/module_clock.lua:1135
+#: modules/module_clock.lua:1154
 msgid "Analogue"
 msgstr ""
 
@@ -1048,7 +1048,7 @@ msgstr ""
 msgid "Arrange Collection"
 msgstr ""
 
-#: engines/sui_window.lua:4516
+#: engines/sui_window.lua:4542
 #: modules/module_coverdeck.lua:1628
 #: modules/module_currently.lua:1349
 #: screens/sui_menu.lua:659
@@ -1063,7 +1063,7 @@ msgstr ""
 msgid "Arrange Quick Settings"
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1637
+#: modules/reading_stats/module_reading_stats.lua:1617
 msgid "Arrange Reading Stats"
 msgstr ""
 
@@ -1289,8 +1289,8 @@ msgid "Bars"
 msgstr ""
 
 #: infra/sui_config.lua:203
-#: modules/module_clock.lua:196
-#: modules/module_clock.lua:1093
+#: modules/module_clock.lua:224
+#: modules/module_clock.lua:1123
 msgid "Battery"
 msgstr ""
 
@@ -1325,8 +1325,8 @@ msgstr ""
 msgid "Best streak"
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1717
-#: modules/reading_stats/module_reading_stats.lua:1728
+#: modules/reading_stats/module_reading_stats.lua:1697
+#: modules/reading_stats/module_reading_stats.lua:1708
 msgid "Black"
 msgstr ""
 
@@ -1439,7 +1439,7 @@ msgstr ""
 
 #: engines/sui_book_sources.lua:406
 #: modules/module_library.lua:272
-#: modules/moduleregistry.lua:310
+#: modules/moduleregistry.lua:318
 #: modules/reading_stats/module_reading_stats.lua:658
 #: screens/sui_menu.lua:2629
 msgid "Books"
@@ -1688,7 +1688,7 @@ msgstr ""
 msgid "Captions"
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1696
+#: modules/reading_stats/module_reading_stats.lua:1676
 msgid "Cards"
 msgstr ""
 
@@ -1886,13 +1886,13 @@ msgstr ""
 #: features/sui_presets.lua:180
 #: features/sui_presets.lua:244
 #: infra/sui_config.lua:199
-#: modules/module_clock.lua:194
-#: modules/module_clock.lua:744
-#: modules/module_clock.lua:1093
+#: modules/module_clock.lua:222
+#: modules/module_clock.lua:774
+#: modules/module_clock.lua:1123
 msgid "Clock"
 msgstr ""
 
-#: modules/module_clock.lua:1101
+#: modules/module_clock.lua:1131
 msgid "Clock Style"
 msgstr ""
 
@@ -1997,7 +1997,7 @@ msgstr ""
 #: engines/sui_book_grid.lua:1923
 #: features/library/sui_sort_sheet.lua:483
 #: modules/module_quick_actions.lua:523
-#: modules/reading_stats/module_reading_stats.lua:1671
+#: modules/reading_stats/module_reading_stats.lua:1651
 msgid "Columns"
 msgstr ""
 
@@ -2351,9 +2351,13 @@ msgid "Dashboard"
 msgstr ""
 
 #: features/library/sui_sort_sheet.lua:87
-#: modules/module_clock.lua:195
-#: modules/module_clock.lua:1093
+#: modules/module_clock.lua:223
+#: modules/module_clock.lua:1123
 msgid "Date"
+msgstr ""
+
+#: modules/module_clock.lua:1164
+msgid "Date Format"
 msgstr ""
 
 #: modules/module_library.lua:211
@@ -2485,8 +2489,8 @@ msgstr ""
 msgid "Default: System"
 msgstr ""
 
-#: engines/sui_window.lua:2462
-#: engines/sui_window.lua:3824
+#: engines/sui_window.lua:2488
+#: engines/sui_window.lua:3850
 #: features/dialogs/sui_bento_sheet.lua:134
 #: features/library/sui_hold_rows.lua:135
 #: features/sui_manual_books.lua:85
@@ -2555,7 +2559,7 @@ msgstr ""
 msgid "Detailed"
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1697
+#: modules/reading_stats/module_reading_stats.lua:1677
 msgid "Detailed Cards"
 msgstr ""
 
@@ -2567,8 +2571,8 @@ msgstr ""
 msgid "Dictionary Lookup"
 msgstr ""
 
-#: modules/module_clock.lua:1106
-#: modules/module_clock.lua:1110
+#: modules/module_clock.lua:1136
+#: modules/module_clock.lua:1140
 msgid "Digital"
 msgstr ""
 
@@ -2732,6 +2736,10 @@ msgstr ""
 msgid "Edit Book"
 msgstr ""
 
+#: modules/reading_stats/module_reading_stats.lua:1803
+msgid "Edit Card"
+msgstr ""
+
 #: screens/sui_menu.lua:626
 #: screens/sui_menu.lua:628
 #: screens/sui_menu.lua:857
@@ -2747,16 +2755,15 @@ msgstr ""
 msgid "Edit Quick Action"
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1208
-#: modules/reading_stats/module_reading_stats.lua:1640
+#: modules/reading_stats/module_reading_stats.lua:1620
 msgid "Edit card"
 msgstr ""
 
-#: modules/module_clock.lua:255
+#: modules/module_clock.lua:283
 msgid "Eight"
 msgstr ""
 
-#: modules/module_clock.lua:258
+#: modules/module_clock.lua:286
 msgid "Eighteen"
 msgstr ""
 
@@ -2772,7 +2779,7 @@ msgstr ""
 msgid "Elementary."
 msgstr ""
 
-#: modules/module_clock.lua:256
+#: modules/module_clock.lua:284
 msgid "Eleven"
 msgstr ""
 
@@ -3039,7 +3046,7 @@ msgstr ""
 msgid "Extraction error: "
 msgstr ""
 
-#: modules/moduleregistry.lua:313
+#: modules/moduleregistry.lua:321
 msgid "Extras"
 msgstr ""
 
@@ -3127,11 +3134,11 @@ msgstr ""
 msgid "Fetching bookmarks…"
 msgstr ""
 
-#: modules/module_clock.lua:257
+#: modules/module_clock.lua:285
 msgid "Fifteen"
 msgstr ""
 
-#: modules/module_clock.lua:263
+#: modules/module_clock.lua:291
 msgid "Fifty"
 msgstr ""
 
@@ -3231,7 +3238,6 @@ msgstr ""
 
 #: features/library/sui_finished_books.lua:85
 #: features/sui_stats_menu.lua:138
-#: modules/reading_stats/module_reading_stats.lua:1193
 msgid "Finished Books"
 msgstr ""
 
@@ -3239,7 +3245,7 @@ msgstr ""
 msgid "Finished last"
 msgstr ""
 
-#: modules/module_clock.lua:254
+#: modules/module_clock.lua:282
 msgid "Five"
 msgstr ""
 
@@ -3363,15 +3369,15 @@ msgstr ""
 msgid "Forgotten. What streak?"
 msgstr ""
 
-#: modules/module_clock.lua:263
+#: modules/module_clock.lua:291
 msgid "Forty"
 msgstr ""
 
-#: modules/module_clock.lua:254
+#: modules/module_clock.lua:282
 msgid "Four"
 msgstr ""
 
-#: modules/module_clock.lua:257
+#: modules/module_clock.lua:285
 msgid "Fourteen"
 msgstr ""
 
@@ -3425,7 +3431,7 @@ msgstr ""
 msgid "Full"
 msgstr ""
 
-#: engines/sui_screen_engine.lua:2069
+#: engines/sui_screen_engine.lua:2071
 #: features/library/sui_label_options.lua:141
 #: screens/sui_settings_window.lua:559
 msgid "Full Width"
@@ -3613,8 +3619,8 @@ msgstr ""
 #: features/library/sui_label_options.lua:130
 #: infra/sui_config.lua:1515
 #: modules/module_tab_grid.lua:647
-#: modules/reading_stats/module_reading_stats.lua:1718
-#: modules/reading_stats/module_reading_stats.lua:1728
+#: modules/reading_stats/module_reading_stats.lua:1698
+#: modules/reading_stats/module_reading_stats.lua:1708
 msgid "Gray"
 msgstr ""
 
@@ -3638,8 +3644,8 @@ msgstr ""
 #: engines/sui_book_grid.lua:1921
 #: modules/module_quick_actions.lua:518
 #: modules/module_quick_actions.lua:521
-#: modules/reading_stats/module_reading_stats.lua:1666
-#: modules/reading_stats/module_reading_stats.lua:1669
+#: modules/reading_stats/module_reading_stats.lua:1646
+#: modules/reading_stats/module_reading_stats.lua:1649
 msgid "Grid size"
 msgstr ""
 
@@ -3857,7 +3863,7 @@ msgstr ""
 msgid "Highlight card"
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1711
+#: modules/reading_stats/module_reading_stats.lua:1691
 msgid "Highlight color"
 msgstr ""
 
@@ -4689,7 +4695,7 @@ msgstr ""
 #: modules/module_coverdeck.lua:1639
 #: modules/module_currently.lua:1348
 #: modules/module_currently.lua:1360
-#: modules/reading_stats/module_reading_stats.lua:1635
+#: modules/reading_stats/module_reading_stats.lua:1615
 #: screens/sui_menu.lua:816
 #: screens/sui_menu.lua:821
 #: screens/sui_menu.lua:892
@@ -4803,7 +4809,7 @@ msgstr ""
 #: modules/module_collections.lua:486
 #: modules/module_quick_actions.lua:557
 #: modules/module_reading_goals.lua:1183
-#: modules/reading_stats/module_reading_stats.lua:1624
+#: modules/reading_stats/module_reading_stats.lua:1604
 #: screens/sui_quicksettings_bar.lua:1672
 msgid "Label"
 msgstr ""
@@ -5018,7 +5024,7 @@ msgstr ""
 msgid "Lighten"
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1698
+#: modules/reading_stats/module_reading_stats.lua:1678
 msgid "List"
 msgstr ""
 
@@ -5259,7 +5265,7 @@ msgstr ""
 msgid "Metadata"
 msgstr ""
 
-#: modules/module_clock.lua:324
+#: modules/module_clock.lua:352
 msgid "Midnight"
 msgstr ""
 
@@ -5355,7 +5361,7 @@ msgstr ""
 msgid "Modules  (%d)"
 msgstr ""
 
-#: engines/sui_screen_engine.lua:2811
+#: engines/sui_screen_engine.lua:2845
 msgid "Modules exceed the visible area.\nMove some to another page or adjust the scale."
 msgstr ""
 
@@ -5501,7 +5507,7 @@ msgstr ""
 msgid "Mostly with my face."
 msgstr ""
 
-#: engines/sui_window.lua:3807
+#: engines/sui_window.lua:3833
 msgid "Move down"
 msgstr ""
 
@@ -5509,12 +5515,12 @@ msgstr ""
 msgid "Move row"
 msgstr ""
 
-#: engines/sui_window.lua:3801
+#: engines/sui_window.lua:3827
 #: screens/sui_settings_window.lua:542
 msgid "Move to page"
 msgstr ""
 
-#: engines/sui_window.lua:3804
+#: engines/sui_window.lua:3830
 msgid "Move up"
 msgstr ""
 
@@ -5779,11 +5785,11 @@ msgstr ""
 msgid "Night. Why are you awake?"
 msgstr ""
 
-#: modules/module_clock.lua:255
+#: modules/module_clock.lua:283
 msgid "Nine"
 msgstr ""
 
-#: modules/module_clock.lua:259
+#: modules/module_clock.lua:287
 msgid "Nineteen"
 msgstr ""
 
@@ -5960,18 +5966,18 @@ msgstr ""
 msgid "No icons found in:"
 msgstr ""
 
-#: engines/sui_window.lua:3507
-#: engines/sui_window.lua:4300
+#: engines/sui_window.lua:3533
+#: engines/sui_window.lua:4326
 msgid "No items available."
 msgstr ""
 
-#: engines/sui_window.lua:4035
+#: engines/sui_window.lua:4061
 #: infra/sui_config.lua:2245
 #: modules/module_action_list.lua:298
 #: modules/module_collections.lua:383
 #: modules/module_quick_actions.lua:426
 #: modules/module_reading_goals.lua:1285
-#: modules/reading_stats/module_reading_stats.lua:1638
+#: modules/reading_stats/module_reading_stats.lua:1618
 #: screens/sui_menu.lua:365
 #: screens/sui_menu.lua:834
 #: screens/sui_menu.lua:894
@@ -5983,7 +5989,7 @@ msgstr ""
 msgid "No items selected."
 msgstr ""
 
-#: engines/sui_window.lua:4209
+#: engines/sui_window.lua:4235
 #: screens/sui_settings_window.lua:440
 #: screens/sui_settings_window.lua:568
 msgid "No modules"
@@ -6059,11 +6065,11 @@ msgstr ""
 msgid "No statistics selected."
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1360
+#: modules/reading_stats/module_reading_stats.lua:1333
 msgid "No stats selected"
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1359
+#: modules/reading_stats/module_reading_stats.lua:1332
 msgid "No stats selected  —  long press to configure"
 msgstr ""
 
@@ -6100,7 +6106,7 @@ msgstr ""
 msgid "None at all. I'm just writing it on the wall."
 msgstr ""
 
-#: modules/module_clock.lua:327
+#: modules/module_clock.lua:355
 msgid "Noon"
 msgstr ""
 
@@ -6202,7 +6208,7 @@ msgstr ""
 msgid "Numbers"
 msgstr ""
 
-#: modules/module_clock.lua:345
+#: modules/module_clock.lua:373
 msgid "O'Clock"
 msgstr ""
 
@@ -6254,7 +6260,7 @@ msgstr ""
 msgid "Off"
 msgstr ""
 
-#: modules/module_clock.lua:290
+#: modules/module_clock.lua:318
 msgid "Oh"
 msgstr ""
 
@@ -6356,7 +6362,7 @@ msgstr ""
 msgid "On your book, mostly."
 msgstr ""
 
-#: modules/module_clock.lua:253
+#: modules/module_clock.lua:281
 msgid "One"
 msgstr ""
 
@@ -6486,7 +6492,7 @@ msgid "Or the same ones. I'm not picky."
 msgstr ""
 
 #: features/library/sui_sort_sheet.lua:129
-#: modules/moduleregistry.lua:314
+#: modules/moduleregistry.lua:322
 msgid "Other"
 msgstr ""
 
@@ -6541,7 +6547,7 @@ msgid "Page"
 msgstr ""
 
 #: engines/sui_screen_engine.lua:1932
-#: engines/sui_window.lua:1836
+#: engines/sui_window.lua:1862
 #: features/library/sui_book_rows.lua:73
 #: infra/sui_patches.lua:2286
 #: infra/sui_patches.lua:3152
@@ -6564,7 +6570,7 @@ msgstr ""
 msgid "Page 1 (Home)"
 msgstr ""
 
-#: engines/sui_screen_engine.lua:2096
+#: engines/sui_screen_engine.lua:2108
 msgid "Page Editor"
 msgstr ""
 
@@ -7258,15 +7264,14 @@ msgid "Reading Heatmap"
 msgstr ""
 
 #: features/sui_stats_menu.lua:137
-#: modules/reading_stats/module_reading_stats.lua:1191
 #: screens/sui_stats_windows.lua:1972
 msgid "Reading Insights"
 msgstr ""
 
 #: features/sui_presets.lua:200
 #: features/sui_presets.lua:245
-#: modules/reading_stats/module_reading_stats.lua:1791
-#: modules/reading_stats/module_reading_stats.lua:1812
+#: modules/reading_stats/module_reading_stats.lua:1779
+#: modules/reading_stats/module_reading_stats.lua:1816
 msgid "Reading Stats"
 msgstr ""
 
@@ -7382,8 +7387,8 @@ msgstr ""
 msgid "Remove from list when finished"
 msgstr ""
 
-#: engines/sui_window.lua:2459
-#: engines/sui_window.lua:3813
+#: engines/sui_window.lua:2485
+#: engines/sui_window.lua:3839
 #: features/library/sui_hold_rows.lua:261
 #: features/sui_presets.lua:381
 #: features/sui_presets.lua:973
@@ -7607,7 +7612,7 @@ msgstr ""
 msgid "Row %1 of %2"
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1740
+#: modules/reading_stats/module_reading_stats.lua:1720
 msgid "Row alignment"
 msgstr ""
 
@@ -7618,7 +7623,7 @@ msgstr ""
 #: engines/sui_book_grid.lua:1931
 #: features/library/sui_sort_sheet.lua:484
 #: modules/module_quick_actions.lua:531
-#: modules/reading_stats/module_reading_stats.lua:1679
+#: modules/reading_stats/module_reading_stats.lua:1659
 msgid "Rows"
 msgstr ""
 
@@ -7692,8 +7697,8 @@ msgstr ""
 #: modules/critter/module_critter.lua:770
 #: modules/module_action_list.lua:316
 #: modules/module_action_list.lua:318
-#: modules/module_clock.lua:1065
-#: modules/module_clock.lua:1067
+#: modules/module_clock.lua:1095
+#: modules/module_clock.lua:1097
 #: modules/module_coverdeck.lua:1497
 #: modules/module_coverdeck.lua:1499
 #: modules/module_currently.lua:1250
@@ -7707,8 +7712,8 @@ msgstr ""
 #: modules/module_quote.lua:1496
 #: modules/module_reading_goals.lua:1163
 #: modules/module_reading_goals.lua:1165
-#: modules/reading_stats/module_reading_stats.lua:1606
-#: modules/reading_stats/module_reading_stats.lua:1608
+#: modules/reading_stats/module_reading_stats.lua:1586
+#: modules/reading_stats/module_reading_stats.lua:1588
 #: screens/sui_menu.lua:2474
 msgid "Scale"
 msgstr ""
@@ -7757,12 +7762,12 @@ msgstr ""
 #: engines/sui_book_grid.lua:1871
 #: modules/critter/module_critter.lua:771
 #: modules/module_action_list.lua:319
-#: modules/module_clock.lua:1068
+#: modules/module_clock.lua:1098
 #: modules/module_currently.lua:1253
 #: modules/module_quick_actions.lua:546
 #: modules/module_quote.lua:1377
 #: modules/module_reading_goals.lua:1166
-#: modules/reading_stats/module_reading_stats.lua:1609
+#: modules/reading_stats/module_reading_stats.lua:1589
 msgid "Scale for this module.\n100% is the default size."
 msgstr ""
 
@@ -7856,7 +7861,7 @@ msgstr ""
 
 #: features/library/sui_label_options.lua:135
 #: features/sui_style.lua:1447
-#: modules/reading_stats/module_reading_stats.lua:1728
+#: modules/reading_stats/module_reading_stats.lua:1708
 msgid "Secondary"
 msgstr ""
 
@@ -7864,8 +7869,8 @@ msgstr ""
 msgid "Secondary Color"
 msgstr ""
 
-#: engines/sui_window.lua:2448
-#: engines/sui_window.lua:3798
+#: engines/sui_window.lua:2474
+#: engines/sui_window.lua:3824
 #: features/library/sui_hold_rows.lua:236
 msgid "Select"
 msgstr ""
@@ -7977,11 +7982,11 @@ msgstr ""
 msgid "Settle in with a good book."
 msgstr ""
 
-#: modules/module_clock.lua:255
+#: modules/module_clock.lua:283
 msgid "Seven"
 msgstr ""
 
-#: modules/module_clock.lua:258
+#: modules/module_clock.lua:286
 msgid "Seventeen"
 msgstr ""
 
@@ -8033,7 +8038,7 @@ msgstr ""
 msgid "Short. Good. My kind of sentence."
 msgstr ""
 
-#: modules/moduleregistry.lua:312
+#: modules/moduleregistry.lua:320
 msgid "Shortcuts"
 msgstr ""
 
@@ -8047,15 +8052,15 @@ msgstr ""
 msgid "Show All Items"
 msgstr ""
 
-#: modules/module_clock.lua:1077
+#: modules/module_clock.lua:1107
 msgid "Show Battery"
 msgstr ""
 
-#: modules/module_clock.lua:1075
+#: modules/module_clock.lua:1105
 msgid "Show Clock"
 msgstr ""
 
-#: modules/module_clock.lua:1076
+#: modules/module_clock.lua:1106
 msgid "Show Date"
 msgstr ""
 
@@ -8098,7 +8103,7 @@ msgstr ""
 msgid "Show finished books"
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1748
+#: modules/reading_stats/module_reading_stats.lua:1728
 msgid "Show icons"
 msgstr ""
 
@@ -8163,7 +8168,7 @@ msgid "Simple"
 msgstr ""
 
 #: _meta.lua:5
-#: main.lua:1658
+#: main.lua:1647
 #: screens/sui_menu.lua:4473
 msgid "Simple UI"
 msgstr ""
@@ -8229,11 +8234,11 @@ msgstr ""
 msgid "Sitting came later."
 msgstr ""
 
-#: modules/module_clock.lua:254
+#: modules/module_clock.lua:282
 msgid "Six"
 msgstr ""
 
-#: modules/module_clock.lua:258
+#: modules/module_clock.lua:286
 msgid "Sixteen"
 msgstr ""
 
@@ -8273,14 +8278,14 @@ msgstr ""
 #: engines/sui_book_grid.lua:2177
 #: modules/critter/module_critter.lua:793
 #: modules/module_action_list.lua:368
-#: modules/module_clock.lua:1094
+#: modules/module_clock.lua:1124
 #: modules/module_coverdeck.lua:1646
 #: modules/module_currently.lua:1379
 #: modules/module_quick_actions.lua:558
 #: modules/module_quote.lua:1463
 #: modules/module_quote.lua:1484
 #: modules/module_reading_goals.lua:1184
-#: modules/reading_stats/module_reading_stats.lua:1625
+#: modules/reading_stats/module_reading_stats.lua:1605
 msgid "Size of this text.\n100% is the default size."
 msgstr ""
 
@@ -8444,8 +8449,8 @@ msgstr ""
 msgid "Spacer Size"
 msgstr ""
 
-#: modules/module_clock.lua:1141
-#: modules/module_clock.lua:1142
+#: modules/module_clock.lua:1186
+#: modules/module_clock.lua:1187
 msgid "Spacing"
 msgstr ""
 
@@ -8490,7 +8495,7 @@ msgstr ""
 #: modules/module_currently.lua:273
 #: modules/module_currently.lua:1340
 #: modules/module_currently.lua:1359
-#: modules/moduleregistry.lua:311
+#: modules/moduleregistry.lua:319
 #: screens/sui_quicksettings_bar.lua:222
 #: screens/sui_quicksettings_bar.lua:1601
 msgid "Statistics"
@@ -8577,7 +8582,6 @@ msgstr ""
 
 #: features/sui_stats_menu.lua:139
 #: modules/reading_stats/module_reading_stats.lua:449
-#: modules/reading_stats/module_reading_stats.lua:1195
 #: screens/sui_stats_windows.lua:2504
 msgid "Streak"
 msgstr ""
@@ -8619,7 +8623,7 @@ msgstr ""
 #: modules/module_coverdeck.lua:1516
 #: modules/module_tab_grid.lua:584
 #: modules/module_tab_grid.lua:631
-#: modules/reading_stats/module_reading_stats.lua:1694
+#: modules/reading_stats/module_reading_stats.lua:1674
 #: screens/sui_menu.lua:1761
 #: screens/sui_menu.lua:3118
 #: screens/sui_menu.lua:3589
@@ -8813,7 +8817,7 @@ msgstr ""
 msgid "Tell that to the ending of that one book."
 msgstr ""
 
-#: modules/module_clock.lua:256
+#: modules/module_clock.lua:284
 msgid "Ten"
 msgstr ""
 
@@ -9111,11 +9115,11 @@ msgstr ""
 msgid "They usually are."
 msgstr ""
 
-#: modules/module_clock.lua:257
+#: modules/module_clock.lua:285
 msgid "Thirteen"
 msgstr ""
 
-#: modules/module_clock.lua:262
+#: modules/module_clock.lua:290
 msgid "Thirty"
 msgstr ""
 
@@ -9176,7 +9180,7 @@ msgstr ""
 msgid "This year"
 msgstr ""
 
-#: modules/module_clock.lua:253
+#: modules/module_clock.lua:281
 msgid "Three"
 msgstr ""
 
@@ -9334,7 +9338,7 @@ msgstr ""
 msgid "Together, with books."
 msgstr ""
 
-#: engines/sui_window.lua:3816
+#: engines/sui_window.lua:3842
 msgid "Toggle"
 msgstr ""
 
@@ -9420,11 +9424,11 @@ msgstr ""
 msgid "Turn pages softly."
 msgstr ""
 
-#: modules/module_clock.lua:256
+#: modules/module_clock.lua:284
 msgid "Twelve"
 msgstr ""
 
-#: modules/module_clock.lua:262
+#: modules/module_clock.lua:290
 msgid "Twenty"
 msgstr ""
 
@@ -9432,7 +9436,7 @@ msgstr ""
 msgid "Twice the places."
 msgstr ""
 
-#: modules/module_clock.lua:253
+#: modules/module_clock.lua:281
 msgid "Two"
 msgstr ""
 
@@ -9486,8 +9490,8 @@ msgstr ""
 msgid "Unsupported icon format.\nPlease use a PNG or SVG file."
 msgstr ""
 
-#: engines/sui_window.lua:2456
-#: engines/sui_window.lua:3810
+#: engines/sui_window.lua:2482
+#: engines/sui_window.lua:3836
 msgid "Update"
 msgstr ""
 
@@ -9496,7 +9500,7 @@ msgstr ""
 #: modules/module_currently.lua:1466
 #: modules/module_reading_goals.lua:1348
 #: modules/module_reading_goals.lua:1384
-#: modules/reading_stats/module_reading_stats.lua:1764
+#: modules/reading_stats/module_reading_stats.lua:1744
 msgid "Update Stats Now"
 msgstr ""
 
@@ -9545,7 +9549,7 @@ msgstr ""
 msgid "Uses the standard KOReader pagination bar on the homescreen.\nNot available when Navpager is active."
 msgstr ""
 
-#: modules/reading_stats/module_reading_stats.lua:1624
+#: modules/reading_stats/module_reading_stats.lua:1604
 msgid "Value"
 msgstr ""
 
@@ -9561,7 +9565,7 @@ msgstr ""
 msgid "Vertical space above this module.\n100% is the default spacing."
 msgstr ""
 
-#: modules/module_clock.lua:1143
+#: modules/module_clock.lua:1188
 msgid "Vertical space between items.\n100% is the default spacing."
 msgstr ""
 
@@ -9583,7 +9587,7 @@ msgstr ""
 msgid "Vlad"
 msgstr ""
 
-#: modules/module_clock.lua:270
+#: modules/module_clock.lua:298
 msgid "WORD_CLOCK_TENS_SEP"
 msgstr ""
 
@@ -9905,8 +9909,8 @@ msgstr ""
 msgid "Wonderful. I'll hold the lamp."
 msgstr ""
 
-#: modules/module_clock.lua:1104
-#: modules/module_clock.lua:1117
+#: modules/module_clock.lua:1134
+#: modules/module_clock.lua:1147
 msgid "Word"
 msgstr ""
 
@@ -10556,6 +10560,22 @@ msgstr ""
 
 #: modules/reading_stats/module_reading_stats.lua:483
 msgid "vs the same days last week"
+msgstr ""
+
+#: modules/module_clock.lua:42
+msgid "{day}/{month_num}/{year}"
+msgstr ""
+
+#: modules/module_clock.lua:41
+msgid "{weekday_short}, {day} {month_short}"
+msgstr ""
+
+#: modules/module_clock.lua:44
+msgid "{weekday}, {day} {month}"
+msgstr ""
+
+#: modules/module_clock.lua:40
+msgid "{weekday}, {day} {month} {year}"
 msgstr ""
 
 #: modules/critter/dialog.lua:653

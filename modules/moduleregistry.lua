@@ -91,6 +91,14 @@
 --                                    what the module shows (its selected
 --                                    items), listed in the layout editor
 --                                    under a full-width module
+--   M.takeHoldAction(pfx) → { icon, label?, on_tap(refresh) } | nil
+--                                    action for what the long-press that
+--                                    opens the module settings fell on (set
+--                                    by the module's own hold handler, which
+--                                    lets the hold through); shown as a
+--                                    button beside the layout one and
+--                                    cleared by the call. on_tap gets a
+--                                    function to run after every change
 --   M.owns_chrome = true             the module draws its own frame and
 --                                    background boxes (see
 --                                    features/sui_module_chrome.lua): the

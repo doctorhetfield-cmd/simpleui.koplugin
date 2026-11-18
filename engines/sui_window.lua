@@ -296,6 +296,11 @@ end
 ---                    mirror of the bottom-right one. `glyph` comes from
 ---                    SUIStyle.icon(). `label`, read on every repaint, turns
 ---                    the square into a pill with the text beside the glyph.
+---   left_aux_btn   { glyph = string, label = string | nil,
+---                    on_tap = function(ctx) } | nil
+---                  — button right of left_btn (or in its place without
+---                    one), drawn on the root screen only; `label` turns it
+---                    into a pill like left_btn's
 ---   nav_path       { {id, params}, ... } | nil — screens pushed on top of the
 ---                                  root before the first paint
 ---   width          number | nil  — px (default: 5/6 of screen)
@@ -419,6 +424,7 @@ function SUIWindow:new(opts)
     o._icon          = opts.icon or (o._has_settings_btn and "settings" or nil)
     o._action_btn    = opts.action_btn
     o._left_btn      = opts.left_btn
+    o._left_aux_btn  = opts.left_aux_btn
     o._corner_btn_rects = nil
     o._name          = opts.name or "sui_win_unnamed"
     -- When true, _buildTitleBar/_rebuildFrame skip the TitleBar entirely (no
@@ -1251,7 +1257,7 @@ function SUIWindow:_rebuildFrame(ctx, items)
         end
     end
 
-    local corner_btn, left_btn
+    local corner_btn, left_btn, aux_btn
     if self._has_settings_btn then
         corner_btn = {
             glyph  = SUIStyle.icon("settings"),
@@ -1275,15 +1281,29 @@ function SUIWindow:_rebuildFrame(ctx, items)
             on_tap = function() left.on_tap(ctx) end,
         }
     end
+    if self:_hasLeftAuxBtn() then
+        local aux = self._left_aux_btn
+        aux_btn = {
+            glyph  = aux.glyph,
+            label  = aux.label,
+            on_tap = function() aux.on_tap(ctx) end,
+        }
+    end
     self._corner_btn_rects = {}
-    if corner_btn or left_btn then
+    if corner_btn or left_btn or aux_btn then
         final_widget = OverlapGroup:new{
             dimen = Geom:new{ w = self._inner_w, h = inner_h },
             final_widget,
         }
         -- Left first, so the focus ring follows the visual order.
+        local left_x = 0
         if left_btn then
-            final_widget[#final_widget + 1] = self:_buildCornerButton(left_btn, inner_h, dot_h, "left")
+            local btn = self:_buildCornerButton(left_btn, inner_h, dot_h, "left")
+            final_widget[#final_widget + 1] = btn
+            left_x = btn.dimen.w + SZ(Screen:scaleBySize(8))
+        end
+        if aux_btn then
+            final_widget[#final_widget + 1] = self:_buildCornerButton(aux_btn, inner_h, dot_h, "left", left_x)
         end
         if corner_btn then
             final_widget[#final_widget + 1] = self:_buildCornerButton(corner_btn, inner_h, dot_h, "right")
@@ -1723,9 +1743,14 @@ function SUIWindow:_hasLeftBtn()
     return self._left_btn ~= nil and #self._nav_stack == 1
 end
 
+-- True when the button right of the bottom-left one is shown (root screen only).
+function SUIWindow:_hasLeftAuxBtn()
+    return self._left_aux_btn ~= nil and #self._nav_stack == 1
+end
+
 -- True when a corner button occupies the page-dot row on the current screen.
 function SUIWindow:_hasCornerBtn()
-    return self._has_settings_btn or self:_hasActionBtn() or self:_hasLeftBtn()
+    return self._has_settings_btn or self:_hasActionBtn() or self:_hasLeftBtn() or self:_hasLeftAuxBtn()
 end
 
 -- Corner controls and toolbar buttons share one size and corner radius.
@@ -1804,12 +1829,13 @@ end
 
 -- Anchors a square button to the bottom-right ("right") or bottom-left
 -- ("left") corner of the inner area, vertically centred in the page-dot row.
--- `spec` is a SquareButton spec. The button's horizontal span is recorded so
--- the dot bar lets taps on it through.
-function SUIWindow:_buildCornerButton(spec, inner_h, dot_h, side)
+-- `spec` is a SquareButton spec; `left_x` shifts a left button right of the
+-- corner. The button's horizontal span is recorded so the dot bar lets taps on
+-- it through.
+function SUIWindow:_buildCornerButton(spec, inner_h, dot_h, side, left_x)
     local btn      = SUIWindow.SquareButton(spec)
     local btn_w    = btn.dimen.w
-    local offset_x = (side == "left") and 0 or (self._inner_w - btn_w)
+    local offset_x = (side == "left") and (left_x or 0) or (self._inner_w - btn_w)
     local offset_y = inner_h - dot_h + math.floor((dot_h - btn.dimen.h) / 2)
     btn.overlap_offset = { offset_x, offset_y }
     local rects = self._corner_btn_rects

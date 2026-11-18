@@ -10440,3 +10440,27 @@ msgstr[0] "天"
 msgid "day streak"
 msgid_plural "days streak"
 msgstr[0] "连续阅读天数"
+
+#: modules/module_clock.lua:1164
+msgid "Date Format"
+msgstr "日期格式"
+
+#: modules/reading_stats/module_reading_stats.lua:1803
+msgid "Edit Card"
+msgstr "编辑卡片"
+
+#: modules/module_clock.lua:42
+msgid "{day}/{month_num}/{year}"
+msgstr "{year}/{month_num}/{day}"
+
+#: modules/module_clock.lua:41
+msgid "{weekday_short}, {day} {month_short}"
+msgstr "{month_num}月{day}日 {weekday_short}"
+
+#: modules/module_clock.lua:44
+msgid "{weekday}, {day} {month}"
+msgstr "{month_num}月{day}日 {weekday}"
+
+#: modules/module_clock.lua:40
+msgid "{weekday}, {day} {month} {year}"
+msgstr "{year}年{month_num}月{day}日 {weekday}"

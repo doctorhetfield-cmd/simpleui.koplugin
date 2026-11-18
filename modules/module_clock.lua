@@ -30,21 +30,44 @@ local Chrome       = require("features/sui_module_chrome")
 -- Translated date string
 -- os.date("%A, %d %B") always returns English on most eReader locales.
 -- We use os.date("*t") for the numeric indices and look up translated names.
+-- Each date format is a template whose {tokens} take the date parts, so a
+-- translation can reorder them and add its own words or suffixes.
 -- ---------------------------------------------------------------------------
 
-local function _localDate()
+local DATE_FORMAT_VALUES = { "default", "with_year", "short", "numeric", "iso" }
+
+local function _dateTemplate(fmt)
+    if fmt == "with_year" then return _("{weekday}, {day} {month} {year}") end
+    if fmt == "short"     then return _("{weekday_short}, {day} {month_short}") end
+    if fmt == "numeric"   then return _("{day}/{month_num}/{year}") end
+    if fmt == "iso"       then return "{year}-{month_num2}-{day2}" end
+    return _("{weekday}, {day} {month}")
+end
+
+-- Date `now` (default: the current time) in the format `fmt`.
+local function _formatDate(fmt, now)
     -- Pass os.time() explicitly: os.date("*t") without argument can return
     -- nil in LuaJIT on some platforms (macOS emulator) when timezone handling
     -- fails. os.date("*t", os.time()) is always safe.
-    local now = os.time()
-    local t   = os.date("*t", now)
+    now = now or os.time()
+    local t = os.date("*t", now)
     if not t or not t.day then
         -- Fallback via the datetime module's locale-aware formatter.
         return datetime.secondsToDate(now, true)
     end
-    local weekday = DateNames.weekdayFull()[t.wday] or os.date("%A", now)
-    local month   = DateNames.monthFull()[t.month]  or os.date("%B", now)
-    return string.format("%s, %d %s", weekday, t.day, month)
+    local parts = {
+        weekday       = DateNames.weekdayFull()[t.wday]   or os.date("%A", now),
+        weekday_short = DateNames.weekdayShort()[t.wday]  or os.date("%a", now),
+        month         = DateNames.monthFull()[t.month]    or os.date("%B", now),
+        month_short   = DateNames.monthShort()[t.month]   or os.date("%b", now),
+        day           = tostring(t.day),
+        month_num     = tostring(t.month),
+        year          = tostring(t.year),
+        day2          = string.format("%02d", t.day),
+        month_num2    = string.format("%02d", t.month),
+    }
+    -- Unknown tokens are left as written.
+    return (_dateTemplate(fmt):gsub("{([%w_]+)}", parts))
 end
 
 -- ---------------------------------------------------------------------------
@@ -109,6 +132,7 @@ local SETTING_DATE_GAP  = "clock_date_gap"
 local SETTING_BATT_GAP  = "clock_batt_gap"
 local SETTING_ALIGN     = "clock_align"       -- pfx .. "clock_align"     (default "center")
 local SETTING_STYLE     = "clock_style"       -- pfx .. "clock_style"     ("digital"|"word"|"analogue")
+local SETTING_DATE_FMT  = "clock_date_format" -- pfx .. "clock_date_format" (DATE_FORMAT_VALUES)
 
 local STYLE_VALUES = { "digital", "word", "analogue" }
 
@@ -131,6 +155,10 @@ end
 
 local function setClockStyle(pfx, val)
     SUISettings:saveSetting(pfx .. SETTING_STYLE, val)
+end
+
+local function getDateFormat(pfx)
+    return Config.readChoice(pfx .. SETTING_DATE_FMT, DATE_FORMAT_VALUES, "default")
 end
 
 local ITEM_GAP_MIN  = 0
@@ -680,14 +708,16 @@ local function build(w, pfx, vspan_pool, landscape_factor, styles, live, ink, pa
 
     local function appendDate()
         local face_date, bold_date = SUIStyle.getTextFace(styles.date, date_fs)
+        local date_fmt = getDateFormat(pfx)
+        local function dateText() return _formatDate(date_fmt) end
         local date_w = UI.makeColoredText{
-            text    = _localDate(),
+            text    = dateText(),
             face    = face_date,
             bold    = bold_date,
             fgcolor = date_fg,
         }
         vg[#vg+1] = _slot(date_w, date_h)
-        texts[#texts+1] = { widget = date_w, text = _localDate }
+        texts[#texts+1] = { widget = date_w, text = dateText }
     end
 
     local function appendBattery()
@@ -1128,6 +1158,21 @@ function M.getMenuItems(ctx_menu)
                 callback     = function() setClockStyle(pfx, "analogue"); refresh() end,
             },
         },
+    }
+    -- Each format is listed as today's date written in it.
+    appearance_extra[#appearance_extra + 1] = Config.makeRadioSubmenuItem{
+        text         = _lc("Date Format"),
+        enabled_func = function() return isItemVisible(pfx, "date") end,
+        options      = function()
+            local now, options = os.time(), {}
+            for _i, fmt in ipairs(DATE_FORMAT_VALUES) do
+                options[#options + 1] = { value = fmt, label = _formatDate(fmt, now) }
+            end
+            return options
+        end,
+        get     = function() return getDateFormat(pfx) end,
+        set     = function(v) SUISettings:saveSetting(pfx .. SETTING_DATE_FMT, v) end,
+        refresh = refresh,
     }
     appearance_extra[#appearance_extra + 1] = Config.makeAlignmentItem{
         key       = pfx .. SETTING_ALIGN,

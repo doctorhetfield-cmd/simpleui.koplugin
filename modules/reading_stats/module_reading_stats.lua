@@ -1184,41 +1184,14 @@ local function openEditSheet(id, pfx, stat_id, on_changed)
     }
 end
 
--- Sheet of a tapped card: the window the card opens, and its edit sheet.
-local function showCardSheet(id, stat_id, ctx)
-    local ActionSheet = require("engines/sui_action_sheet")
-    local entry = STAT_MAP[stat_id]
-    local open_text, open_icon = _("Reading Insights"), "chart"
-    if stat_id == "total_books" then
-        open_text, open_icon = _("Finished Books"), "book"
-    elseif stat_id == "streak" then
-        open_text, open_icon = _("Streak"), "streak"
-    end
-    local items = {
-        {
-            text     = open_text,
-            sui_icon = open_icon,
-            callback = function()
-                if not _openStatDetail(stat_id) then openReadingInsights() end
-            end,
-        },
-    }
-    if entry then
-        items[#items + 1] = {
-            text     = _("Edit card"),
-            sui_icon = "edit",
-            callback = function() openEditSheet(id, ctx.pfx, stat_id, ctx.refresh_fn) end,
-        }
-    end
-    ActionSheet.show{
-        name       = "sui_win_stat_card",
-        title      = entry and entry.display_label,
-        icon       = entry and entry.icon,
-        auto_close = true,
-        fit_width  = true,
-        sections   = { ActionSheet.list(items) },
-    }
+-- Opens the window of a tapped card: its detail window, else Reading Insights.
+local function openCard(stat_id)
+    if not _openStatDetail(stat_id) then openReadingInsights() end
 end
+
+-- Card under the last long-press of each instance, keyed by pfx .. id. Taken
+-- by the screen engine when the long-press opens the module settings.
+local _held_cards = {}
 
 -- Wraps a card in a D-pad focus stop whose Press runs `on_select`. The focus
 -- frame follows the wrapper's painted box, so no rebuild is needed to move it.
@@ -1415,7 +1388,7 @@ local function build(id, w, ctx)
     local function addFocusStop(cell, r, card)
         if not ctx.kbStops then return card end
         local stop = _makeFocusStop(card, cardWidth(cell.span), row_h[r], function()
-            showCardSheet(id, cell.id, ctx)
+            openCard(cell.id)
         end)
         local stops = row_stops[r]
         stops[#stops + 1] = { id = cell.id, widget = stop }
@@ -1501,18 +1474,25 @@ local function build(id, w, ctx)
         },
     }
     tappable.ges_events = {
-        TapStatCard = { GestureRange:new{ ges = "tap", range = function() return tappable.dimen end } },
+        TapStatCard  = { GestureRange:new{ ges = "tap",  range = function() return tappable.dimen end } },
+        HoldStatCard = { GestureRange:new{ ges = "hold", range = function() return tappable.dimen end } },
     }
+    -- Id of the card under gesture `ges`, if any.
+    local function cardAtGesture(ges)
+        if not (ges and ges.pos and tappable.dimen) then return nil end
+        local dx = ges.pos.x - tappable.dimen.x - offset_x
+        -- The rows of cards are drawn mirrored in an RTL layout.
+        if BD.mirroredUILayout() then dx = row_w - dx end
+        return cardAt(dx, ges.pos.y - tappable.dimen.y)
+    end
     function tappable:onTapStatCard(_, ges)
-        local sid
-        if ges and ges.pos and self.dimen then
-            local dx = ges.pos.x - self.dimen.x - offset_x
-            -- The rows of cards are drawn mirrored in an RTL layout.
-            if BD.mirroredUILayout() then dx = row_w - dx end
-            sid = cardAt(dx, ges.pos.y - self.dimen.y)
-        end
-        showCardSheet(id, sid, ctx)
+        openCard(cardAtGesture(ges))
         return true
+    end
+    -- Records the held card and lets the hold through to the module wrapper,
+    -- which opens the module settings.
+    function tappable:onHoldStatCard(_, ges)
+        _held_cards[ctx.pfx .. id] = cardAtGesture(ges)
     end
 
     local result = tappable
@@ -1779,6 +1759,14 @@ local function getMenuItems(id, ctx_menu)
     }, ctx_menu)
 end
 
+-- True when the stat `stat_id` is on the grid of instance `id`.
+local function isShown(id, pfx, stat_id)
+    for _i, sid in ipairs(_getItems(id, pfx)) do
+        if sid == stat_id then return true end
+    end
+    return false
+end
+
 -- ---------------------------------------------------------------------------
 -- Instances
 -- ---------------------------------------------------------------------------
@@ -1804,6 +1792,22 @@ local function makeInstance(inst_id)
     function S.build(w, ctx) return build(inst_id, w, ctx) end
     function S.getHeight(ctx) return getHeight(inst_id, ctx) end
     function S.getMenuItems(ctx_menu) return getMenuItems(inst_id, ctx_menu) end
+    -- A long-press on a card adds a button opening that card's edit sheet.
+    function S.takeHoldAction(pfx)
+        local key = pfx .. inst_id
+        local stat_id = _held_cards[key]
+        _held_cards[key] = nil
+        if not (stat_id and STAT_MAP[stat_id]) then return nil end
+        return {
+            icon   = "edit",
+            label  = _("Edit Card"),
+            on_tap = function(on_changed)
+                if isShown(inst_id, pfx, stat_id) then
+                    openEditSheet(inst_id, pfx, stat_id, on_changed)
+                end
+            end,
+        }
+    end
     return S
 end
 
