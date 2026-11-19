@@ -1633,10 +1633,18 @@ local function _riFmtHours(secs)
     return Text.formatDuration(secs)
 end
 
--- Formats a timestamp (unix) into a short locale-independent date string.
+-- Formats a timestamp (unix) into a short date string via a {token} template,
+-- so translations can reorder the parts.
 local function _riFmtDate(ts)
     if not ts or ts <= 0 then return "–" end
-    return os.date("%d %b '%y", ts)
+    local t = os.date("*t", ts)
+    if not t then return os.date("%d %b '%y", ts) end
+    local parts = {
+        day  = tostring(t.day),
+        month  = DateNames.monthShort()[t.month] or os.date("%b", ts),
+        year = string.format("%02d", t.year % 100),
+    }
+    return (_("{day} {month} '{year}"):gsub("{([%w_]+)}", parts))
 end
 
 -- Formats a large integer with thousands separator (e.g. 1234 → "1,234").

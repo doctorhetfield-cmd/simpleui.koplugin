@@ -16,11 +16,12 @@ local VerticalSpan    = require("ui/widget/verticalspan")
 local Screen          = Device.screen
 local _ = require("infra/sui_i18n").translate
 
-local Config   = require("infra/sui_config")
-local UI       = require("infra/sui_core")
-local SUIStyle = require("features/sui_style")
-local HD       = require("engines/sui_heatmap_data")
-local HW       = require("engines/sui_heatmap_widgets")
+local Config    = require("infra/sui_config")
+local UI        = require("infra/sui_core")
+local DateNames = require("infra/sui_datenames")
+local SUIStyle  = require("features/sui_style")
+local HD        = require("engines/sui_heatmap_data")
+local HW        = require("engines/sui_heatmap_widgets")
 
 -- Fixed block size for the full-screen view — independent of the
 -- homescreen card's own "weeks shown" setting, which is sized to fit a
@@ -30,7 +31,19 @@ local WEEKS_PER_BLOCK = 26
 local M = {}
 
 local function fmtRange(start_t, end_t)
-    return os.date("%d %b", start_t) .. " – " .. os.date("%d %b %Y", end_t)
+    local s, e = os.date("*t", start_t), os.date("*t", end_t)
+    if not s or not e then
+        return os.date("%d %b", start_t) .. " – " .. os.date("%d %b %Y", end_t)
+    end
+    local parts = {
+        day_start = tostring(s.day),  
+        month_start = DateNames.monthShort()[s.month] or os.date("%b", start_t),
+        year_start = tostring(s.year),   -- Intentionally reserved for other-language layout — not dead code.
+        day_end = tostring(e.day),  
+        month_end = DateNames.monthShort()[e.month] or os.date("%b", end_t),
+        year_end = tostring(e.year),
+    }
+    return (_("{day_start} {month_start} – {day_end} {month_end} {year_end}"):gsub("{([%w_]+)}", parts))
 end
 
 --- Opens the heatmap popup. Reads fresh data on open and on every period
