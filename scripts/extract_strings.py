@@ -164,7 +164,6 @@ def main():
     pot_content = generate_pot(regular_strings, plural_strings)
 
     pot_path = PLUGIN_ROOT / 'locale' / 'simpleui.pot'
-    # # newline='\n' keeps the POT pure LF (write_text would otherwise emit \r\n on Windows).
     pot_path.write_text(pot_content, encoding='utf-8', newline='\n')
 
     print(f"{total_strings} strings written to {pot_path}")
