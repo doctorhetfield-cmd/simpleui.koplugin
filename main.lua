@@ -705,8 +705,19 @@ end
 -- Mark exit early so HS reopen paths bail before _exit_code is set (that
 -- only happens once the window stack is empty). Force-close soft-parked
 -- screens so they cannot keep the stack non-empty and block quit.
+-- Exit itself closes only the host UI (the device listener runs before this
+-- handler), so the navbar-wrapped windows above it are closed here too.
 function SimpleUIPlugin:onExit()
     UIManager._simpleui_exiting = true
+    local overlays = {}
+    for _, entry in ipairs(UI.getWindowStack()) do
+        local w = entry.widget
+        if w and w ~= self.ui and w._navbar_injected then overlays[#overlays + 1] = w end
+    end
+    for _, w in ipairs(overlays) do
+        w._navbar_closing_intentionally = true
+        pcall(function() UIManager:close(w) end)
+    end
     local ScreenEngine = package.loaded["engines/sui_screen_engine"]
     if ScreenEngine then
         for _, id in ipairs(ScreenEngine.liveScreenIds()) do

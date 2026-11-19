@@ -1775,12 +1775,13 @@ function M.applyToSub(widget)
                 -- all sub-widgets (collections, history, coll_list, …). The tabs
                 -- style only leaves the view; the classic style also pages back:
                 --
-                --   onReturn              → show; tap = onReturn (or onClose fallback)
+                --   onReturn, paths left  → show; tap = onReturn
+                --   onReturn, no paths    → show; tap = onClose (leaves the widget)
                 --   no onReturn           → hide (nothing to go back to)
                 --   classic, page > 1     → show; tap = previous page, hold = page 1
                 --
-                -- This mirrors the native bar: page_return_arrow is enabled when
-                -- #self.paths > 0 (there is somewhere to go back to).
+                -- Like the native page_return_arrow, onReturn only has somewhere
+                -- to go back to while #self.paths > 0.
                 local paginates = tabs_m == nil
                 local function _applySubBackButtonState(w_self, page)
                     local btn = w_self._titlebar_sub_back_btn
@@ -1807,9 +1808,11 @@ function M.applyToSub(widget)
                             btn.hold_callback = function() w_self:onGotoPage(1) end
                         else
                             -- A return destination (e.g. inside a collection, going
-                            -- back to the collection list via onReturn).
+                            -- back to the collection list via onReturn), or the
+                            -- widget itself when its navigation is at the root.
                             btn.callback = function()
-                                if w_self.onReturn then
+                                local paths = w_self.paths
+                                if w_self.onReturn and (type(paths) ~= "table" or #paths > 0) then
                                     w_self:onReturn()
                                 elseif w_self.onClose then
                                     w_self:onClose()
