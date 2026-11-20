@@ -3091,7 +3091,10 @@ function SUIWindow.MonthDropdown(opts)
     return SUIWindow.PeriodDropdown{
         inner_w = opts.inner_w,
         compact = opts.compact,
-        label   = DateNames.monthFull()[selected.month] .. " " .. selected.year,
+        label   = _("{month_full} {year}"):gsub("{([%w_]+)}", {
+            month_full = DateNames.monthFull()[selected.month],
+            year  = tostring(selected.year),
+        }),
         on_open = function(anchor)
             SUIWindow.MonthPicker{
                 anchor    = anchor,
