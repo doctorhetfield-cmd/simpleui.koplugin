@@ -37,13 +37,13 @@ local function fmtRange(start_t, end_t)
     end
     local parts = {
         day_start = tostring(s.day),  
-        month_start = DateNames.monthShort()[s.month] or os.date("%b", start_t),
+        month_short_start = DateNames.monthShort()[s.month] or os.date("%b", start_t),
         year_start = tostring(s.year),   -- Intentionally reserved for other-language layout — not dead code.
         day_end = tostring(e.day),  
-        month_end = DateNames.monthShort()[e.month] or os.date("%b", end_t),
+        month_short_end = DateNames.monthShort()[e.month] or os.date("%b", end_t),
         year_end = tostring(e.year),
     }
-    return (_("{day_start} {month_start} – {day_end} {month_end} {year_end}"):gsub("{([%w_]+)}", parts))
+    return (_("{day_start} {month_short_start} – {day_end} {month_short_end} {year_end}"):gsub("{([%w_]+)}", parts))
 end
 
 --- Opens the heatmap popup. Reads fresh data on open and on every period

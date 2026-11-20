@@ -1641,10 +1641,10 @@ local function _riFmtDate(ts)
     if not t then return os.date("%d %b '%y", ts) end
     local parts = {
         day  = tostring(t.day),
-        month  = DateNames.monthShort()[t.month] or os.date("%b", ts),
+        month_short  = DateNames.monthShort()[t.month] or os.date("%b", ts),
         year = string.format("%02d", t.year % 100),
     }
-    return (_("{day} {month} '{year}"):gsub("{([%w_]+)}", parts))
+    return (_("{day} {month_short} '{year}"):gsub("{([%w_]+)}", parts))
 end
 
 -- Formats a large integer with thousands separator (e.g. 1234 → "1,234").
