@@ -19,9 +19,12 @@
 --   TabViews.effectiveMode(path)                      display mode `path` is shown in
 --   TabViews.apply(fc, path)                          switch the file browser to that mode
 --   TabViews.install() / uninstall()                  apply it before every refresh of the list
+--
+-- The CoverBrowser's "Display mode" menu also lists the view of each tab.
 
 local Config      = require("infra/sui_config")
 local SUISettings = require("infra/sui_store")
+local _           = require("infra/sui_i18n").translate
 
 local M = {}
 
@@ -188,10 +191,18 @@ local function _sync()
     return library
 end
 
--- The display mode chosen in the CoverBrowser's menu is the Library's. The
+local function _isView(mode)
+    for _i, view in ipairs(M.VIEWS) do
+        if view == mode then return true end
+    end
+    return false
+end
+
+-- The display mode chosen in the CoverBrowser's menu at a tab root is the
+-- tab's view; anywhere else, or the classic mode, it is the Library's. The
 -- CoverBrowser ignores a choice equal to the mode it is in, which at a tab root
--- is the tab's; so it is put back in the Library's mode first. At a tab root
--- the list is then redrawn once, in the tab's view.
+-- is the tab's; so it is put back in the Library's mode first. A classic mode
+-- chosen at a tab root then redraws the list once, in the tab's view.
 local _wrapped_cb
 
 local function _wrapSetDisplayMode(cb)
@@ -199,9 +210,14 @@ local function _wrapSetDisplayMode(cb)
     local orig = cb.setDisplayMode
     cb.setDisplayMode = function(self, mode)
         local fc = self.ui and self.ui.file_chooser
+        local root = fc and M.rootMode(fc.path)
+        if root and _isView(mode) then
+            M.setView(root, mode)
+            return fc:refreshPath()
+        end
         local library = _sync()
         if _applied ~= library and _switch(self, library) then _applied = library end
-        if not (fc and M.rootMode(fc.path)) then return orig(self, mode) end
+        if not root then return orig(self, mode) end
         local own_refresh = rawget(self, "refreshFileManagerInstance")
         self.refreshFileManagerInstance = function() end
         local ok, err = pcall(orig, self, mode)
@@ -210,6 +226,80 @@ local function _wrapSetDisplayMode(cb)
         fc:refreshPath()
     end
     _wrapped_cb = cb
+end
+
+-- Items added to the file manager's "Display mode" menu, and its relabelled
+-- "Use this mode everywhere" item, kept to be taken out on uninstall.
+local _menu_patch
+
+local TAB_MENU_LABELS = {
+    author = _("Authors display mode"),
+    series = _("Series display mode"),
+    tags   = _("Tags display mode"),
+}
+
+local function _tabMenuItem(fm, mode)
+    local SortSheet = require("features/library/sui_sort_sheet")
+    local sub = {}
+    for i, option in ipairs(SortSheet.viewOptions(fm, mode)) do
+        sub[i] = {
+            text         = option.text,
+            radio        = true,
+            checked_func = function() return SortSheet.getView(fm, mode) == option.id end,
+            callback     = function() SortSheet.setView(fm, mode, option.id) end,
+        }
+    end
+    return { text = TAB_MENU_LABELS[mode], sub_item_table = sub }
+end
+
+local function _unpatchMenu()
+    local patch = _menu_patch
+    if not patch then return end
+    _menu_patch = nil
+    local sub = patch.sub
+    for i = #sub, 1, -1 do
+        for _j, item in ipairs(patch.items) do
+            if sub[i] == item then table.remove(sub, i); break end
+        end
+    end
+    if patch.label_item then patch.label_item.text = patch.label_text end
+end
+
+-- Extends the "Display mode" menu of the file manager's own menu only, not of
+-- the copies other menus build to read its items.
+local function _patchMenu(cb, menu_items)
+    local fm = cb.ui
+    local entry = menu_items.filemanager_display_mode
+    if not (fm and fm.menu and fm.menu.menu_items == menu_items
+            and type(entry) == "table" and type(entry.sub_item_table) == "table") then
+        return
+    end
+    _unpatchMenu()
+    local sub = entry.sub_item_table
+    local patch = { sub = sub, items = {} }
+    local everywhere = require("gettext")("Use this mode everywhere")
+    for _i, item in ipairs(sub) do
+        if item.text == everywhere then
+            patch.label_item, patch.label_text = item, item.text
+            item.text = _("Also use this mode in History and Collections")
+            break
+        end
+    end
+    for _i, mode in ipairs(M.META_MODES) do
+        local item = _tabMenuItem(fm, mode)
+        sub[#sub + 1] = item
+        patch.items[#patch.items + 1] = item
+    end
+    _menu_patch = patch
+end
+
+local function _wrapAddToMainMenu(cb)
+    if rawget(cb, "addToMainMenu") then return end
+    local orig = cb.addToMainMenu
+    cb.addToMainMenu = function(self, menu_items)
+        orig(self, menu_items)
+        _patchMenu(self, menu_items)
+    end
 end
 
 -- A tab root with items per page of its own lends them to the chooser only
@@ -242,7 +332,10 @@ end
 function M.apply(fc, path)
     _sync()
     local cb = _coverBrowser(fc)
-    if cb then _wrapSetDisplayMode(cb) end
+    if cb then
+        _wrapSetDisplayMode(cb)
+        _wrapAddToMainMenu(cb)
+    end
     local resized = fc and _setPerPage(fc, M.pagePerPage(path))
     local want = M.effectiveMode(path)
     local switched = want ~= _applied and _switch(cb, want)
@@ -271,8 +364,10 @@ function M.uninstall()
     local known = _wrapped_cb
     if known then
         known.setDisplayMode = nil
+        known.addToMainMenu = nil
         _wrapped_cb = nil
     end
+    _unpatchMenu()
     local live, fm = _coverBrowser()
     local cb = known or live
     local library = _sync()
