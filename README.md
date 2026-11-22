@@ -129,6 +129,7 @@ Shortcut buttons configurable on the Home Screen, the Navigation Bar, the Title 
 
 - Assign any action to a **custom folder**, **collection**, or **KOReader plugin**
 - Quick **Wi-Fi toggle**, **frontlight control** and **Night Mode**
+- **Night Mode** shows the mode a tap switches to: **Night Mode** (moon) by day, **Day Mode** (sun) at night; each state's icon can be replaced separately (see [Icon Packs](docs/ICON_PACKS.md))
 - **Power menu** (Restart, Quit) accessible as a tab
 - **Bookmark Browser** — browse your highlights and bookmarks across all books
 - Every **Custom Screen** gets its own Quick Action automatically

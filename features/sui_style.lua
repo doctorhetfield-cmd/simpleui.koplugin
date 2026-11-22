@@ -2569,7 +2569,8 @@ local function _filenameToKey(fname)
     local action_id = stem:match("^sui_action_(.+)$")
     if action_id then
         local internal_id = _ICON_ID_ALIAS[action_id] or action_id
-        if require("infra/sui_config").ACTION_BY_ID[internal_id] then
+        if require("infra/sui_config").ACTION_BY_ID[internal_id]
+            or require("features/sui_quickactions").isIconVariant(internal_id) then
             return "simpleui_action_" .. internal_id .. "_icon", "action"
         end
     end

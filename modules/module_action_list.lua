@@ -200,7 +200,7 @@ local function getALPool()
         if actionAvailable(id) then
             available[#available + 1] = {
                 id    = id,
-                label = id == "home" and Config.homeLabel() or QA.getEntry(id).label,
+                label = id == "home" and Config.homeLabel() or QA.getMenuLabel(id),
             }
         end
     end

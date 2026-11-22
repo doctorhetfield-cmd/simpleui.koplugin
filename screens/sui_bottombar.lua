@@ -71,7 +71,7 @@ local function _QARenderer()
 end
 
 -- Lazy reference to sui_core — provides UI.wrapDimmable, used to render an
--- action's on/off state (e.g. wifi_toggle, night_mode) the same way every
+-- action's on/off state (e.g. wifi_toggle) the same way every
 -- other QA consumer does. Loaded on first use to avoid a circular require.
 local function _UI()
     return package.loaded["infra/sui_core"] or require("infra/sui_core")

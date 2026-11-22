@@ -37,8 +37,16 @@
 --     -- action is treated as having an on/off state, and getEntry() sets
 --     -- entry.dim = true whenever it returns false. Consumers building the
 --     -- icon widget dim it (QARenderer.buildIcon) instead of switching to a
---     -- separate "off" icon asset (see wifi_toggle / night_mode below).
+--     -- separate "off" icon asset (see wifi_toggle below).
 --     is_active   = function(id) -> boolean,
+--     -- optional state variant (built-in actions only): while is_shown()
+--     -- returns true, getEntry() returns the variant's label and icon
+--     -- instead of the action's. The variant icon has its own override
+--     -- slot, keyed by variant.id, in Style → Icons and in icon packs
+--     -- (sui_action_<variant.id>.svg); settings menus keep the action's
+--     -- own label (QA.getMenuLabel). See night_mode below.
+--     variant     = { id = "...", label = _("..."), icon = "...",
+--                     is_shown = function(id) -> boolean },
 --     -- execution:
 --     is_in_place = true,  -- bool OR function(id)->bool
 --     -- optional, only meaningful when is_in_place is true: set this when
@@ -954,9 +962,14 @@ local function _registerBuiltins()
             id    = "night_mode",
             label = _("Night Mode"),
             icon  = Config.ICON.night,
-            is_active = function(_id)
-                return Screen.night_mode and true or false
-            end,
+            -- Shows the mode a tap switches to: Night Mode by day, Day Mode
+            -- at night.
+            variant = {
+                id       = "night_mode_day",
+                label    = _("Day Mode"),
+                icon     = Config.ICON.day,
+                is_shown = function(_id) return Screen.night_mode and true or false end,
+            },
             is_in_place = true,
             execute = function(_ctx)
                 UIManager:broadcastEvent(require("ui/event"):new("ToggleNightMode"))
@@ -1488,9 +1501,43 @@ function QA.setDefaultActionIcon(id, icon)
     end
 end
 
-function QA.performResetAllQAIcons(plugin)
+-- Name of action `id` for settings menus: the action's own label, never its
+-- state variant's.
+function QA.getMenuLabel(id)
+    local desc = _registry[id]
+    if desc and desc.variant then
+        return QA.getDefaultActionLabel(id) or desc.label
+    end
+    return QA.getEntry(id).label
+end
+
+-- Icon override slots of the built-in actions, in Config.ALL_ACTIONS order:
+-- { id, title, icon } for each action, followed by its state variant when it
+-- declares one. `id` keys QA.get/setDefaultActionIcon.
+function QA.defaultIconSlots()
+    local slots = {}
     for _k, a in ipairs(Config.ALL_ACTIONS) do
-        SUISettings:del("simpleui_action_" .. a.id .. "_icon")
+        slots[#slots + 1] = { id = a.id, title = QA.getMenuLabel(a.id), icon = a.icon }
+        local v = _registry[a.id] and _registry[a.id].variant
+        if v then
+            slots[#slots + 1] = { id = v.id, title = v.label, icon = v.icon }
+        end
+    end
+    return slots
+end
+
+-- True when `id` is the state variant of a built-in action.
+function QA.isIconVariant(id)
+    for _k, a in ipairs(Config.ALL_ACTIONS) do
+        local v = _registry[a.id] and _registry[a.id].variant
+        if v and v.id == id then return true end
+    end
+    return false
+end
+
+function QA.performResetAllQAIcons(plugin)
+    for _k, slot in ipairs(QA.defaultIconSlots()) do
+        QA.setDefaultActionIcon(slot.id, nil)
     end
     for _i, qa_id in ipairs(QA.getCustomQAList()) do
         local cfg = SUISettings:get("simpleui_qa_" .. qa_id)
@@ -1671,9 +1718,8 @@ function QA.sui_build_qa_icons(plugin, ctx_menu, ctx)
     local preview_size = ctx.SZ(Screen:scaleBySize(36))
 
     local pool = {}
-    for _k, a in ipairs(Config.ALL_ACTIONS) do
-        local lbl = QA.getEntry(a.id).label
-        pool[#pool + 1] = { id = a.id, is_default = true, title = lbl }
+    for _k, slot in ipairs(QA.defaultIconSlots()) do
+        pool[#pool + 1] = { id = slot.id, is_default = true, title = slot.title, default_icon = slot.icon }
     end
     for _i, qa_id in ipairs(Config.getCustomQAList()) do
         local c = Config.getCustomQAConfig(qa_id)
@@ -1744,8 +1790,7 @@ function QA.sui_build_qa_icons(plugin, ctx_menu, ctx)
             local effective_icon = current_icon
             if not effective_icon then
                 if _is_default then
-                    local a_entry = Config.ACTION_BY_ID[_id]
-                    effective_icon = a_entry and a_entry.icon
+                    effective_icon = entry.default_icon
                 elseif _is_screen then
                     -- Mirrors infra/sui_custom_screens.lua's own
                     -- registerQuickAction() fallback (screen.icon or
@@ -1959,7 +2004,7 @@ function QA.getEntry(id)
     end
 
     -- Dynamic icon/label/state (e.g. wifi_toggle, night_mode).
-    local has_dynamic = desc.get_icon or desc.get_label or desc.is_active
+    local has_dynamic = desc.get_icon or desc.get_label or desc.is_active or desc.variant
     local icon_ov  = QA.getDefaultActionIcon(id)
     local label_ov = QA.getDefaultActionLabel(id)
 
@@ -1973,8 +2018,15 @@ function QA.getEntry(id)
         dim = ok_active and active == false
     end
 
-    _dyn_entry.icon  = icon_ov or (desc.get_icon and desc.get_icon(id)) or desc.icon
-    _dyn_entry.label = label_ov or (desc.get_label and desc.get_label(id)) or desc.label
+    -- The state variant, while shown, replaces the action's icon and label.
+    local v = desc.variant
+    if v and v.is_shown(id) then
+        _dyn_entry.icon  = QA.getDefaultActionIcon(v.id) or v.icon
+        _dyn_entry.label = v.label
+    else
+        _dyn_entry.icon  = icon_ov or (desc.get_icon and desc.get_icon(id)) or desc.icon
+        _dyn_entry.label = label_ov or (desc.get_label and desc.get_label(id)) or desc.label
+    end
     _dyn_entry.dim   = dim
     return _dyn_entry
 end
@@ -2657,8 +2709,8 @@ end
 -- Style → Icons and the Quick Actions screen.
 -- ---------------------------------------------------------------------------
 function QA.hasCustomIcons()
-    for _, a in ipairs(Config.ALL_ACTIONS) do
-        if QA.getDefaultActionIcon(a.id) ~= nil then return true end
+    for _, slot in ipairs(QA.defaultIconSlots()) do
+        if QA.getDefaultActionIcon(slot.id) ~= nil then return true end
     end
     for _, qa_id in ipairs(Config.getCustomQAList()) do
         local c = Config.getCustomQAConfig(qa_id)
@@ -2698,8 +2750,8 @@ function QA.makeIconsMenuItems(plugin)
         text           = _("Reset All Quick Action Icons"),
         keep_menu_open = true,
         callback       = function()
-            for _k, a in ipairs(Config.ALL_ACTIONS) do
-                SUISettings:del("simpleui_action_" .. a.id .. "_icon")
+            for _k, slot in ipairs(QA.defaultIconSlots()) do
+                QA.setDefaultActionIcon(slot.id, nil)
             end
             for _i, qa_id in ipairs(QA.getCustomQAList()) do
                 local cfg = SUISettings:get("simpleui_qa_" .. qa_id)
@@ -2766,9 +2818,8 @@ function QA.makeIconsMenuItems(plugin)
     end
 
     local pool = {}
-    for _k, a in ipairs(Config.ALL_ACTIONS) do
-        local lbl = QA.getEntry(a.id).label
-        pool[#pool + 1] = { id = a.id, is_default = true, title = lbl }
+    for _k, slot in ipairs(QA.defaultIconSlots()) do
+        pool[#pool + 1] = { id = slot.id, is_default = true, title = slot.title }
     end
     for _i, qa_id in ipairs(Config.getCustomQAList()) do
         local c = Config.getCustomQAConfig(qa_id)

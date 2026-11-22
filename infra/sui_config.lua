@@ -75,7 +75,8 @@ M.ICON = {
     random         = "nerd:EB30",  -- random
     continue_      = "nerd:E28B",  -- open book        (SUIStyle.book_open)
     frontlight     = "nerd:ECA7",  -- sun              (SUIStyle.brightness)
-    night          = "nerd:23FE",  -- power sleep symbol
+    night          = "nerd:23FE",  -- crescent moon
+    day            = "nerd:E7DD",  -- outline sun (brightness-5)
     stats          = "nerd:E829",  -- chart-line
     power          = "nerd:EB24",  -- power symbol     (SUIStyle.power)
     plus_alt       = "nerd:E145",  -- add / plus       (SUIStyle.add)
@@ -515,7 +516,7 @@ function M.getActionById(id)
     local entry = QA.getEntry(id)
     if entry and not entry.id then
         -- entry.dim carries the resolved on/off state for actions with an
-        -- is_active hook (e.g. wifi_toggle, night_mode) — keep it so callers
+        -- is_active hook (e.g. wifi_toggle) — keep it so callers
         -- can dim the icon, same as every other QA
         -- consumer (see features/sui_quickactions.lua header comment).
         return { id = id, label = entry.label, icon = entry.icon, dim = entry.dim }

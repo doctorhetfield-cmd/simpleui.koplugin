@@ -392,7 +392,7 @@ local function makeInstance(inst_id)
             if actionAvailable(id) then
                 available[#available + 1] = {
                     id    = id,
-                    label = id == "home" and Config.homeLabel() or QA.getEntry(id).label,
+                    label = id == "home" and Config.homeLabel() or QA.getMenuLabel(id),
                 }
             end
         end
@@ -640,8 +640,7 @@ M.maxItems = _maxItems
 function M.getSummary(inst_id, _pfx, pfx_qa)
     local names = {}
     for _, qa_id in ipairs(SUISettings:readSetting(pfx_qa .. inst_id .. "_items") or {}) do
-        local entry = QA.getEntry(qa_id)
-        names[#names + 1] = entry and entry.label or qa_id
+        names[#names + 1] = QA.getMenuLabel(qa_id)
     end
     if #names == 0 then return _("No actions configured") end
     return table.concat(names, "  ·  ")

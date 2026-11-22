@@ -4156,11 +4156,20 @@ end
 -- UIManager:ToggleNightMode runs once per change, after the screen has
 -- switched. The wallpaper cache and the homescreen layout are refreshed, the
 -- looks derived from settings are resolved again, and the navbars are rebuilt
--- when a palette colour is on screen: it is pre-inverted at night and navbar
--- widgets keep the colour they were built with.
+-- when a palette colour is on screen (it is pre-inverted at night and navbar
+-- widgets keep the colour they were built with) or when a tab shows the night
+-- mode action (its icon and label are built into the bar).
 -- ---------------------------------------------------------------------------
 
 local NIGHT_MODE_STATE = "_simpleui_night_mode"
+
+-- True when a navbar tab shows the night mode action.
+local function _navbarShowsNightMode()
+    for _, id in ipairs(Config.loadTabConfig()) do
+        if id == "night_mode" then return true end
+    end
+    return false
+end
 
 function M.patchNightMode(plugin)
     local orig = rawget(UIManager, "ToggleNightMode")
@@ -4174,9 +4183,12 @@ function M.patchNightMode(plugin)
         SUIWallpaper.onNightModeChanged()
         SUISettings:invalidateDerived()
         local live = _live_plugin
-        if live and (Accent.color() or Accent.secondaryColor()) then
+        local accent = Accent.color() or Accent.secondaryColor()
+        if live and (accent or _navbarShowsNightMode()) then
             local ok, err = pcall(live._rebuildAllNavbars, live)
-            if not ok then logger.warn("simpleui: accent navbar rebuild failed:", tostring(err)) end
+            if not ok then logger.warn("simpleui: night mode navbar rebuild failed:", tostring(err)) end
+        end
+        if live and accent then
             local ok_tb, TB = pcall(require, "screens/sui_titlebar")
             if ok_tb and TB then pcall(TB.refreshAccent) end
         end

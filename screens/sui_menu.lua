@@ -268,10 +268,10 @@ SimpleUIPlugin._buildMenus = function(self)
                 elseif id == "home" then
                     cached_labels[id] = _homeLabel()
                 else
-                    -- QA.getEntry resolves built-ins AND externally registered
+                    -- QA.getMenuLabel resolves built-ins AND externally registered
                     -- actions (e.g. a Custom Screen's QA), unlike the raw
                     -- ACTION_BY_ID lookup this used to fall back to.
-                    cached_labels[id] = QA.getEntry(id).label
+                    cached_labels[id] = QA.getMenuLabel(id)
                 end
             end
             return cached_labels[id]
@@ -329,10 +329,10 @@ SimpleUIPlugin._buildMenus = function(self)
         if not id then return "?" end
         if id:match("^custom_qa_%d+$") then return getCustomQAConfig(id).label end
         if id == "home" then return _homeLabel() end
-        -- QA.getEntry resolves built-ins AND externally registered actions
+        -- QA.getMenuLabel resolves built-ins AND externally registered actions
         -- (e.g. a Custom Screen's QA); the old ACTION_BY_ID-only lookup
         -- silently fell back to the raw id for anything not in that table.
-        return QA.getEntry(id).label
+        return QA.getMenuLabel(id)
     end
 
     -- Every action a tab can show on this device.
@@ -1844,7 +1844,7 @@ SimpleUIPlugin._buildMenus = function(self)
         local available = {}
         for _i, id in ipairs(QA.allIds()) do
             if actionAvailable(id) then
-                available[#available+1] = { id = id, label = id == "home" and Config.homeLabel() or QA.getEntry(id).label }
+                available[#available+1] = { id = id, label = id == "home" and Config.homeLabel() or QA.getMenuLabel(id) }
             end
         end
         for _i, qa_id in ipairs(getCustomQAList()) do

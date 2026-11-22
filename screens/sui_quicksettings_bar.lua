@@ -236,8 +236,8 @@ end
 -- ---------------------------------------------------------------------------
 
 local function labelFor(id)
-    local ok, entry = pcall(function() return _QA().getEntry(id) end)
-    if ok and entry then return entry.label end
+    local ok, label = pcall(function() return _QA().getMenuLabel(id) end)
+    if ok and label then return label end
     return id
 end
 
@@ -1503,7 +1503,7 @@ end
 local function actionPool()
     local QA, pool = _QA(), {}
     for _i, id in ipairs(QA.allIds()) do
-        pool[#pool + 1] = { id = id, label = QA.getEntry(id).label }
+        pool[#pool + 1] = { id = id, label = QA.getMenuLabel(id) }
     end
     for _i, id in ipairs(QA.getCustomQAList()) do
         pool[#pool + 1] = { id = id, label = QA.getEntry(id).label }
