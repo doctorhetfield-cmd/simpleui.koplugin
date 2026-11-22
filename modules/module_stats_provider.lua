@@ -306,7 +306,9 @@ end
 -- Finished books
 --
 -- Every "books finished" figure and list comes from the FinishedBooks ledger
--- (infra/sui_store), keyed by partial md5. The ledger is kept current by
+-- (infra/sui_store), keyed by partial md5. A book is matched by its file path
+-- first, so two files sharing a partial md5 keep separate entries. The
+-- ledger is kept current by
 -- SP.bookChanged() and SP.syncBook(), called from every flow that changes a
 -- book's state, and is reconciled against the sidecars of the books in the
 -- reading history once a day, so that changes made outside the plugin are
@@ -316,7 +318,9 @@ end
 -- Entry fields returned by SP.getFinishedBooks():
 --   key                 unique id: the file path, or "md5:<md5>" when gone
 --   filepath            nil when the file is gone
---   title, authors, md5
+--   title, authors
+--   md5                 ledger key: the partial md5, "#<n>"-suffixed when
+--                       a different book holds the same md5
 --   year                completion year (integer) or nil when unknown
 --   date_started, date_finished   "YYYY-MM-DD" strings or nil
 --   exclude_from_goals  true for books left out of the counts
@@ -380,15 +384,42 @@ local function _isFullDate(stamp)
 end
 
 local function _findByPath(books, fp)
-    for md5, entry in pairs(books) do
-        if entry.path == fp and not entry.gone then return md5, entry end
+    for key, entry in pairs(books) do
+        if entry.path == fp and not entry.gone then return key, entry end
     end
 end
 
--- The ledger entry of a book: by md5 when known, else by its file path.
-local function _findEntry(books, fp, md5)
-    if md5 and books[md5] then return md5, books[md5] end
-    return _findByPath(books, fp)
+-- Whether `entry`, found under the partial md5 of the book at `fp` (sidecar
+-- fields in `view`), stands for a different book: another file still on the
+-- device, or a file no longer there whose title and authors both differ. An
+-- entry whose file is gone and that shares either is the same book, moved.
+local function _isOtherBook(entry, fp, view)
+    if entry.path == fp then return false end
+    if not entry.gone and entry.path and lfs.attributes(entry.path, "mode") == "file" then
+        return true
+    end
+    local title = view.title or fp:match("[^/]+$") or fp
+    return entry.title ~= nil and entry.title ~= "" and entry.title ~= title
+        and entry.authors ~= (view.authors or "")
+end
+
+-- The ledger entry of the book at `fp`: by its file path, else by its md5
+-- unless that entry stands for a different book.
+local function _findEntry(books, fp, view)
+    local key, entry = _findByPath(books, fp)
+    if key then return key, entry end
+    local md5 = view.partial_md5_checksum
+    entry = md5 and books[md5]
+    if entry and not _isOtherBook(entry, fp, view) then return md5, entry end
+end
+
+-- Ledger key for a book not yet recorded under its path: its md5, or
+-- "<md5>#<n>" when a different book already holds that md5.
+local function _newKey(books, fp, md5, view)
+    if not (books[md5] and _isOtherBook(books[md5], fp, view)) then return md5 end
+    local n = 2
+    while books[md5 .. "#" .. n] do n = n + 1 end
+    return md5 .. "#" .. n
 end
 
 --- Sidecar fields of a document that is open in the reader. Its settings
@@ -434,23 +465,22 @@ local function _applyBook(ledger, fp, view)
     local books = ledger.books
     local entry = _finishedEntry(fp, view)
     if entry then
-        local md5 = view.partial_md5_checksum or _findByPath(books, fp)
-                    or require("util").partialMD5(fp)
-        if not md5 or _sameEntry(books[md5], entry) then return false end
-        books[md5] = entry
+        local key = _findByPath(books, fp)
+        if not key then
+            local md5 = view.partial_md5_checksum or require("util").partialMD5(fp)
+            key = md5 and _newKey(books, fp, md5, view)
+        end
+        if not key or _sameEntry(books[key], entry) then return false end
+        books[key] = entry
         return true
     end
 
     local changed = false
-    local md5 = view.partial_md5_checksum
-    if md5 and books[md5] then
-        books[md5] = nil
-        changed   = true
-    end
-    local path_md5 = _findByPath(books, fp)
-    if path_md5 then
-        books[path_md5] = nil
-        changed         = true
+    local key = _findEntry(books, fp, view)
+    while key do
+        books[key] = nil
+        changed    = true
+        key        = _findEntry(books, fp, view)
     end
     return changed
 end
@@ -626,12 +656,12 @@ end
 --- complete carries none. A complete book keeps its date; one without it gets
 --- the date the ledger recorded for it, or today when the ledger has not seen
 --- it finished. Nil when the date is unknown.
-local function _expectedFinishedDate(ledger, fp, summary, md5)
+local function _expectedFinishedDate(ledger, fp, summary, view)
     if summary.status ~= "complete" then return nil end
     if summary.date_finished then return summary.date_finished end
     if not ledger.initialised then return nil end
 
-    local _, known = _findEntry(ledger.books, fp, md5)
+    local _, known = _findEntry(ledger.books, fp, view)
     if not known then return os.date("%Y-%m-%d") end
     return _isFullDate(known.finished) and known.finished or nil
 end
@@ -644,8 +674,7 @@ local function _syncFinishedDate(ledger, fp, doc_settings)
     local summary = doc_settings:readSetting("summary")
     if type(summary) ~= "table" then return end
 
-    local date = _expectedFinishedDate(ledger, fp, summary,
-        doc_settings:readSetting("partial_md5_checksum"))
+    local date = _expectedFinishedDate(ledger, fp, summary, _liveView(fp, doc_settings))
     if date == summary.date_finished then return end
     summary.date_finished = date
     doc_settings:saveSetting("summary", summary)

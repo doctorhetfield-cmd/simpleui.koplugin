@@ -75,13 +75,16 @@ Every file in the pack root must be an `.svg` or `.png`. The filename (without e
 | `sui_action_search_library.svg` | Search |
 | `sui_action_wifi_toggle.svg` | Wi-Fi toggle |
 | `sui_action_frontlight.svg` | Brightness |
-| `sui_action_night_mode.svg` | Night Mode |
+| `sui_action_night_mode.svg` | Night Mode — shown by day (taps switch to night) |
+| `sui_action_night_mode_day.svg` | Night Mode — shown at night as "Day Mode" (taps switch back to day) |
 | `sui_action_stats_calendar.svg` | Reading Stats |
 | `sui_action_power.svg` | Power menu |
 | `sui_action_settings.svg` | SimpleUI Settings |
 | `sui_action_browse_authors.svg` | Browse by Author |
 | `sui_action_browse_series.svg` | Browse by Series |
 | `sui_action_browse_tags.svg` | Browse by Tags |
+
+> **Night Mode has two icons.** The button always shows the mode a tap switches to: by day it reads **Night Mode** with a moon, at night it reads **Day Mode** with a sun. Each state has its own slot — `sui_action_night_mode` for the day state and `sui_action_night_mode_day` for the night state — so a pack can replace either one or both. A state without a custom icon keeps its default. The same two slots appear in **Style → Icons → Quick Actions Icons** as **Night Mode** and **Day Mode**; settings menus that list actions (tabs, slots, modules) always name the action **Night Mode**.
 
 **Quick Actions Defaults**
 
@@ -156,6 +159,7 @@ NightOwl/                       ← pack name (or NightOwl.zip)
   sui_action_continue.svg
   sui_action_frontlight.svg
   sui_action_night_mode.svg
+  sui_action_night_mode_day.svg
   sui_action_power.svg
   sui_action_settings.svg
 ```

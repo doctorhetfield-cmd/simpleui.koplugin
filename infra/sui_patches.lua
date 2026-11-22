@@ -2836,6 +2836,23 @@ local function _callClassRecalculate(menu, ...)
     if not ok then error(err, 0) end
 end
 
+-- Pagination widgets a layout pass sizes the item area against.
+local PAGINATION_FIELDS = { "page_return_arrow", "page_info_text", "page_info" }
+
+-- Calls fn(menu, ...) with the pagination widgets hidden when the menu has its
+-- pagination bar removed, so the items take its height.
+local function _withoutPagination(menu, fn, ...)
+    if not menu._sui_no_pagination then return fn(menu, ...) end
+    local saved = {}
+    for _, field in ipairs(PAGINATION_FIELDS) do
+        saved[field] = menu[field]
+        menu[field] = nil
+    end
+    local ok, err = pcall(fn, menu, ...)
+    for _, field in ipairs(PAGINATION_FIELDS) do menu[field] = saved[field] end
+    if not ok then error(err, 0) end
+end
+
 -- Classic list mode: the menu builds its own rows over the full menu width.
 -- Each row is narrowed by the inset and its content is moved in by the side
 -- margin through items_padding.
@@ -2907,11 +2924,16 @@ local function _installSideMargin(DisplayMode, native_margin, item_lines, owner)
     local orig_build       = DisplayMode._updateItemsBuildUI
 
     -- native_margin(menu) is read after the mode has run _recalculateDimen.
-    local function recalculate(menu, ...)
+    local function layout(menu, ...)
         orig_recalculate(menu, ...)
         local inset = inset_of(menu)
         menu._sui_side_inset = inset
         if inset > 0 then _withInsetWidth(menu, inset, orig_recalculate, ...) end
+    end
+
+    -- Menus may bind this function on themselves in place of their own layout.
+    local function recalculate(menu, ...)
+        _withoutPagination(menu, layout, ...)
     end
 
     local function build(menu, ...)
@@ -3073,22 +3095,13 @@ function M.patchMenuInitForPagination(plugin)
             end
         end
 
-        -- Override _recalculateDimen to suppress pagination widget updates.
-        -- page_return_arrow and page_info are no longer layout children here,
-        -- so nil them out during the call to prevent KOReader sizing them.
+        -- The pagination widgets are no longer layout children here, so every
+        -- layout pass runs without them. The display mode layouts check the
+        -- flag too, as they can replace this instance function later.
+        menu_self._sui_no_pagination = true
         local layout_recalculate = rawget(menu_self, "_recalculateDimen") or _callClassRecalculate
-        menu_self._recalculateDimen = function(self_inner, no_recalculate_dimen)
-            local saved_arrow = self_inner.page_return_arrow
-            local saved_text  = self_inner.page_info_text
-            local saved_info  = self_inner.page_info
-            self_inner.page_return_arrow = nil
-            self_inner.page_info_text    = nil
-            self_inner.page_info         = nil
-            local ok, err = pcall(layout_recalculate, self_inner, no_recalculate_dimen)
-            self_inner.page_return_arrow = saved_arrow
-            self_inner.page_info_text    = saved_text
-            self_inner.page_info         = saved_info
-            if not ok then error(err, 2) end
+        menu_self._recalculateDimen = function(self_inner, ...)
+            _withoutPagination(self_inner, layout_recalculate, ...)
         end
         menu_self:_recalculateDimen()
     end

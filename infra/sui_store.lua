@@ -225,7 +225,9 @@ end
 --   {
 --     initialised = true,            -- a full reconcile has run
 --     books = {
---       ["<partial md5>"] = {        -- a book tracked from its sidecar
+--       ["<partial md5>"] = {        -- a book tracked from its sidecar; keyed
+--                                    -- "<partial md5>#<n>" when a different
+--                                    -- book holds the same md5
 --         title, authors   strings
 --         finished         completion date "YYYY-MM-DD", or just "YYYY"
 --                          when only the year is known; nil when unknown
