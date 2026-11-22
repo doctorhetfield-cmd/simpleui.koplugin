@@ -1352,11 +1352,9 @@ local function _riGetStreaks()
     do
         -- ── Day streaks ──────────────────────────────────────────────────
         -- The ledger's active dates are the days with reading time (rows with
-        -- duration > 0, so a crash/force-close leaves no gap), exactly like
-        -- module_stats_provider.lua's fetchStreak — needed so the two "current
-        -- streak" sources this window and the homescreen card both ultimately
-        -- feed into sui_streak.computeCurrentDayStreak() actually agree on the
-        -- same set of "active" dates, not just share the same walk function.
+        -- duration > 0, so a crash/force-close leaves no gap). The homescreen
+        -- card (module_stats_provider.lua's fetchStreak) reads the same ledger,
+        -- so both feed the same days into sui_streak.computeCurrentDayStreak().
         local dates = ledger:activeDates()
 
         local function parseDateYMD(s)
@@ -1396,7 +1394,7 @@ local function _riGetStreaks()
         end
 
         local today     = os.date("%Y-%m-%d")
-        local yesterday = os.date("%Y-%m-%d", os.time() - 86400)
+        local yesterday = SUIStreak.prevDay(today)
 
         local day_streaks = computeStreak(dates,
             isConsecDay,
@@ -1440,7 +1438,8 @@ local function _riGetStreaks()
         end
 
         local cur_wk  = os.date("%G-%V")
-        local last_wk = os.date("%G-%V", os.time() - 7 * 86400)
+        local now_t   = os.date("*t")
+        local last_wk = os.date("%G-%V", os.time{ year = now_t.year, month = now_t.month, day = now_t.day - 7, hour = 12 })
 
         -- Week streak entries use {first_ts, last_ts}, so indices differ.
         -- Adapt computeStreak: entries[i][1]=first_ts for is_current, [2]=last_ts for best_end.
@@ -1484,13 +1483,18 @@ end
 
 -- Returns { seconds=N, pages=N } for the reading done since midnight today.
 -- Re-fetched every time the page is built (cheap: two small aggregate queries).
+-- Local midnight `day_offset` days from today, built from the date fields so a
+-- DST change cannot shift it.
+local function _localMidnight(day_offset)
+    local t = os.date("*t")
+    return os.time{ year = t.year, month = t.month, day = t.day + day_offset, hour = 0 }
+end
+
 local function _riGetTodayStats()
     local default = { seconds = 0, pages = 0 }
     return _withStatsDb(default, function(conn)
         local s = { seconds = 0, pages = 0 }
-        local now_ts  = os.time()
-        local now_t   = os.date("*t")
-        local midnight = now_ts - (now_t.hour * 3600 + now_t.min * 60 + now_t.sec)
+        local midnight = _localMidnight(0)
         _withStmt(conn, string.format([[
                 SELECT count(DISTINCT page || '@' || id_book), sum(duration)
                 FROM page_stat_data
@@ -1511,11 +1515,8 @@ local function _riGetThisWeekStats()
     local default = { seconds = 0, pages = 0 }
     local r = _withStatsDb(default, function(conn)
         local s = { seconds = 0, pages = 0 }
-        local now_ts  = os.time()
-        local now_t   = os.date("*t", now_ts)
-        local midnight  = now_ts - (now_t.hour * 3600 + now_t.min * 60 + now_t.sec)
-        local days_since_monday = (now_t.wday + 5) % 7
-        local week_start = midnight - days_since_monday * 86400
+        local days_since_monday = (os.date("*t").wday + 5) % 7
+        local week_start = _localMidnight(-days_since_monday)
         _withStmt(conn, string.format([[
             WITH day_buckets AS (
                 SELECT sum(duration) AS sd, count(DISTINCT page || '@' || id_book) AS pg
@@ -1570,10 +1571,7 @@ local function _riGetLastWeekStats()
     local default = { total_seconds = 0, total_pages = 0, avg_seconds = 0, avg_pages = 0 }
     local r = _withStatsDb(default, function(conn)
         local res       = { total_seconds = 0, total_pages = 0, avg_seconds = 0, avg_pages = 0 }
-        local now_ts    = os.time()
-        local now_t     = os.date("*t")
-        local midnight  = now_ts - (now_t.hour * 3600 + now_t.min * 60 + now_t.sec)
-        local week_start = midnight - 6 * 86400
+        local week_start = _localMidnight(-6)
         _withStmt(conn, string.format([[
                 WITH day_buckets AS (
                     SELECT
@@ -2176,10 +2174,13 @@ function StatsWindows.showStreakManagerWindow(opts)
         -- never an arbitrary past day, so at most one cell in the whole
         -- calendar is ever tappable for this.
         local freezes_available   = freeze_mode_on and SUIStreak.getFreezesAvailable() or 0
-        local yest_t              = freeze_mode_on and os.date("*t", os.time() - 86400) or nil
-        local yest_str            = freeze_mode_on and os.date("%Y-%m-%d", os.time() - 86400) or nil
+        local today_t             = os.date("*t")
+        -- Noon of yesterday: a DST change cannot move it to another day.
+        local yest_ts             = os.time{ year = today_t.year, month = today_t.month, day = today_t.day - 1, hour = 12 }
+        local yest_t              = freeze_mode_on and os.date("*t", yest_ts) or nil
+        local yest_str            = freeze_mode_on and os.date("%Y-%m-%d", yest_ts) or nil
         local yest_active         = freeze_mode_on and _smGetRealActivityFor(yest_str) or false
-        local day_before_active   = freeze_mode_on and _smGetRealActivityFor(os.date("%Y-%m-%d", os.time() - 2 * 86400)) or false
+        local day_before_active   = freeze_mode_on and _smGetRealActivityFor(SUIStreak.prevDay(yest_str)) or false
         local yest_already_frozen = freeze_mode_on and SUIStreak.isDateFrozen(yest_str) or false
         -- gap_eligible: is yesterday specifically the one missed day (real
         -- activity the day before yesterday, none yesterday, not already
@@ -2231,7 +2232,7 @@ function StatsWindows.showStreakManagerWindow(opts)
             local Dialogs = require("features/dialogs/sui_dialogs")
             Dialogs.confirm{
                 text = string.format(_("You have %d freeze(s) available.\nUse one to cover %s?"),
-                           freezes_available, _riFmtDate(os.time() - 86400)),
+                           freezes_available, _riFmtDate(yest_ts)),
                 ok_text     = _("Use freeze"),
                 ok_callback = useFreeze,
             }

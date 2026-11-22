@@ -54,6 +54,7 @@ local function _prevDay(date_str)
     if not y then return nil end
     return os.date("%Y-%m-%d", os.time{ year = y, month = mo, day = d } - 86400)
 end
+M.prevDay = _prevDay
 
 -- ---------------------------------------------------------------------------
 -- M.computeCurrentDayStreak(active_dates, opts) → integer
@@ -243,7 +244,7 @@ function M.spendFreezeForYesterday()
     local avail = SUISettings:get(KEY_FREEZES) or 0
     if avail <= 0 then return false end
 
-    local yesterday = os.date("%Y-%m-%d", os.time() - 86400)
+    local yesterday = _prevDay(os.date("%Y-%m-%d"))
     if M.isDateFrozen(yesterday) then return false end
 
     local dates = SUISettings:get(KEY_FROZEN_DATES) or {}

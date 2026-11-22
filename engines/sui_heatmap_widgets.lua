@@ -141,25 +141,28 @@ end
 -- the range are kept but marked in_range = false, rendered as blank
 -- spacer cells rather than colored squares).
 function HW.buildRangeGrid(daily_map, start_t, end_t)
-    local start_wd     = tonumber(os.date("%w", start_t))  -- 0=Sun..6=Sat
-    local start_offset = (start_wd + 6) % 7                -- days back to Monday
-    local grid_start   = start_t - start_offset * 86400
+    -- Days are stepped through the date fields at noon, so a DST change can
+    -- neither repeat nor skip one, whatever the time of start_t and end_t.
+    local s, e = os.date("*t", start_t), os.date("*t", end_t)
+    local start_noon = os.time{ year = s.year, month = s.month, day = s.day, hour = 12 }
+    local end_noon   = os.time{ year = e.year, month = e.month, day = e.day, hour = 12 }
+    local start_offset = (s.wday + 5) % 7                  -- days back to Monday
+    local end_offset   = (8 - e.wday) % 7                  -- days forward to Sunday
 
-    local end_wd     = tonumber(os.date("%w", end_t))
-    local end_offset = (7 - end_wd) % 7                    -- days forward to Sunday
-    local grid_end   = end_t + end_offset * 86400
-
-    local total_days = math.floor((grid_end - grid_start) / 86400) + 1
-    local num_cols    = math.ceil(total_days / 7)
+    -- Noon-to-noon spans are whole days give or take a DST hour.
+    local range_days = math.floor((end_noon - start_noon) / 86400 + 0.5) + 1
+    local total_days = start_offset + range_days + end_offset
+    local num_cols   = math.ceil(total_days / 7)
 
     local start_str = os.date("%Y-%m-%d", start_t)
     local end_str   = os.date("%Y-%m-%d", end_t)
 
     local cols = {}
-    local t = grid_start
+    local i = -start_offset
     for col = 1, num_cols do
         local col_days = {}
         for row = 1, 7 do
+            local t    = os.time{ year = s.year, month = s.month, day = s.day + i, hour = 12 }
             local dstr = os.date("%Y-%m-%d", t)
             local dt   = os.date("*t", t)
             local in_range = (dstr >= start_str and dstr <= end_str)
@@ -170,7 +173,7 @@ function HW.buildRangeGrid(daily_map, start_t, end_t)
                 year           = dt.year,
                 seconds        = daily_map[dstr] or 0,
             }
-            t = t + 86400
+            i = i + 1
         end
         cols[col] = col_days
     end

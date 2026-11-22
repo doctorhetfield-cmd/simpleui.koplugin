@@ -11,6 +11,11 @@
 -- last read is appended with one query bounded on the start_time index. Today is
 -- always read from the database, so every figure is current.
 --
+-- A day keeps the label it got when it was recorded, so a later change of the
+-- UTC offset moves neither the day nor the streaks built on it. Days labelled
+-- again by a rebuild use the current offset: the offset in effect back then is
+-- not recorded.
+--
 -- page_stat_data (the base table) is read, not the page_stat view, so the
 -- start_time index bounds every scan.
 
@@ -131,16 +136,28 @@ local function fetchDays(conn, lo, hi)
     return days
 end
 
+-- Adds the reading of `e` to the entry `into` of the same day.
+local function mergeEntry(into, e)
+    into.secs = into.secs + e.secs
+    into.first = math.min(into.first, e.first)
+    into.last = math.max(into.last, e.last)
+    if e.first_active and (not into.first_active or e.first_active < into.first_active) then
+        into.first_active = e.first_active
+    end
+end
+
 -- Brings the state up to today's midnight, validating what it already holds.
+-- A state past today's midnight but not past now comes from a UTC offset that
+-- moved forward, and is kept as labelled; one past now is discarded.
 local function sync(conn, today_start)
     if not _loaded then _state = loadState() end
     local state = _state
-    if state and state.through > today_start then state = nil end
+    if state and state.through > os.time() then state = nil end
     if state then
         local count, min_t, max_t = prefixSignature(conn, state.through)
         if count ~= state.count or min_t ~= state.min_t or max_t ~= state.max_t then state = nil end
     end
-    if state and state.through == today_start then return state end
+    if state and state.through >= today_start then return state end
 
     state = state or { through = 0, count = 0, min_t = 0, max_t = 0, days = {}, by_day = {}, pages = {} }
     for _, e in ipairs(fetchDays(conn, state.through, today_start)) do
@@ -148,8 +165,14 @@ local function sync(conn, today_start)
         if state.min_t == 0 or e.first < state.min_t then state.min_t = e.first end
         if e.last > state.max_t then state.max_t = e.last end
         e.n = nil
-        state.days[#state.days + 1] = e
-        state.by_day[e.day] = e
+        -- After an offset moved back, the first new rows may share the last day.
+        local prev = state.by_day[e.day]
+        if prev then
+            mergeEntry(prev, e)
+        else
+            state.days[#state.days + 1] = e
+            state.by_day[e.day] = e
+        end
     end
     state.through = today_start
     _state = state
@@ -190,16 +213,25 @@ local _current_pages   -- memo of the pages of the current year
 ---   snapshot.token  changes whenever any reading is added, removed or changed
 function Ledger.get(conn)
     return withConn(conn, function(c)
-        local today_start = todayStart()
-        local state = sync(c, today_start)
-        local live = fetchDays(c, today_start)
+        local state = sync(c, todayStart())
+        local live = fetchDays(c, state.through)
         local list = {}
         for i, e in ipairs(state.days) do list[i] = e end
         local live_n, live_max = 0, 0
-        for _, e in ipairs(live) do
-            list[#list + 1] = e
+        for i, e in ipairs(live) do
             live_n = live_n + e.n
             live_max = math.max(live_max, e.last)
+            local prev = list[#list]
+            if prev and prev.day == e.day then
+                -- The offset moved since the last completed day was recorded:
+                -- combine both parts of the day without touching the state.
+                local merged = { day = prev.day, secs = prev.secs, first = prev.first,
+                                 last = prev.last, first_active = prev.first_active }
+                mergeEntry(merged, e)
+                live[i], list[#list] = merged, merged
+            else
+                list[#list + 1] = e
+            end
         end
         return setmetatable({
             list = list, state = state, live = live,

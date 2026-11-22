@@ -14,8 +14,9 @@
 --     month, seconds and pages.
 --   Query 1b — duration sums for the year and all-time windows, and the page
 --     turns of all time and of today.
---   Query 2  — streak (recent distinct active dates + freeze-aware walk); the
---     same dates give the last-7-days dots, so they cost no extra query.
+--   Query 2  — streak: active days from the stats ledger (one index-only
+--     validation query plus today's rows) + freeze-aware walk; the same days
+--     give the recent-days dots and the longest streak.
 -- Reading sessions (see SP.getSessionRecords), the chart data (see
 --   SP.getChartData) and the year data (see SP.getYearData) are separate,
 --   on-demand queries.
@@ -238,63 +239,45 @@ end
 -- ---------------------------------------------------------------------------
 -- Query 2: reading streak.
 --
--- Only the trailing run of consecutive active days matters, so the distinct
--- active dates are fetched for a bounded recent window and merged with any
--- Streak Manager frozen dates before handing off to sui_streak's shared walk
--- (also used by sui_stats_windows' Reading Insights window) — frozen days
--- are never written into page_stat_data itself.
---
--- The window starts at STREAK_FIRST_WINDOW_DAYS and grows by
--- STREAK_WINDOW_GROWTH while the run reaches the window's oldest day (the
--- run may extend further back), until it ends inside the window or the whole
--- table is covered.
---
--- Queried against page_stat_data directly, bounded on the indexed start_time
--- column; duration > 0 excludes zero-duration rows (e.g. a crash/force-close).
--- today_str/yesterday_str are passed in, so this makes no os.date calls of
--- its own.
---
--- Also returns the state of each of the last STREAK_DOTS_DAYS days, oldest first
--- (the last entry is today): "read", "frozen" (covered by a spent freeze) or
--- "none". `week_dates` are those dates, pre-computed by SP.get(). Every window
--- reaches back at least 90 days, so the dates are always inside it.
+-- The active days (days with reading time, so a crash/force-close leaves no
+-- gap) come from the stats ledger (infra/sui_stats_ledger), the same source as
+-- the Streak Manager calendar and the Reading Insights window: a day keeps the
+-- label it was recorded with, even after the UTC offset changes. They are
+-- merged with any Streak Manager frozen dates before handing off to
+-- sui_streak's shared walk — frozen days are never written into
+-- page_stat_data itself.
 -- ---------------------------------------------------------------------------
-local STREAK_FIRST_WINDOW_DAYS = 90
-local STREAK_WINDOW_GROWTH     = 4
-local STREAK_DOTS_DAYS         = 14
+local STREAK_DOTS_DAYS = 14
 
-local function fetchStreak(conn, today_str, yesterday_str, start_today, week_dates)
+-- "YYYY-MM-DD" of every day with reading time, newest first; nil when the
+-- ledger cannot be read.
+local function fetchActiveDays(conn)
+    local ledger = require("infra/sui_stats_ledger").get(conn)
+    if not ledger then return nil end
+    local days = {}
+    for i, e in ipairs(ledger:activeDates()) do days[i] = e[1] end
+    return days
+end
+
+-- Current streak, plus the state of each of the last STREAK_DOTS_DAYS days,
+-- oldest first (the last entry is today): "read", "frozen" (covered by a spent
+-- freeze) or "none". `week_dates` are those dates, pre-computed by SP.get().
+local function fetchStreak(active, today_str, week_dates)
     local streak = 0
     local week
     local ok, err = pcall(function()
         local SF = _getStreakFreeze()
-        if not (SF and SF.computeCurrentDayStreak) then return end
+        if not (active and SF and SF.computeCurrentDayStreak) then return end
         local frozen = SF.getFrozenDatesInRange and SF.getFrozenDatesInRange(nil, nil) or {}
-
-        local window_days = STREAK_FIRST_WINDOW_DAYS
-        while true do
-            local since = math.max(0, start_today - window_days * 86400)
-            local rw = conn:exec(string.format([[
-                SELECT DISTINCT date(start_time, 'unixepoch', 'localtime')
-                FROM page_stat_data
-                WHERE start_time >= %d AND duration > 0;
-            ]], since))
-            local active = rw and rw[1] or {}
-            streak = SF.computeCurrentDayStreak(active, {
-                frozen_dates = frozen,
-                today        = today_str,
-                yesterday    = yesterday_str,
-            })
-            week = {}
-            local state_of = {}
-            for _, d in ipairs(frozen) do state_of[d] = "frozen" end
-            for _, d in ipairs(active) do state_of[d] = "read" end
-            for i, d in ipairs(week_dates) do week[i] = state_of[d] or "none" end
-            -- Complete once the run ends at least a day inside the window
-            -- (the slack absorbs day-length drift) or nothing older exists.
-            if since == 0 or streak < window_days - 1 then break end
-            window_days = window_days * STREAK_WINDOW_GROWTH
-        end
+        streak = SF.computeCurrentDayStreak(active, {
+            frozen_dates = frozen,
+            today        = today_str,
+        })
+        local state_of = {}
+        for _, d in ipairs(frozen) do state_of[d] = "frozen" end
+        for _, d in ipairs(active) do state_of[d] = "read" end
+        week = {}
+        for i, d in ipairs(week_dates) do week[i] = state_of[d] or "none" end
     end)
     if not ok then
         logger.warn("simpleui: stats_provider: fetchStreak failed: " .. tostring(err))
@@ -304,17 +287,12 @@ end
 
 -- Longest run of consecutive active days in the whole history (frozen days
 -- count, like in the current streak). Nil when it cannot be computed.
-local function fetchLongestStreak(conn)
+local function fetchLongestStreak(active)
     local longest
     local ok, err = pcall(function()
         local SF = _getStreakFreeze()
-        if not (SF and SF.computeLongestDayStreak) then return end
-        local rw = conn:exec([[
-            SELECT DISTINCT date(start_time, 'unixepoch', 'localtime')
-            FROM page_stat_data
-            WHERE duration > 0;
-        ]])
-        longest = SF.computeLongestDayStreak(rw and rw[1] or {}, {
+        if not (active and SF and SF.computeLongestDayStreak) then return end
+        longest = SF.computeLongestDayStreak(active, {
             frozen_dates = SF.getFrozenDatesInRange and SF.getFrozenDatesInRange(nil, nil) or {},
         })
     end)
@@ -1352,10 +1330,11 @@ function SP.get(db_conn, year_str, needs_books)
     end
 
     -- Compute timestamps once, shared by all sub-queries.
-    local start_today = now - (t.hour * 3600 + t.min * 60 + t.sec)
+    -- Local midnights built from the date fields, so a DST change cannot shift them.
+    local start_today = os.time{ year = t.year, month = t.month, day = t.day, hour = 0 }
     -- t.wday: 1=Sunday, 2=Monday, ..., 7=Saturday -> days since Monday = (t.wday-2) % 7
-    local week_start     = start_today - ((t.wday - 2) % 7) * 86400
-    local rolling7_start = start_today - 6 * 86400
+    local week_start     = os.time{ year = t.year, month = t.month, day = t.day - ((t.wday - 2) % 7), hour = 0 }
+    local rolling7_start = os.time{ year = t.year, month = t.month, day = t.day - 6, hour = 0 }
     local month_start = os.time{ year = t.year, month = t.month, day = 1,
                                   hour = 0,     min  = 0,  sec = 0 }
     local year_start  = os.time{ year = t.year, month = 1, day = 1,
@@ -1445,11 +1424,10 @@ function SP.get(db_conn, year_str, needs_books)
                 result.longest_streak = _cache and _cache.longest_streak
                 _streak_cache_valid = false
             else
-                local yesterday_str = os.date("%Y-%m-%d", start_today - 86400)
-                result.streak, result.streak_week = fetchStreak(
-                    db_conn, today_str, yesterday_str, start_today, streak_week_dates)
+                local active = fetchActiveDays(db_conn)
+                result.streak, result.streak_week = fetchStreak(active, today_str, streak_week_dates)
                 Perf.mark("stats: current streak done")
-                result.longest_streak = fetchLongestStreak(db_conn)
+                result.longest_streak = fetchLongestStreak(active)
                 Perf.mark("stats: longest streak done")
 
                 -- Streak Manager freeze mechanic (day-based earning hook):
