@@ -103,12 +103,6 @@ def extract_strings():
             line_num = content[:match.start()].count('\n') + 1
             plural_strings[(singular, plural)].append((str(rel_path), line_num))
 
-    # Deduplicate (file, line) locations before generating the POT.
-    for locations in regular_strings.values():
-        locations[:] = list(dict.fromkeys(locations))
-    for locations in plural_strings.values():
-        locations[:] = list(dict.fromkeys(locations))
-
     return regular_strings, plural_strings
 
 def generate_pot(regular_strings, plural_strings):
@@ -131,7 +125,8 @@ def generate_pot(regular_strings, plural_strings):
     # Regular strings
     for string in sorted(regular_strings.keys()):
         locations = regular_strings[string]
-        for file_path, line_num in locations:
+        # A string matched twice on one line is listed once.
+        for file_path, line_num in dict.fromkeys(locations):
             normalized_path = file_path.replace('\\', '/')
             lines.append(f'#: {normalized_path}:{line_num}')
         lines.append(f'msgid "{string}"')
@@ -140,7 +135,7 @@ def generate_pot(regular_strings, plural_strings):
 
     # Plural strings
     for (singular, plural), locations in sorted(plural_strings.items()):
-        for file_path, line_num in locations:
+        for file_path, line_num in dict.fromkeys(locations):
             normalized_path = file_path.replace('\\', '/')
             lines.append(f'#: {normalized_path}:{line_num}')
         lines.append(f'msgid "{singular}"')

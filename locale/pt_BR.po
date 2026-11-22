@@ -11179,9 +11179,21 @@ msgstr "Formato da Data"
 msgid "Edit Card"
 msgstr "Editar Cartão"
 
+#: screens/sui_stats_windows.lua:1726
+msgid "{day2} {month_short} '{year2}"
+msgstr "{day2} {month_short} '{year2}"
+
 #: modules/module_clock.lua:42
 msgid "{day}/{month_num}/{year}"
 msgstr "{day}/{month_num}/{year}"
+
+#: engines/sui_window.lua:3094
+msgid "{month} {year}"
+msgstr "{month} de {year}"
+
+#: screens/sui_heatmap_popup.lua:45
+msgid "{start_day2} {start_month_short} – {end_day2} {end_month_short} {end_year}"
+msgstr "{start_day2} {start_month_short} – {end_day2} {end_month_short} {end_year}"
 
 #: modules/module_clock.lua:41
 msgid "{weekday_short}, {day} {month_short}"
