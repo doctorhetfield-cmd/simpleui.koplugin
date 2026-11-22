@@ -1051,6 +1051,10 @@ msgstr "Quase."
 msgid "Alphabetical"
 msgstr "Alfabética"
 
+#: features/library/sui_tab_views.lua:284
+msgid "Also use this mode in History and Collections"
+msgstr "Usar também este modo no Histórico e nas Coleções"
+
 #: screens/sui_menu.lua:2364
 msgid "Always"
 msgstr "Sempre"
@@ -1287,6 +1291,10 @@ msgstr "Autor: %s"
 #: infra/sui_config.lua:141
 msgid "Authors"
 msgstr "Autores"
+
+#: features/library/sui_tab_views.lua:236
+msgid "Authors display mode"
+msgstr "Modo de visualização de autores"
 
 #: engines/sui_group_cell.lua:263 features/sui_cover_elements.lua:326
 msgid "Auto (Single ↔ 4-Cover Grid)"
@@ -7301,9 +7309,21 @@ msgstr "Remover"
 msgid "Remove from To Be Read"
 msgstr "Remover de Quero Ler"
 
+#: screens/sui_stats_windows.lua:800
+msgid "Remove from finished books"
+msgstr "Remover dos livros concluídos"
+
 #: modules/module_tbr.lua:276
 msgid "Remove from list when finished"
 msgstr "Remover da lista quando terminado"
+
+#: screens/sui_stats_windows.lua:807
+msgid "Remove this book from the finished books? Its file is no longer on the device."
+msgstr "Remover este livro dos livros concluídos? O ficheiro já não está no dispositivo."
+
+#: screens/sui_stats_windows.lua:806
+msgid "Remove this book from the finished books? Its status will be set to reading."
+msgstr "Remover este livro dos livros concluídos? Vai ser marcado como a ler."
 
 #: engines/sui_window.lua:2459 engines/sui_window.lua:3813
 #: features/library/sui_hold_rows.lua:261 features/sui_presets.lua:381
@@ -7870,6 +7890,10 @@ msgstr "Cor do Emblema de Série"
 #: features/sui_cover_elements.lua:57
 msgid "Series Index"
 msgstr "Índice de Série"
+
+#: features/library/sui_tab_views.lua:237
+msgid "Series display mode"
+msgstr "Modo de visualização de séries"
 
 #: screens/sui_menu.lua:43
 msgid "Set"
@@ -8751,6 +8775,10 @@ msgstr "Separadores e Pesquisa"
 #: features/sui_quickactions.lua:1014 infra/sui_config.lua:145
 msgid "Tags"
 msgstr "Etiquetas"
+
+#: features/library/sui_tab_views.lua:238
+msgid "Tags display mode"
+msgstr "Modo de visualização de etiquetas"
 
 #: modules/critter/game_lines.lua:109
 msgid "Tails"

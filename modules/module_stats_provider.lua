@@ -742,6 +742,37 @@ function SP.markBooksGone(paths)
     _flagScreensStale()
 end
 
+-- The ledger entry of a finished book whose file is gone, or nil. Only those
+-- entries are edited in the ledger itself: any other follows its sidecar.
+local function _goneEntry(ledger, md5)
+    local entry = ledger.books[md5]
+    return entry and entry.gone and entry or nil
+end
+
+local function _commitGone(ledger)
+    _finishedBooksStore().save(ledger)
+    SP.invalidateBooks()
+    _flagScreensStale()
+end
+
+--- Removes the entry of a finished book whose file is gone.
+function SP.removeGoneBook(md5)
+    local ledger = _loadLedger()
+    if not _goneEntry(ledger, md5) then return end
+    ledger.books[md5] = nil
+    _commitGone(ledger)
+end
+
+--- Leaves a finished book whose file is gone out of the totals and goals, or
+--- counts it again.
+function SP.setGoneBookExcluded(md5, excluded)
+    local ledger = _loadLedger()
+    local entry  = _goneEntry(ledger, md5)
+    if not entry then return end
+    entry.excluded = excluded and true or nil
+    _commitGone(ledger)
+end
+
 -- ---------------------------------------------------------------------------
 -- Manual books
 --

@@ -1824,7 +1824,7 @@ M.ICON = {
 
     -- State / Content
     warning  = "\u{F071}",   -- nf-fa-warning (triangle)
-    goal     = "\u{E153}",   -- flag (reading goals)
+    goal     = "\u{F11D}",   -- nf-fa-flag_o (reading goals)
     clock    = "\u{E385}",
     page     = "\u{F40E}",
     book     = "\u{F401}",
