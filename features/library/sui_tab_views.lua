@@ -214,21 +214,28 @@ end
 
 -- A tab root with items per page of its own lends them to the chooser only
 -- while its dimensions are computed, so every setting keeps reading the
--- Library's.
+-- Library's. The chooser's own instance layout, if any, still runs.
 local function _recalcWithPerPage(self, ...)
     local own = rawget(self, "files_per_page")
     self.files_per_page = self._sui_tv_per_page
-    local FileChooser = require("ui/widget/filechooser")
-    local ok, err = pcall(FileChooser._recalculateDimen, self, ...)
+    local layout = self._sui_tv_own_recalc or require("ui/widget/filechooser")._recalculateDimen
+    local ok, err = pcall(layout, self, ...)
     self.files_per_page = own
     if not ok then error(err, 0) end
 end
 
--- Returns true when the items per page of `fc` changed.
+-- Returns true when the items per page of `fc` changed. The instance layout
+-- the chooser had is kept aside while lent and put back after.
 local function _setPerPage(fc, n)
     if fc._sui_tv_per_page == n then return false end
+    if n and not fc._sui_tv_per_page then
+        fc._sui_tv_own_recalc = rawget(fc, "_recalculateDimen")
+        fc._recalculateDimen = _recalcWithPerPage
+    elseif not n then
+        fc._recalculateDimen = fc._sui_tv_own_recalc
+        fc._sui_tv_own_recalc = nil
+    end
     fc._sui_tv_per_page = n
-    fc._recalculateDimen = n and _recalcWithPerPage or nil
     return true
 end
 
