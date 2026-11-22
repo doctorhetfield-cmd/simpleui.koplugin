@@ -709,6 +709,9 @@ function M.refresh(plugin)
     local function refreshWidget(w)
         if not w or not w._navbar_container or seen[w] then return end
         seen[w] = true
+        -- Covered windows are not painted: their bars are updated without a
+        -- refresh and show the new texts once uncovered.
+        local visible = UI.isUncovered(w)
         local current = w._navbar_topbar
         local changed = patched[current]
         if changed == nil and current then
@@ -716,11 +719,12 @@ function M.refresh(plugin)
             patched[current] = changed
         end
         if changed then
-            UI.refreshBoxes(w, changed)
+            if visible then UI.refreshBoxes(w, changed) end
             return
         end
         new_topbar = new_topbar or M.buildTopbarWidget(bar)
         UI.replaceTopbar(w, new_topbar)
+        if not visible then return end
         -- Scope the e-ink refresh to the topbar's own region instead of the
         -- whole screen (same convention as module_clock.lua's surgical clock
         -- tick and ScreenWidget:_refreshBookModSlot). The dimen is read

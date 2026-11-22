@@ -842,7 +842,8 @@ local function _updateInPlace(screen)
     if not changed then return false end
 
     if live.face and live.face:syncTime() then changed[#changed + 1] = live.face end
-    UI.refreshBoxes(screen, changed)
+    -- A covered screen is not painted: it shows the new texts once uncovered.
+    if UI.isUncovered(screen) then UI.refreshBoxes(screen, changed) end
     return true
 end
 
@@ -895,7 +896,9 @@ local function _rebuildModule(screen)
             -- swaps (see ScreenWidget:_refreshBookModSlot). The dimen is read
             -- lazily via the callback, after the paint pass has positioned
             -- `target`, so it reflects the widget's real on-screen coordinates.
-            UIManager:setDirty(screen, function() return "ui", target.dimen end)
+            if UI.isUncovered(screen) then
+                UIManager:setDirty(screen, function() return "ui", target.dimen end)
+            end
             return true
         end
     end
@@ -907,7 +910,7 @@ local function _rebuildModule(screen)
     if screen._navbar_container then
         return (pcall(function()
             screen:_updatePage(true)
-            UIManager:setDirty(screen, "ui")
+            if UI.isUncovered(screen) then UIManager:setDirty(screen, "ui") end
         end))
     end
     return true

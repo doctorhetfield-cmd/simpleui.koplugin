@@ -905,6 +905,7 @@ end
 function SimpleUIPlugin:onSuspend()
     self._simpleui_suspended = true
     self._suspended_at = os.time()
+    self._resume_pending = nil
     -- Windows opened over a screen do not outlive the suspend.
     pcall(function() require("engines/sui_window").closeAll() end)
     -- Snapshot whether the reader was open at the moment of suspend.
@@ -935,18 +936,39 @@ function SimpleUIPlugin:onResume()
         session.paused = (session.paused or 0) + math.max(0, os.time() - self._suspended_at)
     end
     self._suspended_at = nil
-    if SUISettings:nilOrTrue("simpleui_topbar_enabled") then
-        -- Small delay to let the wakeup transition finish before refreshing
-        -- the topbar. Avoids a race with ScreenWidget:onResume() and
-        -- prevents the timer firing while the device is still mid-wakeup.
-        Topbar.scheduleRefresh(self, 0.5)
-    end
     -- Use the snapshot captured in onSuspend rather than checking RUI.instance
     -- live. On some Kobo builds the autosuspend timer fires close to a reader
     -- teardown, leaving RUI.instance nil even though the user was reading —
     -- causing the homescreen to open on wakeup instead of returning to the reader.
     local reader_active = self._simpleui_reader_was_active
     self._simpleui_reader_was_active = nil  -- consume; next suspend will repopulate
+
+    -- A screensaver kept on screen after wakeup still covers everything:
+    -- screens are restored once it closes.
+    if UI.isScreensaverShown() then
+        self._resume_pending = { reader_active = reader_active }
+        return
+    end
+    self:_resumeScreens(reader_active)
+end
+
+-- Sent while the screensaver is still on the stack: restore the screens on
+-- the next tick, once it is gone.
+function SimpleUIPlugin:onOutOfScreenSaver()
+    local pending = self._resume_pending
+    if not pending then return end
+    self._resume_pending = nil
+    UIManager:nextTick(function() self:_resumeScreens(pending.reader_active) end)
+end
+
+-- Refreshes the bars and screens after wakeup, once nothing covers them.
+function SimpleUIPlugin:_resumeScreens(reader_active)
+    if SUISettings:nilOrTrue("simpleui_topbar_enabled") then
+        -- Small delay to let the wakeup transition finish before refreshing
+        -- the topbar. Avoids a race with ScreenWidget:onResume() and
+        -- prevents the timer firing while the device is still mid-wakeup.
+        Topbar.scheduleRefresh(self, 0.5)
+    end
 
     -- "Return to Home Screen on Wakeup": unlike "Start with Homescreen" (which
     -- only ever fires when the reader was already closed), this setting must

@@ -591,6 +591,26 @@ function M.getTopWindow()
     end
 end
 
+-- True when the window `widget` is painted: it sits at or above the topmost
+-- fullscreen window of the stack.
+function M.isUncovered(widget)
+    local stack = M.getWindowStack()
+    for i = #stack, 1, -1 do
+        local w = stack[i].widget
+        if w == widget then return true end
+        if w.covers_fullscreen then return false end
+    end
+    return false
+end
+
+-- True while a screensaver kept on screen after wakeup ("Postpone screen
+-- update") still covers everything. Its closing broadcasts OutOfScreenSaver.
+function M.isScreensaverShown()
+    local Screensaver = package.loaded["ui/screensaver"]
+    return require("device").screen_saver_mode and Screensaver ~= nil
+        and Screensaver.screensaver_widget ~= nil
+end
+
 -- ---------------------------------------------------------------------------
 -- Shared settings menu (#4)
 -- Eliminates the near-identical showSettingsMenu closures in bottombar.lua and
