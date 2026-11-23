@@ -366,7 +366,7 @@ local function _fmtBookRange(book, start_dates)
             return _fmtStamp(book.date_started) .. " \xe2\x80\x93 " .. _fmtStamp(book.date_finished)
         end
         if book.date_finished then return _fmtStamp(book.date_finished) end
-        return _fmtStamp(book.date_started) .. " \xe2\x80\x93"
+        return string.format(_("Started %s"), _fmtStamp(book.date_started))
     end
     -- Preserved books have no file to read dates from; show the year only.
     if not book.filepath then return book.year and tostring(book.year) end
@@ -963,7 +963,7 @@ function StatsWindows.showFinishedBooksDialog(opts)
                 radius         = ctx.SZ(Screen:scaleBySize(12)),
                 padding        = 0, margin = 0,
                 _CenterContainer:new{
-                    dimen = Geom:new{ w = w, h = cg.cell_h },
+                    dimen = Geom:new{ w = w - 2 * SUIStyle.BORDER_SZ, h = cg.cell_h },
                     vg,
                 },
             }
@@ -1072,7 +1072,8 @@ function StatsWindows.showFinishedBooksDialog(opts)
         local lbl_face   = Font:getFace(SUIStyle.FACE_REGULAR, ctx.SZ(SUIStyle.FS_BODY))
         local val_face   = Font:getFace(SUIStyle.FACE_REGULAR, ctx.SZ(SUIStyle.FS_BODY))
         local ICON_W     = ctx.SZ(Screen:scaleBySize(36))
-        local row_inner  = inner_w - 2 * PAD_H
+        -- The rows sit inside the block's border on both sides.
+        local row_inner  = inner_w - 2 * PAD_H - 2 * SUIStyle.BORDER_SZ
 
         local function makeIconRow(icon_glyph, label, value_str, on_tap)
             local val_w = ctx.SZ(Screen:scaleBySize(160))
@@ -2726,7 +2727,7 @@ function StatsWindows.showBookStatsFromFile(opts)
                 radius     = ctx.SZ(Screen:scaleBySize(12)),
                 padding    = 0, margin = 0,
                 _CenterContainer:new{
-                    dimen = Geom:new{ w = w, h = cell_h },
+                    dimen = Geom:new{ w = w - 2 * SUIStyle.BORDER_SZ, h = cell_h },
                     vg,
                 },
             }
@@ -2828,7 +2829,8 @@ function StatsWindows.showBookStatsFromFile(opts)
         local lbl_face  = Font:getFace(SUIStyle.FACE_REGULAR, ctx.SZ(SUIStyle.FS_BODY))
         local val_face  = Font:getFace(SUIStyle.FACE_REGULAR, ctx.SZ(SUIStyle.FS_BODY))
         local ICON_W    = ctx.SZ(Screen:scaleBySize(36))
-        local row_inner = inner_w - 2 * PAD_H
+        -- The rows sit inside the block's border on both sides.
+        local row_inner = inner_w - 2 * PAD_H - 2 * SUIStyle.BORDER_SZ
 
         local function makeIconRow(icon_glyph, label, value_str, on_tap)
             local val_w = ctx.SZ(Screen:scaleBySize(160))
