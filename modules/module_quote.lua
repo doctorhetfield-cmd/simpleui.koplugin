@@ -35,7 +35,8 @@ local VerticalSpan   = require("ui/widget/verticalspan")
 
 local Screen         = Device.screen
 
-local _ = require("infra/sui_i18n").translate
+local I18n = require("infra/sui_i18n")
+local _ = I18n.translate
 
 local logger         = require("logger")
 
@@ -181,20 +182,33 @@ end
 
 
 local _quotes_cache = nil
+local _quotes_cache_lang = nil
 
 
 
 local function loadQuotes()
 
-    if _quotes_cache then return _quotes_cache end
+    local lang = I18n.getLang()
+    if _quotes_cache and _quotes_cache_lang == lang then return _quotes_cache end
+    _quotes_cache_lang = lang
 
     -- Use require so KOReader resolves the path correctly via its module loader.
 
-    -- package.loaded is cleared to force a fresh load if quotes.lua was updated.
+    -- Chinese quotes are original Chinese writing, not translations of the
+    -- English collection. Other UI languages keep the existing default pool.
+    local module = lang == "zh_CN" and "modules/quotes_zh_CN" or "modules/quotes"
 
-    package.loaded["quotes"] = nil
+    -- Clear the actual require key when reloading after a language change.
+    package.loaded[module] = nil
 
-    local ok, data = pcall(require, "modules/quotes")
+    local ok, data = pcall(require, module)
+
+    -- Keep the default quotes usable if an optional language pool is missing
+    -- or cannot be loaded (for example after an incomplete manual update).
+    if module ~= "modules/quotes" and not (ok and type(data) == "table" and #data > 0) then
+        package.loaded["modules/quotes"] = nil
+        ok, data = pcall(require, "modules/quotes")
+    end
 
     if ok and type(data) == "table" and #data > 0 then
 
