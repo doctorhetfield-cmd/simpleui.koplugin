@@ -890,6 +890,10 @@ msgstr "差不多了。"
 msgid "Alphabetical"
 msgstr "字母排序"
 
+#: features/library/sui_tab_views.lua:284
+msgid "Also use this mode in History and Collections"
+msgstr "在历史记录和书单中也使用此模式"
+
 #: features/sui_cover_elements.lua:116
 msgid "Also used by the Collections module on the Home Screen."
 msgstr "主页上的书单模块也使用此设置。"
@@ -1130,6 +1134,10 @@ msgstr "作者：%s"
 #: infra/sui_config.lua:141
 msgid "Authors"
 msgstr "作者"
+
+#: features/library/sui_tab_views.lua:236
+msgid "Authors display mode"
+msgstr "作者显示模式"
 
 #: engines/sui_group_cell.lua:263 features/sui_cover_elements.lua:326
 msgid "Auto (Single ↔ 4-Cover Grid)"
@@ -2305,6 +2313,10 @@ msgstr "晨潮。早上好。"
 #: modules/critter/dialog.lua:446 modules/critter/dialog.lua:448
 msgid "Day %d, here we come!"
 msgstr "第 %d 天，冲！"
+
+#: features/sui_quickactions.lua:969
+msgid "Day Mode"
+msgstr "日间模式"
 
 #: modules/critter/dialog.lua:486
 msgid "Day one with you. My favourite."
@@ -7256,9 +7268,21 @@ msgstr "移除"
 msgid "Remove from To Be Read"
 msgstr "从待读中移除"
 
+#: screens/sui_stats_windows.lua:800
+msgid "Remove from finished books"
+msgstr "从已读完书籍中移除"
+
 #: modules/module_tbr.lua:276
 msgid "Remove from list when finished"
 msgstr "读完后从列表中移除"
+
+#: screens/sui_stats_windows.lua:807
+msgid "Remove this book from the finished books? Its file is no longer on the device."
+msgstr "要将此书从已读完书籍中移除吗？此书的文件已不在设备上。"
+
+#: screens/sui_stats_windows.lua:806
+msgid "Remove this book from the finished books? Its status will be set to reading."
+msgstr "要将此书从已读完书籍中移除吗？其状态将设为正在阅读。"
 
 #: engines/sui_window.lua:2485 engines/sui_window.lua:3839
 #: features/library/sui_hold_rows.lua:261 features/sui_presets.lua:381
@@ -7815,6 +7839,10 @@ msgstr "丛书徽章颜色"
 #: features/sui_cover_elements.lua:57
 msgid "Series Index"
 msgstr "丛书序号"
+
+#: features/library/sui_tab_views.lua:237
+msgid "Series display mode"
+msgstr "丛书显示模式"
 
 #: screens/sui_menu.lua:3140
 msgid "Series in List"
@@ -8431,6 +8459,10 @@ msgstr "从预设布局开始，后续均可自由调整。"
 msgid "Started"
 msgstr "开始日期"
 
+#: screens/sui_stats_windows.lua:369
+msgid "Started %s"
+msgstr "开始日期：%s"
+
 #: modules/module_coverdeck.lua:142 modules/module_coverdeck.lua:1618
 #: modules/module_coverdeck.lua:1638 modules/module_coverdeck.lua:1645
 #: modules/module_currently.lua:273 modules/module_currently.lua:1340
@@ -8701,6 +8733,10 @@ msgstr "选项卡与搜索"
 #: features/sui_quickactions.lua:1022 infra/sui_config.lua:145
 msgid "Tags"
 msgstr "标签"
+
+#: features/library/sui_tab_views.lua:238
+msgid "Tags display mode"
+msgstr "标签显示模式"
 
 #: modules/critter/game_lines.lua:109
 msgid "Tails"
@@ -10528,9 +10564,21 @@ msgstr "较上周"
 msgid "vs the same days last week"
 msgstr "较上周同期"
 
+#: screens/sui_stats_windows.lua:1727
+msgid "{day2} {month_short} '{year2}"
+msgstr "{year2}年{month_short}{day2}日"
+
 #: modules/module_clock.lua:42
 msgid "{day}/{month_num}/{year}"
 msgstr "{year}/{month_num}/{day}"
+
+#: engines/sui_window.lua:3094
+msgid "{month} {year}"
+msgstr "{year}年{month}"
+
+#: screens/sui_heatmap_popup.lua:45
+msgid "{start_day2} {start_month_short} – {end_day2} {end_month_short} {end_year}"
+msgstr "{start_year}年{start_month_short}{start_day2}日 – {end_year}年{end_month_short}{end_day2}日"
 
 #: modules/module_clock.lua:41
 msgid "{weekday_short}, {day} {month_short}"
