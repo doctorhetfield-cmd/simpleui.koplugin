@@ -546,11 +546,11 @@ end
 local TABS_ICON_SCALE = 1.37
 
 -- Face of the tab labels, scaled by the title-bar size. `base_size` is a
--- SUIStyle font size (default FS_BODY). Also used by other tab bars so they
+-- SUIStyle font size (default FS_SUBTITLE). Also used by other tab bars so they
 -- scale with the title-bar tabs.
 function M.getTabsFace(base_size)
     local S = SUIStyle()
-    return require("ui/font"):getFace(S.FACE_REGULAR, math.floor((base_size or S.FS_BODY) * M.getSizeScale()))
+    return require("ui/font"):getFace(S.FACE_REGULAR, math.floor((base_size or S.FS_SUBTITLE) * M.getSizeScale()))
 end
 
 -- Metrics of the compact tabs-style bar, scaled by the title-bar size. The
@@ -565,7 +565,7 @@ local function _tabsMetrics()
     return {
         face      = face,
         iw        = text_h,                        -- icon size == text height
-        pad_v     = math.floor(Screen:scaleBySize(7) * scale), -- above and below the text row
+        pad_v     = math.floor(Screen:scaleBySize(8) * scale), -- above and below the text row
         margin    = SideM(),                       -- screen edge to icon
         back_gap  = Screen:scaleBySize(14),        -- back icon to the content beside it
         tap_pad_h = Screen:scaleBySize(8),         -- horizontal tap-area padding

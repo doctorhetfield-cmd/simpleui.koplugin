@@ -820,12 +820,11 @@ function StatsWindows.showFinishedBooksDialog(opts)
         }
     end
 
-    -- Subtitle of a book row: completion dates first, so they stay visible
-    -- when the line is truncated, then authors and the exclusion mark.
+    -- Subtitle of a book row: authors, completion dates, then the exclusion mark.
     local function bookSubtitle(book)
         local parts = {}
-        parts[#parts + 1] = book_date_range[book.key]
         if book.authors and book.authors ~= "" then parts[#parts + 1] = book.authors end
+        parts[#parts + 1] = book_date_range[book.key]
         if book.exclude_from_goals then parts[#parts + 1] = _("Excluded") end
         return table.concat(parts, " · ")
     end
