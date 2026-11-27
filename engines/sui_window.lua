@@ -2252,6 +2252,7 @@ end
 ---   show_chevron bool          — default false
 ---   title_face   Face|nil      — override font face for the title text
 ---   on_delete    function|nil
+---   delete_icon  string|nil    — SUIStyle icon key for the on_delete button; default "delete"
 ---   on_tap       function|nil
 ---   on_hold      function|nil
 ---   separator    bool          — separator line below (default true)
@@ -2387,7 +2388,7 @@ function SUIWindow.ListRow(opts)
 
         if has_delete then
             table.insert(right_hg, SUIWindow.Input.iconButton{
-                icon   = "delete",
+                icon   = opts.delete_icon or "delete",
                 w      = _CHEVRON_W() * 2,
                 h      = left_h,
                 on_tap = opts.on_delete,

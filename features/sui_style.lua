@@ -1807,6 +1807,7 @@ M.ICON = {
     radio_on  = "\u{EB3D}",  -- radiobox-marked (circle, dotted)
     radio_off = "\u{EB3C}",  -- radiobox-blank (circle, empty)
     delete   = "\u{F014}",   -- trash / delete (NerdFonts)
+    book_actions = "\u{E8D8}", -- finished book actions (NerdFonts)
     edit     = "\u{F040}",   -- pencil / edit (NerdFonts)
     add      = "\u{E145}",   -- add / plus
     add_book = "\u{EB14}",   -- add book (NerdFonts)

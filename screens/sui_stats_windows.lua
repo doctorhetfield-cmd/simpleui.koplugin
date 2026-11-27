@@ -852,6 +852,7 @@ function StatsWindows.showFinishedBooksDialog(opts)
             elseif book.manual then
                 row.on_tap = function() ManualBooks.showBookDialog(book, reload) end
             else
+                row.delete_icon = "book_actions"
                 row.on_delete = function() showBookActions(book, reload) end
                 if book.filepath then
                     row.on_tap = function()
